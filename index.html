@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#af1996">
+    <title>Celebrate Cinema 2026 | Whistling Woods International</title>
+    <meta name="description" content="Register for Celebrate Cinema 2026 at Whistling Woods International. Experience exclusive film screenings, masterclasses, and workshops with Bollywood's finest.">
+    <meta property="og:title" content="Celebrate Cinema 2026 | Whistling Woods International">
+    <meta property="og:description" content="Join Celebrate Cinema 2026 — Where Stories Come Alive. Film screenings, masterclasses, and workshops at Whistling Woods International, Film City, Mumbai.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="idSrLcZHLp_1788097331241.png">
+    <!-- QR Code Generation -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+    <!-- QR Code Scanner -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <!-- Supabase Cloud Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+<!-- ═══ PARTICLES CANVAS ═══ -->
+<canvas id="particles-canvas"></canvas>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav class="navbar" id="navbar">
+    <div class="container">
+        <div class="nav-brand" onclick="navigateTo('landing')">
+            <img src="idSrLcZHLp_1788097331241.png" alt="WWI" class="nav-logo">
+            <span class="nav-title">CELEBRATE CINEMA</span>
+        </div>
+        <ul class="nav-links" id="nav-links">
+            <li><span class="nav-link active" data-page="landing">Home</span></li>
+            <li><span class="nav-link" data-page="names">Wall of Fame</span></li>
+            <li><span class="nav-link nav-cta" data-page="register">Register Now</span></li>
+        </ul>
+        <div class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Nav Overlay -->
+<div class="nav-mobile-overlay" id="mobile-nav">
+    <span class="nav-link" data-page="landing" onclick="navigateAndClose('landing')">Home</span>
+    <span class="nav-link" data-page="register" onclick="navigateAndClose('register')">Register</span>
+    <span class="nav-link" data-page="names" onclick="navigateAndClose('names')">Wall of Fame</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: LANDING / HERO
+     ═══════════════════════════════════════════════ -->
+<section id="page-landing" class="page active">
+
+    <!-- Hero Section -->
+    <div class="hero" id="hero-section">
+        <div class="hero-content">
+            <img src="idSrLcZHLp_1788097331241.png" alt="Whistling Woods International" class="hero-logo" id="hero-logo">
+            <h1 class="hero-title gradient-text">CELEBRATE CINEMA</h1>
+            <p class="hero-year">2 0 2 6</p>
+            <p class="hero-tagline">Where Stories Come Alive</p>
+            <p class="hero-venue">📍 Whistling Woods International, Film City, Mumbai</p>
+
+            <!-- Countdown -->
+            <div class="countdown" id="countdown-timer">
+                <div class="countdown-item">
+                    <span class="countdown-value" id="cd-days">00</span>
+                    <span class="countdown-label">Days</span>
+                </div>
+                <span class="countdown-sep">:</span>
+                <div class="countdown-item">
+                    <span class="countdown-value" id="cd-hours">00</span>
+                    <span class="countdown-label">Hours</span>
+                </div>
+                <span class="countdown-sep">:</span>
+                <div class="countdown-item">
+                    <span class="countdown-value" id="cd-mins">00</span>
+                    <span class="countdown-label">Minutes</span>
+                </div>
+                <span class="countdown-sep">:</span>
+                <div class="countdown-item">
+                    <span class="countdown-value" id="cd-secs">00</span>
+                    <span class="countdown-label">Seconds</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-glow" id="hero-register-btn" onclick="navigateTo('register')">
+                Register Now <span class="btn-icon">→</span>
+            </button>
+        </div>
+
+        <div class="scroll-indicator">
+            <span>Scroll to explore</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div class="section" id="about-section">
+        <div class="container">
+            <h2 class="section-title gradient-text reveal-up">What Awaits You</h2>
+            <div class="about-grid">
+                <div class="glass-card reveal-up">
+                    <div class="card-icon">🎬</div>
+                    <h3>Film Screenings</h3>
+                    <p>Experience exclusive screenings of award-winning Indian and international films</p>
+                </div>
+                <div class="glass-card reveal-up">
+                    <div class="card-icon">🎤</div>
+                    <h3>Masterclasses</h3>
+                    <p>Learn from Bollywood's finest directors, actors, and technicians</p>
+                </div>
+                <div class="glass-card reveal-up">
+                    <div class="card-icon">🎭</div>
+                    <h3>Workshops</h3>
+                    <p>Hands-on workshops in filmmaking, acting, screenwriting, and more</p>
+                </div>
+                <div class="glass-card reveal-up">
+                    <div class="card-icon">🤝</div>
+                    <h3>Networking</h3>
+                    <p>Connect with industry professionals, fellow cinephiles, and future collaborators</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div class="section" id="pricing-section">
+        <div class="container">
+            <h2 class="section-title gradient-text reveal-up">Get Your Pass</h2>
+            <div class="pricing-hero reveal-up">
+                <div class="glass-card pricing-card-hero">
+                    <div class="pricing-badge">Early Bird Offer</div>
+                    <div class="pricing-original">₹250</div>
+                    <div class="pricing-current">₹150</div>
+                    <div class="pricing-savings">You save ₹100!</div>
+                    <p>Early Bird Discount Pre-Applied</p>
+                    <p class="pricing-note">+ Additional discounts available with coupon codes</p>
+                    <button class="btn btn-gold" onclick="navigateTo('register')">
+                        Claim Your Spot <span class="btn-icon">→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="film-strip"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: REGISTRATION
+     ═══════════════════════════════════════════════ -->
+<section id="page-register" class="page">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="gradient-text">Register Now</h1>
+            <p>Secure your spot at Celebrate Cinema 2026</p>
+        </div>
+        <div class="register-layout">
+            <!-- Pricing Sidebar -->
+            <div class="pricing-sidebar">
+                <div class="glass-card pricing-card" id="live-pricing-card">
+                    <h3>💰 Price Breakdown</h3>
+                    <div class="price-line">
+                        <span>Base Price</span>
+                        <span id="price-base">₹250</span>
+                    </div>
+                    <div class="price-line discount">
+                        <span>Early Bird Discount</span>
+                        <span id="price-discount">−₹100</span>
+                    </div>
+                    <div class="price-line coupon-line" id="coupon-price-line" style="display: none;">
+                        <span>Coupon (<span id="coupon-code-display"></span>)</span>
+                        <span id="price-coupon">−₹0</span>
+                    </div>
+                    <div class="price-divider"></div>
+                    <div class="price-line total">
+                        <span>You Pay</span>
+                        <span id="price-total" class="price-final">₹150</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Form -->
+            <div class="register-form-container glass-card">
+                <form id="register-form" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="reg-name">Full Name *</label>
+                        <input type="text" id="reg-name" class="form-input" required placeholder="Enter your full name" autocomplete="name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reg-email">Email Address *</label>
+                        <input type="email" id="reg-email" class="form-input" required placeholder="your@email.com" autocomplete="email">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="reg-phone">Phone Number *</label>
+                            <input type="tel" id="reg-phone" class="form-input" required placeholder="+91 XXXXX XXXXX" autocomplete="tel">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="reg-year">Year of Study *</label>
+                            <select id="reg-year" class="form-input" required>
+                                <option value="">Select Year</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                                <option value="PG">Post Graduate</option>
+                                <option value="Alumni">Alumni</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reg-college">College / Institution *</label>
+                        <input type="text" id="reg-college" class="form-input" required placeholder="Your college or institution name">
+                    </div>
+
+                    <div class="form-divider"><span>Discounts & Referral</span></div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="reg-coupon">Coupon Code</label>
+                            <div class="input-with-button">
+                                <input type="text" id="reg-coupon" class="form-input" placeholder="Enter code">
+                                <button type="button" id="apply-coupon-btn" class="btn-small">Apply</button>
+                            </div>
+                            <span id="coupon-message" class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="reg-referral">Referral Code</label>
+                            <input type="text" id="reg-referral" class="form-input" placeholder="Optional">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-glow btn-full" id="submit-registration-btn">
+                        Proceed to Payment <span class="btn-icon">→</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: PAYMENT
+     ═══════════════════════════════════════════════ -->
+<section id="page-payment" class="page">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="gradient-text">Complete Payment</h1>
+            <p>Scan the QR code to make your payment via UPI</p>
+        </div>
+        <div class="payment-layout">
+            <div class="glass-card payment-card">
+                <div class="payment-amount">
+                    Pay <span id="payment-amount-display" class="gold-text">₹150</span>
+                </div>
+
+                <div class="qr-container">
+                    <div class="qr-glow"></div>
+                    <canvas id="qr-placeholder-canvas" class="qr-image" width="220" height="220" style="border-radius: 12px;"></canvas>
+                    <p class="qr-note">Scan with any UPI app (GPay, PhonePe, Paytm)</p>
+                </div>
+
+                <div class="payment-form">
+                    <div class="form-group">
+                        <label class="form-label" for="txn-id">Transaction ID / UTR Number *</label>
+                        <input type="text" id="txn-id" class="form-input" required placeholder="Enter your transaction ID after payment">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Payment Screenshot (Optional)</label>
+                        <div class="file-upload-zone" id="screenshot-zone">
+                            <input type="file" id="screenshot-input" accept="image/*" hidden>
+                            <div class="upload-content" id="upload-content">
+                                <span class="upload-icon">📸</span>
+                                <p>Click or drag to upload screenshot</p>
+                            </div>
+                            <img id="screenshot-preview" class="screenshot-preview" alt="Payment screenshot" style="display: none;">
+                        </div>
+                    </div>
+
+                    <button type="button" id="confirm-payment-btn" class="btn btn-primary btn-glow btn-full">
+                        I've Made the Payment ✓
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: CONFIRMATION
+     ═══════════════════════════════════════════════ -->
+<section id="page-confirmation" class="page">
+    <div class="container">
+        <div class="confirmation-content">
+            <!-- Animated Checkmark -->
+            <div class="success-animation">
+                <div class="checkmark-circle">
+                    <svg class="checkmark" viewBox="0 0 52 52">
+                        <circle class="checkmark-bg" cx="26" cy="26" r="25" fill="none"/>
+                        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                </div>
+            </div>
+
+            <h1 class="gradient-text">Registration Successful!</h1>
+            <p>Your payment is being verified. You'll receive confirmation shortly.</p>
+
+            <!-- Ticket Card -->
+            <div class="glass-card ticket-card" id="ticket-card">
+                <div class="ticket-header">
+                    <img src="idSrLcZHLp_1788097331241.png" alt="WWI Logo" class="ticket-logo">
+                    <div>
+                        <h3>CELEBRATE CINEMA 2026</h3>
+                        <p>Whistling Woods International</p>
+                    </div>
+                </div>
+                <div class="ticket-divider"></div>
+                <div class="ticket-details">
+                    <div class="ticket-row">
+                        <span class="ticket-label">Name</span>
+                        <span class="ticket-value" id="ticket-name">—</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Registration ID</span>
+                        <span class="ticket-value" id="ticket-id">—</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Amount Paid</span>
+                        <span class="ticket-value" id="ticket-amount">—</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Status</span>
+                        <span class="ticket-value status-pending" id="ticket-status">Verification Pending</span>
+                    </div>
+                </div>
+                <!-- Ticket QR Code -->
+                <div class="ticket-qr-section">
+                    <div class="ticket-divider"></div>
+                    <p class="ticket-qr-label">Your Entry QR Code</p>
+                    <div class="ticket-qr-container" id="ticket-qr-container"></div>
+                    <p class="ticket-qr-hint">Show this QR code at the venue for entry</p>
+                </div>
+            </div>
+
+            <!-- Referral Share -->
+            <div class="glass-card referral-card">
+                <h3>🎁 Share & Earn Referrals</h3>
+                <p>Share your unique referral link with friends and help them register!</p>
+                <div class="referral-link-box">
+                    <input type="text" id="referral-link-input" class="form-input" readonly>
+                    <button id="copy-referral-btn" class="btn-small" onclick="copyReferralLink()">Copy</button>
+                </div>
+                <div class="share-buttons">
+                    <button class="btn btn-share whatsapp" onclick="shareWhatsApp()">
+                        📱 WhatsApp
+                    </button>
+                    <button class="btn btn-share twitter" onclick="shareTwitter()">
+                        🐦 Twitter
+                    </button>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="navigateTo('landing')" style="margin-top: var(--space-md);">
+                ← Back to Home
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ADMIN LOGIN
+     ═══════════════════════════════════════════════ -->
+<section id="page-admin-login" class="page">
+    <div class="container center-content">
+        <div class="glass-card admin-login-card">
+            <div class="admin-login-icon">🔐</div>
+            <h2>Admin Dashboard</h2>
+            <p>Enter the password to access management tools</p>
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <input type="password" id="admin-password-input" class="form-input" placeholder="Enter admin password" required autocomplete="off">
+                </div>
+                <span id="admin-login-error" class="form-message error" style="display: none;">Incorrect password. Please try again.</span>
+                <button type="submit" class="btn btn-primary btn-full">Unlock Dashboard</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ADMIN DASHBOARD
+     ═══════════════════════════════════════════════ -->
+<section id="page-admin" class="page">
+    <div class="container-wide">
+        <div class="admin-header">
+            <h1 class="gradient-text">Admin Dashboard</h1>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn btn-secondary" onclick="navigateTo('names')">View Public Wall</button>
+                <button class="btn btn-secondary" onclick="handleAdminLogout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="admin-stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-value" id="stat-total">0</div>
+                <div class="stat-label">Total Registrations</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" id="stat-verified">0</div>
+                <div class="stat-label">Verified</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-value" id="stat-pending">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎫</div>
+                <div class="stat-value" id="stat-attended">0</div>
+                <div class="stat-label">Checked In</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-value" id="stat-revenue">₹0</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+
+        <div class="admin-tabs" id="admin-tabs">
+            <button class="tab-btn active" data-tab="registrations">📋 Registrations</button>
+            <button class="tab-btn" data-tab="attendance">📷 Attendance Scanner</button>
+            <button class="tab-btn" data-tab="coupons">🎟️ Coupon Manager</button>
+            <button class="tab-btn" data-tab="referrals">🏆 Referral Leaderboard</button>
+        </div>
+
+        <!-- Tab: Registrations -->
+        <div class="tab-content active" id="tab-registrations">
+            <div class="table-controls">
+                <input type="text" id="search-registrations" class="form-input" placeholder="🔍 Search by name, email, or ID...">
+                <div class="filter-group">
+                    <select id="filter-status" class="form-input">
+                        <option value="all">All Status</option>
+                        <option value="verified">Verified</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    <button class="btn btn-secondary" id="export-csv-btn" onclick="handleExportCSV()">📥 Export CSV</button>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="admin-table" id="registrations-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>College</th>
+                            <th>Amount</th>
+                            <th>Coupon</th>
+                            <th>Txn ID</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrations-tbody"></tbody>
+                </table>
+            </div>
+            <div id="no-registrations" class="no-data" style="display: none;">
+                <div class="no-data-icon">📭</div>
+                <p>No registrations yet</p>
+            </div>
+        </div>
+
+        <!-- Tab: Coupon Manager -->
+        <div class="tab-content" id="tab-coupons">
+            <div class="glass-card coupon-form-card">
+                <h3>Add New Coupon</h3>
+                <form id="add-coupon-form" class="coupon-form">
+                    <input type="text" id="new-coupon-code" class="form-input" placeholder="Coupon Code" required style="text-transform: uppercase;">
+                    <input type="number" id="new-coupon-discount" class="form-input" placeholder="Discount ₹" required min="1" max="250">
+                    <input type="text" id="new-coupon-desc" class="form-input" placeholder="Description (optional)">
+                    <button type="submit" class="btn btn-primary">Add Coupon</button>
+                </form>
+            </div>
+            <div class="coupons-grid" id="coupons-grid"></div>
+        </div>
+
+        <!-- Tab: Attendance Scanner -->
+        <div class="tab-content" id="tab-attendance">
+            <div class="scanner-layout">
+                <div class="scanner-panel glass-card">
+                    <h3>📷 Scan Ticket QR Code</h3>
+                    <p class="scanner-desc">Point the camera at an attendee's ticket QR code to mark their attendance</p>
+                    <div class="scanner-viewport">
+                        <div id="qr-scanner-container" class="scanner-camera">
+                            <div class="scanner-placeholder" id="scanner-placeholder">
+                                <div class="scanner-placeholder-icon">📸</div>
+                                <p>Camera will appear here</p>
+                            </div>
+                        </div>
+                        <div class="scanner-frame">
+                            <div class="scanner-corner tl"></div>
+                            <div class="scanner-corner tr"></div>
+                            <div class="scanner-corner bl"></div>
+                            <div class="scanner-corner br"></div>
+                            <div class="scanner-line"></div>
+                        </div>
+                    </div>
+                    <div class="scanner-controls">
+                        <button class="btn btn-primary" id="start-scanner-btn" onclick="toggleScanner()">
+                            📷 Start Camera
+                        </button>
+                        <select id="camera-select" class="form-input" style="display:none; max-width:250px;"></select>
+                    </div>
+                </div>
+
+                <div class="scanner-result-panel">
+                    <!-- Scan Result -->
+                    <div class="glass-card scanner-result" id="scanner-result" style="display:none;">
+                        <div class="scan-status" id="scan-status"></div>
+                        <div class="scan-details" id="scan-details"></div>
+                        <div class="scan-actions" id="scan-actions"></div>
+                    </div>
+
+                    <!-- Manual Entry -->
+                    <div class="glass-card">
+                        <h3>🔍 Manual Check-In</h3>
+                        <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:var(--space-md);">Enter Registration ID to mark attendance manually</p>
+                        <div class="input-with-button">
+                            <input type="text" id="manual-checkin-id" class="form-input" placeholder="Registration ID (e.g. CCMTF...)">
+                            <button class="btn-small" onclick="handleManualCheckin()">Check In</button>
+                        </div>
+                        <span id="manual-checkin-msg" class="form-message" style="margin-top:8px;"></span>
+                    </div>
+
+                    <!-- Recent Check-ins -->
+                    <div class="glass-card">
+                        <h3>🕐 Recent Check-ins</h3>
+                        <div id="recent-checkins" class="recent-checkins-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Referral Leaderboard -->
+        <div class="tab-content" id="tab-referrals">
+            <div class="referral-leaderboard" id="referral-leaderboard"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: NAMES WALL (Public)
+     ═══════════════════════════════════════════════ -->
+<section id="page-names" class="page">
+    <div class="container">
+        <div class="page-header">
+            <img src="idSrLcZHLp_1788097331241.png" alt="Celebrate Cinema" class="names-logo">
+            <h1 class="gradient-text">Wall of Fame</h1>
+            <p>Meet the amazing cinephiles joining Celebrate Cinema 2026</p>
+            <div class="names-counter">
+                <span id="names-total-count" class="counter-value">0</span>
+                <span>Registered</span>
+            </div>
+        </div>
+        <div class="names-grid" id="names-grid"></div>
+        <div id="no-names" class="no-data" style="display: none;">
+            <div class="no-data-icon">🎬</div>
+            <p>Be the first to register!</p>
+        </div>
+        <div class="names-cta">
+            <p>Want to see your name here?</p>
+            <button class="btn btn-primary btn-glow" onclick="navigateTo('register')">
+                Register Now <span class="btn-icon">→</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FILM STRIP FOOTER ═══ -->
+<div class="film-strip" id="global-film-strip"></div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer">
+    <p>© 2026 <span class="footer-brand">Celebrate Cinema</span> — Whistling Woods International</p>
+    <p style="margin-top: 4px;">Crafted with 🎬 for cinema lovers everywhere</p>
+</footer>
+
+<!-- ═══ TOAST CONTAINER ═══ -->
+<div id="toast-container"></div>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script src="data.js"></script>
+<script src="animations.js"></script>
+<script src="app.js"></script>
+<script src="admin.js"></script>
+
+</body>
+</html>

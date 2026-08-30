@@ -1,0 +1,465 @@
+// ============================================
+// DATA LAYER — Celebrate Cinema 2026
+// ============================================
+
+const CONFIG = {
+    BASE_PRICE: 250,
+    EARLY_BIRD_DISCOUNT: 100,
+    MIN_PRICE: 0,
+    ADMIN_PASSWORD: 'admin2026',
+    EVENT_NAME: 'Celebrate Cinema 2026',
+    EVENT_TAGLINE: 'Where Stories Come Alive',
+    EVENT_DATE: new Date('2026-09-20T10:00:00+05:30'),
+    EVENT_VENUE: 'Whistling Woods International, Film City, Mumbai',
+    SUPABASE_URL: 'https://rnylpxfjhxpmjwolsqcd.supabase.co',
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8',
+    STORAGE_KEYS: {
+        REGISTRATIONS: 'cc2026_registrations',
+        COUPONS: 'cc2026_coupons',
+        ADMIN_AUTH: 'cc2026_admin_auth',
+        SUPABASE_CONFIG: 'cc2026_supabase_config'
+    }
+};
+
+const DEFAULT_COUPONS = [
+    { code: 'CINEMA50', discount: 50, active: true, description: '₹50 off' },
+    { code: 'EARLYBIRD25', discount: 25, active: true, description: '₹25 off' },
+    { code: 'WWI100', discount: 100, active: true, description: '₹100 off — Free Entry!' },
+    { code: 'FILMS30', discount: 30, active: true, description: '₹30 off' }
+];
+
+// ============================================
+// DATA STORE CLASS
+// ============================================
+class DataStore {
+    constructor() {
+        this._initCoupons();
+        this.supabaseClient = null;
+        this._initSupabase();
+    }
+
+    // ──────────── SUPABASE INTEGRATION ────────────
+    _initSupabase() {
+        try {
+            const savedConfig = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.SUPABASE_CONFIG) || 'null');
+            const url = savedConfig?.url || CONFIG.SUPABASE_URL;
+            const anonKey = savedConfig?.anonKey || CONFIG.SUPABASE_ANON_KEY;
+
+            if (url && anonKey && window.supabase) {
+                this.supabaseClient = window.supabase.createClient(url, anonKey);
+                console.log('⚡ Supabase client initialized with cloud backend');
+                this.syncFromSupabase();
+                this._subscribeRealtime();
+            } else if (url && anonKey) {
+                // If library hasn't finished loading yet, retry shortly
+                window.addEventListener('load', () => {
+                    if (window.supabase) {
+                        this.supabaseClient = window.supabase.createClient(url, anonKey);
+                        this.syncFromSupabase();
+                        this._subscribeRealtime();
+                    }
+                });
+            }
+        } catch (e) {
+            console.warn('Supabase init warning:', e);
+        }
+    }
+
+    _subscribeRealtime() {
+        if (!this.supabaseClient) return;
+        try {
+            this.supabaseClient
+                .channel('public:registrations')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'registrations' }, payload => {
+                    console.log('⚡ Real-time Supabase update received:', payload.eventType);
+                    this.syncFromSupabase();
+                    if (typeof refreshAdminView === 'function') refreshAdminView();
+                    if (typeof renderNamesWall === 'function') renderNamesWall();
+                })
+                .subscribe();
+        } catch (e) {
+            console.log('Supabase realtime optional:', e);
+        }
+    }
+
+    setSupabaseConfig(url, anonKey) {
+        if (!url || !anonKey) {
+            localStorage.removeItem(CONFIG.STORAGE_KEYS.SUPABASE_CONFIG);
+            this.supabaseClient = null;
+            return { success: true, message: 'Custom Supabase credentials removed' };
+        }
+        localStorage.setItem(CONFIG.STORAGE_KEYS.SUPABASE_CONFIG, JSON.stringify({ url, anonKey }));
+        if (window.supabase) {
+            this.supabaseClient = window.supabase.createClient(url, anonKey);
+            this.syncFromSupabase();
+            this._subscribeRealtime();
+            return { success: true, message: 'Supabase connected successfully!' };
+        }
+        return { success: true, message: 'Supabase credentials saved.' };
+    }
+
+    getSupabaseConfig() {
+        try {
+            const saved = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.SUPABASE_CONFIG) || 'null');
+            return saved || { url: CONFIG.SUPABASE_URL, anonKey: CONFIG.SUPABASE_ANON_KEY };
+        } catch {
+            return { url: CONFIG.SUPABASE_URL, anonKey: CONFIG.SUPABASE_ANON_KEY };
+        }
+    }
+
+    async syncFromSupabase() {
+        if (!this.supabaseClient) return;
+        try {
+            const { data, error } = await this.supabaseClient.from('registrations').select('*');
+            if (!error && data && Array.isArray(data)) {
+                const localRegs = this.getRegistrations();
+                const map = new Map();
+                localRegs.forEach(r => map.set(r.id, r));
+                data.forEach(r => map.set(r.id, r));
+                this.saveRegistrations(Array.from(map.values()));
+                console.log(`✓ Synced ${data.length} records from Supabase cloud database`);
+            }
+        } catch (e) {
+            console.log('Supabase sync info:', e);
+        }
+    }
+
+    async syncToSupabase(registration) {
+        if (!this.supabaseClient) return;
+        try {
+            const { error } = await this.supabaseClient.from('registrations').upsert(registration);
+            if (error) {
+                console.warn('Supabase upsert note (table may need schema setup):', error.message);
+            } else {
+                console.log('⚡ Record synced to Supabase:', registration.id);
+            }
+        } catch (e) {
+            console.warn('Supabase push note:', e);
+        }
+    }
+
+    // ──────────── COUPONS ────────────
+    _initCoupons() {
+        if (!localStorage.getItem(CONFIG.STORAGE_KEYS.COUPONS)) {
+            localStorage.setItem(CONFIG.STORAGE_KEYS.COUPONS, JSON.stringify(DEFAULT_COUPONS));
+        }
+    }
+
+    getCoupons() {
+        try {
+            return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.COUPONS) || '[]');
+        } catch {
+            return [];
+        }
+    }
+
+    saveCoupons(coupons) {
+        localStorage.setItem(CONFIG.STORAGE_KEYS.COUPONS, JSON.stringify(coupons));
+    }
+
+    addCoupon(code, discount, description = '') {
+        const coupons = this.getCoupons();
+        const normalized = code.trim().toUpperCase();
+        if (!normalized) return { success: false, message: 'Code cannot be empty' };
+        if (coupons.find(c => c.code === normalized)) {
+            return { success: false, message: 'Coupon code already exists' };
+        }
+        coupons.push({
+            code: normalized,
+            discount: Math.max(1, Number(discount)),
+            active: true,
+            description: description || `₹${discount} off`
+        });
+        this.saveCoupons(coupons);
+        return { success: true, message: 'Coupon added successfully' };
+    }
+
+    removeCoupon(code) {
+        const coupons = this.getCoupons().filter(c => c.code !== code);
+        this.saveCoupons(coupons);
+    }
+
+    toggleCoupon(code) {
+        const coupons = this.getCoupons();
+        const coupon = coupons.find(c => c.code === code);
+        if (coupon) {
+            coupon.active = !coupon.active;
+            this.saveCoupons(coupons);
+        }
+    }
+
+    validateCoupon(code) {
+        if (!code) return { valid: false, discount: 0 };
+        const normalized = code.trim().toUpperCase();
+        const coupon = this.getCoupons().find(c => c.code === normalized && c.active);
+        return coupon
+            ? { valid: true, discount: coupon.discount, code: coupon.code }
+            : { valid: false, discount: 0 };
+    }
+
+    // ──────────── REGISTRATIONS ────────────
+    getRegistrations() {
+        try {
+            return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.REGISTRATIONS) || '[]');
+        } catch {
+            return [];
+        }
+    }
+
+    saveRegistrations(regs) {
+        localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(regs));
+    }
+
+    addRegistration(data) {
+        const regs = this.getRegistrations();
+        const registration = {
+            id: this._generateId(),
+            name: data.name.trim(),
+            email: data.email.trim().toLowerCase(),
+            phone: data.phone.trim(),
+            college: data.college.trim(),
+            year: data.year,
+            referralCode: this._generateReferralCode(data.name),
+            referredBy: data.referredBy || '',
+            couponUsed: data.couponUsed || '',
+            basePrice: CONFIG.BASE_PRICE,
+            earlyBirdDiscount: CONFIG.EARLY_BIRD_DISCOUNT,
+            couponDiscount: data.couponDiscount || 0,
+            finalPrice: data.finalPrice,
+            transactionId: '',
+            paymentScreenshot: '',
+            verified: false,
+            attended: false,
+            attendedAt: null,
+            timestamp: new Date().toISOString()
+        };
+        regs.push(registration);
+        this.saveRegistrations(regs);
+        this.syncToSupabase(registration);
+        return registration;
+    }
+
+    updateRegistration(id, updates) {
+        const regs = this.getRegistrations();
+        const idx = regs.findIndex(r => r.id === id);
+        if (idx === -1) return null;
+        regs[idx] = { ...regs[idx], ...updates };
+        this.saveRegistrations(regs);
+        this.syncToSupabase(regs[idx]);
+        return regs[idx];
+    }
+
+    getRegistrationById(id) {
+        if (!id) return null;
+        const normalized = id.trim().toUpperCase();
+        return this.getRegistrations().find(r => r.id.toUpperCase() === normalized) || null;
+    }
+
+    toggleVerification(id) {
+        const regs = this.getRegistrations();
+        const reg = regs.find(r => r.id === id);
+        if (!reg) return null;
+        reg.verified = !reg.verified;
+        this.saveRegistrations(regs);
+        this.syncToSupabase(reg);
+        return reg;
+    }
+
+    deleteRegistration(id) {
+        const regs = this.getRegistrations().filter(r => r.id !== id);
+        this.saveRegistrations(regs);
+        if (this.supabaseClient) {
+            this.supabaseClient.from('registrations').delete().eq('id', id).then();
+        }
+    }
+
+    // ──────────── ATTENDANCE SYSTEM ────────────
+    markAttendance(id) {
+        if (!id) return { success: false, message: 'Invalid ticket / ID' };
+
+        let regId = id.trim();
+        try {
+            const parsed = JSON.parse(id);
+            if (parsed && parsed.id) regId = parsed.id;
+        } catch {
+            if (regId.includes('?')) {
+                const urlParams = new URLSearchParams(regId.split('?')[1]);
+                if (urlParams.get('id')) regId = urlParams.get('id');
+            }
+        }
+
+        const regs = this.getRegistrations();
+        const reg = regs.find(r => r.id.toUpperCase() === regId.toUpperCase());
+
+        if (!reg) {
+            return {
+                success: false,
+                status: 'not_found',
+                message: `Ticket ID "${regId}" not found in database!`,
+                scannedId: regId
+            };
+        }
+
+        if (reg.attended) {
+            return {
+                success: false,
+                status: 'already_attended',
+                reg,
+                message: `Already checked in on ${new Date(reg.attendedAt).toLocaleTimeString('en-IN')}`,
+                attendedAt: reg.attendedAt
+            };
+        }
+
+        // Mark attended
+        reg.attended = true;
+        reg.attendedAt = new Date().toISOString();
+        if (!reg.verified) {
+            reg.verified = true;
+        }
+
+        this.saveRegistrations(regs);
+        this.syncToSupabase(reg);
+
+        return {
+            success: true,
+            status: 'success',
+            reg,
+            message: `Attendance marked for ${reg.name}! Welcome to Celebrate Cinema 2026!`
+        };
+    }
+
+    toggleAttendance(id) {
+        const regs = this.getRegistrations();
+        const reg = regs.find(r => r.id === id);
+        if (!reg) return null;
+        reg.attended = !reg.attended;
+        reg.attendedAt = reg.attended ? new Date().toISOString() : null;
+        this.saveRegistrations(regs);
+        this.syncToSupabase(reg);
+        return reg;
+    }
+
+    getRecentCheckins(limit = 10) {
+        const regs = this.getRegistrations().filter(r => r.attended && r.attendedAt);
+        return regs
+            .sort((a, b) => new Date(b.attendedAt) - new Date(a.attendedAt))
+            .slice(0, limit);
+    }
+
+    // ──────────── REFERRALS ────────────
+    getReferralCount(referralCode) {
+        return this.getRegistrations().filter(r => r.referredBy === referralCode).length;
+    }
+
+    getTopReferrers(limit = 10) {
+        const regs = this.getRegistrations();
+        const counts = {};
+        regs.forEach(r => {
+            if (r.referredBy) {
+                counts[r.referredBy] = (counts[r.referredBy] || 0) + 1;
+            }
+        });
+        return Object.entries(counts)
+            .map(([code, count]) => {
+                const referrer = regs.find(r => r.referralCode === code);
+                return { code, count, name: referrer ? referrer.name : 'Unknown' };
+            })
+            .sort((a, b) => b.count - a.count)
+            .slice(0, limit);
+    }
+
+    // ──────────── STATS ────────────
+    getStats() {
+        const regs = this.getRegistrations();
+        const verified = regs.filter(r => r.verified);
+        const attended = regs.filter(r => r.attended);
+        const totalRevenue = verified.reduce((s, r) => s + (r.finalPrice || 0), 0);
+        const couponUsage = {};
+        regs.forEach(r => {
+            if (r.couponUsed) couponUsage[r.couponUsed] = (couponUsage[r.couponUsed] || 0) + 1;
+        });
+        return {
+            total: regs.length,
+            verified: verified.length,
+            pending: regs.length - verified.length,
+            attended: attended.length,
+            totalRevenue,
+            avgPrice: verified.length ? Math.round(totalRevenue / verified.length) : 0,
+            couponUsage,
+            topReferrers: this.getTopReferrers()
+        };
+    }
+
+    // ──────────── PRICING CALCULATOR ────────────
+    calculatePrice(couponCode = '') {
+        const basePrice = CONFIG.BASE_PRICE;
+        const earlyBird = CONFIG.EARLY_BIRD_DISCOUNT;
+        let couponDiscount = 0;
+        let couponValid = false;
+
+        if (couponCode) {
+            const v = this.validateCoupon(couponCode);
+            if (v.valid) { couponDiscount = v.discount; couponValid = true; }
+        }
+
+        const subtotal = basePrice - earlyBird;
+        const finalPrice = Math.max(CONFIG.MIN_PRICE, subtotal - couponDiscount);
+
+        return { basePrice, earlyBird, subtotal, couponDiscount: couponValid ? couponDiscount : 0, couponValid, finalPrice };
+    }
+
+    // ──────────── ADMIN AUTH ────────────
+    adminLogin(password) {
+        if (password === CONFIG.ADMIN_PASSWORD) {
+            sessionStorage.setItem(CONFIG.STORAGE_KEYS.ADMIN_AUTH, 'authenticated');
+            return true;
+        }
+        return false;
+    }
+
+    isAdminAuthenticated() {
+        return sessionStorage.getItem(CONFIG.STORAGE_KEYS.ADMIN_AUTH) === 'authenticated';
+    }
+
+    adminLogout() {
+        sessionStorage.removeItem(CONFIG.STORAGE_KEYS.ADMIN_AUTH);
+    }
+
+    // ──────────── CSV EXPORT ────────────
+    exportToCSV() {
+        const regs = this.getRegistrations();
+        if (!regs.length) return '';
+        const headers = [
+            'ID', 'Name', 'Email', 'Phone', 'College', 'Year',
+            'Base Price', 'Early Bird', 'Coupon', 'Coupon Discount',
+            'Final Price', 'Transaction ID', 'Referred By',
+            'Referral Code', 'Verified', 'Attended', 'Check-in Time', 'Date'
+        ];
+        const escape = v => `"${String(v).replace(/"/g, '""')}"`;
+        const rows = regs.map(r => [
+            r.id, escape(r.name), escape(r.email), escape(r.phone),
+            escape(r.college), r.year, r.basePrice, r.earlyBirdDiscount,
+            r.couponUsed || '—', r.couponDiscount || 0, r.finalPrice,
+            r.transactionId || '—', r.referredBy || '—', r.referralCode,
+            r.verified ? 'Yes' : 'No',
+            r.attended ? 'Yes' : 'No',
+            r.attendedAt ? new Date(r.attendedAt).toLocaleString('en-IN') : '—',
+            new Date(r.timestamp).toLocaleString('en-IN')
+        ]);
+        return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    }
+
+    // ──────────── HELPERS ────────────
+    _generateId() {
+        return 'CC' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
+    }
+
+    _generateReferralCode(name) {
+        const prefix = name.replace(/[^a-zA-Z]/g, '').substring(0, 4).toUpperCase() || 'REF';
+        const suffix = Math.floor(1000 + Math.random() * 9000);
+        return prefix + suffix;
+    }
+}
+
+// Global singleton
+const dataStore = new DataStore();
