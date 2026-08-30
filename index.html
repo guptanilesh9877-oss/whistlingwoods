@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#af1996">
-    <title>Celebrate Cinema 2026 | Whistling Woods International</title>
-    <meta name="description" content="Register for Celebrate Cinema 2026 at Whistling Woods International. Experience exclusive film screenings, masterclasses, and workshops with Bollywood's finest.">
+    <title>Celebrate Cinema 2026 | Whistling Woods International & CareerBeam</title>
+    <meta name="description" content="Register for Celebrate Cinema 2026 Academic Trek at Whistling Woods International, Film City Mumbai. Two days of exclusive film sets tours, masterclasses, and workshops with Bollywood luminaries.">
     <meta property="og:title" content="Celebrate Cinema 2026 | Whistling Woods International">
-    <meta property="og:description" content="Join Celebrate Cinema 2026 — Where Stories Come Alive. Film screenings, masterclasses, and workshops at Whistling Woods International, Film City, Mumbai.">
+    <meta property="og:description" content="Academic Trek 2026 — 09th & 10th October 2026 at Whistling Woods International, Film City, Mumbai. Promoted by CareerBeam - Vigor.">
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="idSrLcZHLp_1788097331241.png">
@@ -27,10 +27,15 @@
 <nav class="navbar" id="navbar">
     <div class="container">
         <div class="nav-brand" onclick="navigateTo('landing')">
-            <img src="idSrLcZHLp_1788097331241.png" alt="WWI" class="nav-logo">
-            <span class="nav-brand-divider">✕</span>
-            <img src="careerbeam_logo.png" alt="CareerBeam - Craft Your Dream" class="nav-partner-logo">
-            <span class="nav-title">CELEBRATE CINEMA</span>
+            <div class="brand-lockup">
+                <img src="idSrLcZHLp_1788097331241.png" alt="Whistling Woods International" class="nav-logo">
+                <div class="brand-divider-vertical"></div>
+                <img src="careerbeam_logo.png" alt="CareerBeam" class="nav-partner-logo">
+            </div>
+            <div class="brand-text-block">
+                <span class="nav-title">CELEBRATE CINEMA</span>
+                <span class="nav-subtitle">ACADEMIC TREK 2026</span>
+            </div>
         </div>
         <ul class="nav-links" id="nav-links">
             <li><span class="nav-link active" data-page="landing">Home</span></li>
@@ -45,9 +50,17 @@
 
 <!-- Mobile Nav Overlay -->
 <div class="nav-mobile-overlay" id="mobile-nav">
+    <div class="mobile-nav-header">
+        <img src="idSrLcZHLp_1788097331241.png" alt="WWI" class="nav-logo">
+        <img src="careerbeam_logo.png" alt="CareerBeam" class="nav-partner-logo">
+    </div>
     <span class="nav-link" data-page="landing" onclick="navigateAndClose('landing')">Home</span>
-    <span class="nav-link" data-page="register" onclick="navigateAndClose('register')">Register</span>
+    <span class="nav-link" data-page="register" onclick="navigateAndClose('register')">Register Now</span>
     <span class="nav-link" data-page="names" onclick="navigateAndClose('names')">Wall of Fame</span>
+    <div class="mobile-nav-contact">
+        <p>Inquiries & Bookings</p>
+        <a href="tel:+918699260386" class="contact-link">+91 86992 60386</a>
+    </div>
 </div>
 
 <!-- ═══════════════════════════════════════════════
@@ -58,145 +71,236 @@
     <!-- Hero Section -->
     <div class="hero" id="hero-section">
         <div class="hero-content">
-            <div class="hero-brand-row">
-                <img src="idSrLcZHLp_1788097331241.png" alt="Whistling Woods International" class="hero-logo" id="hero-logo">
-                <span class="hero-brand-sep">&</span>
-                <img src="careerbeam_logo.png" alt="CareerBeam - Craft Your Dream" class="hero-partner-logo">
+            <!-- Co-brand Presenter Eyebrow -->
+            <div class="hero-presenter-badge">
+                <span class="star-accent">✦</span>
+                <span>WHISTLING WOODS INTERNATIONAL & CAREERBEAM PRESENT</span>
+                <span class="star-accent">✦</span>
             </div>
-            
-            <div class="hero-badge-initiative">ACADEMIC TREK 2026</div>
+
+            <!-- Main Title -->
             <h1 class="hero-title gradient-text">CELEBRATE CINEMA</h1>
-            <p class="hero-tagline">Where Stories Come Alive</p>
-            
-            <div class="hero-details-pill">
-                <span>📅 <strong>09th & 10th October 2026</strong></span>
-                <span class="pill-divider">•</span>
-                <span>⏰ <strong>9:00 AM to 5:00 PM</strong></span>
-            </div>
-            <p class="hero-venue">📍 Whistling Woods International, Film City, Goregaon East, Mumbai</p>
-            <p class="hero-promoted">Promoted by <strong>CareerBeam – Vigor</strong></p>
+            <p class="hero-edition">THE ACADEMIC TREK 2026</p>
+            <p class="hero-tagline">"Where Stories Come Alive"</p>
 
-            <!-- Countdown -->
-            <div class="countdown" id="countdown-timer">
-                <div class="countdown-item">
-                    <span class="countdown-value" id="cd-days">00</span>
-                    <span class="countdown-label">Days</span>
+            <!-- Metadata Badges Strip -->
+            <div class="hero-meta-strip">
+                <div class="meta-pill">
+                    <svg class="pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>09th & 10th October 2026</span>
                 </div>
-                <span class="countdown-sep">:</span>
-                <div class="countdown-item">
-                    <span class="countdown-value" id="cd-hours">00</span>
-                    <span class="countdown-label">Hours</span>
+                <div class="meta-pill">
+                    <svg class="pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>9:00 AM – 5:00 PM IST</span>
                 </div>
-                <span class="countdown-sep">:</span>
-                <div class="countdown-item">
-                    <span class="countdown-value" id="cd-mins">00</span>
-                    <span class="countdown-label">Minutes</span>
-                </div>
-                <span class="countdown-sep">:</span>
-                <div class="countdown-item">
-                    <span class="countdown-value" id="cd-secs">00</span>
-                    <span class="countdown-label">Seconds</span>
+                <div class="meta-pill">
+                    <svg class="pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    <span>Film City, Goregaon East, Mumbai</span>
                 </div>
             </div>
 
-            <div class="hero-action-buttons">
+            <!-- Countdown Timer -->
+            <div class="countdown-wrapper">
+                <span class="countdown-title">TREK COMMENCES IN</span>
+                <div class="countdown" id="countdown-timer">
+                    <div class="countdown-item">
+                        <span class="countdown-value" id="cd-days">00</span>
+                        <span class="countdown-label">DAYS</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-item">
+                        <span class="countdown-value" id="cd-hours">00</span>
+                        <span class="countdown-label">HOURS</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-item">
+                        <span class="countdown-value" id="cd-mins">00</span>
+                        <span class="countdown-label">MINUTES</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-item">
+                        <span class="countdown-value" id="cd-secs">00</span>
+                        <span class="countdown-label">SECONDS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="hero-actions">
                 <button class="btn btn-primary btn-glow" id="hero-register-btn" onclick="navigateTo('register')">
-                    Register For Trek <span class="btn-icon">→</span>
+                    Register For Trek
+                    <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
                 </button>
-                <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20have%20a%20query%20about%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-secondary">
-                    💬 WhatsApp Query
+                <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20have%20an%20inquiry%20regarding%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-secondary btn-whatsapp">
+                    <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.072.043.419-.101.824z"/>
+                    </svg>
+                    WhatsApp Helpline
                 </a>
             </div>
         </div>
 
         <div class="scroll-indicator">
-            <span>Scroll to explore</span>
+            <span>Explore Experience</span>
             <div class="scroll-arrow"></div>
         </div>
     </div>
 
-    <!-- About Academic Trek Section -->
+    <!-- Academic Trek Overview Section -->
     <div class="section" id="about-section">
         <div class="container">
-            <div class="trek-intro glass-card reveal-up">
-                <div class="trek-intro-header">
-                    <span class="trek-tag">THE ACADEMIC TREK</span>
-                    <h2>Immerse into the World of Indian Cinema & Filmmaking</h2>
-                </div>
-                <p>
-                    The <strong>Academic Trek</strong> is an engaging, hands-on learning experience where students explore the creative, technical, and cultural aspects of the Indian film industry. Participants experience the filmmaking environment firsthand, discover behind-the-scenes magic, and learn directly from Bollywood’s industry professionals.
+            <div class="curated-overview glass-card reveal-up">
+                <div class="overview-badge">THE ACADEMIC TREK EXPERIENCE</div>
+                <h2 class="overview-heading">An Exclusive Immersion into Indian Cinema</h2>
+                <p class="overview-body">
+                    Designed as a premier hands-on masterclass initiative, the <strong>Academic Trek</strong> invites students behind the velvet curtain into the heart of Bollywood filmmaking at Film City Mumbai. Participants explore world-class studios, understand advanced cinematography and sound design, and engage directly with renowned directors, technicians, and artists.
                 </p>
-                <div class="trek-meta-bar">
-                    <div class="meta-item">
-                        <span class="meta-icon">📍</span>
-                        <div><strong>Venue</strong><span>WWI, Film City, Goregaon East</span></div>
+                <div class="overview-metrics-grid">
+                    <div class="metric-box">
+                        <span class="metric-num">02</span>
+                        <span class="metric-label">Full Days of Masterclasses</span>
                     </div>
-                    <div class="meta-item">
-                        <span class="meta-icon">📅</span>
-                        <div><strong>Dates</strong><span>09th & 10th October 2026</span></div>
+                    <div class="metric-box">
+                        <span class="metric-num">10+</span>
+                        <span class="metric-label">Creative Disciplines</span>
                     </div>
-                    <div class="meta-item">
-                        <span class="meta-icon">⏰</span>
-                        <div><strong>Timing</strong><span>9:00 AM – 5:00 PM</span></div>
+                    <div class="metric-box">
+                        <span class="metric-num">100%</span>
+                        <span class="metric-label">Hands-On Studio Access</span>
                     </div>
                 </div>
             </div>
 
-            <h2 class="section-title gradient-text reveal-up" style="margin-top: var(--space-3xl);">Key Highlights</h2>
-            <div class="about-grid">
-                <div class="glass-card reveal-up">
-                    <div class="card-icon">🎬</div>
+            <!-- Key Highlights Grid -->
+            <div class="section-header reveal-up">
+                <h2 class="section-title gradient-text">Key Highlights</h2>
+                <p class="section-subtitle">Curated learning experiences designed for future media and creative leaders</p>
+            </div>
+
+            <div class="highlights-grid">
+                <!-- Card 1 -->
+                <div class="glass-card highlight-card reveal-up">
+                    <div class="card-icon-frame">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+                            <line x1="7" y1="2" x2="7" y2="22"></line>
+                            <line x1="17" y1="2" x2="17" y2="22"></line>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <line x1="2" y1="7" x2="7" y2="7"></line>
+                            <line x1="2" y1="17" x2="7" y2="17"></line>
+                            <line x1="17" y1="17" x2="22" y2="17"></line>
+                            <line x1="17" y1="7" x2="22" y2="7"></line>
+                        </svg>
+                    </div>
                     <h3>Film Sets & Studio Tours</h3>
-                    <p>Guided tour of world-class film sets, production studios, and real-world sound stages inside Film City</p>
+                    <p>Guided walkthroughs of high-tech production soundstages, film sets, chroma suites, and camera facilities in Film City.</p>
                 </div>
-                <div class="glass-card reveal-up">
-                    <div class="card-icon">🎤</div>
+
+                <!-- Card 2 -->
+                <div class="glass-card highlight-card reveal-up">
+                    <div class="card-icon-frame">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                            <line x1="12" y1="19" x2="12" y2="23"></line>
+                            <line x1="8" y1="23" x2="16" y2="23"></line>
+                        </svg>
+                    </div>
                     <h3>Interactive Filmmaker Sessions</h3>
-                    <p>Direct Q&A and masterclasses with acclaimed Bollywood directors, screenwriters, and artists</p>
+                    <p>Direct Q&A dialogues and panel discussions with top Bollywood directors, screenwriters, producers, and showrunners.</p>
                 </div>
-                <div class="glass-card reveal-up">
-                    <div class="card-icon">🎭</div>
+
+                <!-- Card 3 -->
+                <div class="glass-card highlight-card reveal-up">
+                    <div class="card-icon-frame">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                        </svg>
+                    </div>
                     <h3>Hands-On Creative Workshops</h3>
-                    <p>Workshops on cinematography, direction, film production, music composing, and fashion designing</p>
+                    <p>Practical workshops covering cinematography, directing, screenplay development, audio engineering, and costume design.</p>
                 </div>
-                <div class="glass-card reveal-up">
-                    <div class="card-icon">🚀</div>
-                    <h3>Filmmaking & Career Insights</h3>
-                    <p>Explore creative career pathways in cinema, digital media, storytelling, and visual arts</p>
+
+                <!-- Card 4 -->
+                <div class="glass-card highlight-card reveal-up">
+                    <div class="card-icon-frame">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                        </svg>
+                    </div>
+                    <h3>Industry Pathways & Insights</h3>
+                    <p>Comprehensive guidance on navigating careers across mainstream cinema, OTT platforms, animation, VFX, and creative arts.</p>
                 </div>
-                <div class="glass-card reveal-up">
-                    <div class="card-icon">🏛️</div>
-                    <h3>Iconic Cinema Tributes</h3>
-                    <p>A special celebration and tribute to timeless milestones in Indian cinema history</p>
+
+                <!-- Card 5 -->
+                <div class="glass-card highlight-card reveal-up">
+                    <div class="card-icon-frame">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                            <path d="M4 22h16"></path>
+                            <path d="M10 14.66V17c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1v-2.34"></path>
+                            <path d="M18 14.66V17c0 .55-.45 1-1 1h-2c-.55 0-1-.45-1-1v-2.34"></path>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path>
+                        </svg>
+                    </div>
+                    <h3>Tribute to Iconic Cinema</h3>
+                    <p>A cinematic celebration honoring landmark milestones, legendary directors, and timeless cinematic masterpieces of India.</p>
                 </div>
-                <div class="glass-card reveal-up">
-                    <div class="card-icon">🤝</div>
-                    <h3>Celebrity & Industry Networking</h3>
-                    <p>Connect with celebrity guests, industry veterans, and like-minded creative peers</p>
+
+                <!-- Card 6 -->
+                <div class="glass-card highlight-card reveal-up">
+                    <div class="card-icon-frame">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <h3>Celebrity & Peer Networking</h3>
+                    <p>Live interactions with celebrity guests, esteemed faculty, casting heads, and fellow cinephile students from across India.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Celebrity Guests Section -->
-    <div class="section" id="celebrity-section" style="padding-top:0;">
+    <!-- Red Carpet Luminary Gallery -->
+    <div class="section" id="celebrity-section">
         <div class="container">
-            <h2 class="section-title gradient-text reveal-up">Iconic Guests Over The Years</h2>
-            <p style="text-align:center; color:var(--text-secondary); margin-bottom:var(--space-xl);" class="reveal-up">
-                Celebrate Cinema has welcomed Bollywood's most celebrated legends and visionaries
-            </p>
-            <div class="celebrity-cloud reveal-up">
-                <div class="celeb-badge">✨ Subhash Ghai</div>
-                <div class="celeb-badge">✨ Ranbir Kapoor</div>
-                <div class="celeb-badge">✨ Abhishek Bachchan</div>
-                <div class="celeb-badge">✨ Karan Johar</div>
-                <div class="celeb-badge">✨ Pankaj Tripathi</div>
-                <div class="celeb-badge">✨ Sonu Nigam</div>
-                <div class="celeb-badge">✨ Hrithik Roshan</div>
-                <div class="celeb-badge">✨ Sidharth Malhotra</div>
-                <div class="celeb-badge">✨ Jackie Shroff</div>
-                <div class="celeb-badge">✨ Vidya Balan</div>
-                <div class="celeb-badge gold">+ Many More Industry Luminaries</div>
+            <div class="section-header reveal-up">
+                <span class="eyebrow-tag">PRESTIGIOUS LEGACY</span>
+                <h2 class="section-title gradient-text">Celebrated Luminaries Over The Years</h2>
+                <p class="section-subtitle">Celebrate Cinema has welcomed Bollywood's most renowned icons and creators</p>
+            </div>
+
+            <div class="luminaries-showcase reveal-up">
+                <div class="luminary-card"><span class="luminary-name">Subhash Ghai</span><span class="luminary-role">Legendary Filmmaker</span></div>
+                <div class="luminary-card"><span class="luminary-name">Ranbir Kapoor</span><span class="luminary-role">Acclaimed Actor</span></div>
+                <div class="luminary-card"><span class="luminary-name">Abhishek Bachchan</span><span class="luminary-role">Actor & Producer</span></div>
+                <div class="luminary-card"><span class="luminary-name">Karan Johar</span><span class="luminary-role">Director & Producer</span></div>
+                <div class="luminary-card"><span class="luminary-name">Pankaj Tripathi</span><span class="luminary-role">Master Actor</span></div>
+                <div class="luminary-card"><span class="luminary-name">Sonu Nigam</span><span class="luminary-role">Legendary Vocalist</span></div>
+                <div class="luminary-card"><span class="luminary-name">Hrithik Roshan</span><span class="luminary-role">Actor & Performer</span></div>
+                <div class="luminary-card"><span class="luminary-name">Sidharth Malhotra</span><span class="luminary-role">Actor</span></div>
+                <div class="luminary-card"><span class="luminary-name">Jackie Shroff</span><span class="luminary-role">Iconic Actor</span></div>
+                <div class="luminary-card"><span class="luminary-name">Vidya Balan</span><span class="luminary-role">National Awardee</span></div>
+                <div class="luminary-card gold-border"><span class="luminary-name">Industry Guests</span><span class="luminary-role">+ Many More Icons</span></div>
             </div>
         </div>
     </div>
@@ -204,53 +308,85 @@
     <!-- Pricing Section -->
     <div class="section" id="pricing-section">
         <div class="container">
-            <h2 class="section-title gradient-text reveal-up">Get Your Academic Trek Pass</h2>
+            <div class="section-header reveal-up">
+                <h2 class="section-title gradient-text">Academic Trek Pass</h2>
+                <p class="section-subtitle">Special student rate inclusive of all studio tours, workshops, and masterclasses</p>
+            </div>
+            
             <div class="pricing-hero reveal-up">
                 <div class="glass-card pricing-card-hero">
                     <div class="pricing-badge">Early Bird Pass</div>
                     <div class="pricing-original">₹250</div>
                     <div class="pricing-current">₹150</div>
-                    <div class="pricing-savings">Pre-Applied ₹100 Discount!</div>
-                    <p>All-access pass for 2 days of workshops, studio tours & celebrity masterclasses</p>
-                    <p class="pricing-note">+ Additional discounts with student coupon codes</p>
+                    <div class="pricing-savings">Save ₹100 • Early Bird Pre-Applied</div>
+                    <p class="pricing-desc">Full 2-Day All-Access Pass to Film City Studios, Workshops & Masterclasses</p>
+                    <p class="pricing-note">Additional institutional discounts applicable via coupon codes</p>
                     <button class="btn btn-gold" onclick="navigateTo('register')">
-                        Claim Your Spot <span class="btn-icon">→</span>
+                        Claim Your Pass
+                        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Contact & Query Section -->
-    <div class="section" id="contact-section" style="padding-top:0;">
+    <!-- Official Marketing Desk & Inquiries -->
+    <div class="section" id="contact-section">
         <div class="container">
-            <div class="glass-card contact-card reveal-up">
-                <div class="contact-header">
-                    <img src="careerbeam_logo.png" alt="CareerBeam" class="contact-agency-logo">
-                    <div>
-                        <h3>Have Questions or Group Bookings?</h3>
-                        <p>Get in touch with the official marketing and events desk</p>
-                    </div>
+            <div class="glass-card executive-contact-card reveal-up">
+                <div class="contact-card-header">
+                    <div class="contact-badge">OFFICIAL MARKETING & EVENTS DESK</div>
+                    <h3>Institutional Inquiries & Student Group Bookings</h3>
+                    <p>Have questions about the Academic Trek itinerary, travel logistics, or bulk registrations?</p>
                 </div>
+                
                 <div class="contact-details-grid">
-                    <div class="contact-item">
-                        <span class="contact-icon">👤</span>
+                    <div class="executive-profile">
+                        <div class="profile-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
                         <div>
-                            <strong>Nilesh Gupta</strong>
-                            <p>Marketing & Events Executive (CareerBeam – Vigor)</p>
+                            <h4>Nilesh Gupta</h4>
+                            <p class="exec-role">Marketing & Events Executive</p>
+                            <p class="exec-agency">CareerBeam – Vigor</p>
                         </div>
                     </div>
-                    <div class="contact-item">
-                        <span class="contact-icon">📞</span>
-                        <div>
-                            <strong>Phone / Helpline</strong>
-                            <p><a href="tel:+918699260386" style="color:var(--gold); text-decoration:none;">+91 86992 60386</a></p>
+
+                    <div class="contact-links-box">
+                        <div class="contact-row">
+                            <svg class="row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            <div>
+                                <span class="row-label">Direct Helpline</span>
+                                <a href="tel:+918699260386" class="row-val">+91 86992 60386</a>
+                            </div>
+                        </div>
+                        <div class="contact-row">
+                            <svg class="row-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <div>
+                                <span class="row-label">Trek Location</span>
+                                <span class="row-val">WWI, Film City, Goregaon East, Mumbai</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="contact-action">
-                    <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20would%20like%20more%20information%20about%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-share whatsapp">
-                        📱 Chat on WhatsApp (+91 86992 60386)
+
+                <div class="contact-card-actions">
+                    <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20would%20like%20to%20inquire%20about%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-primary btn-whatsapp-large">
+                        <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.072.043.419-.101.824z"/>
+                        </svg>
+                        Direct WhatsApp Chat (+91 86992 60386)
                     </a>
                 </div>
             </div>
@@ -266,16 +402,16 @@
 <section id="page-register" class="page">
     <div class="container">
         <div class="page-header">
-            <h1 class="gradient-text">Register Now</h1>
-            <p>Secure your spot at Celebrate Cinema 2026</p>
+            <h1 class="gradient-text">Register for Academic Trek</h1>
+            <p>09th & 10th October 2026 • Whistling Woods International, Film City</p>
         </div>
         <div class="register-layout">
             <!-- Pricing Sidebar -->
             <div class="pricing-sidebar">
                 <div class="glass-card pricing-card" id="live-pricing-card">
-                    <h3>💰 Price Breakdown</h3>
+                    <h3>Pass Breakdown</h3>
                     <div class="price-line">
-                        <span>Base Price</span>
+                        <span>Standard Base Fee</span>
                         <span id="price-base">₹250</span>
                     </div>
                     <div class="price-line discount">
@@ -288,7 +424,7 @@
                     </div>
                     <div class="price-divider"></div>
                     <div class="price-line total">
-                        <span>You Pay</span>
+                        <span>Total Payable</span>
                         <span id="price-total" class="price-final">₹150</span>
                     </div>
                 </div>
@@ -334,19 +470,23 @@
                         <div class="form-group">
                             <label class="form-label" for="reg-coupon">Coupon Code</label>
                             <div class="input-with-button">
-                                <input type="text" id="reg-coupon" class="form-input" placeholder="Enter code">
+                                <input type="text" id="reg-coupon" class="form-input" placeholder="Enter coupon code">
                                 <button type="button" id="apply-coupon-btn" class="btn-small">Apply</button>
                             </div>
                             <span id="coupon-message" class="form-message"></span>
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="reg-referral">Referral Code</label>
-                            <input type="text" id="reg-referral" class="form-input" placeholder="Optional">
+                            <input type="text" id="reg-referral" class="form-input" placeholder="Optional referral code">
                         </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-glow btn-full" id="submit-registration-btn">
-                        Proceed to Payment <span class="btn-icon">→</span>
+                        Proceed to Payment
+                        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
                     </button>
                 </form>
             </div>
@@ -361,24 +501,24 @@
     <div class="container">
         <div class="page-header">
             <h1 class="gradient-text">Complete Payment</h1>
-            <p>Scan the QR code to make your payment via UPI</p>
+            <p>Scan the official UPI QR code below to complete your registration</p>
         </div>
         <div class="payment-layout">
             <div class="glass-card payment-card">
                 <div class="payment-amount">
-                    Pay <span id="payment-amount-display" class="gold-text">₹150</span>
+                    Amount: <span id="payment-amount-display" class="gold-text">₹150</span>
                 </div>
 
                 <div class="qr-container">
                     <div class="qr-glow"></div>
-                    <canvas id="qr-placeholder-canvas" class="qr-image" width="220" height="220" style="border-radius: 12px;"></canvas>
-                    <p class="qr-note">Scan with any UPI app (GPay, PhonePe, Paytm)</p>
+                    <canvas id="qr-placeholder-canvas" class="qr-image" width="220" height="220"></canvas>
+                    <p class="qr-note">Scan with Google Pay, PhonePe, Paytm or any UPI App</p>
                 </div>
 
                 <div class="payment-form">
                     <div class="form-group">
                         <label class="form-label" for="txn-id">Transaction ID / UTR Number *</label>
-                        <input type="text" id="txn-id" class="form-input" required placeholder="Enter your transaction ID after payment">
+                        <input type="text" id="txn-id" class="form-input" required placeholder="Enter 12-digit UPI reference / UTR number">
                     </div>
 
                     <div class="form-group">
@@ -386,15 +526,19 @@
                         <div class="file-upload-zone" id="screenshot-zone">
                             <input type="file" id="screenshot-input" accept="image/*" hidden>
                             <div class="upload-content" id="upload-content">
-                                <span class="upload-icon">📸</span>
-                                <p>Click or drag to upload screenshot</p>
+                                <svg class="upload-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                                <p>Click or drag to upload receipt screenshot</p>
                             </div>
                             <img id="screenshot-preview" class="screenshot-preview" alt="Payment screenshot" style="display: none;">
                         </div>
                     </div>
 
                     <button type="button" id="confirm-payment-btn" class="btn btn-primary btn-glow btn-full">
-                        I've Made the Payment ✓
+                        Confirm & Generate Entry Ticket
                     </button>
                 </div>
             </div>
@@ -418,15 +562,15 @@
                 </div>
             </div>
 
-            <h1 class="gradient-text">Registration Successful!</h1>
-            <p>Your payment is being verified. You'll receive confirmation shortly.</p>
+            <h1 class="gradient-text">Registration Confirmed!</h1>
+            <p>Your entry pass for Celebrate Cinema 2026 Academic Trek is generated below.</p>
 
             <!-- Ticket Card -->
             <div class="glass-card ticket-card" id="ticket-card">
                 <div class="ticket-header">
                     <div class="ticket-logos">
                         <img src="idSrLcZHLp_1788097331241.png" alt="WWI Logo" class="ticket-logo">
-                        <span style="color:var(--gold); opacity:0.6;">✕</span>
+                        <div class="ticket-brand-divider"></div>
                         <img src="careerbeam_logo.png" alt="CareerBeam" class="ticket-partner-logo">
                     </div>
                     <div>
@@ -437,7 +581,7 @@
                 <div class="ticket-divider"></div>
                 <div class="ticket-details">
                     <div class="ticket-row">
-                        <span class="ticket-label">Name</span>
+                        <span class="ticket-label">Attendee Name</span>
                         <span class="ticket-value" id="ticket-name">—</span>
                     </div>
                     <div class="ticket-row">
@@ -445,45 +589,45 @@
                         <span class="ticket-value" id="ticket-id">—</span>
                     </div>
                     <div class="ticket-row">
-                        <span class="ticket-label">Event Dates</span>
-                        <span class="ticket-value" style="color:var(--gold);">09th & 10th October 2026 (9 AM - 5 PM)</span>
+                        <span class="ticket-label">Trek Dates</span>
+                        <span class="ticket-value" style="color:var(--gold);">09th & 10th October 2026 (9:00 AM – 5:00 PM)</span>
                     </div>
                     <div class="ticket-row">
                         <span class="ticket-label">Venue</span>
-                        <span class="ticket-value">WWI, Film City, Goregaon East</span>
+                        <span class="ticket-value">WWI, Film City, Goregaon East, Mumbai</span>
                     </div>
                     <div class="ticket-row">
                         <span class="ticket-label">Amount Paid</span>
                         <span class="ticket-value" id="ticket-amount">—</span>
                     </div>
                     <div class="ticket-row">
-                        <span class="ticket-label">Status</span>
+                        <span class="ticket-label">Verification</span>
                         <span class="ticket-value status-pending" id="ticket-status">Verification Pending</span>
                     </div>
                 </div>
                 <!-- Ticket QR Code -->
                 <div class="ticket-qr-section">
                     <div class="ticket-divider"></div>
-                    <p class="ticket-qr-label">Your Entry QR Code</p>
+                    <p class="ticket-qr-label">OFFICIAL ENTRY PASS QR</p>
                     <div class="ticket-qr-container" id="ticket-qr-container"></div>
-                    <p class="ticket-qr-hint">Show this QR code at the venue for entry</p>
+                    <p class="ticket-qr-hint">Present this QR code at Whistling Woods Gate for attendance scan</p>
                 </div>
             </div>
 
             <!-- Referral Share -->
             <div class="glass-card referral-card">
-                <h3>🎁 Share & Earn Referrals</h3>
-                <p>Share your unique referral link with friends and help them register!</p>
+                <h3>Share & Invite Classmates</h3>
+                <p>Share your unique referral link with fellow students</p>
                 <div class="referral-link-box">
                     <input type="text" id="referral-link-input" class="form-input" readonly>
-                    <button id="copy-referral-btn" class="btn-small" onclick="copyReferralLink()">Copy</button>
+                    <button id="copy-referral-btn" class="btn-small" onclick="copyReferralLink()">Copy Link</button>
                 </div>
                 <div class="share-buttons">
                     <button class="btn btn-share whatsapp" onclick="shareWhatsApp()">
-                        📱 WhatsApp
+                        Share on WhatsApp
                     </button>
                     <button class="btn btn-share twitter" onclick="shareTwitter()">
-                        🐦 Twitter
+                        Share on Twitter
                     </button>
                 </div>
             </div>
@@ -496,17 +640,22 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════
-     PAGE: ADMIN LOGIN
+     PAGE: ADMIN LOGIN (Private)
      ═══════════════════════════════════════════════ -->
 <section id="page-admin-login" class="page">
     <div class="container center-content">
         <div class="glass-card admin-login-card">
-            <div class="admin-login-icon">🔐</div>
-            <h2>Admin Dashboard</h2>
-            <p>Enter the password to access management tools</p>
+            <div class="admin-login-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:48px; height:48px; color:var(--gold);">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+            </div>
+            <h2>Admin Management Portal</h2>
+            <p>Enter administrator security credentials</p>
             <form id="admin-login-form">
                 <div class="form-group">
-                    <input type="password" id="admin-password-input" class="form-input" placeholder="Enter admin password" required autocomplete="off">
+                    <input type="password" id="admin-password-input" class="form-input" placeholder="Enter password" required autocomplete="off">
                 </div>
                 <span id="admin-login-error" class="form-message error" style="display: none;">Incorrect password. Please try again.</span>
                 <button type="submit" class="btn btn-primary btn-full">Unlock Dashboard</button>
@@ -521,67 +670,67 @@
 <section id="page-admin" class="page">
     <div class="container-wide">
         <div class="admin-header">
-            <h1 class="gradient-text">Admin Dashboard</h1>
+            <div>
+                <h1 class="gradient-text">Admin Management Dashboard</h1>
+                <p style="color:var(--text-muted); font-size:0.85rem; margin-top:2px;">Celebrate Cinema 2026 • Live Database</p>
+            </div>
             <div style="display: flex; gap: 8px;">
                 <button class="btn btn-secondary" onclick="navigateTo('names')">View Public Wall</button>
                 <button class="btn btn-secondary" onclick="handleAdminLogout()">Logout</button>
             </div>
         </div>
 
-        <!-- Stats Cards -->
+        <!-- Stats Cards (Unified 5-Card Row) -->
         <div class="stats-grid" id="admin-stats-grid">
             <div class="stat-card">
-                <div class="stat-icon">👥</div>
-                <div class="stat-value" id="stat-total">0</div>
                 <div class="stat-label">Total Registrations</div>
+                <div class="stat-value" id="stat-total">0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">✅</div>
+                <div class="stat-label">Verified Payments</div>
                 <div class="stat-value" id="stat-verified">0</div>
-                <div class="stat-label">Verified</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">⏳</div>
+                <div class="stat-label">Pending Verification</div>
                 <div class="stat-value" id="stat-pending">0</div>
-                <div class="stat-label">Pending</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">🎫</div>
+                <div class="stat-label">Checked In (Attended)</div>
                 <div class="stat-value" id="stat-attended">0</div>
-                <div class="stat-label">Checked In</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon">💰</div>
-                <div class="stat-value" id="stat-revenue">₹0</div>
                 <div class="stat-label">Total Revenue</div>
+                <div class="stat-value" id="stat-revenue">₹0</div>
             </div>
         </div>
 
+        <!-- Tabs -->
         <div class="admin-tabs" id="admin-tabs">
-            <button class="tab-btn active" data-tab="registrations">📋 Registrations</button>
-            <button class="tab-btn" data-tab="attendance">📷 Attendance Scanner</button>
-            <button class="tab-btn" data-tab="coupons">🎟️ Coupon Manager</button>
-            <button class="tab-btn" data-tab="referrals">🏆 Referral Leaderboard</button>
+            <button class="tab-btn active" data-tab="registrations">Registrations</button>
+            <button class="tab-btn" data-tab="attendance">Attendance Scanner</button>
+            <button class="tab-btn" data-tab="coupons">Coupon Manager</button>
+            <button class="tab-btn" data-tab="referrals">Referral Leaderboard</button>
         </div>
 
         <!-- Tab: Registrations -->
         <div class="tab-content active" id="tab-registrations">
             <div class="table-controls">
-                <input type="text" id="search-registrations" class="form-input" placeholder="🔍 Search by name, email, or ID...">
+                <input type="text" id="search-registrations" class="form-input" placeholder="Search by name, email, college, or ID...">
                 <div class="filter-group">
                     <select id="filter-status" class="form-input">
                         <option value="all">All Status</option>
                         <option value="verified">Verified</option>
                         <option value="pending">Pending</option>
+                        <option value="attended">Checked In</option>
                     </select>
-                    <button class="btn btn-secondary" id="export-csv-btn" onclick="handleExportCSV()">📥 Export CSV</button>
+                    <button class="btn btn-secondary" id="export-csv-btn" onclick="handleExportCSV()">Export CSV</button>
                 </div>
             </div>
             <div class="table-wrapper">
                 <table class="admin-table" id="registrations-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>Ticket ID</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -589,7 +738,8 @@
                             <th>Amount</th>
                             <th>Coupon</th>
                             <th>Txn ID</th>
-                            <th>Status</th>
+                            <th>Payment</th>
+                            <th>Attendance</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -597,36 +747,24 @@
                 </table>
             </div>
             <div id="no-registrations" class="no-data" style="display: none;">
-                <div class="no-data-icon">📭</div>
-                <p>No registrations yet</p>
+                <p>No registrations recorded yet</p>
             </div>
-        </div>
-
-        <!-- Tab: Coupon Manager -->
-        <div class="tab-content" id="tab-coupons">
-            <div class="glass-card coupon-form-card">
-                <h3>Add New Coupon</h3>
-                <form id="add-coupon-form" class="coupon-form">
-                    <input type="text" id="new-coupon-code" class="form-input" placeholder="Coupon Code" required style="text-transform: uppercase;">
-                    <input type="number" id="new-coupon-discount" class="form-input" placeholder="Discount ₹" required min="1" max="250">
-                    <input type="text" id="new-coupon-desc" class="form-input" placeholder="Description (optional)">
-                    <button type="submit" class="btn btn-primary">Add Coupon</button>
-                </form>
-            </div>
-            <div class="coupons-grid" id="coupons-grid"></div>
         </div>
 
         <!-- Tab: Attendance Scanner -->
         <div class="tab-content" id="tab-attendance">
             <div class="scanner-layout">
                 <div class="scanner-panel glass-card">
-                    <h3>📷 Scan Ticket QR Code</h3>
-                    <p class="scanner-desc">Point the camera at an attendee's ticket QR code to mark their attendance</p>
+                    <h3>Scan Ticket Pass QR</h3>
+                    <p class="scanner-desc">Point camera at attendee ticket QR code to mark attendance with audio feedback</p>
                     <div class="scanner-viewport">
                         <div id="qr-scanner-container" class="scanner-camera">
                             <div class="scanner-placeholder" id="scanner-placeholder">
-                                <div class="scanner-placeholder-icon">📸</div>
-                                <p>Camera will appear here</p>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:48px; height:48px; color:var(--text-muted);">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                                <p>Camera view will activate here</p>
                             </div>
                         </div>
                         <div class="scanner-frame">
@@ -639,7 +777,7 @@
                     </div>
                     <div class="scanner-controls">
                         <button class="btn btn-primary" id="start-scanner-btn" onclick="toggleScanner()">
-                            📷 Start Camera
+                            Start Camera Scanner
                         </button>
                         <select id="camera-select" class="form-input" style="display:none; max-width:250px;"></select>
                     </div>
@@ -655,10 +793,10 @@
 
                     <!-- Manual Entry -->
                     <div class="glass-card">
-                        <h3>🔍 Manual Check-In</h3>
+                        <h3>Manual Ticket Check-In</h3>
                         <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:var(--space-md);">Enter Registration ID to mark attendance manually</p>
                         <div class="input-with-button">
-                            <input type="text" id="manual-checkin-id" class="form-input" placeholder="Registration ID (e.g. CCMTF...)">
+                            <input type="text" id="manual-checkin-id" class="form-input" placeholder="e.g. CCMTFWC...">
                             <button class="btn-small" onclick="handleManualCheckin()">Check In</button>
                         </div>
                         <span id="manual-checkin-msg" class="form-message" style="margin-top:8px;"></span>
@@ -666,11 +804,25 @@
 
                     <!-- Recent Check-ins -->
                     <div class="glass-card">
-                        <h3>🕐 Recent Check-ins</h3>
+                        <h3>Live Attendance Feed</h3>
                         <div id="recent-checkins" class="recent-checkins-list"></div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Tab: Coupon Manager -->
+        <div class="tab-content" id="tab-coupons">
+            <div class="glass-card coupon-form-card">
+                <h3>Add New Promo / Coupon Code</h3>
+                <form id="add-coupon-form" class="coupon-form">
+                    <input type="text" id="new-coupon-code" class="form-input" placeholder="Coupon Code (e.g. COLLEGE20)" required style="text-transform: uppercase;">
+                    <input type="number" id="new-coupon-discount" class="form-input" placeholder="Discount Amount (₹)" required min="1" max="250">
+                    <input type="text" id="new-coupon-desc" class="form-input" placeholder="Description (optional)">
+                    <button type="submit" class="btn btn-primary">Create Coupon</button>
+                </form>
+            </div>
+            <div class="coupons-grid" id="coupons-grid"></div>
         </div>
 
         <!-- Tab: Referral Leaderboard -->
@@ -686,23 +838,25 @@
 <section id="page-names" class="page">
     <div class="container">
         <div class="page-header">
-            <img src="idSrLcZHLp_1788097331241.png" alt="Celebrate Cinema" class="names-logo">
             <h1 class="gradient-text">Wall of Fame</h1>
-            <p>Meet the amazing cinephiles joining Celebrate Cinema 2026</p>
+            <p>Meet the cinephile students joining Celebrate Cinema 2026 Academic Trek</p>
             <div class="names-counter">
                 <span id="names-total-count" class="counter-value">0</span>
-                <span>Registered</span>
+                <span>Students Registered</span>
             </div>
         </div>
         <div class="names-grid" id="names-grid"></div>
         <div id="no-names" class="no-data" style="display: none;">
-            <div class="no-data-icon">🎬</div>
-            <p>Be the first to register!</p>
+            <p>Be the first to claim your spot on the Wall of Fame!</p>
         </div>
         <div class="names-cta">
             <p>Want to see your name here?</p>
             <button class="btn btn-primary btn-glow" onclick="navigateTo('register')">
-                Register Now <span class="btn-icon">→</span>
+                Register For Trek
+                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
             </button>
         </div>
     </div>
@@ -713,14 +867,15 @@
 
 <!-- ═══ FOOTER ═══ -->
 <footer class="footer">
-    <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin-bottom:12px;">
-        <img src="idSrLcZHLp_1788097331241.png" alt="WWI" style="height:32px; width:auto;">
-        <span style="color:var(--gold); opacity:0.5;">✕</span>
-        <img src="careerbeam_logo.png" alt="CareerBeam" style="height:28px; width:auto; background:white; padding:2px 6px; border-radius:4px;">
+    <div class="footer-branding-row">
+        <img src="idSrLcZHLp_1788097331241.png" alt="Whistling Woods International" class="footer-logo">
+        <span class="footer-divider-dot">•</span>
+        <img src="careerbeam_logo.png" alt="CareerBeam - Craft Your Dream" class="footer-partner-logo">
     </div>
-    <p>© 2026 <span class="footer-brand">Celebrate Cinema</span> — Academic Trek | Whistling Woods International</p>
-    <p style="margin-top: 4px; color:var(--text-muted); font-size:0.85rem;">
-        Promoted & Managed by <strong>CareerBeam – Vigor</strong> (Craft Your Dream) • Helpline: <a href="tel:+918699260386" style="color:var(--gold); text-decoration:none;">+91 86992 60386</a>
+    <p class="footer-title">Celebrate Cinema 2026 — The Academic Trek</p>
+    <p class="footer-sub">Whistling Woods International, Film City, Goregaon East, Mumbai</p>
+    <p class="footer-credits">
+        Promoted & Managed by <strong>CareerBeam – Vigor</strong> (Craft Your Dream) • Event Inquiries: <a href="tel:+918699260386" class="gold-link">+91 86992 60386</a> (Nilesh Gupta)
     </p>
 </footer>
 
