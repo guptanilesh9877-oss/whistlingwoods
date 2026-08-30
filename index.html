@@ -28,6 +28,8 @@
     <div class="container">
         <div class="nav-brand" onclick="navigateTo('landing')">
             <img src="idSrLcZHLp_1788097331241.png" alt="WWI" class="nav-logo">
+            <span class="nav-brand-divider">✕</span>
+            <img src="careerbeam_logo.png" alt="CareerBeam - Craft Your Dream" class="nav-partner-logo">
             <span class="nav-title">CELEBRATE CINEMA</span>
         </div>
         <ul class="nav-links" id="nav-links">
@@ -56,11 +58,23 @@
     <!-- Hero Section -->
     <div class="hero" id="hero-section">
         <div class="hero-content">
-            <img src="idSrLcZHLp_1788097331241.png" alt="Whistling Woods International" class="hero-logo" id="hero-logo">
+            <div class="hero-brand-row">
+                <img src="idSrLcZHLp_1788097331241.png" alt="Whistling Woods International" class="hero-logo" id="hero-logo">
+                <span class="hero-brand-sep">&</span>
+                <img src="careerbeam_logo.png" alt="CareerBeam - Craft Your Dream" class="hero-partner-logo">
+            </div>
+            
+            <div class="hero-badge-initiative">ACADEMIC TREK 2026</div>
             <h1 class="hero-title gradient-text">CELEBRATE CINEMA</h1>
-            <p class="hero-year">2 0 2 6</p>
             <p class="hero-tagline">Where Stories Come Alive</p>
-            <p class="hero-venue">📍 Whistling Woods International, Film City, Mumbai</p>
+            
+            <div class="hero-details-pill">
+                <span>📅 <strong>09th & 10th October 2026</strong></span>
+                <span class="pill-divider">•</span>
+                <span>⏰ <strong>9:00 AM to 5:00 PM</strong></span>
+            </div>
+            <p class="hero-venue">📍 Whistling Woods International, Film City, Goregaon East, Mumbai</p>
+            <p class="hero-promoted">Promoted by <strong>CareerBeam – Vigor</strong></p>
 
             <!-- Countdown -->
             <div class="countdown" id="countdown-timer">
@@ -85,9 +99,14 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary btn-glow" id="hero-register-btn" onclick="navigateTo('register')">
-                Register Now <span class="btn-icon">→</span>
-            </button>
+            <div class="hero-action-buttons">
+                <button class="btn btn-primary btn-glow" id="hero-register-btn" onclick="navigateTo('register')">
+                    Register For Trek <span class="btn-icon">→</span>
+                </button>
+                <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20have%20a%20query%20about%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-secondary">
+                    💬 WhatsApp Query
+                </a>
+            </div>
         </div>
 
         <div class="scroll-indicator">
@@ -96,31 +115,88 @@
         </div>
     </div>
 
-    <!-- About Section -->
+    <!-- About Academic Trek Section -->
     <div class="section" id="about-section">
         <div class="container">
-            <h2 class="section-title gradient-text reveal-up">What Awaits You</h2>
+            <div class="trek-intro glass-card reveal-up">
+                <div class="trek-intro-header">
+                    <span class="trek-tag">THE ACADEMIC TREK</span>
+                    <h2>Immerse into the World of Indian Cinema & Filmmaking</h2>
+                </div>
+                <p>
+                    The <strong>Academic Trek</strong> is an engaging, hands-on learning experience where students explore the creative, technical, and cultural aspects of the Indian film industry. Participants experience the filmmaking environment firsthand, discover behind-the-scenes magic, and learn directly from Bollywood’s industry professionals.
+                </p>
+                <div class="trek-meta-bar">
+                    <div class="meta-item">
+                        <span class="meta-icon">📍</span>
+                        <div><strong>Venue</strong><span>WWI, Film City, Goregaon East</span></div>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">📅</span>
+                        <div><strong>Dates</strong><span>09th & 10th October 2026</span></div>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">⏰</span>
+                        <div><strong>Timing</strong><span>9:00 AM – 5:00 PM</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title gradient-text reveal-up" style="margin-top: var(--space-3xl);">Key Highlights</h2>
             <div class="about-grid">
                 <div class="glass-card reveal-up">
                     <div class="card-icon">🎬</div>
-                    <h3>Film Screenings</h3>
-                    <p>Experience exclusive screenings of award-winning Indian and international films</p>
+                    <h3>Film Sets & Studio Tours</h3>
+                    <p>Guided tour of world-class film sets, production studios, and real-world sound stages inside Film City</p>
                 </div>
                 <div class="glass-card reveal-up">
                     <div class="card-icon">🎤</div>
-                    <h3>Masterclasses</h3>
-                    <p>Learn from Bollywood's finest directors, actors, and technicians</p>
+                    <h3>Interactive Filmmaker Sessions</h3>
+                    <p>Direct Q&A and masterclasses with acclaimed Bollywood directors, screenwriters, and artists</p>
                 </div>
                 <div class="glass-card reveal-up">
                     <div class="card-icon">🎭</div>
-                    <h3>Workshops</h3>
-                    <p>Hands-on workshops in filmmaking, acting, screenwriting, and more</p>
+                    <h3>Hands-On Creative Workshops</h3>
+                    <p>Workshops on cinematography, direction, film production, music composing, and fashion designing</p>
+                </div>
+                <div class="glass-card reveal-up">
+                    <div class="card-icon">🚀</div>
+                    <h3>Filmmaking & Career Insights</h3>
+                    <p>Explore creative career pathways in cinema, digital media, storytelling, and visual arts</p>
+                </div>
+                <div class="glass-card reveal-up">
+                    <div class="card-icon">🏛️</div>
+                    <h3>Iconic Cinema Tributes</h3>
+                    <p>A special celebration and tribute to timeless milestones in Indian cinema history</p>
                 </div>
                 <div class="glass-card reveal-up">
                     <div class="card-icon">🤝</div>
-                    <h3>Networking</h3>
-                    <p>Connect with industry professionals, fellow cinephiles, and future collaborators</p>
+                    <h3>Celebrity & Industry Networking</h3>
+                    <p>Connect with celebrity guests, industry veterans, and like-minded creative peers</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebrity Guests Section -->
+    <div class="section" id="celebrity-section" style="padding-top:0;">
+        <div class="container">
+            <h2 class="section-title gradient-text reveal-up">Iconic Guests Over The Years</h2>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:var(--space-xl);" class="reveal-up">
+                Celebrate Cinema has welcomed Bollywood's most celebrated legends and visionaries
+            </p>
+            <div class="celebrity-cloud reveal-up">
+                <div class="celeb-badge">✨ Subhash Ghai</div>
+                <div class="celeb-badge">✨ Ranbir Kapoor</div>
+                <div class="celeb-badge">✨ Abhishek Bachchan</div>
+                <div class="celeb-badge">✨ Karan Johar</div>
+                <div class="celeb-badge">✨ Pankaj Tripathi</div>
+                <div class="celeb-badge">✨ Sonu Nigam</div>
+                <div class="celeb-badge">✨ Hrithik Roshan</div>
+                <div class="celeb-badge">✨ Sidharth Malhotra</div>
+                <div class="celeb-badge">✨ Jackie Shroff</div>
+                <div class="celeb-badge">✨ Vidya Balan</div>
+                <div class="celeb-badge gold">+ Many More Industry Luminaries</div>
             </div>
         </div>
     </div>
@@ -128,18 +204,54 @@
     <!-- Pricing Section -->
     <div class="section" id="pricing-section">
         <div class="container">
-            <h2 class="section-title gradient-text reveal-up">Get Your Pass</h2>
+            <h2 class="section-title gradient-text reveal-up">Get Your Academic Trek Pass</h2>
             <div class="pricing-hero reveal-up">
                 <div class="glass-card pricing-card-hero">
-                    <div class="pricing-badge">Early Bird Offer</div>
+                    <div class="pricing-badge">Early Bird Pass</div>
                     <div class="pricing-original">₹250</div>
                     <div class="pricing-current">₹150</div>
-                    <div class="pricing-savings">You save ₹100!</div>
-                    <p>Early Bird Discount Pre-Applied</p>
-                    <p class="pricing-note">+ Additional discounts available with coupon codes</p>
+                    <div class="pricing-savings">Pre-Applied ₹100 Discount!</div>
+                    <p>All-access pass for 2 days of workshops, studio tours & celebrity masterclasses</p>
+                    <p class="pricing-note">+ Additional discounts with student coupon codes</p>
                     <button class="btn btn-gold" onclick="navigateTo('register')">
                         Claim Your Spot <span class="btn-icon">→</span>
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact & Query Section -->
+    <div class="section" id="contact-section" style="padding-top:0;">
+        <div class="container">
+            <div class="glass-card contact-card reveal-up">
+                <div class="contact-header">
+                    <img src="careerbeam_logo.png" alt="CareerBeam" class="contact-agency-logo">
+                    <div>
+                        <h3>Have Questions or Group Bookings?</h3>
+                        <p>Get in touch with the official marketing and events desk</p>
+                    </div>
+                </div>
+                <div class="contact-details-grid">
+                    <div class="contact-item">
+                        <span class="contact-icon">👤</span>
+                        <div>
+                            <strong>Nilesh Gupta</strong>
+                            <p>Marketing & Events Executive (CareerBeam – Vigor)</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📞</span>
+                        <div>
+                            <strong>Phone / Helpline</strong>
+                            <p><a href="tel:+918699260386" style="color:var(--gold); text-decoration:none;">+91 86992 60386</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-action">
+                    <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20would%20like%20more%20information%20about%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-share whatsapp">
+                        📱 Chat on WhatsApp (+91 86992 60386)
+                    </a>
                 </div>
             </div>
         </div>
@@ -312,10 +424,14 @@
             <!-- Ticket Card -->
             <div class="glass-card ticket-card" id="ticket-card">
                 <div class="ticket-header">
-                    <img src="idSrLcZHLp_1788097331241.png" alt="WWI Logo" class="ticket-logo">
+                    <div class="ticket-logos">
+                        <img src="idSrLcZHLp_1788097331241.png" alt="WWI Logo" class="ticket-logo">
+                        <span style="color:var(--gold); opacity:0.6;">✕</span>
+                        <img src="careerbeam_logo.png" alt="CareerBeam" class="ticket-partner-logo">
+                    </div>
                     <div>
                         <h3>CELEBRATE CINEMA 2026</h3>
-                        <p>Whistling Woods International</p>
+                        <p>Academic Trek • Whistling Woods International & CareerBeam</p>
                     </div>
                 </div>
                 <div class="ticket-divider"></div>
@@ -327,6 +443,14 @@
                     <div class="ticket-row">
                         <span class="ticket-label">Registration ID</span>
                         <span class="ticket-value" id="ticket-id">—</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Event Dates</span>
+                        <span class="ticket-value" style="color:var(--gold);">09th & 10th October 2026 (9 AM - 5 PM)</span>
+                    </div>
+                    <div class="ticket-row">
+                        <span class="ticket-label">Venue</span>
+                        <span class="ticket-value">WWI, Film City, Goregaon East</span>
                     </div>
                     <div class="ticket-row">
                         <span class="ticket-label">Amount Paid</span>
@@ -589,8 +713,15 @@
 
 <!-- ═══ FOOTER ═══ -->
 <footer class="footer">
-    <p>© 2026 <span class="footer-brand">Celebrate Cinema</span> — Whistling Woods International</p>
-    <p style="margin-top: 4px;">Crafted with 🎬 for cinema lovers everywhere</p>
+    <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin-bottom:12px;">
+        <img src="idSrLcZHLp_1788097331241.png" alt="WWI" style="height:32px; width:auto;">
+        <span style="color:var(--gold); opacity:0.5;">✕</span>
+        <img src="careerbeam_logo.png" alt="CareerBeam" style="height:28px; width:auto; background:white; padding:2px 6px; border-radius:4px;">
+    </div>
+    <p>© 2026 <span class="footer-brand">Celebrate Cinema</span> — Academic Trek | Whistling Woods International</p>
+    <p style="margin-top: 4px; color:var(--text-muted); font-size:0.85rem;">
+        Promoted & Managed by <strong>CareerBeam – Vigor</strong> (Craft Your Dream) • Helpline: <a href="tel:+918699260386" style="color:var(--gold); text-decoration:none;">+91 86992 60386</a>
+    </p>
 </footer>
 
 <!-- ═══ TOAST CONTAINER ═══ -->

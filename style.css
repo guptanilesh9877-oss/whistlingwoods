@@ -2273,6 +2273,291 @@ select.form-input option {
     100% { background-position: 200% 0; }
 }
 
+/* ───── CO-BRANDING & ACADEMIC TREK STYLES ───── */
+.nav-partner-logo {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.nav-brand-divider {
+    color: var(--gold);
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.hero-brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.hero-partner-logo {
+    height: 48px;
+    width: auto;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 4px 10px;
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.hero-brand-sep {
+    color: var(--gold);
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+.hero-badge-initiative {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(175, 25, 150, 0.3), rgba(212, 168, 67, 0.2));
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    padding: 6px 18px;
+    border-radius: var(--radius-full);
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+}
+
+.hero-details-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--border-glass);
+    padding: 8px 20px;
+    border-radius: var(--radius-full);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    margin: var(--space-xs) 0 var(--space-sm);
+}
+
+.hero-promoted {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.hero-promoted strong {
+    color: var(--gold);
+}
+
+.hero-action-buttons {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: var(--space-md);
+}
+
+/* Trek Intro Card */
+.trek-intro {
+    padding: var(--space-2xl);
+    border: 1px solid rgba(212, 168, 67, 0.25);
+    background: linear-gradient(135deg, rgba(175, 25, 150, 0.12), rgba(20, 5, 25, 0.8));
+    margin-bottom: var(--space-2xl);
+}
+
+.trek-tag {
+    display: inline-block;
+    color: var(--gold);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: var(--space-xs);
+}
+
+.trek-intro h2 {
+    font-size: 1.6rem;
+    margin-bottom: var(--space-md);
+}
+
+.trek-intro p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: var(--space-xl);
+}
+
+.trek-meta-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-md);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.meta-icon {
+    font-size: 1.6rem;
+}
+
+.meta-item div {
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-item strong {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.meta-item span {
+    font-size: 0.95rem;
+    color: var(--gold);
+    font-weight: 600;
+}
+
+/* Celebrity Cloud */
+.celebrity-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    justify-content: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.celeb-badge {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    padding: 10px 20px;
+    border-radius: var(--radius-full);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: all var(--transition-fast);
+}
+
+.celeb-badge:hover {
+    border-color: var(--gold);
+    background: rgba(212, 168, 67, 0.12);
+    transform: translateY(-2px);
+}
+
+.celeb-badge.gold {
+    background: linear-gradient(135deg, rgba(212, 168, 67, 0.2), rgba(175, 25, 150, 0.2));
+    border-color: var(--gold);
+    color: var(--gold-light);
+    font-weight: 600;
+}
+
+/* Contact Card */
+.contact-card {
+    border: 1px solid rgba(175, 25, 150, 0.3);
+    padding: var(--space-2xl);
+    max-width: 750px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.contact-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-xl);
+    text-align: left;
+}
+
+.contact-agency-logo {
+    height: 44px;
+    width: auto;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.contact-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    text-align: left;
+    margin-bottom: var(--space-xl);
+    padding: var(--space-lg);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+}
+
+.contact-item {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: flex-start;
+}
+
+.contact-icon {
+    font-size: 1.5rem;
+}
+
+.contact-item strong {
+    font-size: 0.95rem;
+    display: block;
+}
+
+.contact-item p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.contact-action {
+    display: flex;
+    justify-content: center;
+}
+
+/* Ticket Logos */
+.ticket-logos {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.ticket-partner-logo {
+    height: 28px;
+    width: auto;
+    background: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .contact-details-grid {
+        grid-template-columns: 1fr;
+    }
+    .contact-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .hero-partner-logo {
+        height: 38px;
+    }
+    .hero-details-pill {
+        flex-direction: column;
+        gap: 4px;
+        border-radius: var(--radius-md);
+    }
+    .pill-divider {
+        display: none;
+    }
+}
+
 /* ───── PRINT STYLES ───── */
 @media print {
     .navbar, .scroll-indicator, .btn, #particles-canvas, .film-strip, .footer { display: none !important; }
