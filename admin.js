@@ -592,7 +592,7 @@ function initAdminSearch() {
 // ──────────── SUPABASE UI ────────────
 function initSupabaseUI() {
     // Add Supabase credentials modal / connect button if not already present
-    const header = document.querySelector('.admin-header > div');
+    const header = document.querySelector('.admin-header-actions') || document.querySelector('.admin-header');
     if (header && !document.getElementById('btn-supabase-config')) {
         const btn = document.createElement('button');
         btn.id = 'btn-supabase-config';

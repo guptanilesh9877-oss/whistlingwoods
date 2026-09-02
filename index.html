@@ -511,8 +511,14 @@
 
                 <div class="qr-container">
                     <div class="qr-glow"></div>
-                    <canvas id="qr-placeholder-canvas" class="qr-image" width="220" height="220"></canvas>
-                    <p class="qr-note">Scan with Google Pay, PhonePe, Paytm or any UPI App</p>
+                    <div class="phonepe-qr-card">
+                        <img src="phonepe_qr.jpg" alt="Official PhonePe UPI QR Code — Vigor LaunchPad" class="phonepe-qr-img" id="payment-qr-img">
+                    </div>
+                    <div class="qr-payee-tag">
+                        <span class="payee-label">Verified Payee:</span>
+                        <span class="payee-name">Vigor LaunchPad</span>
+                    </div>
+                    <p class="qr-note">Scan with PhonePe, Google Pay, Paytm, BHIM or any UPI App</p>
                 </div>
 
                 <div class="payment-form">
@@ -674,7 +680,7 @@
                 <h1 class="gradient-text">Admin Management Dashboard</h1>
                 <p style="color:var(--text-muted); font-size:0.85rem; margin-top:2px;">Celebrate Cinema 2026 • Live Database</p>
             </div>
-            <div style="display: flex; gap: 8px;">
+            <div class="admin-header-actions">
                 <button class="btn btn-secondary" onclick="navigateTo('names')">View Public Wall</button>
                 <button class="btn btn-secondary" onclick="handleAdminLogout()">Logout</button>
             </div>
@@ -883,10 +889,10 @@
 <div id="toast-container"></div>
 
 <!-- ═══ SCRIPTS ═══ -->
-<script src="data.js?v=3.2"></script>
-<script src="animations.js?v=3.2"></script>
-<script src="app.js?v=3.2"></script>
-<script src="admin.js?v=3.2"></script>
+<script src="data.js?v=3.3"></script>
+<script src="animations.js?v=3.3"></script>
+<script src="app.js?v=3.3"></script>
+<script src="admin.js?v=3.3"></script>
 
 </body>
 </html>

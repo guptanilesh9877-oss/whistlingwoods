@@ -1124,25 +1124,66 @@ a.row-val:hover {
 
 .form-input {
     width: 100%;
-    padding: 12px 16px;
+    padding: 13px 16px;
     background: var(--bg-input);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-md);
     color: #ffffff;
     font-family: 'Poppins', sans-serif;
-    font-size: 0.92rem;
+    font-size: 0.94rem;
     transition: all var(--transition-fast);
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .form-input:focus {
     outline: none;
     border-color: var(--gold);
     background: var(--bg-input-focus);
-    box-shadow: 0 0 15px rgba(212, 168, 67, 0.2);
+    box-shadow: 0 0 16px rgba(212, 168, 67, 0.25);
 }
 
 .form-input.error {
     border-color: var(--error);
+}
+
+/* ───── CUSTOM SELECT / DROPDOWN HIGH CONTRAST & VISIBILITY FIX ───── */
+select.form-input {
+    background-color: #17041e !important;
+    color: #ffffff !important;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23d4a843' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 16px center !important;
+    background-size: 16px !important;
+    padding-right: 44px !important;
+}
+
+select.form-input:focus {
+    background-color: #22082b !important;
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 18px rgba(212, 168, 67, 0.3) !important;
+    outline: none;
+}
+
+/* Fix option visibility across all OS and browsers */
+select.form-input option {
+    background-color: #14031a !important;
+    color: #ffffff !important;
+    font-size: 0.95rem;
+    padding: 12px 16px !important;
+}
+
+select.form-input option:checked,
+select.form-input option:hover,
+select.form-input option:focus {
+    background-color: #af1996 !important;
+    color: #ffffff !important;
 }
 
 .form-row {
@@ -1154,10 +1195,20 @@ a.row-val:hover {
 .input-with-button {
     display: flex;
     gap: var(--space-xs);
+    align-items: center;
 }
 
 .input-with-button .form-input {
     flex: 1;
+}
+
+.input-with-button .btn-small {
+    height: 48px;
+    padding: 0 20px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .form-divider {
@@ -1194,6 +1245,7 @@ a.row-val:hover {
 .payment-layout {
     display: flex;
     justify-content: center;
+    padding: 0 0 var(--space-2xl);
 }
 
 .payment-card {
@@ -1204,43 +1256,97 @@ a.row-val:hover {
 }
 
 .payment-amount {
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     font-weight: 600;
     margin-bottom: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
 }
 
 .gold-text {
-    color: var(--gold);
+    color: var(--gold-light);
     font-family: 'Cinzel', serif;
-    font-size: 2rem;
+    font-size: 2.4rem;
     font-weight: 800;
+    text-shadow: 0 0 20px rgba(212, 168, 67, 0.4);
 }
 
 .qr-container {
     position: relative;
-    display: inline-block;
-    margin-bottom: var(--space-xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto var(--space-xl);
+    max-width: 320px;
 }
 
 .qr-glow {
     position: absolute;
-    inset: -8px;
+    inset: -12px;
     border-radius: var(--radius-lg);
-    background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+    background: radial-gradient(circle, var(--primary-glow) 0%, rgba(212, 168, 67, 0.2) 50%, transparent 75%);
+    pointer-events: none;
 }
 
-.qr-image {
+.phonepe-qr-card {
     position: relative;
-    border: 3px solid rgba(212, 168, 67, 0.4);
+    z-index: 1;
+    border: 2px solid rgba(212, 168, 67, 0.6);
+    border-radius: var(--radius-lg);
+    background: #000000;
+    padding: 6px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85), 0 0 30px rgba(175, 25, 150, 0.3);
+    transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+    overflow: hidden;
+    max-width: 270px;
+    width: 100%;
+}
+
+.phonepe-qr-card:hover {
+    transform: scale(1.02);
+    border-color: var(--gold-light);
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.95), 0 0 40px rgba(212, 168, 67, 0.4);
+}
+
+.phonepe-qr-img {
+    width: 100%;
+    height: auto;
+    display: block;
     border-radius: var(--radius-md);
-    background: #ffffff;
-    padding: 8px;
+    object-fit: contain;
+}
+
+.qr-payee-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: var(--space-md);
+    padding: 6px 16px;
+    background: rgba(212, 168, 67, 0.12);
+    border: 1px solid rgba(212, 168, 67, 0.35);
+    border-radius: var(--radius-full);
+    font-size: 0.88rem;
+    z-index: 1;
+}
+
+.payee-label {
+    color: var(--text-muted);
+}
+
+.payee-name {
+    color: var(--gold-light);
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .qr-note {
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     color: var(--text-muted);
     margin-top: var(--space-sm);
+    z-index: 1;
 }
 
 .file-upload-zone {
@@ -1456,6 +1562,15 @@ a.row-val:hover {
     justify-content: space-between;
     align-items: center;
     padding: var(--space-2xl) 0 var(--space-xl);
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.admin-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
 }
 
 .admin-login-card {
