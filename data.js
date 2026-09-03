@@ -113,34 +113,117 @@ class DataStore {
         }
     }
 
+    _toDbRecord(r) {
+        return {
+            id: r.id,
+            name: r.name || '',
+            email: r.email || '',
+            phone: r.phone || '',
+            college: r.college || '',
+            year: r.year || '',
+            referral_code: r.referralCode || r.referral_code || '',
+            referred_by: r.referredBy || r.referred_by || '',
+            coupon_used: r.couponUsed || r.coupon_used || '',
+            base_price: Number(r.basePrice ?? r.base_price ?? CONFIG.BASE_PRICE),
+            early_bird_discount: Number(r.earlyBirdDiscount ?? r.early_bird_discount ?? CONFIG.EARLY_BIRD_DISCOUNT),
+            coupon_discount: Number(r.couponDiscount ?? r.coupon_discount ?? 0),
+            final_price: Number(r.finalPrice ?? r.final_price ?? 0),
+            transaction_id: r.transactionId || r.transaction_id || '',
+            payment_screenshot: r.paymentScreenshot || r.payment_screenshot || '',
+            verified: Boolean(r.verified),
+            attended: Boolean(r.attended),
+            attended_at: r.attendedAt || r.attended_at || null,
+            timestamp: r.timestamp || new Date().toISOString()
+        };
+    }
+
+    _fromDbRecord(row) {
+        return {
+            id: row.id,
+            name: row.name || '',
+            email: row.email || '',
+            phone: row.phone || '',
+            college: row.college || '',
+            year: row.year || '',
+            referralCode: row.referral_code || row.referralCode || '',
+            referredBy: row.referred_by || row.referredBy || '',
+            couponUsed: row.coupon_used || row.couponUsed || '',
+            basePrice: Number(row.base_price ?? row.basePrice ?? CONFIG.BASE_PRICE),
+            earlyBirdDiscount: Number(row.early_bird_discount ?? row.earlyBirdDiscount ?? CONFIG.EARLY_BIRD_DISCOUNT),
+            couponDiscount: Number(row.coupon_discount ?? row.couponDiscount ?? 0),
+            finalPrice: Number(row.final_price ?? row.finalPrice ?? 0),
+            transactionId: row.transaction_id || row.transactionId || '',
+            paymentScreenshot: row.payment_screenshot || row.paymentScreenshot || '',
+            verified: Boolean(row.verified),
+            attended: Boolean(row.attended),
+            attendedAt: row.attended_at || row.attendedAt || null,
+            timestamp: row.timestamp || new Date().toISOString()
+        };
+    }
+
     async syncFromSupabase() {
         if (!this.supabaseClient) return;
         try {
             const { data, error } = await this.supabaseClient.from('registrations').select('*');
-            if (!error && data && Array.isArray(data)) {
+            if (error) {
+                console.error('Supabase fetch error:', error.message);
+                return;
+            }
+            if (data && Array.isArray(data)) {
                 const localRegs = this.getRegistrations();
                 const map = new Map();
                 localRegs.forEach(r => map.set(r.id, r));
-                data.forEach(r => map.set(r.id, r));
+                data.forEach(row => {
+                    const mapped = this._fromDbRecord(row);
+                    map.set(mapped.id, mapped);
+                });
                 this.saveRegistrations(Array.from(map.values()));
                 console.log(`✓ Synced ${data.length} records from Supabase cloud database`);
+
+                // Auto-sync any local-only records up to cloud
+                if (localRegs.length > 0) {
+                    this.syncLocalToSupabase();
+                }
+
+                if (typeof refreshAdminView === 'function') refreshAdminView();
+                if (typeof renderNamesWall === 'function') renderNamesWall();
             }
         } catch (e) {
-            console.log('Supabase sync info:', e);
+            console.warn('Supabase sync info:', e);
         }
     }
 
     async syncToSupabase(registration) {
         if (!this.supabaseClient) return;
         try {
-            const { error } = await this.supabaseClient.from('registrations').upsert(registration);
+            const dbPayload = this._toDbRecord(registration);
+            const { error } = await this.supabaseClient.from('registrations').upsert(dbPayload);
             if (error) {
-                console.warn('Supabase upsert note (table may need schema setup):', error.message);
+                console.warn('Supabase upsert note:', error.message);
             } else {
                 console.log('⚡ Record synced to Supabase:', registration.id);
             }
         } catch (e) {
             console.warn('Supabase push note:', e);
+        }
+    }
+
+    async syncLocalToSupabase() {
+        if (!this.supabaseClient) return { success: false, message: 'Supabase client not connected' };
+        const localRegs = this.getRegistrations();
+        if (!localRegs.length) return { success: true, message: 'No local records to sync' };
+        try {
+            const payloads = localRegs.map(r => this._toDbRecord(r));
+            const { error } = await this.supabaseClient.from('registrations').upsert(payloads);
+            if (error) {
+                console.warn('Sync local to Supabase warning:', error.message);
+                return { success: false, message: error.message };
+            }
+            console.log(`⚡ Pushed ${payloads.length} local records to Supabase`);
+            return { success: true, message: `Synced ${payloads.length} records to Supabase` };
+        } catch (e) {
+            console.warn('Sync local error:', e);
+            return { success: false, message: e.message };
         }
     }
 
@@ -213,7 +296,21 @@ class DataStore {
     }
 
     saveRegistrations(regs) {
-        localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(regs));
+        try {
+            localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(regs));
+        } catch (e) {
+            console.warn('LocalStorage save failed, trying without heavy screenshot payloads:', e);
+            try {
+                // If quota exceeded, strip long base64 screenshots locally to preserve metadata
+                const lightweight = regs.map(r => ({
+                    ...r,
+                    paymentScreenshot: (r.paymentScreenshot && r.paymentScreenshot.length > 500) ? '' : r.paymentScreenshot
+                }));
+                localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(lightweight));
+            } catch (err2) {
+                console.error('LocalStorage critical save error:', err2);
+            }
+        }
     }
 
     addRegistration(data) {

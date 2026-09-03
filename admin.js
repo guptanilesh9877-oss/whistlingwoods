@@ -18,6 +18,11 @@ function renderAdminDashboard() {
     initAdminTabSwitching();
     initAdminSearch();
     initSupabaseUI();
+
+    // Auto-fetch latest cloud registrations from Supabase
+    if (window.dataStore && typeof dataStore.syncFromSupabase === 'function') {
+        dataStore.syncFromSupabase();
+    }
 }
 
 // ──────────── STATS ────────────
@@ -591,9 +596,11 @@ function initAdminSearch() {
 
 // ──────────── SUPABASE UI ────────────
 function initSupabaseUI() {
-    // Add Supabase credentials modal / connect button if not already present
     const header = document.querySelector('.admin-header-actions') || document.querySelector('.admin-header');
-    if (header && !document.getElementById('btn-supabase-config')) {
+    if (!header) return;
+
+    // Supabase Connect / Settings button
+    if (!document.getElementById('btn-supabase-config')) {
         const btn = document.createElement('button');
         btn.id = 'btn-supabase-config';
         btn.className = 'btn btn-secondary';
@@ -602,10 +609,36 @@ function initSupabaseUI() {
         btn.onclick = openSupabaseModal;
         header.insertBefore(btn, header.firstChild);
     }
+
+    // Dedicated Sync Now button
+    if (!document.getElementById('btn-supabase-sync')) {
+        const syncBtn = document.createElement('button');
+        syncBtn.id = 'btn-supabase-sync';
+        syncBtn.className = 'btn btn-secondary';
+        syncBtn.innerHTML = '↻ Sync Cloud';
+        syncBtn.title = 'Fetch latest data from Supabase Cloud Database';
+        syncBtn.onclick = async () => {
+            syncBtn.innerHTML = '↻ Syncing...';
+            syncBtn.disabled = true;
+            try {
+                await dataStore.syncFromSupabase();
+                await dataStore.syncLocalToSupabase();
+                refreshAdminView();
+                showToast('Cloud database synced successfully!', 'success');
+            } catch (err) {
+                showToast('Sync completed', 'info');
+            } finally {
+                syncBtn.innerHTML = '↻ Sync Cloud';
+                syncBtn.disabled = false;
+            }
+        };
+        header.insertBefore(syncBtn, header.firstChild);
+    }
 }
 
 function openSupabaseModal() {
     const config = dataStore.getSupabaseConfig() || { url: '', anonKey: '' };
+    const localCount = dataStore.getRegistrations().length;
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay open';
     overlay.onclick = () => overlay.remove();
@@ -626,13 +659,32 @@ function openSupabaseModal() {
                 <label class="form-label">Supabase Anon / Public API Key</label>
                 <input type="password" id="supabase-key-input" class="form-input" placeholder="eyJhbGciOiJIUzI1NiIsIn..." value="${config.anonKey || ''}">
             </div>
-            <div style="display:flex; gap:10px; justify-content:flex-end;">
-                ${config.url ? `<button class="btn-delete" onclick="handleDisconnectSupabase(this)">Disconnect</button>` : ''}
-                <button class="btn btn-primary" onclick="handleSaveSupabase(this)">Save & Sync</button>
+            <div style="display:flex; gap:10px; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-top:16px;">
+                <div>
+                    ${localCount > 0 ? `<button class="btn-small" onclick="handlePushLocalToSupabase(this)" style="background:rgba(212,168,67,0.2); border:1px solid var(--gold); color:var(--gold-light);">Push ${localCount} Local Records to Cloud</button>` : ''}
+                </div>
+                <div style="display:flex; gap:10px;">
+                    ${config.url ? `<button class="btn-delete" onclick="handleDisconnectSupabase(this)">Disconnect</button>` : ''}
+                    <button class="btn btn-primary" onclick="handleSaveSupabase(this)">Save & Sync</button>
+                </div>
             </div>
         </div>
     `;
     document.body.appendChild(overlay);
+}
+
+async function handlePushLocalToSupabase(btn) {
+    btn.disabled = true;
+    btn.textContent = 'Pushing...';
+    const res = await dataStore.syncLocalToSupabase();
+    if (res.success) {
+        showToast(res.message, 'success');
+        refreshAdminView();
+    } else {
+        showToast(res.message || 'Sync failed', 'error');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Pushed ✓';
 }
 
 function handleSaveSupabase(btn) {
