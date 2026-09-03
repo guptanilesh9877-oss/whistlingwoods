@@ -8,7 +8,7 @@ const CONFIG = {
     MIN_PRICE: 0,
     ADMIN_PASSWORD: 'admin2026',
     EVENT_NAME: 'Celebrate Cinema 2026 — Academic Trek',
-    EVENT_TAGLINE: 'Where Stories Come Alive',
+    EVENT_TAGLINE: 'Big Screen',
     EVENT_DATE: new Date('2026-10-09T09:00:00+05:30'),
     EVENT_DATE_STR: '09th & 10th October 2026',
     EVENT_TIME_STR: '9:00 AM to 5:00 PM',
