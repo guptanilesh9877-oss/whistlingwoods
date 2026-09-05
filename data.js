@@ -14,7 +14,7 @@ const CONFIG = {
     EVENT_TIME_STR: '9:00 AM to 5:00 PM',
     EVENT_VENUE: 'Whistling Woods International, Film City, Goregaon East, Mumbai',
     PROMOTED_BY: 'CareerBeam – Vigor',
-    UPI_VPA: 'vigorlaunchpad@ybl',          // UPI Virtual Payment Address
+    UPI_VPA: '7208070768@ibl',              // UPI Virtual Payment Address
     UPI_PAYEE_NAME: 'Vigor LaunchPad',
     CONTACT_PERSON: 'Nilesh Gupta',
     CONTACT_ROLE: 'Marketing & Events Executive',
