@@ -40,6 +40,7 @@
         <ul class="nav-links" id="nav-links">
             <li><span class="nav-link active" data-page="landing">Home</span></li>
             <li><span class="nav-link" data-page="names">Wall of Fame</span></li>
+            <li><span class="nav-link" data-page="find-pass">Find My Pass</span></li>
             <li><span class="nav-link nav-cta" data-page="register">Register Now</span></li>
         </ul>
         <div class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileNav()">
@@ -57,6 +58,7 @@
     <span class="nav-link" data-page="landing" onclick="navigateAndClose('landing')">Home</span>
     <span class="nav-link" data-page="register" onclick="navigateAndClose('register')">Register Now</span>
     <span class="nav-link" data-page="names" onclick="navigateAndClose('names')">Wall of Fame</span>
+    <span class="nav-link" data-page="find-pass" onclick="navigateAndClose('find-pass')">Find My Pass</span>
     <div class="mobile-nav-contact">
         <p>Inquiries & Bookings</p>
         <a href="tel:+918699260386" class="contact-link">+91 86992 60386</a>
@@ -512,6 +514,24 @@
                         <span class="payee-name">Vigor LaunchPad</span>
                     </div>
                     <p class="qr-note">Scan with PhonePe, Google Pay, Paytm, BHIM or any UPI App</p>
+
+                    <!-- UPI Quick Actions -->
+                    <div class="upi-action-buttons">
+                        <button class="btn btn-upi" id="open-upi-app-btn" onclick="openUPIApp()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;">
+                                <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                                <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                            </svg>
+                            Pay via UPI App
+                        </button>
+                        <button class="btn btn-copy-upi" id="copy-upi-btn" onclick="copyUPIID()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            Copy UPI ID
+                        </button>
+                    </div>
                 </div>
 
                 <div class="payment-form">
@@ -611,6 +631,16 @@
                     <div class="ticket-qr-container" id="ticket-qr-container"></div>
                     <p class="ticket-qr-hint">Present this QR code at Whistling Woods Gate for attendance scan</p>
                 </div>
+
+                <!-- Save Pass Button -->
+                <button class="btn btn-gold save-pass-btn" onclick="savePassAsImage('confirm')" id="save-pass-confirm-btn" style="margin-top: var(--space-lg); width: 100%;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:18px;height:18px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Save Pass as Image
+                </button>
             </div>
 
             <!-- Referral Share -->
@@ -634,6 +664,123 @@
             <button class="btn btn-secondary" onclick="navigateTo('landing')" style="margin-top: var(--space-md);">
                 ← Back to Home
             </button>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: FIND MY PASS
+     ═══════════════════════════════════════════════ -->
+<section id="page-find-pass" class="page">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="gradient-text">Find My Pass</h1>
+            <p>Enter your registered phone number or email to retrieve your entry pass</p>
+        </div>
+        <div class="find-pass-layout">
+
+            <!-- Search Card -->
+            <div class="glass-card find-pass-search-card">
+                <div class="fp-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:48px;height:48px;color:var(--gold);">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <h3>Retrieve Your Entry Pass</h3>
+                <p style="color:var(--text-muted); margin-bottom:var(--space-xl); font-size:0.92rem;">
+                    Your pass is stored securely. Enter the phone number or email you registered with to view and download your QR entry pass.
+                </p>
+                <div class="form-group">
+                    <label class="form-label" for="fp-search-input">Phone Number or Email Address</label>
+                    <div class="input-with-button">
+                        <input type="text" id="fp-search-input" class="form-input"
+                               placeholder="e.g. 9876543210 or your@email.com"
+                               autocomplete="off"
+                               onkeydown="if(event.key==='Enter') findPassByContact()">
+                        <button class="btn-small" id="fp-search-btn" onclick="findPassByContact()">Search</button>
+                    </div>
+                </div>
+                <div id="fp-message" class="form-message" style="margin-top:4px;"></div>
+            </div>
+
+            <!-- Result Area -->
+            <div id="fp-result-area" class="find-pass-result" style="display:none;">
+
+                <!-- Found Ticket Card -->
+                <div class="glass-card ticket-card" id="fp-ticket-card">
+                    <div class="ticket-header">
+                        <div class="ticket-logos">
+                            <img src="idSrLcZHLp_1788097331241.png" alt="WWI Logo" class="ticket-logo">
+                            <div class="ticket-brand-divider"></div>
+                            <img src="careerbeam_logo.png" alt="CareerBeam" class="ticket-partner-logo">
+                        </div>
+                        <div>
+                            <h3>CELEBRATE CINEMA 2026</h3>
+                            <p>Academic Trek &bull; Whistling Woods International</p>
+                        </div>
+                    </div>
+                    <div class="ticket-divider"></div>
+                    <div class="ticket-details">
+                        <div class="ticket-row">
+                            <span class="ticket-label">Attendee Name</span>
+                            <span class="ticket-value" id="fp-ticket-name">&mdash;</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">Registration ID</span>
+                            <span class="ticket-value" id="fp-ticket-id">&mdash;</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">Trek Dates</span>
+                            <span class="ticket-value" style="color:var(--gold);">08th &amp; 09th October 2026 (9:00 AM &ndash; 5:00 PM)</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">Venue</span>
+                            <span class="ticket-value">WWI, Film City, Goregaon East, Mumbai</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">College</span>
+                            <span class="ticket-value" id="fp-ticket-college">&mdash;</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">Amount Paid</span>
+                            <span class="ticket-value" id="fp-ticket-amount">&mdash;</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">Verification</span>
+                            <span class="ticket-value" id="fp-ticket-status">&mdash;</span>
+                        </div>
+                    </div>
+                    <div class="ticket-qr-section">
+                        <div class="ticket-divider"></div>
+                        <p class="ticket-qr-label">OFFICIAL ENTRY PASS QR</p>
+                        <div class="ticket-qr-container" id="fp-qr-container"></div>
+                        <p class="ticket-qr-hint">Present this QR code at Whistling Woods Gate for attendance scan</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="fp-actions">
+                    <button class="btn btn-gold save-pass-btn" onclick="savePassAsImage('fp')" id="fp-save-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:18px;height:18px;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Save Pass as Image
+                    </button>
+                    <button class="btn btn-secondary" onclick="shareFoundPassWhatsApp()">
+                        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;">
+                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                        </svg>
+                        Share via WhatsApp
+                    </button>
+                </div>
+
+            </div>
         </div>
     </div>
 </section>

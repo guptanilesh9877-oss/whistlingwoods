@@ -1382,6 +1382,172 @@ select.form-input option:focus {
     margin: 0 auto;
 }
 
+/* ───── UPI ACTION BUTTONS ───── */
+.upi-action-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+    width: 100%;
+    justify-content: center;
+}
+
+.btn-upi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 20px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.84rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+    transition: all var(--transition-base);
+    flex: 1;
+    max-width: 200px;
+}
+
+.btn-upi:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(37, 211, 102, 0.5);
+    background: linear-gradient(135deg, #2de070, #128C7E);
+}
+
+.btn-copy-upi {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 20px;
+    background: rgba(212, 168, 67, 0.1);
+    color: var(--gold-light);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.84rem;
+    font-weight: 600;
+    border: 1px solid rgba(212, 168, 67, 0.4);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    flex: 1;
+    max-width: 200px;
+}
+
+.btn-copy-upi:hover {
+    background: rgba(212, 168, 67, 0.2);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+}
+
+.btn-copy-upi.copied {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: var(--success);
+    color: var(--success);
+}
+
+/* ───── SAVE PASS BUTTON ───── */
+.save-pass-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: #07010a;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 25px var(--gold-glow);
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+}
+
+.save-pass-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 35px var(--gold-glow);
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+}
+
+.save-pass-btn:active {
+    transform: translateY(0);
+}
+
+/* ───── FIND MY PASS PAGE ───── */
+.find-pass-layout {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+    max-width: 680px;
+    margin: 0 auto;
+    padding-bottom: var(--space-4xl);
+}
+
+.find-pass-search-card {
+    text-align: center;
+    padding: var(--space-3xl) var(--space-2xl);
+}
+
+.fp-icon {
+    margin-bottom: var(--space-lg);
+    display: flex;
+    justify-content: center;
+}
+
+.find-pass-search-card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.35rem;
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.find-pass-result {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    animation: fadeSlideUp 0.4s ease forwards;
+}
+
+@keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.fp-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.fp-actions .btn {
+    min-width: 200px;
+}
+
+/* ───── RESPONSIVE: FIND MY PASS ───── */
+@media (max-width: 640px) {
+    .upi-action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .btn-upi, .btn-copy-upi {
+        max-width: 100%;
+    }
+    .fp-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .fp-actions .btn {
+        min-width: unset;
+    }
+}
+
 /* ───── CONFIRMATION TICKET ───── */
 .confirmation-content {
     max-width: 620px;

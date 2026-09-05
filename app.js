@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initRegistrationForm();
     initPaymentPage();
     initAdminLogin();
+    initFindPass();
 
     // Read referral from URL
     readReferralFromURL();
@@ -102,7 +103,7 @@ function navigateTo(page) {
 
 function handleHashRoute() {
     const hash = window.location.hash.replace('#', '') || 'landing';
-    const validPages = ['landing', 'register', 'payment', 'confirmation', 'admin-login', 'admin', 'names'];
+    const validPages = ['landing', 'register', 'payment', 'confirmation', 'admin-login', 'admin', 'names', 'find-pass'];
     const page = validPages.includes(hash) ? hash : 'landing';
 
     if (page !== currentPage) {
@@ -141,6 +142,11 @@ function onPageEnter(page) {
             const refInput = document.getElementById('reg-referral');
             if (refInput && !refInput.value) refInput.value = urlRef;
         }
+    }
+    if (page === 'find-pass') {
+        // Clear previous result when navigating to page
+        const input = document.getElementById('fp-search-input');
+        if (input) input.focus();
     }
 }
 
@@ -602,25 +608,35 @@ function generateTicketQR(reg) {
         event: 'CC2026'
     });
 
-    if (window.QRCode && typeof window.QRCode.toCanvas === 'function') {
-        const canvas = document.createElement('canvas');
-        window.QRCode.toCanvas(canvas, qrData, {
-            width: 190,
-            margin: 2,
-            color: {
-                dark: '#2d0a27',
-                light: '#ffffff'
-            }
-        }, err => {
-            if (!err) {
-                container.appendChild(canvas);
-            } else {
-                renderQRCanvasFallback(container, reg.id);
-            }
-        });
-    } else {
-        renderQRCanvasFallback(container, reg.id);
+    // Retry loop — CDN may load slightly after page render
+    function tryGenerate(qrDataStr, targetContainer, attempts) {
+        if (window.QRCode && typeof window.QRCode.toCanvas === 'function') {
+            const canvas = document.createElement('canvas');
+            window.QRCode.toCanvas(canvas, qrDataStr, {
+                width: 200,
+                margin: 2,
+                errorCorrectionLevel: 'M',
+                color: {
+                    dark: '#2d0a27',
+                    light: '#ffffff'
+                }
+            }, err => {
+                if (!err) {
+                    targetContainer.appendChild(canvas);
+                } else {
+                    console.warn('QRCode.toCanvas error:', err);
+                    renderQRCanvasFallback(targetContainer, reg.id);
+                }
+            });
+        } else if (attempts > 0) {
+            setTimeout(() => tryGenerate(qrDataStr, targetContainer, attempts - 1), 250);
+        } else {
+            renderQRCanvasFallback(targetContainer, reg.id);
+        }
     }
+
+    // Defer slightly to ensure DOM is painted and lib is loaded
+    setTimeout(() => tryGenerate(qrData, container, 12), 60);
 }
 
 function renderQRCanvasFallback(container, text) {
@@ -812,4 +828,366 @@ function escapeHTML(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+// ──────────── UPI PAYMENT ACTIONS ────────────
+function openUPIApp() {
+    const amountEl = document.getElementById('payment-amount-display');
+    const amount = amountEl ? amountEl.textContent.replace(/[₹,]/g, '').trim() : '150';
+    const upiVpa = CONFIG.UPI_VPA || 'vigorlaunchpad@ybl';
+    const payeeName = encodeURIComponent(CONFIG.UPI_PAYEE_NAME || 'Vigor LaunchPad');
+    const note = encodeURIComponent('Celebrate Cinema 2026 Academic Trek');
+    const upiUrl = `upi://pay?pa=${upiVpa}&pn=${payeeName}&am=${amount}&cu=INR&tn=${note}`;
+
+    // On mobile, this opens the UPI app chooser
+    // On desktop it usually does nothing visible — show toast explaining
+    const a = document.createElement('a');
+    a.href = upiUrl;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    showToast(`Opening UPI app for ₹${amount} payment...`, 'info');
+}
+
+function copyUPIID() {
+    const upiVpa = CONFIG.UPI_VPA || 'vigorlaunchpad@ybl';
+    const btn = document.getElementById('copy-upi-btn');
+
+    const doFallback = () => {
+        const ta = document.createElement('textarea');
+        ta.value = upiVpa;
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+    };
+
+    const onSuccess = () => {
+        showToast(`UPI ID copied: ${upiVpa}`, 'success');
+        if (btn) {
+            btn.classList.add('copied');
+            const orig = btn.innerHTML;
+            btn.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Copied!`;
+            setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2500);
+        }
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(upiVpa).then(onSuccess).catch(() => { doFallback(); onSuccess(); });
+    } else {
+        doFallback();
+        onSuccess();
+    }
+}
+
+// ──────────── FIND MY PASS ────────────
+let _foundPassReg = null;  // currently displayed pass in find-pass page
+
+function initFindPass() {
+    const input = document.getElementById('fp-search-input');
+    if (!input) return;
+    // already wired via onkeydown in HTML, nothing else needed
+}
+
+function findPassByContact() {
+    const input = document.getElementById('fp-search-input');
+    const msgEl = document.getElementById('fp-message');
+    const resultArea = document.getElementById('fp-result-area');
+    const btn = document.getElementById('fp-search-btn');
+
+    if (!input) return;
+    const query = input.value.trim().toLowerCase().replace(/[\s\-()]/g, '');
+
+    if (!query) {
+        msgEl.textContent = 'Please enter your phone number or email address';
+        msgEl.className = 'form-message error';
+        input.classList.add('error');
+        return;
+    }
+
+    input.classList.remove('error');
+    msgEl.textContent = 'Searching...';
+    msgEl.className = 'form-message';
+    if (btn) { btn.textContent = '...'; btn.disabled = true; }
+
+    // Trigger a fresh Supabase sync then search
+    const search = () => {
+        const regs = dataStore.getRegistrations();
+        const found = regs.find(r => {
+            const phone = (r.phone || '').replace(/[\s\-()]/g, '');
+            const email = (r.email || '').toLowerCase();
+            return phone.includes(query) || email === query || phone === query;
+        });
+
+        if (btn) { btn.textContent = 'Search'; btn.disabled = false; }
+
+        if (found) {
+            _foundPassReg = found;
+            renderFoundTicket(found);
+            msgEl.textContent = `✓ Pass found for ${found.name}`;
+            msgEl.className = 'form-message success';
+            resultArea.style.display = 'flex';
+            // Smooth scroll to result
+            setTimeout(() => resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+        } else {
+            _foundPassReg = null;
+            resultArea.style.display = 'none';
+            msgEl.textContent = '✗ No registration found with that phone or email. Double-check and try again, or contact +91 86992 60386.';
+            msgEl.className = 'form-message error';
+        }
+    };
+
+    // Allow Supabase sync to complete (if connected) then search
+    if (dataStore.supabaseClient) {
+        dataStore.syncFromSupabase().then(() => search()).catch(() => search());
+    } else {
+        setTimeout(search, 100);
+    }
+}
+
+function renderFoundTicket(reg) {
+    // Populate text fields
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('fp-ticket-name', reg.name);
+    set('fp-ticket-id', reg.id);
+    set('fp-ticket-college', reg.college);
+    set('fp-ticket-amount', '₹' + reg.finalPrice);
+
+    const statusEl = document.getElementById('fp-ticket-status');
+    if (statusEl) {
+        statusEl.textContent = reg.verified ? 'Payment Verified ✓' : 'Verification Pending';
+        statusEl.className = reg.verified
+            ? 'ticket-value status-verified'
+            : 'ticket-value status-pending';
+    }
+
+    // Generate QR in fp-qr-container
+    const container = document.getElementById('fp-qr-container');
+    if (container) {
+        container.innerHTML = '';
+        const qrData = JSON.stringify({ id: reg.id, name: reg.name, college: reg.college, event: 'CC2026' });
+
+        function tryFpQR(attempts) {
+            if (window.QRCode && typeof window.QRCode.toCanvas === 'function') {
+                const canvas = document.createElement('canvas');
+                window.QRCode.toCanvas(canvas, qrData, {
+                    width: 200, margin: 2, errorCorrectionLevel: 'M',
+                    color: { dark: '#2d0a27', light: '#ffffff' }
+                }, err => {
+                    if (!err) { container.appendChild(canvas); }
+                    else { renderQRCanvasFallback(container, reg.id); }
+                });
+            } else if (attempts > 0) {
+                setTimeout(() => tryFpQR(attempts - 1), 250);
+            } else {
+                renderQRCanvasFallback(container, reg.id);
+            }
+        }
+        setTimeout(() => tryFpQR(12), 60);
+    }
+}
+
+function shareFoundPassWhatsApp() {
+    if (!_foundPassReg) return;
+    const reg = _foundPassReg;
+    const text = `🎬 *Celebrate Cinema 2026 — Academic Trek*\n` +
+        `📋 Pass ID: ${reg.id}\n` +
+        `👤 Name: ${reg.name}\n` +
+        `📅 Dates: 08th & 09th October 2026\n` +
+        `📍 Venue: Whistling Woods International, Film City\n` +
+        `✅ Status: ${reg.verified ? 'Verified' : 'Pending Verification'}\n\n` +
+        `Present your QR pass at the WWI gate.`;
+    window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+}
+
+// ──────────── SAVE PASS AS IMAGE ────────────
+function savePassAsImage(source) {
+    // source: 'confirm' = confirmation page, 'fp' = find-pass page
+    const reg = (source === 'fp') ? _foundPassReg : currentRegistration;
+    if (!reg) {
+        showToast('No ticket data available to save', 'error');
+        return;
+    }
+
+    const qrContainerId = (source === 'fp') ? 'fp-qr-container' : 'ticket-qr-container';
+    const qrCanvas = document.querySelector(`#${qrContainerId} canvas`);
+
+    const W = 620, H = (qrCanvas ? 920 : 780);
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // ── Background ──
+    const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+    bgGrad.addColorStop(0, '#08010d');
+    bgGrad.addColorStop(0.5, '#180530');
+    bgGrad.addColorStop(1, '#08010d');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Subtle radial glow top-left
+    const glow1 = ctx.createRadialGradient(0, 0, 0, 0, 0, 350);
+    glow1.addColorStop(0, 'rgba(175,25,150,0.22)');
+    glow1.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow1;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Border ──
+    ctx.strokeStyle = 'rgba(212,168,67,0.7)';
+    ctx.lineWidth = 2;
+    roundRect(ctx, 14, 14, W - 28, H - 28, 14);
+    ctx.stroke();
+
+    // ── Header band ──
+    const headerGrad = ctx.createLinearGradient(0, 0, W, 0);
+    headerGrad.addColorStop(0, 'rgba(175,25,150,0.35)');
+    headerGrad.addColorStop(1, 'rgba(45,10,39,0.6)');
+    ctx.fillStyle = headerGrad;
+    roundRectFill(ctx, 14, 14, W - 28, 90, 14, 0);
+
+    // ── Event title ──
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 22px Cinzel, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('CELEBRATE CINEMA 2026', W / 2, 58);
+    ctx.font = '600 12px Poppins, sans-serif';
+    ctx.fillStyle = 'rgba(212,168,67,0.9)';
+    ctx.letterSpacing = '3px';
+    ctx.fillText('THE ACADEMIC TREK  •  OFFICIAL ENTRY PASS', W / 2, 82);
+
+    // ── Gold divider ──
+    ctx.strokeStyle = 'rgba(212,168,67,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(40, 112); ctx.lineTo(W - 40, 112); ctx.stroke();
+
+    // ── Detail rows ──
+    const rows = [
+        ['Attendee Name', reg.name],
+        ['Registration ID', reg.id],
+        ['Trek Dates', '08th & 09th October 2026'],
+        ['Time', '9:00 AM – 5:00 PM IST'],
+        ['Venue', 'WWI, Film City, Goregaon East, Mumbai'],
+        ['College', reg.college],
+        ['Amount Paid', '\u20B9' + reg.finalPrice],
+        ['Payment Status', reg.verified ? 'Verified \u2713' : 'Pending Verification']
+    ];
+
+    let y = 140;
+    const labelX = 50, valueX = W - 50;
+    rows.forEach(([label, value], i) => {
+        // Alternate row bg
+        if (i % 2 === 0) {
+            ctx.fillStyle = 'rgba(255,255,255,0.03)';
+            ctx.fillRect(26, y - 16, W - 52, 36);
+        }
+        ctx.font = '500 12px Poppins, sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.textAlign = 'left';
+        ctx.fillText(label.toUpperCase(), labelX, y);
+
+        ctx.font = '600 14px Poppins, sans-serif';
+        ctx.fillStyle = (label === 'Payment Status' && reg.verified)
+            ? '#10b981'
+            : (label === 'Trek Dates' ? '#d4a843' : '#ffffff');
+        ctx.textAlign = 'right';
+        ctx.fillText(value, valueX, y);
+        y += 42;
+    });
+
+    // ── Dashed divider ──
+    y += 10;
+    ctx.setLineDash([6, 8]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(W - 40, y); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // ── QR Section ──
+    y += 24;
+    ctx.fillStyle = 'rgba(212,168,67,0.9)';
+    ctx.font = 'bold 11px Cinzel, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('OFFICIAL ENTRY PASS QR CODE', W / 2, y);
+    y += 18;
+
+    if (qrCanvas) {
+        // Draw QR with white background box
+        const qrSize = 200;
+        const qrX = (W - qrSize) / 2;
+        ctx.fillStyle = '#ffffff';
+        roundRectFill(ctx, qrX - 10, y - 6, qrSize + 20, qrSize + 20, 10, 10);
+        ctx.drawImage(qrCanvas, qrX, y + 4, qrSize, qrSize);
+        y += qrSize + 28;
+    } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        ctx.fillRect((W - 160) / 2, y, 160, 160);
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.font = '12px Poppins, sans-serif';
+        ctx.fillText('[QR not yet generated]', W / 2, y + 85);
+        y += 175;
+    }
+
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.font = '11px Poppins, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Scan at Whistling Woods International Entry Gate', W / 2, y + 8);
+
+    // ── Footer ──
+    ctx.fillStyle = 'rgba(212,168,67,0.45)';
+    ctx.font = '10px Poppins, sans-serif';
+    ctx.fillText('Celebrate Cinema 2026  •  Whistling Woods International, Film City, Mumbai', W / 2, H - 24);
+
+    // ── Download ──
+    try {
+        const link = document.createElement('a');
+        const safeName = (reg.name || 'pass').replace(/[^a-zA-Z0-9]/g, '_');
+        link.download = `CC2026_Pass_${safeName}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast('Pass saved as image! Check your downloads.', 'success');
+    } catch (e) {
+        console.error('Save pass error:', e);
+        showToast('Could not save image. Try screenshotting instead.', 'error');
+    }
+}
+
+// Canvas helper: stroke a rounded rect path
+function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+}
+
+// Canvas helper: fill top-radius or full rounded rect
+function roundRectFill(ctx, x, y, w, h, rTop, rBot) {
+    const rt = rTop || 0;
+    const rb = (rBot !== undefined) ? rBot : rt;
+    ctx.beginPath();
+    ctx.moveTo(x + rt, y);
+    ctx.lineTo(x + w - rt, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + rt);
+    ctx.lineTo(x + w, y + h - rb);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - rb, y + h);
+    ctx.lineTo(x + rb, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - rb);
+    ctx.lineTo(x, y + rt);
+    ctx.quadraticCurveTo(x, y, x + rt, y);
+    ctx.closePath();
+    ctx.fill();
 }
