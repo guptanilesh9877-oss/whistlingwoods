@@ -123,14 +123,18 @@ class DataStore {
     }
 
     _toDbRecord(r) {
+        // Embed visitDate safely into year string so it persists in Supabase without schema errors
+        const visitDateStr = r.visitDate || r.visit_date || '';
+        const rawYear = r.year || '';
+        const combinedYear = visitDateStr ? `${rawYear}__VD__${visitDateStr}` : rawYear;
+
         return {
             id: r.id,
             name: r.name || '',
             email: r.email || '',
             phone: r.phone || '',
             college: r.college || '',
-            year: r.year || '',
-            visit_date: r.visitDate || r.visit_date || 'Both Days (08th & 09th Oct)',
+            year: combinedYear,
             referral_code: r.referralCode || r.referral_code || '',
             referred_by: r.referredBy || r.referred_by || '',
             coupon_used: r.couponUsed || r.coupon_used || '',
@@ -148,14 +152,29 @@ class DataStore {
     }
 
     _fromDbRecord(row) {
+        let yearVal = row.year || '';
+        let visitDateVal = 'Both Days (08th & 09th Oct)';
+        if (yearVal.includes('__VD__')) {
+            const parts = yearVal.split('__VD__');
+            yearVal = parts[0];
+            visitDateVal = parts[1] || visitDateVal;
+        } else if (yearVal.includes(' | ')) {
+            const parts = yearVal.split(' | ');
+            yearVal = parts[0];
+            visitDateVal = parts[1] || visitDateVal;
+        }
+        if (row.visit_date) {
+            visitDateVal = row.visit_date;
+        }
+
         return {
             id: row.id,
             name: row.name || '',
             email: row.email || '',
             phone: row.phone || '',
             college: row.college || '',
-            year: row.year || '',
-            visitDate: row.visit_date || row.visitDate || 'Both Days (08th & 09th Oct)',
+            year: yearVal,
+            visitDate: visitDateVal,
             referralCode: row.referral_code || row.referralCode || '',
             referredBy: row.referred_by || row.referredBy || '',
             couponUsed: row.coupon_used || row.couponUsed || '',
@@ -185,8 +204,27 @@ class DataStore {
                 return;
             }
             if (data && Array.isArray(data)) {
-                // Supabase is the single source of truth across all devices
                 const cloudRegs = data.map(row => this._fromDbRecord(row));
+                const cloudIds = new Set(cloudRegs.map(r => r.id));
+
+                // Preserve & auto-sync any recent local registrations (created in last 15 mins) that haven't hit Cloud yet
+                const localRegs = this.getRegistrations();
+                const now = Date.now();
+                const FIFTEEN_MINS = 15 * 60 * 1000;
+                const pendingNewRegs = localRegs.filter(r => {
+                    if (cloudIds.has(r.id)) return false;
+                    const age = now - new Date(r.timestamp || 0).getTime();
+                    return age >= 0 && age < FIFTEEN_MINS;
+                });
+
+                if (pendingNewRegs.length > 0) {
+                    console.log(`⚡ Found ${pendingNewRegs.length} recent in-flight registration(s), syncing to Supabase...`);
+                    for (const pending of pendingNewRegs) {
+                        cloudRegs.unshift(pending);
+                        this.syncToSupabase(pending);
+                    }
+                }
+
                 this.saveRegistrations(cloudRegs);
                 console.log(`✓ Synced ${cloudRegs.length} authoritative records from Supabase Cloud`);
 
@@ -199,17 +237,20 @@ class DataStore {
     }
 
     async syncToSupabase(registration) {
-        if (!this.supabaseClient) return;
+        if (!this.supabaseClient) return { success: false, message: 'No Supabase client' };
         try {
             const dbPayload = this._toDbRecord(registration);
             const { error } = await this.supabaseClient.from('registrations').upsert(dbPayload);
             if (error) {
-                console.warn('Supabase upsert note:', error.message);
+                console.error('Supabase upsert error:', error.message);
+                return { success: false, message: error.message };
             } else {
-                console.log('⚡ Record synced to Supabase:', registration.id);
+                console.log('⚡ Record synced to Supabase successfully:', registration.id);
+                return { success: true };
             }
         } catch (e) {
-            console.warn('Supabase push note:', e);
+            console.error('Supabase push exception:', e);
+            return { success: false, message: e.message };
         }
     }
 
@@ -344,7 +385,10 @@ class DataStore {
         };
         regs.push(registration);
         this.saveRegistrations(regs);
-        this.syncToSupabase(registration);
+        this.syncToSupabase(registration).then(() => {
+            if (typeof refreshAdminView === 'function') refreshAdminView();
+            if (typeof renderNamesWall === 'function') renderNamesWall();
+        });
         return registration;
     }
 
@@ -354,7 +398,10 @@ class DataStore {
         if (idx === -1) return null;
         regs[idx] = { ...regs[idx], ...updates };
         this.saveRegistrations(regs);
-        this.syncToSupabase(regs[idx]);
+        this.syncToSupabase(regs[idx]).then(() => {
+            if (typeof refreshAdminView === 'function') refreshAdminView();
+            if (typeof renderNamesWall === 'function') renderNamesWall();
+        });
         return regs[idx];
     }
 

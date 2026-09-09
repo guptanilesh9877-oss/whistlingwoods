@@ -860,3 +860,29 @@ function refreshAdminView() {
     renderReferralLeaderboard();
     renderRecentCheckins();
 }
+
+// ──────────── MANUAL SYNC CLOUD ────────────
+async function handleManualSyncCloud() {
+    const btn = document.getElementById('sync-cloud-btn');
+    if (btn) {
+        btn.textContent = 'Syncing...';
+        btn.disabled = true;
+    }
+    showToast('Fetching latest records from Supabase Cloud...', 'info');
+    try {
+        if (window.dataStore && typeof dataStore.syncFromSupabase === 'function') {
+            await dataStore.syncFromSupabase();
+            refreshAdminView();
+            showToast('Admin dashboard synchronized with Cloud ✓', 'success');
+        }
+    } catch (e) {
+        console.error('Manual sync error:', e);
+        showToast('Sync warning: ' + e.message, 'warning');
+    } finally {
+        if (btn) {
+            btn.textContent = '⟳ Sync Cloud';
+            btn.disabled = false;
+        }
+    }
+}
+
