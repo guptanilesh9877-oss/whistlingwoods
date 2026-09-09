@@ -302,7 +302,7 @@ function drawQRPlaceholder() {
 
     // Overlay text
     ctx.fillStyle = 'rgba(141, 106, 174, 0.9)';
-    ctx.font = "bold 14px 'Helvetica Custom', 'Poppins', sans-serif";
+    ctx.font = "bold 14px 'Inter', 'Plus Jakarta Sans', sans-serif";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -460,31 +460,63 @@ function handleRegistrationSubmit() {
     const couponCode = appliedCoupon ? appliedCoupon.code : '';
     const pricing = dataStore.calculatePrice(couponCode);
     const referralCode = document.getElementById('reg-referral').value.trim();
+    const userEmail = fields.email.value.trim().toLowerCase();
 
-    // Check duplicate email
+    // Check duplicate email: allow registration until screenshot and final submission are completed
     const existing = dataStore.getRegistrations().find(
-        r => r.email === fields.email.value.trim().toLowerCase()
+        r => r.email && r.email.trim().toLowerCase() === userEmail
     );
-    if (existing) {
-        showToast('This email is already registered!', 'error');
-        return;
-    }
 
-    // Save registration (without payment info yet)
-    currentRegistration = dataStore.addRegistration({
-        name: fields.name.value.trim(),
-        email: fields.email.value.trim(),
-        phone: fields.phone.value.trim(),
-        year: fields.year.value,
-        college: fields.college.value.trim(),
-        referredBy: referralCode,
-        couponUsed: couponCode,
-        couponDiscount: pricing.couponDiscount,
-        finalPrice: pricing.finalPrice
-    });
+    if (existing) {
+        // Only block if BOTH transaction ID AND payment screenshot are already submitted
+        const isCompleted = Boolean(existing.transactionId && existing.paymentScreenshot);
+        if (isCompleted) {
+            showToast('This email has already completed registration and submitted payment! View your pass in "Find My Pass".', 'info');
+            return;
+        }
+
+        // Update existing incomplete registration and proceed to payment
+        currentRegistration = dataStore.updateRegistration(existing.id, {
+            name: fields.name.value.trim(),
+            phone: fields.phone.value.trim(),
+            year: fields.year.value,
+            college: fields.college.value.trim(),
+            referredBy: referralCode || existing.referredBy,
+            couponUsed: couponCode,
+            couponDiscount: pricing.couponDiscount,
+            finalPrice: pricing.finalPrice
+        }) || existing;
+
+        showToast('Resuming registration for ' + fields.email.value.trim(), 'info');
+    } else {
+        // Save new registration
+        currentRegistration = dataStore.addRegistration({
+            name: fields.name.value.trim(),
+            email: fields.email.value.trim(),
+            phone: fields.phone.value.trim(),
+            year: fields.year.value,
+            college: fields.college.value.trim(),
+            referredBy: referralCode,
+            couponUsed: couponCode,
+            couponDiscount: pricing.couponDiscount,
+            finalPrice: pricing.finalPrice
+        });
+    }
 
     // Update payment amount display
     document.getElementById('payment-amount-display').textContent = '₹' + pricing.finalPrice;
+
+    // Check if screenshot was previously uploaded for this registration
+    const preview = document.getElementById('screenshot-preview');
+    const uploadContent = document.getElementById('upload-content');
+    if (currentRegistration && currentRegistration.paymentScreenshot && preview && uploadContent) {
+        preview.src = currentRegistration.paymentScreenshot;
+        preview.style.display = 'block';
+        uploadContent.style.display = 'none';
+    } else if (preview && uploadContent) {
+        preview.style.display = 'none';
+        uploadContent.style.display = '';
+    }
 
     // Navigate to payment
     navigateTo('payment');
@@ -565,16 +597,23 @@ function handleScreenshotUpload(file) {
 
             const preview = document.getElementById('screenshot-preview');
             const content = document.getElementById('upload-content');
-            preview.src = compressedDataUrl;
-            preview.style.display = 'block';
-            content.style.display = 'none';
+            const zone = document.getElementById('screenshot-zone');
+            if (preview) {
+                preview.src = compressedDataUrl;
+                preview.style.display = 'block';
+            }
+            if (content) content.style.display = 'none';
+            if (zone) zone.classList.remove('error-pulse');
 
             // Save to current registration
             if (currentRegistration) {
+                currentRegistration.paymentScreenshot = compressedDataUrl;
                 dataStore.updateRegistration(currentRegistration.id, {
                     paymentScreenshot: compressedDataUrl
                 });
             }
+
+            showToast('Payment screenshot uploaded successfully ✓', 'success');
         };
         img.src = e.target.result;
     };
@@ -582,24 +621,47 @@ function handleScreenshotUpload(file) {
 }
 
 function handlePaymentConfirm() {
-    const txnId = document.getElementById('txn-id').value.trim();
-
-    if (!txnId) {
-        showToast('Please enter your transaction ID', 'error');
-        document.getElementById('txn-id').classList.add('error');
-        return;
-    }
+    const txnInput = document.getElementById('txn-id');
+    const txnId = txnInput ? txnInput.value.trim() : '';
 
     if (!currentRegistration) {
-        showToast('Registration data not found. Please register again.', 'error');
+        showToast('Registration session not found. Please fill registration details.', 'error');
         navigateTo('register');
         return;
     }
 
+    if (!txnId || txnId.length < 4) {
+        showToast('Please enter your 12-digit UPI Reference / UTR / Transaction ID', 'error');
+        if (txnInput) {
+            txnInput.classList.add('error');
+            txnInput.focus();
+        }
+        return;
+    }
+    if (txnInput) txnInput.classList.remove('error');
+
+    // MANDATORY SCREENSHOT CHECK
+    const hasScreenshot = Boolean(
+        currentRegistration.paymentScreenshot && 
+        currentRegistration.paymentScreenshot.length > 50
+    );
+
+    if (!hasScreenshot) {
+        showToast('Payment screenshot is mandatory! Please upload your payment receipt screenshot.', 'error');
+        const zone = document.getElementById('screenshot-zone');
+        if (zone) {
+            zone.classList.remove('error-pulse');
+            void zone.offsetWidth; // force DOM reflow to retrigger animation
+            zone.classList.add('error-pulse');
+            zone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+
     // Update registration with payment info
-    dataStore.updateRegistration(currentRegistration.id, {
+    currentRegistration = dataStore.updateRegistration(currentRegistration.id, {
         transactionId: txnId
-    });
+    }) || currentRegistration;
 
     // Populate confirmation ticket
     populateConfirmation(currentRegistration);
@@ -688,14 +750,14 @@ function renderQRCanvasFallback(container, text) {
 
     // Simple visual pattern representation
     ctx.fillStyle = '#8d6aae';
-    ctx.font = "bold 12px 'Helvetica Custom', 'Poppins', sans-serif";
+    ctx.font = "bold 12px 'Inter', 'Plus Jakarta Sans', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('ENTRY PASS', 95, 30);
     ctx.fillStyle = '#111111';
     ctx.font = 'bold 15px monospace';
     ctx.fillText(text, 95, 95);
     ctx.fillStyle = '#666666';
-    ctx.font = "11px 'Helvetica Custom', 'Poppins', sans-serif";
+    ctx.font = "11px 'Inter', 'Plus Jakarta Sans', sans-serif";
     ctx.fillText('Scan at WWI Gate', 95, 140);
     container.appendChild(canvas);
 }
@@ -889,34 +951,90 @@ function escapeHTML(str) {
 }
 
 // ──────────── UPI PAYMENT ACTIONS ────────────
-function openUPIApp() {
+function payWithApp(app) {
     const amountEl = document.getElementById('payment-amount-display');
     const amount = amountEl ? amountEl.textContent.replace(/[₹,]/g, '').trim() : '150';
-    const upiVpa = CONFIG.UPI_VPA || 'vigorlaunchpad@ybl';
+    const upiVpa = CONFIG.UPI_VPA || '7208070768@ibl';
     const payeeName = encodeURIComponent(CONFIG.UPI_PAYEE_NAME || 'Vigor LaunchPad');
     const note = encodeURIComponent('Celebrate Cinema 2026 Academic Trek');
-    const upiUrl = `upi://pay?pa=${upiVpa}&pn=${payeeName}&am=${amount}&cu=INR&tn=${note}`;
 
-    // On mobile, this opens the UPI app chooser
-    // On desktop it usually does nothing visible — show toast explaining
-    const a = document.createElement('a');
-    a.href = upiUrl;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const upiQuery = `pa=${upiVpa}&pn=${payeeName}&am=${amount}&cu=INR&tn=${note}`;
+    const standardUpiUrl = `upi://pay?${upiQuery}`;
 
-    showToast(`Opening UPI app for ₹${amount} payment...`, 'info');
+    const ua = navigator.userAgent || navigator.vendor || window.opera || '';
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isMobile = isAndroid || isIOS;
+
+    let targetUrl = standardUpiUrl;
+    let appDisplayName = 'UPI App';
+
+    if (app === 'phonepe') {
+        appDisplayName = 'PhonePe';
+        if (isAndroid) {
+            // Android package intent opens PhonePe directly without generic system chooser
+            targetUrl = `intent://pay?${upiQuery}#Intent;scheme=upi;package=com.phonepe.app;end`;
+        } else if (isIOS) {
+            targetUrl = `phonepe://pay?${upiQuery}`;
+        } else {
+            targetUrl = standardUpiUrl;
+        }
+    } else if (app === 'gpay') {
+        appDisplayName = 'Google Pay';
+        if (isAndroid) {
+            targetUrl = `intent://pay?${upiQuery}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end`;
+        } else if (isIOS) {
+            targetUrl = `gpay://upi/pay?${upiQuery}`;
+        } else {
+            targetUrl = standardUpiUrl;
+        }
+    } else if (app === 'paytm') {
+        appDisplayName = 'Paytm';
+        if (isAndroid) {
+            targetUrl = `intent://pay?${upiQuery}#Intent;scheme=upi;package=net.one97.paytm;end`;
+        } else if (isIOS) {
+            targetUrl = `paytmmp://pay?${upiQuery}`;
+        } else {
+            targetUrl = standardUpiUrl;
+        }
+    } else {
+        appDisplayName = 'UPI App';
+        targetUrl = standardUpiUrl;
+    }
+
+    if (!isMobile) {
+        showToast(`Desktop detected: Please scan QR code with ${appDisplayName} or copy UPI ID ${upiVpa}`, 'info');
+    } else {
+        showToast(`Opening ${appDisplayName} for ₹${amount} payment...`, 'info');
+    }
+
+    try {
+        const a = document.createElement('a');
+        a.href = targetUrl;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            if (document.body.contains(a)) document.body.removeChild(a);
+        }, 1200);
+    } catch (e) {
+        window.location.href = targetUrl;
+    }
+}
+
+function openUPIApp() {
+    payWithApp('other');
 }
 
 function copyUPIID() {
-    const upiVpa = CONFIG.UPI_VPA || 'vigorlaunchpad@ybl';
+    const upiVpa = CONFIG.UPI_VPA || '7208070768@ibl';
     const btn = document.getElementById('copy-upi-btn');
 
     const doFallback = () => {
         const ta = document.createElement('textarea');
         ta.value = upiVpa;
-        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
         document.body.appendChild(ta);
         ta.select();
         document.execCommand('copy');
@@ -929,11 +1047,14 @@ function copyUPIID() {
             btn.classList.add('copied');
             const orig = btn.innerHTML;
             btn.innerHTML = `
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;">
                     <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                Copied!`;
-            setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2500);
+                <span>Copied!</span>`;
+            setTimeout(() => {
+                btn.innerHTML = orig;
+                btn.classList.remove('copied');
+            }, 2500);
         }
     };
 
@@ -1113,10 +1234,10 @@ function savePassAsImage(source) {
 
     // ── Event title ──
     ctx.fillStyle = '#f7e7c5';
-    ctx.font = "bold 20px 'Integral CF', 'Helvetica Custom', sans-serif";
+    ctx.font = "bold 20px 'Integral CF', 'Inter', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('CELEBRATE CINEMA 2026', W / 2, 56);
-    ctx.font = "600 12px 'Helvetica Custom', 'Poppins', sans-serif";
+    ctx.font = "600 12px 'Inter', 'Plus Jakarta Sans', sans-serif";
     ctx.fillStyle = '#a882c8';
     ctx.letterSpacing = '3px';
     ctx.fillText('THE ACADEMIC TREK  •  OFFICIAL ENTRY PASS', W / 2, 82);
@@ -1146,12 +1267,12 @@ function savePassAsImage(source) {
             ctx.fillStyle = 'rgba(255,255,255,0.03)';
             ctx.fillRect(26, y - 16, W - 52, 36);
         }
-        ctx.font = "500 12px 'Helvetica Custom', 'Poppins', sans-serif";
+        ctx.font = "500 12px 'Inter', 'Plus Jakarta Sans', sans-serif";
         ctx.fillStyle = 'rgba(247,231,197,0.6)';
         ctx.textAlign = 'left';
         ctx.fillText(label.toUpperCase(), labelX, y);
 
-        ctx.font = "600 14px 'Helvetica Custom', 'Poppins', sans-serif";
+        ctx.font = "600 14px 'Inter', 'Plus Jakarta Sans', sans-serif";
         ctx.fillStyle = (label === 'Payment Status' && reg.verified)
             ? '#10b981'
             : (label === 'Trek Dates' ? '#f7e7c5' : '#ffffff');
@@ -1171,7 +1292,7 @@ function savePassAsImage(source) {
     // ── QR Section ──
     y += 24;
     ctx.fillStyle = '#f7e7c5';
-    ctx.font = "bold 11px 'Integral CF', 'Helvetica Custom', sans-serif";
+    ctx.font = "bold 11px 'Integral CF', 'Inter', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('OFFICIAL ENTRY PASS QR CODE', W / 2, y);
     y += 18;
@@ -1188,19 +1309,19 @@ function savePassAsImage(source) {
         ctx.fillStyle = 'rgba(255,255,255,0.15)';
         ctx.fillRect((W - 160) / 2, y, 160, 160);
         ctx.fillStyle = 'rgba(247,231,197,0.5)';
-        ctx.font = "12px 'Helvetica Custom', 'Poppins', sans-serif";
+        ctx.font = "12px 'Inter', 'Plus Jakarta Sans', sans-serif";
         ctx.fillText('[QR not yet generated]', W / 2, y + 85);
         y += 175;
     }
 
     ctx.fillStyle = 'rgba(247,231,197,0.5)';
-    ctx.font = "11px 'Helvetica Custom', 'Poppins', sans-serif";
+    ctx.font = "11px 'Inter', 'Plus Jakarta Sans', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('Scan at Whistling Woods International Entry Gate', W / 2, y + 8);
 
     // ── Footer ──
     ctx.fillStyle = 'rgba(247,231,197,0.45)';
-    ctx.font = "10px 'Helvetica Custom', 'Poppins', sans-serif";
+    ctx.font = "10px 'Inter', 'Plus Jakarta Sans', sans-serif";
     ctx.fillText('Celebrate Cinema 2026  •  Whistling Woods International, Film City, Mumbai', W / 2, H - 24);
 
     // ── Download ──
