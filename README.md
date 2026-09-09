@@ -8,8 +8,7 @@ Official event registration and attendee management platform for **Celebrate Cin
 
 - **Cinematic Experience**: Dark theme with WWI brand colors (`#af1996`, gold, deep purple), glassmorphism, floating particles, bokeh background, and smooth micro-interactions.
 - **Dynamic Pricing & Discounts**:
-  - Base Price: ₹250
-  - Pre-applied Early Bird Discount: ₹150 final price
+  - Early Bird Price: ₹150
   - Dynamic coupon code validator with instant discount calculation
   - Viral referral link generator for students with automated tracking
 - **Secure UPI Payment**: QR code scanner payment interface with transaction ID reference & optional payment screenshot upload.

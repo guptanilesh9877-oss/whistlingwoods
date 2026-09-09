@@ -3,8 +3,8 @@
 // ============================================
 
 const CONFIG = {
-    BASE_PRICE: 250,
-    EARLY_BIRD_DISCOUNT: 100,
+    BASE_PRICE: 150,
+    EARLY_BIRD_DISCOUNT: 0,
     MIN_PRICE: 0,
     ADMIN_PASSWORD: 'admin2026',
     EVENT_NAME: 'Celebrate Cinema 2026 — Academic Trek',

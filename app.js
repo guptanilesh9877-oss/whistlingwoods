@@ -376,19 +376,35 @@ function updatePricingDisplay() {
     const couponCode = appliedCoupon ? appliedCoupon.code : '';
     const pricing = dataStore.calculatePrice(couponCode);
 
-    document.getElementById('price-base').textContent = '₹' + pricing.basePrice;
-    document.getElementById('price-discount').textContent = '−₹' + pricing.earlyBird;
+    const priceBase = document.getElementById('price-base');
+    if (priceBase) priceBase.textContent = '₹' + pricing.basePrice;
 
-    const couponLine = document.getElementById('coupon-price-line');
-    if (pricing.couponValid && pricing.couponDiscount > 0) {
-        couponLine.style.display = 'flex';
-        document.getElementById('coupon-code-display').textContent = couponCode;
-        document.getElementById('price-coupon').textContent = '−₹' + pricing.couponDiscount;
-    } else {
-        couponLine.style.display = 'none';
+    const discountEl = document.getElementById('price-discount');
+    const discountLine = document.getElementById('price-discount-line');
+    if (discountEl && discountLine) {
+        if (pricing.earlyBird > 0) {
+            discountLine.style.display = 'flex';
+            discountEl.textContent = '−₹' + pricing.earlyBird;
+        } else {
+            discountLine.style.display = 'none';
+        }
     }
 
-    document.getElementById('price-total').textContent = '₹' + pricing.finalPrice;
+    const couponLine = document.getElementById('coupon-price-line');
+    if (couponLine) {
+        if (pricing.couponValid && pricing.couponDiscount > 0) {
+            couponLine.style.display = 'flex';
+            const couponCodeEl = document.getElementById('coupon-code-display');
+            if (couponCodeEl) couponCodeEl.textContent = couponCode;
+            const priceCouponEl = document.getElementById('price-coupon');
+            if (priceCouponEl) priceCouponEl.textContent = '−₹' + pricing.couponDiscount;
+        } else {
+            couponLine.style.display = 'none';
+        }
+    }
+
+    const priceTotal = document.getElementById('price-total');
+    if (priceTotal) priceTotal.textContent = '₹' + pricing.finalPrice;
 
     // Also update payment page amount
     const paymentDisplay = document.getElementById('payment-amount-display');

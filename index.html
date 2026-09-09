@@ -9,7 +9,7 @@
     <meta property="og:title" content="Celebrate Cinema 2026 | Whistling Woods International">
     <meta property="og:description" content="Academic Trek 2026 — 08th & 09th October 2026 at Whistling Woods International, Film City, Mumbai. Promoted by CareerBeam - Vigor.">
     <meta property="og:type" content="website">
-    <link rel="stylesheet" href="style.css?v=3.7">
+    <link rel="stylesheet" href="style.css?v=3.8">
     <link rel="icon" type="image/png" href="assets/cc26-logo.png">
     <!-- QR Code Generation -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -382,12 +382,21 @@
             
             <div class="pricing-hero reveal-up">
                 <div class="glass-card pricing-card-hero">
-                    <div class="pricing-badge">Early Bird Pass</div>
-                    <div class="pricing-original">₹250</div>
+                    <div class="pricing-badge">Academic Trek Pass</div>
+                    <div class="pricing-tier-label">Early Bird Price</div>
                     <div class="pricing-current">₹150</div>
-                    <div class="pricing-savings">Save ₹100 • Early Bird Pre-Applied</div>
                     <p class="pricing-desc">Full 2-Day All-Access Pass to Film City Studios, Workshops & Masterclasses</p>
                     <p class="pricing-note">Additional institutional discounts applicable via coupon codes</p>
+                    
+                    <div class="pricing-policy-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="policy-badge-icon">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span><strong>Policy Notice:</strong> Academic passes are strictly non-refundable and non-transferable once confirmed.</span>
+                    </div>
+
                     <button class="btn btn-gold" onclick="navigateTo('register')">
                         Claim Your Pass
                         <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -478,12 +487,12 @@
                 <div class="glass-card pricing-card" id="live-pricing-card">
                     <h3>Pass Breakdown</h3>
                     <div class="price-line">
-                        <span>Standard Base Fee</span>
-                        <span id="price-base">₹250</span>
+                        <span>Early Bird Price</span>
+                        <span id="price-base">₹150</span>
                     </div>
-                    <div class="price-line discount">
-                        <span>Early Bird Discount</span>
-                        <span id="price-discount">−₹100</span>
+                    <div class="price-line discount" id="price-discount-line" style="display: none;">
+                        <span>Discount</span>
+                        <span id="price-discount">−₹0</span>
                     </div>
                     <div class="price-line coupon-line" id="coupon-price-line" style="display: none;">
                         <span>Coupon (<span id="coupon-code-display"></span>)</span>
@@ -493,6 +502,15 @@
                     <div class="price-line total">
                         <span>Total Payable</span>
                         <span id="price-total" class="price-final">₹150</span>
+                    </div>
+
+                    <div class="pricing-policy-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="policy-badge-icon">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span><strong>Policy Notice:</strong> Academic passes are strictly non-refundable and non-transferable once confirmed.</span>
                     </div>
                 </div>
             </div>
@@ -546,6 +564,15 @@
                             <label class="form-label" for="reg-referral">Referral Code</label>
                             <input type="text" id="reg-referral" class="form-input" placeholder="Optional referral code">
                         </div>
+                    </div>
+
+                    <div class="form-policy-note">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="policy-mini-icon">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span>Please Note: All passes are strictly non-refundable and non-transferable once confirmed.</span>
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-glow btn-full" id="submit-registration-btn">
@@ -626,6 +653,15 @@
                             </div>
                             <img id="screenshot-preview" class="screenshot-preview" alt="Payment screenshot" style="display: none;">
                         </div>
+                    </div>
+
+                    <div class="payment-policy-note">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="policy-mini-icon">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span><strong>Important:</strong> Registration fees are strictly non-refundable once payment is completed.</span>
                     </div>
 
                     <button type="button" id="confirm-payment-btn" class="btn btn-primary btn-glow btn-full">
@@ -1039,7 +1075,7 @@
                 <h3>Add New Promo / Coupon Code</h3>
                 <form id="add-coupon-form" class="coupon-form">
                     <input type="text" id="new-coupon-code" class="form-input" placeholder="Coupon Code (e.g. COLLEGE20)" required style="text-transform: uppercase;">
-                    <input type="number" id="new-coupon-discount" class="form-input" placeholder="Discount Amount (₹)" required min="1" max="250">
+                    <input type="number" id="new-coupon-discount" class="form-input" placeholder="Discount Amount (₹)" required min="1" max="150">
                     <input type="text" id="new-coupon-desc" class="form-input" placeholder="Description (optional)">
                     <button type="submit" class="btn btn-primary">Create Coupon</button>
                 </form>
@@ -1175,10 +1211,10 @@
 <div id="toast-container"></div>
 
 <!-- ═══ SCRIPTS ═══ -->
-<script src="data.js?v=3.7"></script>
-<script src="animations.js?v=3.7"></script>
-<script src="app.js?v=3.7"></script>
-<script src="admin.js?v=3.7"></script>
+<script src="data.js?v=3.8"></script>
+<script src="animations.js?v=3.8"></script>
+<script src="app.js?v=3.8"></script>
+<script src="admin.js?v=3.8"></script>
 
 </body>
 </html>
