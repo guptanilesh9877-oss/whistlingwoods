@@ -9,7 +9,7 @@
     <meta property="og:title" content="Celebrate Cinema 2026 | Whistling Woods International">
     <meta property="og:description" content="Academic Trek 2026 — 08th & 09th October 2026 at Whistling Woods International, Film City, Mumbai. Promoted by CareerBeam - Vigor.">
     <meta property="og:type" content="website">
-    <link rel="stylesheet" href="style.css?v=4.1">
+    <link rel="stylesheet" href="style.css?v=4.2">
     <link rel="icon" type="image/png" href="assets/cc26-logo.png">
     <!-- QR Code Generation -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
@@ -40,6 +40,7 @@
         </div>
         <ul class="nav-links" id="nav-links">
             <li><span class="nav-link active" data-page="landing">Home</span></li>
+            <li><span class="nav-link" onclick="scrollToGuidelines(event)" style="cursor:pointer;">Do's &amp; Don'ts</span></li>
             <li><span class="nav-link" data-page="names">Wall of Fame</span></li>
             <li><span class="nav-link" data-page="find-pass">Find My Pass</span></li>
             <li><span class="nav-link nav-cta" data-page="register">Register Now</span></li>
@@ -60,6 +61,7 @@
         <img src="careerbeam_logo.png" alt="CareerBeam" style="height:20px; width:auto; background:#fff; padding:2px 6px; border-radius:3px; object-fit:contain;">
     </div>
     <span class="nav-link" data-page="landing" onclick="navigateAndClose('landing')">Home</span>
+    <span class="nav-link" onclick="scrollToGuidelinesAndClose()">Do's &amp; Don'ts</span>
     <span class="nav-link" data-page="register" onclick="navigateAndClose('register')">Register Now</span>
     <span class="nav-link" data-page="names" onclick="navigateAndClose('names')">Wall of Fame</span>
     <span class="nav-link" data-page="find-pass" onclick="navigateAndClose('find-pass')">Find My Pass</span>
@@ -409,6 +411,163 @@
         </div>
     </div>
 
+    <!-- Event Guidelines (Do's and Don'ts) Section -->
+    <div class="section" id="guidelines-section">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="eyebrow-tag">CAMPUS CODE &amp; EVENT PROTOCOLS</span>
+                <h2 class="section-title gradient-text">Event Guidelines: Do's &amp; Don'ts</h2>
+                <p class="section-subtitle">Ensure a seamless, safe, and enriching experience across Film City studios and masterclass venues</p>
+            </div>
+
+            <div class="guidelines-grid">
+                <!-- Do's Card -->
+                <div class="glass-card guidelines-card card-dos reveal-up">
+                    <div class="guidelines-card-header">
+                        <div class="guidelines-icon-box dos-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                <polyline points="9 12 11 14 15 10"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="guidelines-badge badge-dos">RECOMMENDED PROTOCOLS</div>
+                            <h3 class="guidelines-card-title">What You Should Do (Do's)</h3>
+                        </div>
+                    </div>
+                    <ul class="guidelines-list">
+                        <li>
+                            <span class="g-bullet dos-bullet">✓</span>
+                            <div class="g-content">
+                                <strong>Carry Valid Student / Govt Photo ID:</strong>
+                                <span>Bring your original College ID Card or Govt Photo ID (Aadhaar / Driving License / Voter ID) for mandatory security verification at the main campus gate.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet dos-bullet">✓</span>
+                            <div class="g-content">
+                                <strong>Keep Your Digital QR Pass Handy:</strong>
+                                <span>Save your Celebrate Cinema entry pass on your phone or download the pass image for swift scanning at the registration and check-in desks.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet dos-bullet">✓</span>
+                            <div class="g-content">
+                                <strong>Arrive Punctually by 8:30 AM – 9:00 AM:</strong>
+                                <span>Gates open at 8:30 AM. Trek orientation, celebrity sessions, and studio tours kick off strictly at 9:00 AM. Plan travel to Film City well in advance.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet dos-bullet">✓</span>
+                            <div class="g-content">
+                                <strong>Wear Comfortable Walking Shoes:</strong>
+                                <span>The academic studio trek covers expansive sound stages, chroma studios, and production lots. Smart casuals and comfortable footwear are recommended.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet dos-bullet">✓</span>
+                            <div class="g-content">
+                                <strong>Maintain Silence in Masterclasses:</strong>
+                                <span>Switch smartphones to silent or vibrate mode inside screening auditoriums, sound recording stages, and masterclass theatres to honor our guest speakers.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet dos-bullet">✓</span>
+                            <div class="g-content">
+                                <strong>Follow Tour Marshals &amp; Guides:</strong>
+                                <span>Stay with your designated batch and follow instructions of Whistling Woods faculty coordinators and student marshals at all times.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet dos-bullet">✓</span>
+                            <div class="g-content">
+                                <strong>Photography in Designated Public Zones:</strong>
+                                <span>Capture memories, selfies, and reels in public red-carpet backdrops, exhibition corridors, and selfie booths. Tag @whistling_woods on social media!</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Don'ts Card -->
+                <div class="glass-card guidelines-card card-donts reveal-up">
+                    <div class="guidelines-card-header">
+                        <div class="guidelines-icon-box donts-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="guidelines-badge badge-donts">STRICTLY PROHIBITED</div>
+                            <h3 class="guidelines-card-title">What You Must Avoid (Don'ts)</h3>
+                        </div>
+                    </div>
+                    <ul class="guidelines-list">
+                        <li>
+                            <span class="g-bullet donts-bullet">✕</span>
+                            <div class="g-content">
+                                <strong>No Outside Food, Snacks or Drinks:</strong>
+                                <span>Outside food and beverages are strictly barred inside the campus to maintain hygiene. Clean drinking water and cafeteria food courts are accessible.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet donts-bullet">✕</span>
+                            <div class="g-content">
+                                <strong>Strictly No Smoking, Alcohol or Vapes:</strong>
+                                <span>Whistling Woods is a zero-tolerance educational campus. Cigarettes, e-cigarettes/vapes, alcohol, and intoxicating substances will lead to immediate expulsion.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet donts-bullet">✕</span>
+                            <div class="g-content">
+                                <strong>No Recording of Screenings &amp; Masterclasses:</strong>
+                                <span>Audio/video recording, photography, or live streaming during unreleased film screenings or protected industry masterclasses is illegal under copyright laws.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet donts-bullet">✕</span>
+                            <div class="g-content">
+                                <strong>Do Not Touch Expensive Studio Equipment:</strong>
+                                <span>High-end production cameras, lighting fixtures, sound mixing consoles, and set props are delicate and must never be touched without direct mentor supervision.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet donts-bullet">✕</span>
+                            <div class="g-content">
+                                <strong>No Straying into Active Film Sets:</strong>
+                                <span>Film City is an active commercial film &amp; television shooting zone. Wandering into non-authorized shooting floors or private artist vanity areas is strictly prohibited.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet donts-bullet">✕</span>
+                            <div class="g-content">
+                                <strong>Zero Littering on Green Eco-Campus:</strong>
+                                <span>Whistling Woods borders the lush Aarey eco-system. Littering with plastic cups, bottles, or papers is penalized. Use designated recycling bins.</span>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="g-bullet donts-bullet">✕</span>
+                            <div class="g-content">
+                                <strong>No Reselling or Pass Sharing:</strong>
+                                <span>All academic passes are strictly personal, non-transferable, and non-refundable. Impersonation or sharing QR passes will result in entry cancellation.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quick Advice Strip -->
+            <div class="guidelines-notice-strip reveal-up">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="notice-strip-icon">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <span><strong>Security Reminder:</strong> Whistling Woods International &amp; Film City security personnel reserve the right of admission. Please cooperate with security bag inspections at entry.</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Official Marketing Desk & Inquiries -->
     <div class="section" id="contact-section">
         <div class="container">
@@ -513,6 +672,24 @@
                         <span><strong>Policy Notice:</strong> Academic passes are strictly non-refundable and non-transferable once confirmed.</span>
                     </div>
                 </div>
+
+                <!-- Event Quick Rules Box -->
+                <div class="glass-card register-guidelines-box">
+                    <div class="reg-guide-head">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="reg-guide-icon">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                        <h4>Event Quick Rules</h4>
+                    </div>
+                    <ul class="reg-guide-mini-list">
+                        <li><span class="reg-mini-tag do">DO</span> Carry College / Govt Photo ID</li>
+                        <li><span class="reg-mini-tag do">DO</span> Arrive at Film City by 8:30 AM</li>
+                        <li><span class="reg-mini-tag dont">DON'T</span> No outside food, alcohol or vapes</li>
+                        <li><span class="reg-mini-tag dont">DON'T</span> No unauthorized recording in halls</li>
+                    </ul>
+                    <a href="javascript:void(0)" onclick="scrollToGuidelines(event)" class="reg-guide-link">Read Full Campus Do's &amp; Don'ts &rarr;</a>
+                </div>
             </div>
             <!-- Form -->
             <div class="register-form-container glass-card">
@@ -547,6 +724,14 @@
                     <div class="form-group">
                         <label class="form-label" for="reg-college">College / Institution *</label>
                         <input type="text" id="reg-college" class="form-input" required placeholder="Your college or institution name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reg-visit-date">Are you visiting on 8th, 9th or both? *</label>
+                        <select id="reg-visit-date" class="form-input" required>
+                            <option value="Both Days (08th & 09th Oct)" selected>Both Days (08th & 09th Oct) — Full 2-Day Trek Experience</option>
+                            <option value="08th October 2026 (Day 1)">08th October 2026 (Day 1 Only)</option>
+                            <option value="09th October 2026 (Day 2)">09th October 2026 (Day 2 Only)</option>
+                        </select>
                     </div>
 
                     <div class="form-divider"><span>Discounts & Referral</span></div>
@@ -794,6 +979,10 @@
                         <span class="ticket-value" style="color:var(--gold);">08th & 09th October 2026 (9:00 AM – 5:00 PM)</span>
                     </div>
                     <div class="ticket-row">
+                        <span class="ticket-label">Visiting Dates</span>
+                        <span class="ticket-value" id="ticket-visit-date" style="color:var(--gold);">Both Days (08th &amp; 09th Oct)</span>
+                    </div>
+                    <div class="ticket-row">
                         <span class="ticket-label">Venue</span>
                         <span class="ticket-value">WWI, Film City, Goregaon East, Mumbai</span>
                     </div>
@@ -920,6 +1109,10 @@
                         <div class="ticket-row">
                             <span class="ticket-label">Trek Dates</span>
                             <span class="ticket-value" style="color:var(--gold);">08th &amp; 09th October 2026 (9:00 AM &ndash; 5:00 PM)</span>
+                        </div>
+                        <div class="ticket-row">
+                            <span class="ticket-label">Visiting Dates</span>
+                            <span class="ticket-value" id="fp-ticket-visit-date" style="color:var(--gold);">&mdash;</span>
                         </div>
                         <div class="ticket-row">
                             <span class="ticket-label">Venue</span>
@@ -1065,6 +1258,7 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th>College</th>
+                            <th>Visiting Date</th>
                             <th>Amount</th>
                             <th>Coupon</th>
                             <th>Txn ID</th>

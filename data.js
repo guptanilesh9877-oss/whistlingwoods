@@ -123,6 +123,7 @@ class DataStore {
             phone: r.phone || '',
             college: r.college || '',
             year: r.year || '',
+            visit_date: r.visitDate || r.visit_date || 'Both Days (08th & 09th Oct)',
             referral_code: r.referralCode || r.referral_code || '',
             referred_by: r.referredBy || r.referred_by || '',
             coupon_used: r.couponUsed || r.coupon_used || '',
@@ -147,6 +148,7 @@ class DataStore {
             phone: row.phone || '',
             college: row.college || '',
             year: row.year || '',
+            visitDate: row.visit_date || row.visitDate || 'Both Days (08th & 09th Oct)',
             referralCode: row.referral_code || row.referralCode || '',
             referredBy: row.referred_by || row.referredBy || '',
             couponUsed: row.coupon_used || row.couponUsed || '',
@@ -324,6 +326,7 @@ class DataStore {
             phone: data.phone.trim(),
             college: data.college.trim(),
             year: data.year,
+            visitDate: data.visitDate || 'Both Days (08th & 09th Oct)',
             referralCode: this._generateReferralCode(data.name),
             referredBy: data.referredBy || '',
             couponUsed: data.couponUsed || '',
@@ -590,7 +593,7 @@ class DataStore {
         const regs = this.getRegistrations();
         if (!regs.length) return '';
         const headers = [
-            'ID', 'Name', 'Email', 'Phone', 'College', 'Year',
+            'ID', 'Name', 'Email', 'Phone', 'College', 'Year', 'Visiting Dates',
             'Base Price', 'Early Bird', 'Coupon', 'Coupon Discount',
             'Final Price', 'Transaction ID', 'Referred By',
             'Referral Code', 'Verified', 'Attended', 'Check-in Time', 'Date'
@@ -598,7 +601,8 @@ class DataStore {
         const escape = v => `"${String(v).replace(/"/g, '""')}"`;
         const rows = regs.map(r => [
             r.id, escape(r.name), escape(r.email), escape(r.phone),
-            escape(r.college), r.year, r.basePrice, r.earlyBirdDiscount,
+            escape(r.college), r.year, escape(r.visitDate || 'Both Days (08th & 09th Oct)'),
+            r.basePrice, r.earlyBirdDiscount,
             r.couponUsed || '—', r.couponDiscount || 0, r.finalPrice,
             r.transactionId || '—', r.referredBy || '—', r.referralCode,
             r.verified ? 'Yes' : 'No',

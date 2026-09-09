@@ -462,6 +462,9 @@ function handleRegistrationSubmit() {
     const referralCode = document.getElementById('reg-referral').value.trim();
     const userEmail = fields.email.value.trim().toLowerCase();
 
+    const visitDateInput = document.getElementById('reg-visit-date');
+    const visitDate = (visitDateInput && visitDateInput.value) ? visitDateInput.value : 'Both Days (08th & 09th Oct)';
+
     // Check duplicate email: allow registration until screenshot and final submission are completed
     const existing = dataStore.getRegistrations().find(
         r => r.email && r.email.trim().toLowerCase() === userEmail
@@ -481,6 +484,7 @@ function handleRegistrationSubmit() {
             phone: fields.phone.value.trim(),
             year: fields.year.value,
             college: fields.college.value.trim(),
+            visitDate: visitDate,
             referredBy: referralCode || existing.referredBy,
             couponUsed: couponCode,
             couponDiscount: pricing.couponDiscount,
@@ -496,6 +500,7 @@ function handleRegistrationSubmit() {
             phone: fields.phone.value.trim(),
             year: fields.year.value,
             college: fields.college.value.trim(),
+            visitDate: visitDate,
             referredBy: referralCode,
             couponUsed: couponCode,
             couponDiscount: pricing.couponDiscount,
@@ -680,6 +685,11 @@ function populateConfirmation(reg) {
     document.getElementById('ticket-name').textContent = reg.name;
     document.getElementById('ticket-id').textContent = reg.id;
     document.getElementById('ticket-amount').textContent = '₹' + reg.finalPrice;
+
+    const visitDateEl = document.getElementById('ticket-visit-date');
+    if (visitDateEl) {
+        visitDateEl.textContent = reg.visitDate || 'Both Days (08th & 09th Oct)';
+    }
     
     // Status text
     const statusEl = document.getElementById('ticket-status');
@@ -1136,6 +1146,7 @@ function renderFoundTicket(reg) {
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     set('fp-ticket-name', reg.name);
     set('fp-ticket-id', reg.id);
+    set('fp-ticket-visit-date', reg.visitDate || 'Both Days (08th & 09th Oct)');
     set('fp-ticket-college', reg.college);
     set('fp-ticket-amount', '₹' + reg.finalPrice);
 
@@ -1251,7 +1262,7 @@ function savePassAsImage(source) {
     const rows = [
         ['Attendee Name', reg.name],
         ['Registration ID', reg.id],
-        ['Trek Dates', '08th & 09th October 2026'],
+        ['Visiting Dates', reg.visitDate || 'Both Days (08th & 09th Oct)'],
         ['Time', '9:00 AM – 5:00 PM IST'],
         ['Venue', 'WWI, Film City, Goregaon East, Mumbai'],
         ['College', reg.college],
@@ -1275,7 +1286,7 @@ function savePassAsImage(source) {
         ctx.font = "600 14px 'Inter', 'Plus Jakarta Sans', sans-serif";
         ctx.fillStyle = (label === 'Payment Status' && reg.verified)
             ? '#10b981'
-            : (label === 'Trek Dates' ? '#f7e7c5' : '#ffffff');
+            : (label === 'Visiting Dates' || label === 'Trek Dates' ? '#f7e7c5' : '#ffffff');
         ctx.textAlign = 'right';
         ctx.fillText(value, valueX, y);
         y += 42;
@@ -1369,4 +1380,24 @@ function roundRectFill(ctx, x, y, w, h, rTop, rBot) {
     ctx.quadraticCurveTo(x, y, x + rt, y);
     ctx.closePath();
     ctx.fill();
+}
+
+// ──────────── GUIDELINES SCROLL HELPER ────────────
+function scrollToGuidelines(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    if (currentPage !== 'landing') {
+        navigateTo('landing');
+        setTimeout(() => {
+            const el = document.getElementById('guidelines-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 320);
+    } else {
+        const el = document.getElementById('guidelines-section');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+function scrollToGuidelinesAndClose() {
+    closeMobileNav();
+    scrollToGuidelines();
 }

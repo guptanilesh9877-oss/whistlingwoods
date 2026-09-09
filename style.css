@@ -3253,3 +3253,295 @@ select.form-input option:focus {
         padding: 0 16px 36px;
     }
 }
+
+/* ════════════════════════════════════════════════
+   EVENT GUIDELINES (DO'S & DON'TS)
+   ════════════════════════════════════════════════ */
+.guidelines-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+    margin-top: var(--space-xl);
+}
+
+.guidelines-card {
+    padding: 32px 28px;
+    border-radius: var(--radius-lg);
+    position: relative;
+    overflow: hidden;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.guidelines-card:hover {
+    transform: translateY(-4px);
+}
+
+.card-dos {
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(22, 19, 36, 0.9) 100%);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.06);
+}
+
+.card-dos:hover {
+    box-shadow: 0 16px 40px rgba(16, 185, 129, 0.14);
+    border-color: rgba(16, 185, 129, 0.55);
+}
+
+.card-donts {
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(22, 19, 36, 0.9) 100%);
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.06);
+}
+
+.card-donts:hover {
+    box-shadow: 0 16px 40px rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.55);
+}
+
+.guidelines-card-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.guidelines-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.guidelines-icon-box svg {
+    width: 24px;
+    height: 24px;
+}
+
+.dos-icon {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.donts-icon {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.guidelines-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+.badge-dos {
+    background: rgba(16, 185, 129, 0.18);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-donts {
+    background: rgba(239, 68, 68, 0.18);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.guidelines-card-title {
+    font-size: 1.22rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.2px;
+}
+
+.guidelines-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.guidelines-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.g-bullet {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.76rem;
+    font-weight: 900;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.dos-bullet {
+    background: rgba(16, 185, 129, 0.18);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.donts-bullet {
+    background: rgba(239, 68, 68, 0.18);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.g-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.g-content strong {
+    color: var(--gold);
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: -0.1px;
+}
+
+.g-content span {
+    color: var(--text-secondary);
+    font-size: 0.86rem;
+    line-height: 1.48;
+}
+
+.guidelines-notice-strip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(141, 106, 174, 0.12);
+    border: 1px solid rgba(141, 106, 174, 0.35);
+    border-radius: var(--radius-md);
+    padding: 14px 20px;
+    margin-top: var(--space-xl);
+    color: var(--champagne);
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.notice-strip-icon {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    color: var(--gold);
+}
+
+/* ── Registration Page Quick Rules Box ── */
+.register-guidelines-box {
+    margin-top: var(--space-md);
+    padding: 18px 20px;
+    border: 1px solid rgba(247, 231, 197, 0.2);
+    border-radius: var(--radius-md);
+    background: rgba(22, 19, 36, 0.85);
+}
+
+.reg-guide-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.reg-guide-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--gold);
+}
+
+.reg-guide-head h4 {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--gold);
+    font-weight: 700;
+}
+
+.reg-guide-mini-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.reg-mini-tag {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    margin-right: 6px;
+    display: inline-block;
+}
+
+.reg-mini-tag.do {
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.reg-mini-tag.dont {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.reg-guide-link {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.82rem;
+    color: var(--gold);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.reg-guide-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+/* ── Admin Badge Gold Small ── */
+.badge-gold-sm {
+    background: rgba(247, 231, 197, 0.12);
+    color: var(--gold);
+    border: 1px solid rgba(247, 231, 197, 0.3);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+/* ── Media Query for Guidelines ── */
+@media (max-width: 900px) {
+    .guidelines-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+    .guidelines-card {
+        padding: 24px 20px;
+    }
+}
+

@@ -60,7 +60,8 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             r.email.toLowerCase().includes(q) ||
             r.id.toLowerCase().includes(q) ||
             (r.phone && r.phone.includes(q)) ||
-            (r.college && r.college.toLowerCase().includes(q))
+            (r.college && r.college.toLowerCase().includes(q)) ||
+            (r.visitDate && r.visitDate.toLowerCase().includes(q))
         );
     }
 
@@ -83,6 +84,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             <td title="${escapeHTML(r.email)}">${escapeHTML(r.email)}</td>
             <td>${escapeHTML(r.phone)}</td>
             <td title="${escapeHTML(r.college)}">${escapeHTML(r.college)}</td>
+            <td title="${escapeHTML(r.visitDate || 'Both Days')}"><span class="badge badge-gold-sm">${escapeHTML(r.visitDate ? (r.visitDate.includes('Both') ? 'Both Days' : (r.visitDate.includes('08th') ? 'Day 1 (8th)' : 'Day 2 (9th)')) : 'Both Days')}</span></td>
             <td>₹${r.finalPrice}</td>
             <td>${r.couponUsed || '—'}</td>
             <td title="${r.transactionId || '—'}">${r.transactionId ? r.transactionId.substring(0, 12) : '—'}</td>
