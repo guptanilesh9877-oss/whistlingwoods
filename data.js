@@ -446,7 +446,7 @@ class DataStore {
         }
 
         this.saveRegistrations(regs);
-        await this.syncToSupabase(reg);
+        this.syncToSupabase(reg);
 
         return {
             success: true,

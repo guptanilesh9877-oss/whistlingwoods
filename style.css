@@ -203,6 +203,7 @@ body::after {
 
 .page.active {
     display: block;
+    opacity: 1;
 }
 
 .page.visible {
