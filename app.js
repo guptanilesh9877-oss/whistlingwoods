@@ -102,9 +102,13 @@ function navigateTo(page) {
 }
 
 function handleHashRoute() {
-    const hash = window.location.hash.replace('#', '') || 'landing';
+    const rawHash = (window.location.hash || '').replace(/^#/, '');
+    const cleanHash = rawHash.split('?')[0].split('&')[0] || 'landing';
     const validPages = ['landing', 'register', 'payment', 'confirmation', 'admin-login', 'admin', 'names', 'find-pass'];
-    const page = validPages.includes(hash) ? hash : 'landing';
+    const page = validPages.includes(cleanHash) ? cleanHash : 'landing';
+
+    // Also check referral in case query parameters are in hash
+    readReferralFromURL();
 
     if (page !== currentPage) {
         const current = document.getElementById('page-' + currentPage);
@@ -136,11 +140,25 @@ function onPageEnter(page) {
     }
     if (page === 'register') {
         updatePricingDisplay();
-        // Pre-fill referral from URL
-        const urlRef = new URLSearchParams(window.location.search).get('ref');
-        if (urlRef) {
+        // Pre-fill referral from URL or session storage
+        let ref = new URLSearchParams(window.location.search).get('ref');
+        if (!ref && window.location.hash.includes('ref=')) {
+            const hashParts = window.location.hash.split(/[?&]/);
+            for (const part of hashParts) {
+                if (part.startsWith('ref=')) {
+                    ref = decodeURIComponent(part.substring(4));
+                    break;
+                }
+            }
+        }
+        if (!ref) {
+            try { ref = sessionStorage.getItem('cc2026_referral'); } catch (e) {}
+        }
+        if (ref) {
             const refInput = document.getElementById('reg-referral');
-            if (refInput && !refInput.value) refInput.value = urlRef;
+            if (refInput && !refInput.value) {
+                refInput.value = ref.trim().toUpperCase();
+            }
         }
     }
     if (page === 'find-pass') {
@@ -685,14 +703,33 @@ function resetRegistrationForm() {
 
 // ──────────── REFERRAL SYSTEM ────────────
 function readReferralFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const ref = params.get('ref');
+    let ref = new URLSearchParams(window.location.search).get('ref');
+    if (!ref && window.location.hash.includes('ref=')) {
+        const hashParts = window.location.hash.split(/[?&]/);
+        for (const part of hashParts) {
+            if (part.startsWith('ref=')) {
+                ref = decodeURIComponent(part.substring(4));
+                break;
+            }
+        }
+    }
+    if (!ref) {
+        try { ref = sessionStorage.getItem('cc2026_referral'); } catch (e) {}
+    }
     if (ref) {
+        const cleanRef = ref.trim().toUpperCase();
+        try { sessionStorage.setItem('cc2026_referral', cleanRef); } catch (e) {}
         // Pre-fill referral code when on register page
         const refInput = document.getElementById('reg-referral');
-        if (refInput) refInput.value = ref;
-        // Auto-navigate to register
-        setTimeout(() => navigateTo('register'), 100);
+        if (refInput && !refInput.value) refInput.value = cleanRef;
+
+        // Auto-navigate to register if arrived on landing with ref in URL and no explicit other page
+        if ((window.location.search.includes('ref=') || window.location.hash.includes('ref=')) && 
+            (currentPage === 'landing' || window.location.hash.includes('register'))) {
+            setTimeout(() => {
+                if (currentPage !== 'register') navigateTo('register');
+            }, 100);
+        }
     }
 }
 
