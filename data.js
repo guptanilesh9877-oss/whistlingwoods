@@ -53,21 +53,22 @@ class DataStore {
             const url = savedConfig?.url || CONFIG.SUPABASE_URL;
             const anonKey = savedConfig?.anonKey || CONFIG.SUPABASE_ANON_KEY;
 
-            if (url && anonKey && window.supabase) {
-                this.supabaseClient = window.supabase.createClient(url, anonKey);
-                console.log('⚡ Supabase client initialized with cloud backend');
-                this.syncFromSupabase();
-                this._subscribeRealtime();
-            } else if (url && anonKey) {
-                // If library hasn't finished loading yet, retry shortly
-                window.addEventListener('load', () => {
-                    if (window.supabase) {
-                        this.supabaseClient = window.supabase.createClient(url, anonKey);
-                        this.syncFromSupabase();
-                        this._subscribeRealtime();
-                    }
-                });
-            }
+            if (!url || !anonKey) return;
+
+            const tryConnect = (attempts = 15) => {
+                if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    this.supabaseClient = window.supabase.createClient(url, anonKey);
+                    console.log('⚡ Supabase client initialized with cloud backend');
+                    this.syncFromSupabase();
+                    this._subscribeRealtime();
+                } else if (attempts > 0) {
+                    setTimeout(() => tryConnect(attempts - 1), 200);
+                } else {
+                    console.warn('Supabase SDK library not available after retries');
+                }
+            };
+
+            tryConnect();
         } catch (e) {
             console.warn('Supabase init warning:', e);
         }
@@ -80,9 +81,15 @@ class DataStore {
                 .channel('public:registrations')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'registrations' }, payload => {
                     console.log('⚡ Real-time Supabase update received:', payload.eventType);
-                    this.syncFromSupabase();
-                    if (typeof refreshAdminView === 'function') refreshAdminView();
-                    if (typeof renderNamesWall === 'function') renderNamesWall();
+                    if (payload.eventType === 'DELETE' && payload.old && payload.old.id) {
+                        const targetId = payload.old.id;
+                        const regs = this.getRegistrations().filter(r => r.id !== targetId);
+                        this.saveRegistrations(regs);
+                        if (typeof refreshAdminView === 'function') refreshAdminView();
+                        if (typeof renderNamesWall === 'function') renderNamesWall();
+                    } else {
+                        this.syncFromSupabase();
+                    }
                 })
                 .subscribe();
         } catch (e) {
@@ -168,26 +175,20 @@ class DataStore {
     async syncFromSupabase() {
         if (!this.supabaseClient) return;
         try {
-            const { data, error } = await this.supabaseClient.from('registrations').select('*');
+            const { data, error } = await this.supabaseClient
+                .from('registrations')
+                .select('*')
+                .order('timestamp', { ascending: false });
+
             if (error) {
                 console.error('Supabase fetch error:', error.message);
                 return;
             }
             if (data && Array.isArray(data)) {
-                const localRegs = this.getRegistrations();
-                const map = new Map();
-                localRegs.forEach(r => map.set(r.id, r));
-                data.forEach(row => {
-                    const mapped = this._fromDbRecord(row);
-                    map.set(mapped.id, mapped);
-                });
-                this.saveRegistrations(Array.from(map.values()));
-                console.log(`✓ Synced ${data.length} records from Supabase cloud database`);
-
-                // Auto-sync any local-only records up to cloud
-                if (localRegs.length > 0) {
-                    this.syncLocalToSupabase();
-                }
+                // Supabase is the single source of truth across all devices
+                const cloudRegs = data.map(row => this._fromDbRecord(row));
+                this.saveRegistrations(cloudRegs);
+                console.log(`✓ Synced ${cloudRegs.length} authoritative records from Supabase Cloud`);
 
                 if (typeof refreshAdminView === 'function') refreshAdminView();
                 if (typeof renderNamesWall === 'function') renderNamesWall();
@@ -363,22 +364,41 @@ class DataStore {
         return this.getRegistrations().find(r => r.id.toUpperCase() === normalized) || null;
     }
 
-    toggleVerification(id) {
+    async toggleVerification(id) {
         const regs = this.getRegistrations();
         const reg = regs.find(r => r.id === id);
         if (!reg) return null;
         reg.verified = !reg.verified;
         this.saveRegistrations(regs);
-        this.syncToSupabase(reg);
+        await this.syncToSupabase(reg);
         return reg;
     }
 
-    deleteRegistration(id) {
+    async deleteRegistration(id) {
+        // 1. Remove from local array immediately
         const regs = this.getRegistrations().filter(r => r.id !== id);
         this.saveRegistrations(regs);
+
+        // 2. Delete from Supabase cloud database
         if (this.supabaseClient) {
-            this.supabaseClient.from('registrations').delete().eq('id', id).then();
+            try {
+                const { error } = await this.supabaseClient
+                    .from('registrations')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) {
+                    console.error('Supabase delete error:', error.message);
+                    return { success: false, message: error.message };
+                }
+                console.log('✓ Successfully deleted record from Supabase Cloud:', id);
+                return { success: true };
+            } catch (err) {
+                console.error('Supabase delete exception:', err);
+                return { success: false, message: err.message };
+            }
         }
+        return { success: true };
     }
 
     // ──────────── ATTENDANCE SYSTEM ────────────
@@ -426,7 +446,7 @@ class DataStore {
         }
 
         this.saveRegistrations(regs);
-        this.syncToSupabase(reg);
+        await this.syncToSupabase(reg);
 
         return {
             success: true,
@@ -436,14 +456,14 @@ class DataStore {
         };
     }
 
-    toggleAttendance(id) {
+    async toggleAttendance(id) {
         const regs = this.getRegistrations();
         const reg = regs.find(r => r.id === id);
         if (!reg) return null;
         reg.attended = !reg.attended;
         reg.attendedAt = reg.attended ? new Date().toISOString() : null;
         this.saveRegistrations(regs);
-        this.syncToSupabase(reg);
+        await this.syncToSupabase(reg);
         return reg;
     }
 

@@ -19,9 +19,11 @@ function renderAdminDashboard() {
     initAdminSearch();
     initSupabaseUI();
 
-    // Auto-fetch latest cloud registrations from Supabase
+    // Auto-fetch latest cloud registrations from Supabase and refresh view
     if (window.dataStore && typeof dataStore.syncFromSupabase === 'function') {
-        dataStore.syncFromSupabase();
+        dataStore.syncFromSupabase().then(() => {
+            refreshAdminView();
+        });
     }
 }
 
@@ -114,8 +116,8 @@ function renderRegistrationsTable(filter = 'all', search = '') {
 }
 
 // ──────────── TOGGLE VERIFY ────────────
-function handleToggleVerify(id) {
-    const reg = dataStore.toggleVerification(id);
+async function handleToggleVerify(id) {
+    const reg = await dataStore.toggleVerification(id);
     if (reg) {
         showToast(
             reg.verified ? `${reg.name} verified ✓` : `${reg.name} marked as pending`,
@@ -126,8 +128,8 @@ function handleToggleVerify(id) {
 }
 
 // ──────────── TOGGLE ATTENDANCE ────────────
-function handleToggleAttendance(id) {
-    const reg = dataStore.toggleAttendance(id);
+async function handleToggleAttendance(id) {
+    const reg = await dataStore.toggleAttendance(id);
     if (reg) {
         showToast(
             reg.attended ? `Marked checked-in for ${reg.name} 🎫` : `Check-in cancelled for ${reg.name}`,
@@ -138,13 +140,17 @@ function handleToggleAttendance(id) {
 }
 
 // ──────────── DELETE REGISTRATION ────────────
-function handleDeleteRegistration(id) {
+async function handleDeleteRegistration(id) {
     const reg = dataStore.getRegistrationById(id);
     if (!reg) return;
 
-    if (confirm(`Delete registration for "${reg.name}"? This cannot be undone.`)) {
-        dataStore.deleteRegistration(id);
-        showToast('Registration deleted', 'info');
+    if (confirm(`Permanently delete registration for "${reg.name}" (${reg.id})?\n\nThis will remove it from Supabase Cloud database and all synced devices.`)) {
+        const res = await dataStore.deleteRegistration(id);
+        if (res && res.success === false) {
+            showToast('Warning: Deleted locally, but cloud delete error: ' + res.message, 'warning');
+        } else {
+            showToast(`Registration for "${reg.name}" deleted from Cloud ✓`, 'info');
+        }
         refreshAdminView();
     }
 }
@@ -735,11 +741,10 @@ function initSupabaseUI() {
             syncBtn.disabled = true;
             try {
                 await dataStore.syncFromSupabase();
-                await dataStore.syncLocalToSupabase();
                 refreshAdminView();
                 showToast('Cloud database synced successfully!', 'success');
             } catch (err) {
-                showToast('Sync completed', 'info');
+                showToast('Sync error: ' + (err.message || 'Unknown error'), 'error');
             } finally {
                 syncBtn.innerHTML = '↻ Sync Cloud';
                 syncBtn.disabled = false;
