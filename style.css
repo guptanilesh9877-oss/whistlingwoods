@@ -188,9 +188,17 @@ body::after {
 }
 
 .section {
-    padding: var(--space-4xl) 0;
+    padding: var(--space-2xl) 0;
     position: relative;
     z-index: 1;
+}
+
+#about-section {
+    padding-bottom: var(--space-lg);
+}
+
+#celebrity-section {
+    padding-top: var(--space-lg);
 }
 
 .page {
@@ -1041,7 +1049,7 @@ h1, h2, h3, h4 {
     padding: var(--space-3xl) var(--space-2xl);
     border: 1px solid rgba(141, 106, 174, 0.25);
     background: linear-gradient(135deg, rgba(23, 19, 42, 0.9) 0%, rgba(15, 12, 30, 0.95) 100%);
-    margin-bottom: var(--space-4xl);
+    margin-bottom: var(--space-2xl);
 }
 
 .overview-badge {
