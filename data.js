@@ -207,18 +207,24 @@ class DataStore {
                 const cloudRegs = data.map(row => this._fromDbRecord(row));
                 const cloudIds = new Set(cloudRegs.map(r => r.id));
 
-                // Preserve & auto-sync any recent local registrations (created in last 15 mins) that haven't hit Cloud yet
+                // Preserve & auto-sync any local registrations not yet in Cloud (and not deleted)
                 const localRegs = this.getRegistrations();
+                let deletedIds = new Set();
+                try {
+                    deletedIds = new Set(JSON.parse(localStorage.getItem('cc2026_deleted_ids') || '[]'));
+                } catch (e) {}
+
                 const now = Date.now();
-                const FIFTEEN_MINS = 15 * 60 * 1000;
+                const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
                 const pendingNewRegs = localRegs.filter(r => {
                     if (cloudIds.has(r.id)) return false;
+                    if (deletedIds.has(r.id)) return false;
                     const age = now - new Date(r.timestamp || 0).getTime();
-                    return age >= 0 && age < FIFTEEN_MINS;
+                    return age >= 0 && age < SEVEN_DAYS;
                 });
 
                 if (pendingNewRegs.length > 0) {
-                    console.log(`⚡ Found ${pendingNewRegs.length} recent in-flight registration(s), syncing to Supabase...`);
+                    console.log(`⚡ Found ${pendingNewRegs.length} unsynced local registration(s), syncing to Supabase...`);
                     for (const pending of pendingNewRegs) {
                         cloudRegs.unshift(pending);
                         this.syncToSupabase(pending);
@@ -422,6 +428,15 @@ class DataStore {
     }
 
     async deleteRegistration(id) {
+        // Track deleted ID so it is not auto-restored from stale devices
+        try {
+            const deleted = JSON.parse(localStorage.getItem('cc2026_deleted_ids') || '[]');
+            if (!deleted.includes(id)) {
+                deleted.push(id);
+                localStorage.setItem('cc2026_deleted_ids', JSON.stringify(deleted.slice(-300)));
+            }
+        } catch (e) {}
+
         // 1. Remove from local array immediately
         const regs = this.getRegistrations().filter(r => r.id !== id);
         this.saveRegistrations(regs);

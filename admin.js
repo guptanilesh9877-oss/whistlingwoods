@@ -886,3 +886,145 @@ async function handleManualSyncCloud() {
     }
 }
 
+// ──────────── MANUAL REGISTRATION MODAL ────────────
+function openManualRegModal() {
+    const existing = document.getElementById('manual-reg-modal');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'manual-reg-modal';
+    overlay.className = 'modal-overlay open';
+    overlay.onclick = () => overlay.remove();
+    overlay.innerHTML = `
+        <div class="modal-content glass-card" onclick="event.stopPropagation()" style="max-width: 540px; padding: 28px; border: 1px solid var(--border-glass); max-height: 92vh; overflow-y: auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+                <h3 style="color:var(--gold); display:flex; align-items:center; gap:8px; margin:0; font-size:1.25rem;">
+                    <span>🎟️</span> Add Registration Manually
+                </h3>
+                <button class="btn-small" onclick="this.closest('.modal-overlay').remove()" style="font-size:1.1rem; line-height:1; cursor:pointer;">✕</button>
+            </div>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:18px; line-height:1.4;">
+                Enter student registration details. This generates an official Ticket ID, saves locally, and syncs immediately to Supabase Cloud.
+            </p>
+            <form id="form-manual-reg" onsubmit="handleSaveManualReg(event)" style="display:flex; flex-direction:column; gap:14px;">
+                <div class="form-group">
+                    <label class="form-label" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Full Name *</label>
+                    <input type="text" id="manual-reg-name" class="form-input" placeholder="e.g. Rahul Sharma" required autofocus>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Email Address *</label>
+                        <input type="email" id="manual-reg-email" class="form-input" placeholder="student@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Phone Number *</label>
+                        <input type="tel" id="manual-reg-phone" class="form-input" placeholder="9876543210" required>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">College / Institution</label>
+                        <input type="text" id="manual-reg-college" class="form-input" placeholder="e.g. KC College">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Academic Year</label>
+                        <select id="manual-reg-year" class="form-input">
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                            <option value="Post Graduate">Post Graduate</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Visiting Dates *</label>
+                    <select id="manual-reg-date" class="form-input">
+                        <option value="Both Days (08th & 09th Oct)">Both Days (08th & 09th Oct)</option>
+                        <option value="08th October 2026">08th October 2026 (Day 1 Only)</option>
+                        <option value="09th October 2026">09th October 2026 (Day 2 Only)</option>
+                    </select>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label class="form-label" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Transaction ID / Ref</label>
+                        <input type="text" id="manual-reg-txn" class="form-input" placeholder="UPI Ref / Cash / Free">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Referred By / Promoter</label>
+                        <input type="text" id="manual-reg-ref" class="form-input" placeholder="NILESH / SAHIL">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" style="font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:4px; display:block;">Payment Status</label>
+                    <select id="manual-reg-status" class="form-input">
+                        <option value="verified" selected>Verified (Payment Confirmed)</option>
+                        <option value="pending">Pending (Awaiting Verification)</option>
+                    </select>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:8px;">
+                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-manual-reg" style="background:var(--gold-gradient); color:#000; font-weight:600;">Save & Sync Cloud</button>
+                </div>
+            </form>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+async function handleSaveManualReg(e) {
+    if (e) e.preventDefault();
+    const btn = document.getElementById('btn-save-manual-reg');
+    if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+    }
+
+    try {
+        const name = document.getElementById('manual-reg-name').value.trim();
+        const email = document.getElementById('manual-reg-email').value.trim();
+        const phone = document.getElementById('manual-reg-phone').value.trim();
+        const college = document.getElementById('manual-reg-college').value.trim();
+        const year = document.getElementById('manual-reg-year').value;
+        const visitDate = document.getElementById('manual-reg-date').value;
+        const transactionId = document.getElementById('manual-reg-txn').value.trim();
+        const referredBy = document.getElementById('manual-reg-ref').value.trim();
+        const verified = document.getElementById('manual-reg-status').value === 'verified';
+
+        if (!name || !email || !phone) {
+            showToast('Please fill in Name, Email, and Phone number.', 'error');
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = 'Save & Sync Cloud';
+            }
+            return;
+        }
+
+        const reg = dataStore.addRegistration({
+            name,
+            email,
+            phone,
+            college: college || 'Other',
+            year,
+            visitDate,
+            transactionId: transactionId || 'ADMIN_ENTRY',
+            referredBy,
+            verified,
+            finalPrice: 150
+        });
+
+        showToast(`✓ Ticket created for ${name} (${reg.id}) and synced to Cloud!`, 'success');
+        const modal = document.getElementById('manual-reg-modal');
+        if (modal) modal.remove();
+        refreshAdminView();
+    } catch (err) {
+        console.error('Manual reg error:', err);
+        showToast('Error creating registration: ' + (err.message || 'Unknown error'), 'error');
+        if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Save & Sync Cloud';
+        }
+    }
+}
+
