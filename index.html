@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#af1996">
+    <meta name="theme-color" content="#8d6aae">
     <title>Celebrate Cinema 2026 | Whistling Woods International & CareerBeam</title>
     <meta name="description" content="Register for Celebrate Cinema 2026 Academic Trek at Whistling Woods International, Film City Mumbai. Two days of exclusive film sets tours, masterclasses, and workshops with Bollywood luminaries.">
     <meta property="og:title" content="Celebrate Cinema 2026 | Whistling Woods International">
     <meta property="og:description" content="Academic Trek 2026 — 08th & 09th October 2026 at Whistling Woods International, Film City, Mumbai. Promoted by CareerBeam - Vigor.">
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="style.css?v=3.6">
-    <link rel="icon" type="image/png" href="idSrLcZHLp_1788097331241.png">
+    <link rel="icon" type="image/png" href="assets/cc26-logo.png">
     <!-- QR Code Generation -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
     <!-- QR Code Scanner -->
@@ -28,12 +28,13 @@
     <div class="container">
         <div class="nav-brand" onclick="navigateTo('landing')">
             <div class="brand-lockup">
-                <img src="idSrLcZHLp_1788097331241.png" alt="Whistling Woods International" class="nav-logo">
+                <img src="assets/cc26-logo.png" alt="Celebrate Cinema 2026" class="nav-cc26-logo">
                 <div class="brand-divider-vertical"></div>
                 <img src="careerbeam_logo.png" alt="CareerBeam" class="nav-partner-logo">
+                <div class="brand-divider-vertical"></div>
+                <img src="assets/wwi-logo.png" alt="Whistling Woods International" class="nav-wwi-logo">
             </div>
             <div class="brand-text-block">
-                <span class="nav-title">CELEBRATE CINEMA</span>
                 <span class="nav-subtitle">ACADEMIC TREK 2026</span>
             </div>
         </div>
@@ -52,8 +53,11 @@
 <!-- Mobile Nav Overlay -->
 <div class="nav-mobile-overlay" id="mobile-nav">
     <div class="mobile-nav-header">
-        <img src="idSrLcZHLp_1788097331241.png" alt="WWI" class="nav-logo">
-        <img src="careerbeam_logo.png" alt="CareerBeam" class="nav-partner-logo">
+        <img src="assets/cc26-logo.png" alt="CC26" style="height:28px;">
+        <div class="brand-divider-vertical"></div>
+        <img src="careerbeam_logo.png" alt="CareerBeam" style="height:20px;background:#fff;padding:2px 5px;border-radius:3px;">
+        <div class="brand-divider-vertical"></div>
+        <img src="assets/wwi-logo.png" alt="WWI" style="height:22px;">
     </div>
     <span class="nav-link" data-page="landing" onclick="navigateAndClose('landing')">Home</span>
     <span class="nav-link" data-page="register" onclick="navigateAndClose('register')">Register Now</span>
@@ -72,80 +76,148 @@
 
     <!-- Hero Section -->
     <div class="hero" id="hero-section">
-        <div class="hero-content">
-            <!-- Main Title -->
-            <h1 class="hero-title gradient-text">CELEBRATE CINEMA</h1>
-            <p class="hero-edition">THE ACADEMIC TREK 2026</p>
-            <p class="hero-tagline">"Big Screen"</p>
+        <!-- Desktop: Full-bleed banner image perfectly proportioned for laptop screens -->
+        <div class="hero-banner-desktop-wrapper">
+            <img src="assets/banner-desktop.jpg" alt="Celebrate Cinema 2026 – Impact of Big Screen Cinema" class="hero-banner-desktop">
+        </div>
 
-            <!-- Metadata Badges Strip -->
-            <div class="hero-meta-strip">
-                <div class="meta-pill">
-                    <svg class="pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                    </svg>
-                    <span>08th & 09th October 2026</span>
+        <!-- Desktop: Unified Control Dock (Countdown + CTAs in one sleek row) -->
+        <div class="hero-desktop-dock" id="hero-desktop-below">
+            <div class="hero-desktop-dock-inner">
+                <div class="dock-countdown-group">
+                    <span class="dock-label">FESTIVAL COMMENCES IN</span>
+                    <div class="countdown" id="countdown-timer-desktop">
+                        <div class="countdown-item">
+                            <span class="countdown-value cd-days">00</span>
+                            <span class="countdown-label">DAYS</span>
+                        </div>
+                        <span class="countdown-sep">:</span>
+                        <div class="countdown-item">
+                            <span class="countdown-value cd-hours">00</span>
+                            <span class="countdown-label">HOURS</span>
+                        </div>
+                        <span class="countdown-sep">:</span>
+                        <div class="countdown-item">
+                            <span class="countdown-value cd-mins">00</span>
+                            <span class="countdown-label">MINS</span>
+                        </div>
+                        <span class="countdown-sep">:</span>
+                        <div class="countdown-item">
+                            <span class="countdown-value cd-secs">00</span>
+                            <span class="countdown-label">SECS</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="meta-pill">
-                    <svg class="pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                    <span>9:00 AM – 5:00 PM IST</span>
+
+                <div class="dock-divider"></div>
+
+                <div class="dock-actions">
+                    <button class="btn btn-primary btn-glow" onclick="navigateTo('register')">
+                        Register For Trek
+                        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                    <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20have%20an%20inquiry%20regarding%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-secondary btn-whatsapp">
+                        <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.072.043.419-.101.824z"/>
+                        </svg>
+                        WhatsApp
+                    </a>
                 </div>
-                <div class="meta-pill">
-                    <svg class="pill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                        <circle cx="12" cy="10" r="3"></circle>
-                    </svg>
-                    <span>Film City, Goregaon East, Mumbai</span>
+            </div>
+        </div>
+
+        <!-- Mobile/Tablet: Authentic Film Festival Experience -->
+        <div class="hero-banner-mobile">
+            <!-- Cinema Visual Header with Spotlight & Screen -->
+            <div class="mobile-cinema-showcase">
+                <img src="assets/cinema-visual.jpg" alt="Celebrate Cinema 2026 Screen & Projector" class="mobile-cinema-img">
+                <div class="mobile-cinema-fade"></div>
+                <div class="mobile-crest-badge">
+                    <img src="assets/cc26-logo.png" alt="Celebrate Cinema '26" class="mobile-crest-img">
                 </div>
             </div>
 
-            <!-- Countdown Timer -->
-            <div class="countdown-wrapper">
-                <span class="countdown-title">TREK COMMENCES IN</span>
-                <div class="countdown" id="countdown-timer">
-                    <div class="countdown-item">
-                        <span class="countdown-value" id="cd-days">00</span>
-                        <span class="countdown-label">DAYS</span>
+            <!-- Mobile Hero Body Content -->
+            <div class="mobile-hero-body">
+                <p class="mobile-kicker">WHISTLING WOODS INTERNATIONAL &amp; CAREERBEAM</p>
+
+                <!-- Multi-color title matching official banner (Cream #F7E7C5 & WWI Purple #8D6AAE) -->
+                <h1 class="mobile-hero-title">
+                    <span class="w-cream">IMPACT OF </span><span class="w-purple">BIG</span><br>
+                    <span class="w-purple">SCREEN </span><span class="w-cream">CINEMA</span>
+                </h1>
+
+                <!-- Elegant festival metadata lines (NO chunky cards) -->
+                <div class="mobile-festival-meta">
+                    <div class="meta-date-row">
+                        <span class="meta-date-badge">OCTOBER 8 &amp; 9, 2026</span>
                     </div>
-                    <span class="countdown-sep">:</span>
-                    <div class="countdown-item">
-                        <span class="countdown-value" id="cd-hours">00</span>
-                        <span class="countdown-label">HOURS</span>
+                    <p class="meta-summary">
+                        An open-to-all 2 Day festival, honouring the power of Cinema, Media &amp; Creativity
+                    </p>
+                    <div class="meta-venue-row">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="venue-pin">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <span>Whistling Woods International &bull; Film City, Mumbai</span>
                     </div>
-                    <span class="countdown-sep">:</span>
-                    <div class="countdown-item">
-                        <span class="countdown-value" id="cd-mins">00</span>
-                        <span class="countdown-label">MINUTES</span>
-                    </div>
-                    <span class="countdown-sep">:</span>
-                    <div class="countdown-item">
-                        <span class="countdown-value" id="cd-secs">00</span>
-                        <span class="countdown-label">SECONDS</span>
+                    <div class="meta-topics-row">
+                        <span>PANEL DISCUSSIONS</span>
+                        <span class="dot">&bull;</span>
+                        <span>WORKSHOPS</span>
+                        <span class="dot">&bull;</span>
+                        <span>EXHIBITS</span>
+                        <span class="dot">&bull;</span>
+                        <span>SCREENINGS</span>
                     </div>
                 </div>
-            </div>
 
-            <!-- Action Buttons -->
-            <div class="hero-actions">
-                <button class="btn btn-primary btn-glow" id="hero-register-btn" onclick="navigateTo('register')">
-                    Register For Trek
-                    <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                </button>
-                <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20have%20an%20inquiry%20regarding%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-secondary btn-whatsapp">
-                    <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.072.043.419-.101.824z"/>
-                    </svg>
-                    WhatsApp Helpline
-                </a>
+                <!-- Live Countdown -->
+                <div class="countdown-wrapper mobile-cd-wrapper">
+                    <span class="countdown-title">FESTIVAL COMMENCES IN</span>
+                    <div class="countdown" id="countdown-timer">
+                        <div class="countdown-item">
+                            <span class="countdown-value" id="cd-days">00</span>
+                            <span class="countdown-label">DAYS</span>
+                        </div>
+                        <span class="countdown-sep">:</span>
+                        <div class="countdown-item">
+                            <span class="countdown-value" id="cd-hours">00</span>
+                            <span class="countdown-label">HOURS</span>
+                        </div>
+                        <span class="countdown-sep">:</span>
+                        <div class="countdown-item">
+                            <span class="countdown-value" id="cd-mins">00</span>
+                            <span class="countdown-label">MINUTES</span>
+                        </div>
+                        <span class="countdown-sep">:</span>
+                        <div class="countdown-item">
+                            <span class="countdown-value" id="cd-secs">00</span>
+                            <span class="countdown-label">SECONDS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="hero-actions mobile-actions">
+                    <button class="btn btn-primary btn-glow btn-full" id="hero-register-btn" onclick="navigateTo('register')">
+                        Register For Trek
+                        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                    <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20have%20an%20inquiry%20regarding%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-secondary btn-whatsapp btn-full">
+                        <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86.173.086.275.072.376-.044.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.043.072.043.419-.101.824z"/>
+                        </svg>
+                        WhatsApp Helpline
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -588,9 +660,11 @@
             <div class="glass-card ticket-card" id="ticket-card">
                 <div class="ticket-header">
                     <div class="ticket-logos">
-                        <img src="idSrLcZHLp_1788097331241.png" alt="WWI Logo" class="ticket-logo">
+                        <img src="assets/cc26-logo.png" alt="CC26 Logo" class="ticket-logo">
                         <div class="ticket-brand-divider"></div>
                         <img src="careerbeam_logo.png" alt="CareerBeam" class="ticket-partner-logo">
+                        <div class="ticket-brand-divider"></div>
+                        <img src="assets/wwi-logo.png" alt="WWI Logo" class="ticket-partner-logo" style="background:transparent;padding:0;height:24px;">
                     </div>
                     <div>
                         <h3>CELEBRATE CINEMA 2026</h3>
@@ -714,13 +788,15 @@
                 <div class="glass-card ticket-card" id="fp-ticket-card">
                     <div class="ticket-header">
                         <div class="ticket-logos">
-                            <img src="idSrLcZHLp_1788097331241.png" alt="WWI Logo" class="ticket-logo">
+                            <img src="assets/cc26-logo.png" alt="CC26 Logo" class="ticket-logo">
                             <div class="ticket-brand-divider"></div>
                             <img src="careerbeam_logo.png" alt="CareerBeam" class="ticket-partner-logo">
+                            <div class="ticket-brand-divider"></div>
+                            <img src="assets/wwi-logo.png" alt="WWI Logo" class="ticket-partner-logo" style="background:transparent;padding:0;height:24px;">
                         </div>
                         <div>
                             <h3>CELEBRATE CINEMA 2026</h3>
-                            <p>Academic Trek &bull; Whistling Woods International</p>
+                            <p>Academic Trek &bull; Whistling Woods International & CareerBeam</p>
                         </div>
                     </div>
                     <div class="ticket-divider"></div>
@@ -971,9 +1047,77 @@
             <div class="coupons-grid" id="coupons-grid"></div>
         </div>
 
-        <!-- Tab: Referral Leaderboard -->
+        <!-- Tab: Referral Links & Leaderboard -->
         <div class="tab-content" id="tab-referrals">
-            <div class="referral-leaderboard" id="referral-leaderboard"></div>
+            <div class="admin-referrals-layout">
+                <!-- Generator Card -->
+                <div class="glass-card promoter-gen-card">
+                    <div class="promoter-card-header">
+                        <h3>Create / Generate Promoter Referral Link</h3>
+                        <p>Create auto-tracked referral links for ambassadors, organizers, or influencers</p>
+                    </div>
+                    <form id="create-promoter-form" class="promoter-form" onsubmit="handleCreatePromoter(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="promoter-name">Promoter Name *</label>
+                                <input type="text" id="promoter-name" class="form-input" placeholder="e.g. Nilesh, Sahil, Golu" required oninput="handlePromoterNameInput(this)">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="promoter-code">Referral Code *</label>
+                                <input type="text" id="promoter-code" class="form-input" placeholder="e.g. NILESH" required style="text-transform: uppercase;">
+                            </div>
+                        </div>
+                        <div class="promoter-form-actions">
+                            <button type="submit" class="btn btn-primary">Generate Link &amp; Add Promoter</button>
+                        </div>
+                    </form>
+
+                    <!-- Newly generated link box -->
+                    <div id="new-promoter-link-box" class="new-link-display" style="display: none;">
+                        <div class="new-link-header">
+                            <span class="badge badge-success">Link Generated</span>
+                            <span id="new-link-promoter-name" class="promoter-badge-name"></span>
+                        </div>
+                        <div class="referral-link-box" style="margin-top: 10px;">
+                            <input type="text" id="new-promoter-link-input" class="form-input" readonly>
+                            <button class="btn btn-secondary btn-small" onclick="copyGeneratedPromoterLink()">Copy Link</button>
+                            <a id="new-promoter-whatsapp-btn" href="#" target="_blank" class="btn btn-primary btn-small btn-whatsapp">Share on WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Promoters & Ambassadors Table -->
+                <div class="glass-card promoters-table-card" style="margin-top: var(--space-xl);">
+                    <div class="promoters-table-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+                        <div>
+                            <h3>Active Promoter Links</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">Auto-tracked registrations: links automatically pre-fill the referral code</p>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="promoters-table">
+                            <thead>
+                                <tr>
+                                    <th>Promoter</th>
+                                    <th>Referral Code</th>
+                                    <th>Tracked Conversions</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="promoters-table-body">
+                                <!-- Populated dynamically by admin.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Leaderboard -->
+                <div class="glass-card leaderboard-card" style="margin-top: var(--space-xl);">
+                    <h3>Referral Leaderboard</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: var(--space-md);">Ranked list of top student &amp; promoter signups</p>
+                    <div class="referral-leaderboard" id="referral-leaderboard"></div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -1014,9 +1158,11 @@
 <!-- ═══ FOOTER ═══ -->
 <footer class="footer">
     <div class="footer-branding-row">
-        <img src="idSrLcZHLp_1788097331241.png" alt="Whistling Woods International" class="footer-logo">
+        <img src="assets/cc26-logo.png" alt="Celebrate Cinema 2026" class="footer-logo">
         <span class="footer-divider-dot">•</span>
-        <img src="careerbeam_logo.png" alt="CareerBeam - Craft Your Dream" class="footer-partner-logo">
+        <img src="careerbeam_logo.png" alt="CareerBeam" class="footer-partner-logo">
+        <span class="footer-divider-dot">•</span>
+        <img src="assets/wwi-logo.png" alt="Whistling Woods International" class="footer-partner-logo" style="background:transparent;padding:4px 8px;height:32px;">
     </div>
     <p class="footer-title">Celebrate Cinema 2026 — The Academic Trek</p>
     <p class="footer-sub">Whistling Woods International, Film City, Goregaon East, Mumbai</p>

@@ -523,13 +523,124 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ──────────── REFERRAL LEADERBOARD ────────────
+// ──────────── PROMOTER REFERRAL LINKS & LEADERBOARD ────────────
+function getBaseSiteURL() {
+    const origin = window.location.origin;
+    const pathname = window.location.pathname.replace(/\/admin.*$/, '').replace(/\/index\.html.*$/, '').replace(/\/+$/, '');
+    return `${origin}${pathname}/`;
+}
+
+function buildPromoterReferralURL(code) {
+    return `${getBaseSiteURL()}?ref=${encodeURIComponent(code)}#register`;
+}
+
+function handlePromoterNameInput(input) {
+    const codeInput = document.getElementById('promoter-code');
+    if (!codeInput) return;
+    const cleanCode = input.value.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+    codeInput.value = cleanCode;
+}
+
+function handleCreatePromoter(event) {
+    event.preventDefault();
+    const nameInput = document.getElementById('promoter-name');
+    const codeInput = document.getElementById('promoter-code');
+    const name = nameInput.value.trim();
+    const code = codeInput.value.trim().toUpperCase();
+
+    if (!name || !code) {
+        showToast('Please enter promoter name and code', 'error');
+        return;
+    }
+
+    const res = dataStore.addPromoter(name, code);
+    if (res.success) {
+        showToast(res.message, 'success');
+        const url = buildPromoterReferralURL(res.code);
+
+        const box = document.getElementById('new-promoter-link-box');
+        const linkInput = document.getElementById('new-promoter-link-input');
+        const nameBadge = document.getElementById('new-link-promoter-name');
+        const waBtn = document.getElementById('new-promoter-whatsapp-btn');
+
+        if (box && linkInput) {
+            box.style.display = 'block';
+            linkInput.value = url;
+            if (nameBadge) nameBadge.textContent = `${name} (${res.code})`;
+            if (waBtn) {
+                const msg = encodeURIComponent(`Hi! Register for Celebrate Cinema 2026 Academic Trek at Whistling Woods International using my link: ${url}`);
+                waBtn.href = `https://wa.me/?text=${msg}`;
+            }
+        }
+
+        renderPromotersTable();
+        renderReferralLeaderboard();
+        nameInput.value = '';
+        codeInput.value = '';
+    } else {
+        showToast(res.message, 'error');
+    }
+}
+
+function copyGeneratedPromoterLink() {
+    const input = document.getElementById('new-promoter-link-input');
+    if (!input) return;
+    navigator.clipboard.writeText(input.value).then(() => {
+        showToast('Promoter link copied to clipboard!', 'success');
+    }).catch(() => {
+        input.select();
+        document.execCommand('copy');
+        showToast('Promoter link copied!', 'success');
+    });
+}
+
+function copyPromoterLink(code) {
+    const url = buildPromoterReferralURL(code);
+    navigator.clipboard.writeText(url).then(() => {
+        showToast(`Referral link for ${code} copied!`, 'success');
+    }).catch(() => {
+        showToast(`Link: ${url}`, 'info');
+    });
+}
+
+function sharePromoterWhatsApp(code, name) {
+    const url = buildPromoterReferralURL(code);
+    const msg = encodeURIComponent(`Hey! Join me at Celebrate Cinema 2026 Academic Trek at Whistling Woods International (Film City, Mumbai). Register using my official link here: ${url}`);
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+function renderPromotersTable() {
+    const tbody = document.getElementById('promoters-table-body');
+    if (!tbody) return;
+    const promoters = dataStore.getPromoters();
+
+    tbody.innerHTML = promoters.map(p => {
+        const count = dataStore.getReferralCount(p.code);
+        const url = buildPromoterReferralURL(p.code);
+        return `
+            <tr>
+                <td><strong>${escapeHTML(p.name)}</strong></td>
+                <td><span class="badge badge-purple" style="font-family:'Integral CF',sans-serif;letter-spacing:1px;">${p.code}</span></td>
+                <td><strong style="color:var(--gold);font-size:1.1rem;">${count}</strong> <span style="font-size:0.8rem;color:var(--lavender);">student${count !== 1 ? 's' : ''}</span></td>
+                <td>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <button class="btn btn-secondary btn-small" onclick="copyPromoterLink('${p.code}')" title="Copy ${url}">Copy Link</button>
+                        <button class="btn btn-primary btn-small btn-whatsapp" onclick="sharePromoterWhatsApp('${p.code}', '${escapeHTML(p.name)}')">WhatsApp</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
 function renderReferralLeaderboard() {
+    renderPromotersTable();
     const container = document.getElementById('referral-leaderboard');
+    if (!container) return;
     const topReferrers = dataStore.getTopReferrers();
 
     if (topReferrers.length === 0) {
-        container.innerHTML = '<div class="no-data"><div class="no-data-icon">🏆</div><p>No referrals yet</p></div>';
+        container.innerHTML = '<div class="no-data"><div class="no-data-icon">🏆</div><p>No student referrals recorded yet</p></div>';
         return;
     }
 
@@ -538,7 +649,7 @@ function renderReferralLeaderboard() {
             <div class="referral-rank">#${i + 1}</div>
             <div class="referral-info">
                 <div class="referral-name">${escapeHTML(r.name)}</div>
-                <div class="referral-code-text">Code: ${r.code}</div>
+                <div class="referral-code-text">Code: <strong style="color:var(--gold);">${r.code}</strong></div>
             </div>
             <div class="referral-count">${r.count} referral${r.count !== 1 ? 's' : ''}</div>
         </div>

@@ -11,11 +11,11 @@ class ParticleSystem {
         this.particles = [];
         this.running = true;
         this.colors = [
-            { r: 175, g: 25, b: 150 },   // Magenta
-            { r: 233, g: 30, b: 140 },    // Hot Pink
-            { r: 212, g: 168, b: 67 },    // Gold
-            { r: 248, g: 200, b: 232 },   // Light Pink
-            { r: 140, g: 60, b: 180 },    // Purple
+            { r: 141, g: 106, b: 174 },   // WWI Purple
+            { r: 168, g: 130, b: 200 },    // Light Purple
+            { r: 247, g: 231, b: 197 },    // Cream/Champagne
+            { r: 141, g: 126, b: 164 },    // Muted Lavender
+            { r: 224, g: 207, b: 165 },    // Gold tint
         ];
         this._resize();
         this._init();
@@ -95,7 +95,7 @@ class ParticleSystem {
 
 // ──────────── CONFETTI BURST ────────────
 class ConfettiBurst {
-    static COLORS = ['#af1996', '#e91e8c', '#d4a843', '#f8c8e8', '#4a1942', '#ff6b9d', '#c44dff', '#ffd700'];
+    static COLORS = ['#8d6aae', '#a882c8', '#f7e7c5', '#8d7ea4', '#6b4e8a', '#e0cfa5', '#c4b0d6', '#fdf3e0'];
 
     static fire(count = 120) {
         for (let i = 0; i < count; i++) {

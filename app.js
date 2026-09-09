@@ -192,10 +192,10 @@ function startCountdown() {
         const diff = CONFIG.EVENT_DATE - now;
 
         if (diff <= 0) {
-            document.getElementById('cd-days').textContent = '00';
-            document.getElementById('cd-hours').textContent = '00';
-            document.getElementById('cd-mins').textContent = '00';
-            document.getElementById('cd-secs').textContent = '00';
+            document.querySelectorAll('#cd-days, .cd-days').forEach(el => el.textContent = '00');
+            document.querySelectorAll('#cd-hours, .cd-hours').forEach(el => el.textContent = '00');
+            document.querySelectorAll('#cd-mins, .cd-mins').forEach(el => el.textContent = '00');
+            document.querySelectorAll('#cd-secs, .cd-secs').forEach(el => el.textContent = '00');
             return;
         }
 
@@ -204,10 +204,15 @@ function startCountdown() {
         const mins = Math.floor((diff / (1000 * 60)) % 60);
         const secs = Math.floor((diff / 1000) % 60);
 
-        document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
-        document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
-        document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
-        document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+        const dStr = String(days).padStart(2, '0');
+        const hStr = String(hours).padStart(2, '0');
+        const mStr = String(mins).padStart(2, '0');
+        const sStr = String(secs).padStart(2, '0');
+
+        document.querySelectorAll('#cd-days, .cd-days').forEach(el => el.textContent = dStr);
+        document.querySelectorAll('#cd-hours, .cd-hours').forEach(el => el.textContent = hStr);
+        document.querySelectorAll('#cd-mins, .cd-mins').forEach(el => el.textContent = mStr);
+        document.querySelectorAll('#cd-secs, .cd-secs').forEach(el => el.textContent = sStr);
     }
 
     update();
@@ -278,8 +283,8 @@ function drawQRPlaceholder() {
     }
 
     // Overlay text
-    ctx.fillStyle = 'rgba(175, 25, 150, 0.9)';
-    ctx.font = 'bold 14px Poppins, sans-serif';
+    ctx.fillStyle = 'rgba(141, 106, 174, 0.9)';
+    ctx.font = "bold 14px 'Helvetica Custom', 'Poppins', sans-serif";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -287,7 +292,7 @@ function drawQRPlaceholder() {
     const textBg = 'rgba(255,255,255,0.92)';
     ctx.fillStyle = textBg;
     ctx.fillRect(w / 2 - 70, h / 2 - 14, 140, 28);
-    ctx.fillStyle = '#af1996';
+    ctx.fillStyle = '#8d6aae';
     ctx.fillText('UPI QR Code', w / 2, h / 2);
 }
 
@@ -617,7 +622,7 @@ function generateTicketQR(reg) {
                 margin: 2,
                 errorCorrectionLevel: 'M',
                 color: {
-                    dark: '#2d0a27',
+                    dark: '#12121e',
                     light: '#ffffff'
                 }
             }, err => {
@@ -648,15 +653,15 @@ function renderQRCanvasFallback(container, text) {
     ctx.fillRect(0, 0, 190, 190);
 
     // Simple visual pattern representation
-    ctx.fillStyle = '#af1996';
-    ctx.font = 'bold 12px Poppins, sans-serif';
+    ctx.fillStyle = '#8d6aae';
+    ctx.font = "bold 12px 'Helvetica Custom', 'Poppins', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('ENTRY PASS', 95, 30);
     ctx.fillStyle = '#111111';
     ctx.font = 'bold 15px monospace';
     ctx.fillText(text, 95, 95);
     ctx.fillStyle = '#666666';
-    ctx.font = '11px Poppins, sans-serif';
+    ctx.font = "11px 'Helvetica Custom', 'Poppins', sans-serif";
     ctx.fillText('Scan at WWI Gate', 95, 140);
     container.appendChild(canvas);
 }
@@ -738,12 +743,12 @@ function renderNamesWall() {
     grid.style.display = 'grid';
 
     const gradients = [
-        'linear-gradient(135deg, #af1996, #e91e8c)',
-        'linear-gradient(135deg, #4a1942, #8a1478)',
-        'linear-gradient(135deg, #d4a843, #e8c060)',
-        'linear-gradient(135deg, #e91e8c, #ff6b9d)',
-        'linear-gradient(135deg, #8a1478, #c44dff)',
-        'linear-gradient(135deg, #af1996, #d4a843)',
+        'linear-gradient(135deg, #8d6aae, #6b4e8a)',
+        'linear-gradient(135deg, #8d6aae, #a882c8)',
+        'linear-gradient(135deg, #f7e7c5, #e0cfa5)',
+        'linear-gradient(135deg, #6b4e8a, #8d7ea4)',
+        'linear-gradient(135deg, #a882c8, #f7e7c5)',
+        'linear-gradient(135deg, #8d6aae, #f7e7c5)',
     ];
 
     regs.forEach((reg, i) => {
@@ -979,7 +984,7 @@ function renderFoundTicket(reg) {
                 const canvas = document.createElement('canvas');
                 window.QRCode.toCanvas(canvas, qrData, {
                     width: 200, margin: 2, errorCorrectionLevel: 'M',
-                    color: { dark: '#2d0a27', light: '#ffffff' }
+                    color: { dark: '#12121e', light: '#ffffff' }
                 }, err => {
                     if (!err) { container.appendChild(canvas); }
                     else { renderQRCanvasFallback(container, reg.id); }
@@ -1027,44 +1032,44 @@ function savePassAsImage(source) {
 
     // ── Background ──
     const bgGrad = ctx.createLinearGradient(0, 0, W, H);
-    bgGrad.addColorStop(0, '#08010d');
-    bgGrad.addColorStop(0.5, '#180530');
-    bgGrad.addColorStop(1, '#08010d');
+    bgGrad.addColorStop(0, '#12121e');
+    bgGrad.addColorStop(0.5, '#1e1830');
+    bgGrad.addColorStop(1, '#12121e');
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
     // Subtle radial glow top-left
     const glow1 = ctx.createRadialGradient(0, 0, 0, 0, 0, 350);
-    glow1.addColorStop(0, 'rgba(175,25,150,0.22)');
+    glow1.addColorStop(0, 'rgba(141,106,174,0.35)');
     glow1.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = glow1;
     ctx.fillRect(0, 0, W, H);
 
     // ── Border ──
-    ctx.strokeStyle = 'rgba(212,168,67,0.7)';
+    ctx.strokeStyle = 'rgba(247,231,197,0.6)';
     ctx.lineWidth = 2;
     roundRect(ctx, 14, 14, W - 28, H - 28, 14);
     ctx.stroke();
 
     // ── Header band ──
     const headerGrad = ctx.createLinearGradient(0, 0, W, 0);
-    headerGrad.addColorStop(0, 'rgba(175,25,150,0.35)');
-    headerGrad.addColorStop(1, 'rgba(45,10,39,0.6)');
+    headerGrad.addColorStop(0, 'rgba(141,106,174,0.45)');
+    headerGrad.addColorStop(1, 'rgba(23,19,42,0.85)');
     ctx.fillStyle = headerGrad;
     roundRectFill(ctx, 14, 14, W - 28, 90, 14, 0);
 
     // ── Event title ──
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 22px Cinzel, serif';
+    ctx.fillStyle = '#f7e7c5';
+    ctx.font = "bold 20px 'Integral CF', 'Helvetica Custom', sans-serif";
     ctx.textAlign = 'center';
-    ctx.fillText('CELEBRATE CINEMA 2026', W / 2, 58);
-    ctx.font = '600 12px Poppins, sans-serif';
-    ctx.fillStyle = 'rgba(212,168,67,0.9)';
+    ctx.fillText('CELEBRATE CINEMA 2026', W / 2, 56);
+    ctx.font = "600 12px 'Helvetica Custom', 'Poppins', sans-serif";
+    ctx.fillStyle = '#a882c8';
     ctx.letterSpacing = '3px';
     ctx.fillText('THE ACADEMIC TREK  •  OFFICIAL ENTRY PASS', W / 2, 82);
 
     // ── Gold divider ──
-    ctx.strokeStyle = 'rgba(212,168,67,0.5)';
+    ctx.strokeStyle = 'rgba(247,231,197,0.35)';
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(40, 112); ctx.lineTo(W - 40, 112); ctx.stroke();
 
@@ -1088,15 +1093,15 @@ function savePassAsImage(source) {
             ctx.fillStyle = 'rgba(255,255,255,0.03)';
             ctx.fillRect(26, y - 16, W - 52, 36);
         }
-        ctx.font = '500 12px Poppins, sans-serif';
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.font = "500 12px 'Helvetica Custom', 'Poppins', sans-serif";
+        ctx.fillStyle = 'rgba(247,231,197,0.6)';
         ctx.textAlign = 'left';
         ctx.fillText(label.toUpperCase(), labelX, y);
 
-        ctx.font = '600 14px Poppins, sans-serif';
+        ctx.font = "600 14px 'Helvetica Custom', 'Poppins', sans-serif";
         ctx.fillStyle = (label === 'Payment Status' && reg.verified)
             ? '#10b981'
-            : (label === 'Trek Dates' ? '#d4a843' : '#ffffff');
+            : (label === 'Trek Dates' ? '#f7e7c5' : '#ffffff');
         ctx.textAlign = 'right';
         ctx.fillText(value, valueX, y);
         y += 42;
@@ -1105,15 +1110,15 @@ function savePassAsImage(source) {
     // ── Dashed divider ──
     y += 10;
     ctx.setLineDash([6, 8]);
-    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.strokeStyle = 'rgba(247,231,197,0.2)';
     ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(W - 40, y); ctx.stroke();
     ctx.setLineDash([]);
 
     // ── QR Section ──
     y += 24;
-    ctx.fillStyle = 'rgba(212,168,67,0.9)';
-    ctx.font = 'bold 11px Cinzel, serif';
+    ctx.fillStyle = '#f7e7c5';
+    ctx.font = "bold 11px 'Integral CF', 'Helvetica Custom', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('OFFICIAL ENTRY PASS QR CODE', W / 2, y);
     y += 18;
@@ -1129,20 +1134,20 @@ function savePassAsImage(source) {
     } else {
         ctx.fillStyle = 'rgba(255,255,255,0.15)';
         ctx.fillRect((W - 160) / 2, y, 160, 160);
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        ctx.font = '12px Poppins, sans-serif';
+        ctx.fillStyle = 'rgba(247,231,197,0.5)';
+        ctx.font = "12px 'Helvetica Custom', 'Poppins', sans-serif";
         ctx.fillText('[QR not yet generated]', W / 2, y + 85);
         y += 175;
     }
 
-    ctx.fillStyle = 'rgba(255,255,255,0.35)';
-    ctx.font = '11px Poppins, sans-serif';
+    ctx.fillStyle = 'rgba(247,231,197,0.5)';
+    ctx.font = "11px 'Helvetica Custom', 'Poppins', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('Scan at Whistling Woods International Entry Gate', W / 2, y + 8);
 
     // ── Footer ──
-    ctx.fillStyle = 'rgba(212,168,67,0.45)';
-    ctx.font = '10px Poppins, sans-serif';
+    ctx.fillStyle = 'rgba(247,231,197,0.45)';
+    ctx.font = "10px 'Helvetica Custom', 'Poppins', sans-serif";
     ctx.fillText('Celebrate Cinema 2026  •  Whistling Woods International, Film City, Mumbai', W / 2, H - 24);
 
     // ── Download ──

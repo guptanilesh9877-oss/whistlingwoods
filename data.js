@@ -451,23 +451,78 @@ class DataStore {
             .slice(0, limit);
     }
 
-    // ──────────── REFERRALS ────────────
-    getReferralCount(referralCode) {
-        return this.getRegistrations().filter(r => r.referredBy === referralCode).length;
+    // ──────────── REFERRALS & PROMOTERS ────────────
+    getPromoters() {
+        const defaultPromoters = [
+            { name: 'Nilesh', code: 'NILESH' },
+            { name: 'Sahil', code: 'SAHIL' },
+            { name: 'Golu', code: 'GOLU' },
+            { name: 'Satvik', code: 'SATVIK' },
+            { name: 'Tarasha', code: 'TARASHA' },
+            { name: 'Muwaaz', code: 'MUWAAZ' },
+            { name: 'Rahul', code: 'RAHUL' }
+        ];
+        const stored = localStorage.getItem('wwi_cc26_promoters');
+        if (!stored) {
+            localStorage.setItem('wwi_cc26_promoters', JSON.stringify(defaultPromoters));
+            return defaultPromoters;
+        }
+        try {
+            const list = JSON.parse(stored);
+            defaultPromoters.forEach(def => {
+                if (!list.some(p => p.code.toUpperCase() === def.code)) {
+                    list.push(def);
+                }
+            });
+            return list;
+        } catch (e) {
+            return defaultPromoters;
+        }
     }
 
-    getTopReferrers(limit = 10) {
+    addPromoter(name, code) {
+        if (!name || !code) return { success: false, message: 'Name and Code are required' };
+        const cleanCode = code.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
+        const cleanName = name.trim();
+        const promoters = this.getPromoters();
+        if (promoters.some(p => p.code.toUpperCase() === cleanCode)) {
+            return { success: false, message: `Promoter code "${cleanCode}" already exists` };
+        }
+        promoters.push({ name: cleanName, code: cleanCode, createdAt: new Date().toISOString() });
+        localStorage.setItem('wwi_cc26_promoters', JSON.stringify(promoters));
+        return { success: true, message: `Promoter link created for ${cleanName}!`, code: cleanCode };
+    }
+
+    getReferralCount(referralCode) {
+        if (!referralCode) return 0;
+        const target = referralCode.trim().toUpperCase();
+        return this.getRegistrations().filter(r => (r.referredBy || '').trim().toUpperCase() === target).length;
+    }
+
+    getTopReferrers(limit = 15) {
         const regs = this.getRegistrations();
         const counts = {};
         regs.forEach(r => {
             if (r.referredBy) {
-                counts[r.referredBy] = (counts[r.referredBy] || 0) + 1;
+                const code = r.referredBy.trim().toUpperCase();
+                counts[code] = (counts[code] || 0) + 1;
             }
         });
+
+        const promoters = this.getPromoters();
+        const promoterMap = {};
+        promoters.forEach(p => {
+            promoterMap[p.code.toUpperCase()] = p.name;
+        });
+
         return Object.entries(counts)
             .map(([code, count]) => {
-                const referrer = regs.find(r => r.referralCode === code);
-                return { code, count, name: referrer ? referrer.name : 'Unknown' };
+                const referrer = regs.find(r => (r.referralCode || '').toUpperCase() === code);
+                const promoterName = promoterMap[code];
+                const displayName = promoterName 
+                    ? `${promoterName} (Promoter)` 
+                    : (referrer ? referrer.name : code);
+                return { code, count, name: displayName };
             })
             .sort((a, b) => b.count - a.count)
             .slice(0, limit);
