@@ -334,12 +334,17 @@ function initRegistrationForm() {
     });
 
     // Real-time validation styling
-    ['reg-name', 'reg-email', 'reg-phone', 'reg-college'].forEach(id => {
+    ['reg-name', 'reg-email', 'reg-phone', 'reg-college', 'reg-year', 'reg-visit-date'].forEach(id => {
         const input = document.getElementById(id);
-        input.addEventListener('blur', () => validateField(input));
-        input.addEventListener('input', () => {
-            input.classList.remove('error');
-        });
+        if (input) {
+            input.addEventListener('blur', () => validateField(input));
+            input.addEventListener('input', () => {
+                input.classList.remove('error');
+            });
+            input.addEventListener('change', () => {
+                input.classList.remove('error');
+            });
+        }
     });
 }
 
@@ -438,21 +443,31 @@ function handleRegistrationSubmit() {
         phone: document.getElementById('reg-phone'),
         year: document.getElementById('reg-year'),
         college: document.getElementById('reg-college'),
+        visitDate: document.getElementById('reg-visit-date')
     };
 
-    // Validate all
+    // Validate all standard inputs
     let allValid = true;
-    Object.values(fields).forEach(input => {
-        if (!validateField(input)) allValid = false;
+    ['name', 'email', 'phone', 'college'].forEach(k => {
+        if (fields[k] && !validateField(fields[k])) allValid = false;
     });
 
-    if (!fields.year.value) {
-        fields.year.classList.add('error');
+    if (!fields.year || !fields.year.value) {
+        if (fields.year) fields.year.classList.add('error');
+        allValid = false;
+    }
+
+    if (!fields.visitDate || !fields.visitDate.value) {
+        if (fields.visitDate) fields.visitDate.classList.add('error');
         allValid = false;
     }
 
     if (!allValid) {
-        showToast('Please fill in all required fields correctly', 'error');
+        if (!fields.visitDate || !fields.visitDate.value) {
+            showToast('Please select when you are visiting (8th, 9th, or both)', 'error');
+        } else {
+            showToast('Please fill in all required fields correctly', 'error');
+        }
         return;
     }
 
@@ -462,8 +477,7 @@ function handleRegistrationSubmit() {
     const referralCode = document.getElementById('reg-referral').value.trim();
     const userEmail = fields.email.value.trim().toLowerCase();
 
-    const visitDateInput = document.getElementById('reg-visit-date');
-    const visitDate = (visitDateInput && visitDateInput.value) ? visitDateInput.value : 'Both Days (08th & 09th Oct)';
+    const visitDate = fields.visitDate.value;
 
     // Check duplicate email: allow registration until screenshot and final submission are completed
     const existing = dataStore.getRegistrations().find(
