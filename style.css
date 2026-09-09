@@ -2616,29 +2616,43 @@ select.form-input option:focus {
 
 .footer-branding-row {
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: var(--space-md);
+    gap: 16px;
     margin-bottom: var(--space-md);
 }
 
-.footer-logo {
+.footer-wwi-logo {
+    height: 28px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.footer-cc26-logo {
     height: 32px;
     width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+.footer-cb-logo {
+    height: 22px;
+    width: auto;
+    object-fit: contain;
+    background: #ffffff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .footer-divider-dot {
     color: var(--gold);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     opacity: 0.5;
-}
-
-.footer-partner-logo {
-    height: 24px;
-    width: auto;
-    background: #ffffff;
-    padding: 2px 6px;
-    border-radius: 3px;
+    line-height: 1;
 }
 
 .footer-title {
@@ -2791,11 +2805,17 @@ select.form-input option:focus {
         padding: 4px 10px;
         gap: 6px;
     }
-    .nav-logo {
+    .nav-wwi-logo {
+        height: 18px;
+    }
+    .nav-cc26-logo {
         height: 24px;
     }
     .nav-partner-logo {
-        height: 18px;
+        height: 16px;
+    }
+    .nav-logo {
+        height: 24px;
     }
     .hero-banner-desktop-wrapper,
     .hero-desktop-dock,
@@ -2935,11 +2955,27 @@ select.form-input option:focus {
         padding: var(--space-2xl) var(--space-md);
     }
     .footer-branding-row {
-        flex-direction: column;
-        gap: 8px;
+        flex-direction: row !important;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
     }
     .footer-divider-dot {
-        display: none;
+        display: inline-block !important;
+        color: var(--gold);
+        opacity: 0.5;
+        font-size: 0.95rem;
+    }
+    .footer-wwi-logo {
+        height: 22px;
+    }
+    .footer-cc26-logo {
+        height: 26px;
+    }
+    .footer-cb-logo {
+        height: 18px;
+        padding: 2px 6px;
     }
 }
 
