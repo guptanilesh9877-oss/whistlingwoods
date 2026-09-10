@@ -698,7 +698,8 @@ function handlePaymentConfirm() {
 function populateConfirmation(reg) {
     document.getElementById('ticket-name').textContent = reg.name;
     document.getElementById('ticket-id').textContent = reg.id;
-    document.getElementById('ticket-amount').textContent = '₹' + reg.finalPrice;
+    const amountEl = document.getElementById('ticket-amount');
+    if (amountEl) amountEl.textContent = '₹' + reg.finalPrice;
 
     const stubId = document.getElementById('ticket-stub-id');
     if (stubId) stubId.textContent = reg.id;
@@ -753,70 +754,67 @@ function generateTicketQR(reg, containerId) {
     if (!container) return;
     container.innerHTML = '';
 
-    const qrData = reg.id;
+    const qrData = (reg.id || '').trim();
+    if (!qrData) return;
+
     const isRejected = Boolean(reg.rejected) || 
         (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
 
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
     wrapper.style.display = 'inline-block';
+    wrapper.style.lineHeight = '0';
     container.appendChild(wrapper);
 
-    function onQrSuccess(canvasOrImg) {
+    function onQrSuccess(qrNode) {
         wrapper.innerHTML = '';
-        wrapper.appendChild(canvasOrImg);
+        qrNode.style.display = 'block';
+        qrNode.style.width = '170px';
+        qrNode.style.height = '170px';
+        qrNode.style.borderRadius = '6px';
+        wrapper.appendChild(qrNode);
 
         // If rejected, overlay VOID shield directly over the QR code
         if (isRejected) {
             const voidOverlay = document.createElement('div');
-            voidOverlay.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(239,68,68,0.85); color:#ffffff; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:8px; font-weight:800; font-size:1rem; letter-spacing:1px; text-align:center; padding:8px; box-sizing:border-box; backdrop-filter:blur(2px);';
+            voidOverlay.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(239,68,68,0.88); color:#ffffff; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:8px; font-weight:800; font-size:1rem; letter-spacing:1px; text-align:center; padding:8px; box-sizing:border-box; backdrop-filter:blur(2px);';
             voidOverlay.innerHTML = '<span style="font-size:1.6rem; line-height:1;">⛔</span><span style="margin-top:4px;">VOID</span><span style="font-size:0.65rem; font-weight:600; opacity:0.9;">PAYMENT REJECTED</span>';
             wrapper.appendChild(voidOverlay);
         }
     }
 
-    // Engine 1: QRCode.toCanvas
-    if (window.QRCode && typeof window.QRCode.toCanvas === 'function') {
-        const canvas = document.createElement('canvas');
-        window.QRCode.toCanvas(canvas, qrData, {
-            width: 170,
-            margin: 1,
-            errorCorrectionLevel: 'M',
-            color: { dark: '#000000', light: '#ffffff' }
-        }, err => {
-            if (!err) {
-                canvas.style.borderRadius = '6px';
-                onQrSuccess(canvas);
-            } else {
-                engineFallback();
-            }
-        });
-        return;
-    }
-
-    // Engine 2: QRCode constructor
+    // Engine 1: QRCode constructor from cdnjs (qrcodejs)
     if (window.QRCode && typeof window.QRCode === 'function') {
         try {
-            const div = document.createElement('div');
-            new window.QRCode(div, {
+            const tempDiv = document.createElement('div');
+            new window.QRCode(tempDiv, {
                 text: qrData,
                 width: 170,
                 height: 170,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: 2 // M
+                correctLevel: (window.QRCode && window.QRCode.CorrectLevel) ? window.QRCode.CorrectLevel.M : 0
             });
+
+            // qrcodejs renders canvas and img asynchronously in a tick
             setTimeout(() => {
-                const canvas = div.querySelector('canvas') || div.querySelector('img');
-                if (canvas) {
-                    canvas.style.borderRadius = '6px';
-                    onQrSuccess(canvas);
+                const img = tempDiv.querySelector('img');
+                const canvas = tempDiv.querySelector('canvas');
+                let targetEl = null;
+                if (img && img.src && img.src.length > 50) {
+                    targetEl = img;
+                } else if (canvas) {
+                    targetEl = canvas;
+                }
+                if (targetEl) {
+                    onQrSuccess(targetEl);
                 } else {
                     engineFallback();
                 }
-            }, 50);
+            }, 60);
             return;
         } catch (e) {
+            console.warn('QRCode constructor fallback:', e);
             engineFallback();
             return;
         }
@@ -825,13 +823,10 @@ function generateTicketQR(reg, containerId) {
     engineFallback();
 
     function engineFallback() {
-        // Engine 3: High-resolution QR API Rasterizer (Guaranteed 100% Real QR Code)
+        // Engine 2: High-resolution QR API Rasterizer (Guaranteed 100% Real QR Code)
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.alt = `Ticket QR Pass ${qrData}`;
-        img.style.width = '170px';
-        img.style.height = '170px';
-        img.style.borderRadius = '6px';
         img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&format=png&margin=4&data=${encodeURIComponent(qrData)}`;
         img.onload = () => {
             const c = document.createElement('canvas');
@@ -839,11 +834,10 @@ function generateTicketQR(reg, containerId) {
             c.height = 170;
             const cx = c.getContext('2d');
             cx.drawImage(img, 0, 0, 170, 170);
-            c.style.borderRadius = '6px';
             onQrSuccess(c);
         };
         img.onerror = () => {
-            setTimeout(() => generateTicketQR(reg, containerId), 500);
+            onQrSuccess(img);
         };
     }
 }
@@ -1300,9 +1294,9 @@ function savePassAsImage(source) {
         (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
 
     const qrContainerId = (source === 'fp') ? 'fp-qr-container' : 'ticket-qr-container';
-    const qrCanvas = document.querySelector(`#${qrContainerId} canvas`);
+    const qrElement = document.querySelector(`#${qrContainerId} img`) || document.querySelector(`#${qrContainerId} canvas`);
 
-    const W = 620, H = (qrCanvas ? 920 : 780);
+    const W = 620, H = (qrElement ? 880 : 740);
     const canvas = document.createElement('canvas');
     canvas.width = W;
     canvas.height = H;
@@ -1344,7 +1338,7 @@ function savePassAsImage(source) {
     ctx.font = "600 12px 'Inter', 'Plus Jakarta Sans', sans-serif";
     ctx.fillStyle = '#a882c8';
     ctx.letterSpacing = '3px';
-    ctx.fillText('THE ACADEMIC TREK  •  BOARDING PASS', W / 2, 82);
+    ctx.fillText('OFFICIAL BOARDING PASS', W / 2, 82);
 
     // ── Gold divider ──
     ctx.strokeStyle = 'rgba(247,231,197,0.35)';
@@ -1359,7 +1353,6 @@ function savePassAsImage(source) {
         ['Time', '9:00 AM – 5:00 PM IST'],
         ['Venue', 'WWI, Film City, Goregaon East, Mumbai'],
         ['College', reg.college || 'Degree College'],
-        ['Amount Paid', '\u20B9' + reg.finalPrice],
         ['Payment Status', isRejected ? 'REJECTED (ENTRY VOID)' : (reg.verified ? 'Verified \u2713' : 'Pending Verification')]
     ];
 
@@ -1401,13 +1394,13 @@ function savePassAsImage(source) {
     ctx.fillText('OFFICIAL ENTRY PASS QR CODE', W / 2, y);
     y += 18;
 
-    if (qrCanvas) {
+    if (qrElement) {
         // Draw QR with white background box
         const qrSize = 200;
         const qrX = (W - qrSize) / 2;
         ctx.fillStyle = '#ffffff';
         roundRectFill(ctx, qrX - 10, y - 6, qrSize + 20, qrSize + 20, 10, 10);
-        ctx.drawImage(qrCanvas, qrX, y + 4, qrSize, qrSize);
+        ctx.drawImage(qrElement, qrX, y + 4, qrSize, qrSize);
         y += qrSize + 28;
     } else {
         ctx.fillStyle = 'rgba(255,255,255,0.15)';

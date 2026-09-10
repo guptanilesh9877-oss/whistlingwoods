@@ -428,16 +428,13 @@ async function startScanner() {
         }
 
         const config = {
-            fps: 20,
+            fps: 10,
             qrbox: (viewfinderWidth, viewfinderHeight) => {
-                const edge = Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.72);
+                const edge = Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.85);
                 return { width: edge, height: edge };
             },
             aspectRatio: 1.0,
-            showTorchButtonIfSupported: true,
-            experimentalFeatures: {
-                useBarCodeDetectorIfSupported: true
-            }
+            showTorchButtonIfSupported: true
         };
 
         // Query available camera devices and strictly select Back/Rear camera
@@ -550,29 +547,35 @@ async function stopScanner() {
 }
 
 // Handle scan success with 2.5s debounce per code
-async function onScanSuccess(decodedText) {
+function onScanSuccess(decodedText) {
+    if (!decodedText) return;
+    const cleanText = decodedText.trim();
     const now = Date.now();
-    if (decodedText === lastScannedCode && (now - lastScanTime) < 2500) {
+    if (cleanText === lastScannedCode && (now - lastScanTime) < 2500) {
         return; // debounce duplicate consecutive frames
     }
 
-    lastScannedCode = decodedText;
+    lastScannedCode = cleanText;
     lastScanTime = now;
 
     // Haptic vibration
     if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
 
-    // Sync fresh from Supabase first so we have the latest attendance state
-    if (dataStore.supabaseClient) {
-        await dataStore.syncFromSupabase().catch(() => {});
-    }
-
-    // Process attendance (marks locally + pushes to Supabase via syncToSupabase)
-    const result = dataStore.markAttendance(decodedText);
+    // Process attendance IMMEDIATELY with zero network latency
+    const result = dataStore.markAttendance(cleanText);
     displayScanResult(result);
     renderRecentCheckins();
     renderStats();
     renderRegistrationsTable();
+
+    // Background sync to ensure Supabase stays completely up-to-date
+    if (dataStore.supabaseClient) {
+        dataStore.syncFromSupabase().then(() => {
+            renderRecentCheckins();
+            renderStats();
+            renderRegistrationsTable();
+        }).catch(() => {});
+    }
 }
 
 

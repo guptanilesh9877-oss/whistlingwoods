@@ -513,7 +513,24 @@ class DataStore {
         }
 
         const regs = this.getRegistrations();
-        const reg = regs.find(r => r.id.toUpperCase() === regId.toUpperCase());
+        let reg = regs.find(r => r.id.toUpperCase() === regId.toUpperCase());
+
+        // Fallback: Check if scanned text contains any known registration ID (e.g. if URL or wrapped string)
+        if (!reg) {
+            reg = regs.find(r => regId.toUpperCase().includes(r.id.toUpperCase()));
+            if (reg) regId = reg.id;
+        }
+
+        // Fallback: Check if phone or email was scanned
+        if (!reg) {
+            const cleanQuery = regId.toLowerCase().replace(/[\s\-()]/g, '');
+            reg = regs.find(r => {
+                const phone = (r.phone || '').replace(/[\s\-()]/g, '');
+                const email = (r.email || '').toLowerCase();
+                return (phone && phone === cleanQuery) || (email && email === cleanQuery);
+            });
+            if (reg) regId = reg.id;
+        }
 
         if (!reg) {
             return {
