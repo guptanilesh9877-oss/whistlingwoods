@@ -1282,21 +1282,121 @@ function shareFoundPassWhatsApp() {
 }
 
 // ──────────── SAVE PASS AS IMAGE ────────────
-function savePassAsImage(source) {
+// ──────────── SAVE PASS AS IMAGE ────────────
+async function savePassAsImage(source) {
     // source: 'confirm' = confirmation page, 'fp' = find-pass page
     const reg = (source === 'fp') ? _foundPassReg : currentRegistration;
-    if (!reg) {
-        showToast('No ticket data available to save', 'error');
+    const cardId = (source === 'fp') ? 'fp-ticket-card' : 'ticket-card';
+    const passElement = document.getElementById(cardId);
+
+    if (!reg || !passElement) {
+        showToast('No boarding pass available to save', 'error');
         return;
     }
 
     const isRejected = Boolean(reg.rejected) || 
         (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
 
-    const qrContainerId = (source === 'fp') ? 'fp-qr-container' : 'ticket-qr-container';
+    const saveBtns = document.querySelectorAll(`[onclick*="savePassAsImage('${source}')"]`);
+    saveBtns.forEach(b => { b.disabled = true; b.dataset.origHtml = b.innerHTML; b.innerHTML = '⏳ Generating Pass Image...'; });
+
+    try {
+        if (window.html2canvas) {
+            await document.fonts.ready;
+
+            const canvas = await window.html2canvas(passElement, {
+                scale: 3,                   // 3x Ultra-HD crisp output
+                useCORS: true,              // Support local & remote assets
+                allowTaint: true,
+                backgroundColor: null,      // Preserves neat rounded border
+                logging: false,
+                onclone: (clonedDoc) => {
+                    // Force pristine horizontal boarding pass layout on any device / screen width
+                    const style = clonedDoc.createElement('style');
+                    style.innerHTML = `
+                        #${cardId} {
+                            width: 840px !important;
+                            max-width: 840px !important;
+                            flex-direction: row !important;
+                            margin: 0 auto !important;
+                            box-shadow: none !important;
+                        }
+                        #${cardId} .bp-main {
+                            padding: 26px 30px !important;
+                        }
+                        #${cardId} .bp-meta-strip {
+                            grid-template-columns: repeat(4, 1fr) !important;
+                        }
+                        #${cardId} .bp-body-grid {
+                            grid-template-columns: repeat(2, 1fr) !important;
+                        }
+                        #${cardId} .bp-field-wide {
+                            grid-column: span 2 !important;
+                        }
+                        #${cardId} .bp-perforation {
+                            width: 24px !important;
+                            height: auto !important;
+                            flex-direction: column !important;
+                        }
+                        #${cardId} .bp-perforation-line {
+                            width: 0 !important;
+                            height: 100% !important;
+                            border-left: 2px dashed rgba(247, 231, 197, 0.45) !important;
+                            border-top: none !important;
+                        }
+                        #${cardId} .bp-notch {
+                            width: 24px !important;
+                            height: 24px !important;
+                            left: 0 !important;
+                            right: auto !important;
+                        }
+                        #${cardId} .bp-notch-top {
+                            top: -12px !important;
+                            bottom: auto !important;
+                            border-bottom: 1.5px solid rgba(247, 231, 197, 0.5) !important;
+                            border-right: none !important;
+                        }
+                        #${cardId} .bp-notch-bottom {
+                            bottom: -12px !important;
+                            top: auto !important;
+                            border-top: 1.5px solid rgba(247, 231, 197, 0.5) !important;
+                            border-left: none !important;
+                        }
+                        #${cardId} .bp-stub {
+                            flex: 0 0 270px !important;
+                            width: 270px !important;
+                            border-left: 1px solid rgba(247, 231, 197, 0.15) !important;
+                            border-top: none !important;
+                        }
+                    `;
+                    clonedDoc.head.appendChild(style);
+                }
+            });
+
+            const safeName = (reg.name || 'pass').replace(/[^a-zA-Z0-9]/g, '_');
+            const link = document.createElement('a');
+            link.download = `CelebrateCinema2026_BoardingPass_${safeName}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast('✓ Boarding pass saved to downloads!', 'success');
+            return;
+        }
+    } catch (err) {
+        console.warn('html2canvas capture fallback:', err);
+    } finally {
+        saveBtns.forEach(b => { b.disabled = false; if (b.dataset.origHtml) b.innerHTML = b.dataset.origHtml; });
+    }
+
+    // Fallback: Horizontal Canvas Renderer
+    downloadHorizontalPassCanvas(reg, cardId, isRejected);
+}
+
+// Fallback Horizontal Canvas Renderer matching the exact on-screen Boarding Pass
+function downloadHorizontalPassCanvas(reg, cardId, isRejected) {
+    const qrContainerId = (cardId === 'fp-ticket-card') ? 'fp-qr-container' : 'ticket-qr-container';
     const qrElement = document.querySelector(`#${qrContainerId} img`) || document.querySelector(`#${qrContainerId} canvas`);
 
-    const W = 620, H = (qrElement ? 880 : 740);
+    const W = 1680, H = 840; // 2x scale of 840x420
     const canvas = document.createElement('canvas');
     canvas.width = W;
     canvas.height = H;
@@ -1304,154 +1404,166 @@ function savePassAsImage(source) {
 
     // ── Background ──
     const bgGrad = ctx.createLinearGradient(0, 0, W, H);
-    bgGrad.addColorStop(0, '#12121e');
-    bgGrad.addColorStop(0.5, '#1e1830');
-    bgGrad.addColorStop(1, '#12121e');
+    bgGrad.addColorStop(0, '#100b1e');
+    bgGrad.addColorStop(0.5, '#160e28');
+    bgGrad.addColorStop(1, '#0c0816');
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, W, H);
 
-    // Subtle radial glow top-left
-    const glow1 = ctx.createRadialGradient(0, 0, 0, 0, 0, 350);
-    glow1.addColorStop(0, 'rgba(141,106,174,0.35)');
-    glow1.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = glow1;
-    ctx.fillRect(0, 0, W, H);
-
-    // ── Border ──
-    ctx.strokeStyle = isRejected ? 'rgba(239,68,68,0.7)' : 'rgba(247,231,197,0.6)';
-    ctx.lineWidth = 2;
-    roundRect(ctx, 14, 14, W - 28, H - 28, 14);
+    // Border
+    ctx.strokeStyle = isRejected ? 'rgba(239,68,68,0.7)' : 'rgba(247,231,197,0.5)';
+    ctx.lineWidth = 3;
+    roundRect(ctx, 16, 16, W - 32, H - 32, 28);
     ctx.stroke();
 
-    // ── Header band ──
-    const headerGrad = ctx.createLinearGradient(0, 0, W, 0);
-    headerGrad.addColorStop(0, isRejected ? 'rgba(239,68,68,0.45)' : 'rgba(141,106,174,0.45)');
-    headerGrad.addColorStop(1, 'rgba(23,19,42,0.85)');
-    ctx.fillStyle = headerGrad;
-    roundRectFill(ctx, 14, 14, W - 28, 90, 14, 0);
+    // ── Left Main Passenger Section (68% = 1140px) ──
+    const mainW = 1140;
 
-    // ── Event title ──
+    // Header logos & badge
+    ctx.fillStyle = '#ffffff';
+    ctx.font = "bold 28px 'Integral CF', sans-serif";
+    ctx.textAlign = 'left';
+    ctx.fillText('CELEBRATE CINEMA 2026', 60, 80);
+
+    ctx.font = "bold 18px 'Inter', sans-serif";
     ctx.fillStyle = '#f7e7c5';
-    ctx.font = "bold 20px 'Integral CF', 'Inter', sans-serif";
-    ctx.textAlign = 'center';
-    ctx.fillText('CELEBRATE CINEMA 2026', W / 2, 56);
-    ctx.font = "600 12px 'Inter', 'Plus Jakarta Sans', sans-serif";
-    ctx.fillStyle = '#a882c8';
-    ctx.letterSpacing = '3px';
-    ctx.fillText('OFFICIAL BOARDING PASS', W / 2, 82);
+    ctx.fillText('OFFICIAL BOARDING PASS', mainW - 320, 80);
 
-    // ── Gold divider ──
-    ctx.strokeStyle = 'rgba(247,231,197,0.35)';
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(40, 112); ctx.lineTo(W - 40, 112); ctx.stroke();
+    // Header divider
+    ctx.strokeStyle = 'rgba(247,231,197,0.25)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(60, 110); ctx.lineTo(mainW - 60, 110); ctx.stroke();
 
-    // ── Detail rows ──
-    const rows = [
-        ['Attendee Name', reg.name],
-        ['Registration ID', reg.id],
-        ['Visiting Dates', reg.visitDate || 'Both Days (08th & 09th Oct)'],
-        ['Time', '9:00 AM – 5:00 PM IST'],
-        ['Venue', 'WWI, Film City, Goregaon East, Mumbai'],
-        ['College', reg.college || 'Degree College'],
-        ['Payment Status', isRejected ? 'REJECTED (ENTRY VOID)' : (reg.verified ? 'Verified \u2713' : 'Pending Verification')]
+    // Flight Meta Strip
+    ctx.fillStyle = 'rgba(255,255,255,0.04)';
+    roundRectFill(ctx, 60, 130, mainW - 120, 80, 14, 14);
+    ctx.strokeStyle = 'rgba(247,231,197,0.18)';
+    roundRect(ctx, 60, 130, mainW - 120, 80, 14);
+    ctx.stroke();
+
+    const metaCols = [
+        ['FLIGHT / EVENT', 'CC-2026', 100],
+        ['GATE', '01 FILM CITY', 340],
+        ['CLASS / ACCESS', 'DELEGATE', 580],
+        ['STATUS', isRejected ? 'VOID' : (reg.verified ? 'VERIFIED ✓' : 'PENDING'), 820]
     ];
-
-    let y = 140;
-    const labelX = 50, valueX = W - 50;
-    rows.forEach(([label, value], i) => {
-        // Alternate row bg
-        if (i % 2 === 0) {
-            ctx.fillStyle = 'rgba(255,255,255,0.03)';
-            ctx.fillRect(26, y - 16, W - 52, 36);
-        }
-        ctx.font = "500 12px 'Inter', 'Plus Jakarta Sans', sans-serif";
+    metaCols.forEach(([lbl, val, x]) => {
+        ctx.font = "600 16px 'Inter', sans-serif";
         ctx.fillStyle = 'rgba(247,231,197,0.6)';
-        ctx.textAlign = 'left';
-        ctx.fillText(label.toUpperCase(), labelX, y);
-
-        ctx.font = "600 14px 'Inter', 'Plus Jakarta Sans', sans-serif";
-        ctx.fillStyle = (label === 'Payment Status')
-            ? (isRejected ? '#ef4444' : (reg.verified ? '#10b981' : '#f59e0b'))
-            : (label === 'Visiting Dates' || label === 'Trek Dates' ? '#f7e7c5' : '#ffffff');
-        ctx.textAlign = 'right';
-        ctx.fillText(value, valueX, y);
-        y += 42;
+        ctx.fillText(lbl, x, 162);
+        ctx.font = "bold 22px 'Integral CF', sans-serif";
+        ctx.fillStyle = (lbl === 'STATUS') ? (isRejected ? '#ef4444' : (reg.verified ? '#10b981' : '#f59e0b')) : '#ffffff';
+        ctx.fillText(val, x, 192);
     });
 
-    // ── Dashed divider ──
-    y += 10;
-    ctx.setLineDash([6, 8]);
-    ctx.strokeStyle = 'rgba(247,231,197,0.2)';
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(40, y); ctx.lineTo(W - 40, y); ctx.stroke();
+    // Passenger Body Grid
+    const fields = [
+        ['PASSENGER / ATTENDEE NAME', reg.name.toUpperCase(), 60, 270, true],
+        ['REGISTRATION / PNR', reg.id, 60, 370, false, '#f7e7c5'],
+        ['EVENT DATES', '08 & 09 OCT 2026', 600, 370, false, '#f7e7c5'],
+        ['VISITING PASS', reg.visitDate || 'Both Days (08th & 09th Oct)', 60, 470],
+        ['COLLEGE / INSTITUTION', reg.college || 'Degree College', 600, 470],
+        ['VENUE / DESTINATION', 'Whistling Woods International, Film City, Goregaon (E), Mumbai', 60, 570]
+    ];
+
+    fields.forEach(([lbl, val, x, y, isBig, color]) => {
+        ctx.font = "600 16px 'Inter', sans-serif";
+        ctx.fillStyle = 'rgba(247,231,197,0.55)';
+        ctx.fillText(lbl, x, y);
+        ctx.font = isBig ? "bold 32px 'Integral CF', sans-serif" : "600 24px 'Inter', sans-serif";
+        ctx.fillStyle = color || '#ffffff';
+        ctx.fillText(val, x, y + 36);
+    });
+
+    // Footer note
+    ctx.font = "italic 16px 'Inter', sans-serif";
+    ctx.fillStyle = 'rgba(247,231,197,0.5)';
+    ctx.fillText('Film City Gate 01 Security clearance mandatory • Valid College Student ID required', 60, 770);
+
+    // ── Perforation Line ──
+    const perfX = mainW;
+    ctx.setLineDash([12, 14]);
+    ctx.strokeStyle = 'rgba(247,231,197,0.4)';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(perfX, 40); ctx.lineTo(perfX, H - 40); ctx.stroke();
     ctx.setLineDash([]);
 
-    // ── QR Section ──
-    y += 24;
+    // Notches (top and bottom punch circles)
+    ctx.fillStyle = '#0a0614';
+    ctx.beginPath(); ctx.arc(perfX, 16, 24, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(perfX, H - 16, 24, 0, Math.PI * 2); ctx.fill();
+
+    // ── Right Stub (Gate Entry Stub) ──
+    const stubCenterX = perfX + (W - perfX) / 2;
     ctx.fillStyle = '#f7e7c5';
-    ctx.font = "bold 11px 'Integral CF', 'Inter', sans-serif";
+    ctx.font = "bold 24px 'Integral CF', sans-serif";
     ctx.textAlign = 'center';
-    ctx.fillText('OFFICIAL ENTRY PASS QR CODE', W / 2, y);
-    y += 18;
+    ctx.fillText('GATE ENTRY STUB', stubCenterX, 90);
+    ctx.font = "600 16px 'Inter', sans-serif";
+    ctx.fillStyle = 'rgba(247,231,197,0.7)';
+    ctx.fillText('SCAN FOR ADMISSION', stubCenterX, 120);
+
+    // QR Box
+    const qrSize = 340;
+    const qrX = stubCenterX - qrSize / 2;
+    const qrY = 160;
+    ctx.fillStyle = '#ffffff';
+    roundRectFill(ctx, qrX - 16, qrY - 16, qrSize + 32, qrSize + 32, 20, 20);
 
     if (qrElement) {
-        // Draw QR with white background box
-        const qrSize = 200;
-        const qrX = (W - qrSize) / 2;
-        ctx.fillStyle = '#ffffff';
-        roundRectFill(ctx, qrX - 10, y - 6, qrSize + 20, qrSize + 20, 10, 10);
-        ctx.drawImage(qrElement, qrX, y + 4, qrSize, qrSize);
-        y += qrSize + 28;
-    } else {
-        ctx.fillStyle = 'rgba(255,255,255,0.15)';
-        ctx.fillRect((W - 160) / 2, y, 160, 160);
-        ctx.fillStyle = 'rgba(247,231,197,0.5)';
-        ctx.font = "12px 'Inter', 'Plus Jakarta Sans', sans-serif";
-        ctx.fillText('[QR not yet generated]', W / 2, y + 85);
-        y += 175;
+        ctx.drawImage(qrElement, qrX, qrY, qrSize, qrSize);
     }
 
-    ctx.fillStyle = 'rgba(247,231,197,0.5)';
-    ctx.font = "11px 'Inter', 'Plus Jakarta Sans', sans-serif";
-    ctx.textAlign = 'center';
-    ctx.fillText('Scan at Whistling Woods International Entry Gate', W / 2, y + 8);
+    // PNR Text & Barcode Graphic
+    ctx.font = "bold 24px monospace";
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(reg.id, stubCenterX, 590);
 
-    // ── Rejection Stamp (Diagonal Overlay) ──
+    // Barcode visual lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+    let bx = stubCenterX - 140;
+    for (let i = 0; i < 35; i++) {
+        const lw = (i % 3 === 0) ? 4 : ((i % 2 === 0) ? 3 : 2);
+        ctx.lineWidth = lw;
+        ctx.beginPath(); ctx.moveTo(bx, 620); ctx.lineTo(bx, 680); ctx.stroke();
+        bx += 8;
+    }
+
+    ctx.font = "600 16px 'Inter', sans-serif";
+    ctx.fillStyle = 'rgba(247,231,197,0.5)';
+    ctx.fillText('SCAN AT FILM CITY GATE 01', stubCenterX, 720);
+
+    // Rejection Overlay
     if (isRejected) {
         ctx.save();
-        ctx.translate(W / 2, H / 2 - 30);
-        ctx.rotate(-22 * Math.PI / 180);
-        ctx.strokeStyle = 'rgba(239, 68, 68, 0.9)';
-        ctx.lineWidth = 6;
-        roundRect(ctx, -220, -50, 440, 100, 14);
+        ctx.translate(W / 2, H / 2);
+        ctx.rotate(-18 * Math.PI / 180);
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.95)';
+        ctx.lineWidth = 10;
+        roundRect(ctx, -400, -80, 800, 160, 20);
         ctx.stroke();
-        ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
-        roundRectFill(ctx, -220, -50, 440, 100, 14, 14);
+        ctx.fillStyle = 'rgba(26, 5, 5, 0.92)';
+        roundRectFill(ctx, -400, -80, 800, 160, 20, 20);
         ctx.fillStyle = '#ef4444';
-        ctx.font = "bold 32px 'Integral CF', 'Inter', sans-serif";
+        ctx.font = "bold 56px 'Integral CF', sans-serif";
         ctx.textAlign = 'center';
-        ctx.fillText('VOID / REJECTED', 0, 0);
-        ctx.font = "bold 13px 'Inter', sans-serif";
+        ctx.fillText('VOID / PAYMENT REJECTED', 0, 10);
+        ctx.font = "bold 20px 'Inter', sans-serif";
         ctx.fillStyle = '#ffffff';
-        ctx.fillText('PAYMENT REJECTED • ENTRY DENIED AT GATE', 0, 26);
+        ctx.fillText('ENTRY STRICTLY DENIED AT GATE', 0, 50);
         ctx.restore();
     }
 
-    // ── Footer ──
-    ctx.fillStyle = 'rgba(247,231,197,0.45)';
-    ctx.font = "10px 'Inter', 'Plus Jakarta Sans', sans-serif";
-    ctx.fillText('Celebrate Cinema 2026  •  Whistling Woods International, Film City, Mumbai', W / 2, H - 24);
-
-    // ── Download ──
+    // Trigger download
     try {
         const link = document.createElement('a');
         const safeName = (reg.name || 'pass').replace(/[^a-zA-Z0-9]/g, '_');
-        link.download = `CC2026_Pass_${safeName}.png`;
+        link.download = `CelebrateCinema2026_BoardingPass_${safeName}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
-        showToast('Pass saved as image! Check your downloads.', 'success');
+        showToast('✓ Boarding pass saved to downloads!', 'success');
     } catch (e) {
-        console.error('Save pass error:', e);
+        console.error('Download pass error:', e);
         showToast('Could not save image. Try screenshotting instead.', 'error');
     }
 }

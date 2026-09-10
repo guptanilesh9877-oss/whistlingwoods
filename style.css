@@ -2030,7 +2030,7 @@ select.form-input option:focus {
     display: flex;
     flex-direction: column;
     gap: var(--space-2xl);
-    max-width: 680px;
+    max-width: 880px;
     margin: 0 auto;
     padding-bottom: var(--space-4xl);
 }
@@ -2038,6 +2038,9 @@ select.form-input option:focus {
 .find-pass-search-card {
     text-align: center;
     padding: var(--space-3xl) var(--space-2xl);
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .fp-icon {
@@ -2096,7 +2099,7 @@ select.form-input option:focus {
 
 /* ───── CONFIRMATION TICKET ───── */
 .confirmation-content {
-    max-width: 620px;
+    max-width: 880px;
     margin: 0 auto;
     text-align: center;
     padding: var(--space-2xl) 0;
@@ -3687,12 +3690,18 @@ select.form-input option:focus {
 .boarding-pass {
     display: flex;
     position: relative;
-    background: linear-gradient(135deg, rgba(26, 18, 42, 0.96) 0%, rgba(14, 10, 24, 0.98) 100%);
-    border: 1px solid rgba(212, 175, 55, 0.45);
+    background-color: #0e0919;
+    background-image: 
+        linear-gradient(135deg, rgba(16, 10, 28, 0.90) 0%, rgba(10, 6, 18, 0.93) 100%),
+        url('assets/banner-bg.jpg');
+    background-position: center right;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border: 1.5px solid rgba(247, 231, 197, 0.45);
     border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(141, 106, 174, 0.18);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.75), 0 0 50px rgba(141, 106, 174, 0.22);
     margin: var(--space-2xl) auto;
-    max-width: 820px;
+    max-width: 840px;
     overflow: hidden;
     text-align: left;
     backdrop-filter: blur(12px);
@@ -3728,8 +3737,9 @@ select.form-input option:focus {
 }
 
 .bp-main {
-    flex: 1 1 68%;
-    padding: 24px 28px;
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 26px 28px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -3740,59 +3750,69 @@ select.form-input option:focus {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(247, 231, 197, 0.2);
+    gap: 14px;
 }
 .bp-logos {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
 }
 .bp-logo-wwi {
-    height: 22px;
+    height: 24px;
     width: auto;
     object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 .bp-logo-cc26 {
-    height: 32px;
+    height: 36px;
     width: auto;
     object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 .bp-logo-cb {
-    height: 20px;
+    height: 22px;
     width: auto;
     background: #ffffff;
-    padding: 2px 6px;
-    border-radius: 3px;
+    padding: 3px 8px;
+    border-radius: 4px;
     object-fit: contain;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 .bp-brand-divider {
     width: 1px;
-    height: 20px;
-    background: rgba(212, 175, 55, 0.4);
+    height: 22px;
+    background: rgba(247, 231, 197, 0.4);
 }
 .bp-header-badge {
-    background: rgba(212, 175, 55, 0.12);
-    border: 1px solid rgba(212, 175, 55, 0.35);
-    padding: 4px 12px;
-    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.22), rgba(141, 106, 174, 0.28));
+    border: 1px solid rgba(247, 231, 197, 0.45);
+    padding: 6px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
 }
 .bp-badge-text {
-    font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
-    font-size: 0.72rem;
-    letter-spacing: 1px;
-    color: var(--gold-light);
+    font-family: 'Integral CF', 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.70rem;
+    letter-spacing: 1.5px;
+    color: #f7e7c5;
     font-weight: 700;
+    white-space: nowrap;
 }
 
 .bp-meta-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(247, 231, 197, 0.18);
+    border-radius: 10px;
     padding: 10px 14px;
     margin: 14px 0 16px;
+    backdrop-filter: blur(8px);
 }
 .bp-meta-item {
     display: flex;
@@ -3840,21 +3860,23 @@ select.form-input option:focus {
     color: #ffffff;
 }
 .bp-name-val {
-    font-family: 'Integral CF', sans-serif;
-    font-size: 1.15rem;
-    color: var(--gold-light);
+    font-family: 'Integral CF', 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.25rem;
+    color: #ffffff;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
 }
 .bp-pnr-val {
     font-family: monospace;
-    color: var(--gold);
+    color: var(--gold-light);
     font-weight: 700;
+    font-size: 1.05rem;
     letter-spacing: 1px;
 }
 
 .bp-footer-strip {
-    margin-top: 18px;
+    margin-top: 14px;
     padding-top: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 0.72rem;
@@ -3865,6 +3887,7 @@ select.form-input option:focus {
 .bp-perforation {
     position: relative;
     width: 24px;
+    flex: 0 0 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3873,37 +3896,39 @@ select.form-input option:focus {
 .bp-perforation-line {
     width: 0;
     height: 100%;
-    border-left: 2px dashed rgba(212, 175, 55, 0.35);
+    border-left: 2px dashed rgba(247, 231, 197, 0.45);
 }
 .bp-notch {
     width: 24px;
     height: 24px;
-    background: var(--bg-dark);
+    background: #0a0614;
     border-radius: 50%;
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.8);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.95);
     position: absolute;
     left: 0;
     z-index: 5;
 }
 .bp-notch-top {
     top: -12px;
-    border-bottom: 1px solid rgba(212, 175, 55, 0.45);
+    border-bottom: 1.5px solid rgba(247, 231, 197, 0.5);
 }
 .bp-notch-bottom {
     bottom: -12px;
-    border-top: 1px solid rgba(212, 175, 55, 0.45);
+    border-top: 1.5px solid rgba(247, 231, 197, 0.5);
 }
 
 .bp-stub {
-    flex: 0 0 32%;
-    padding: 24px 20px;
-    background: rgba(14, 10, 24, 0.7);
+    flex: 0 0 270px;
+    width: 270px;
+    padding: 22px 18px;
+    background: rgba(10, 6, 18, 0.88);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
     text-align: center;
-    border-left: 1px solid rgba(255, 255, 255, 0.03);
+    border-left: 1px solid rgba(247, 231, 197, 0.15);
+    backdrop-filter: blur(8px);
 }
 .bp-stub-header {
     margin-bottom: 10px;
@@ -3913,23 +3938,24 @@ select.form-input option:focus {
     font-family: 'Integral CF', sans-serif;
     font-size: 0.85rem;
     font-weight: 700;
-    color: var(--gold);
-    letter-spacing: 1px;
+    color: var(--gold-light);
+    letter-spacing: 1.5px;
 }
 .bp-stub-sub {
     display: block;
     font-size: 0.68rem;
-    color: var(--lavender);
+    color: rgba(247, 231, 197, 0.7);
     letter-spacing: 0.5px;
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .bp-qr-wrapper {
     background: #ffffff;
     padding: 10px;
     border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     margin: 8px 0;
+    border: 2px solid rgba(247, 231, 197, 0.35);
 }
 .bp-qr-wrapper .ticket-qr-container {
     margin: 0;
@@ -3981,7 +4007,7 @@ select.form-input option:focus {
     text-transform: uppercase;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 860px) {
     .boarding-pass {
         flex-direction: column;
         max-width: 100%;
@@ -4001,31 +4027,34 @@ select.form-input option:focus {
     .bp-perforation {
         width: 100%;
         height: 24px;
+        flex: 0 0 24px;
         flex-direction: row;
     }
     .bp-perforation-line {
         width: 100%;
         height: 0;
         border-left: none;
-        border-top: 2px dashed rgba(212, 175, 55, 0.35);
+        border-top: 2px dashed rgba(247, 231, 197, 0.45);
     }
     .bp-notch-top {
         left: -12px;
         top: 0;
         border-bottom: none;
-        border-right: 1px solid rgba(212, 175, 55, 0.45);
+        border-right: 1.5px solid rgba(247, 231, 197, 0.5);
     }
     .bp-notch-bottom {
         right: -12px;
         left: auto;
         bottom: 0;
         border-top: none;
-        border-left: 1px solid rgba(212, 175, 55, 0.45);
+        border-left: 1.5px solid rgba(247, 231, 197, 0.5);
     }
     .bp-stub {
-        padding: 20px 16px;
+        width: 100%;
+        flex: 1 1 auto;
+        padding: 22px 18px;
         border-left: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.03);
+        border-top: 1px solid rgba(247, 231, 197, 0.15);
     }
 }
 
