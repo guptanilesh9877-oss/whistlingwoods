@@ -128,6 +128,12 @@ class DataStore {
         const rawYear = r.year || '';
         const combinedYear = visitDateStr ? `${rawYear}__VD__${visitDateStr}` : rawYear;
 
+        const isRejected = Boolean(r.rejected) || 
+            (typeof r.transactionId === 'string' && r.transactionId.toUpperCase().startsWith('REJECTED'));
+        const txnId = isRejected && !String(r.transactionId || '').toUpperCase().startsWith('REJECTED')
+            ? ('REJECTED: ' + (r.transactionId || 'Payment verification failed'))
+            : (r.transactionId || r.transaction_id || '');
+
         return {
             id: r.id,
             name: r.name || '',
@@ -142,9 +148,9 @@ class DataStore {
             early_bird_discount: Number(r.earlyBirdDiscount ?? r.early_bird_discount ?? CONFIG.EARLY_BIRD_DISCOUNT),
             coupon_discount: Number(r.couponDiscount ?? r.coupon_discount ?? 0),
             final_price: Number(r.finalPrice ?? r.final_price ?? 0),
-            transaction_id: r.transactionId || r.transaction_id || '',
+            transaction_id: txnId,
             payment_screenshot: r.paymentScreenshot || r.payment_screenshot || '',
-            verified: Boolean(r.verified),
+            verified: Boolean(r.verified) && !isRejected,
             attended: Boolean(r.attended),
             attended_at: r.attendedAt || r.attended_at || null,
             timestamp: r.timestamp || new Date().toISOString()
@@ -167,6 +173,9 @@ class DataStore {
             visitDateVal = row.visit_date;
         }
 
+        const isRejected = Boolean(row.rejected) || 
+            (typeof row.transaction_id === 'string' && row.transaction_id.toUpperCase().startsWith('REJECTED'));
+
         return {
             id: row.id,
             name: row.name || '',
@@ -176,7 +185,7 @@ class DataStore {
             year: yearVal,
             visitDate: visitDateVal,
             referralCode: row.referral_code || row.referralCode || '',
-            referredBy: row.referred_by || row.referredBy || '',
+            referredBy: row.referred_by || row.referred_by || '',
             couponUsed: row.coupon_used || row.couponUsed || '',
             basePrice: Number(row.base_price ?? row.basePrice ?? CONFIG.BASE_PRICE),
             earlyBirdDiscount: Number(row.early_bird_discount ?? row.earlyBirdDiscount ?? CONFIG.EARLY_BIRD_DISCOUNT),
@@ -184,7 +193,8 @@ class DataStore {
             finalPrice: Number(row.final_price ?? row.finalPrice ?? 0),
             transactionId: row.transaction_id || row.transactionId || '',
             paymentScreenshot: row.payment_screenshot || row.paymentScreenshot || '',
-            verified: Boolean(row.verified),
+            verified: Boolean(row.verified) && !isRejected,
+            rejected: isRejected,
             attended: Boolean(row.attended),
             attendedAt: row.attended_at || row.attendedAt || null,
             timestamp: row.timestamp || new Date().toISOString()
@@ -421,7 +431,31 @@ class DataStore {
         const regs = this.getRegistrations();
         const reg = regs.find(r => r.id === id);
         if (!reg) return null;
-        reg.verified = !reg.verified;
+        if (reg.rejected) {
+            // If was rejected, toggle resets rejection and marks verified
+            reg.rejected = false;
+            reg.verified = true;
+            if (typeof reg.transactionId === 'string' && reg.transactionId.startsWith('REJECTED: ')) {
+                reg.transactionId = reg.transactionId.replace(/^REJECTED:\s*[^\[]*\[?/, '').replace(/\]$/, '').trim();
+            }
+        } else {
+            reg.verified = !reg.verified;
+        }
+        this.saveRegistrations(regs);
+        await this.syncToSupabase(reg);
+        return reg;
+    }
+
+    async rejectPayment(id, reason = 'Payment verification rejected') {
+        const regs = this.getRegistrations();
+        const reg = regs.find(r => r.id === id);
+        if (!reg) return null;
+        reg.rejected = true;
+        reg.verified = false;
+        reg.attended = false; // Cannot be attended if rejected
+        reg.rejectionReason = reason;
+        const currentTxn = String(reg.transactionId || '').replace(/^REJECTED:\s*/i, '').trim();
+        reg.transactionId = `REJECTED: ${reason} [${currentTxn || 'No Txn'}]`;
         this.saveRegistrations(regs);
         await this.syncToSupabase(reg);
         return reg;
@@ -486,6 +520,17 @@ class DataStore {
                 success: false,
                 status: 'not_found',
                 message: `Ticket ID "${regId}" not found in database!`,
+                scannedId: regId
+            };
+        }
+
+        // Check if payment was rejected — QR is INVALID and entry is strictly denied!
+        if (reg.rejected || (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'))) {
+            return {
+                success: false,
+                status: 'payment_rejected',
+                reg,
+                message: `⛔ ENTRY DENIED — PAYMENT REJECTED! Ticket is VOID and INVALID for entry for ${reg.name}.`,
                 scannedId: regId
             };
         }

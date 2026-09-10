@@ -18,6 +18,7 @@ function renderAdminDashboard() {
     initAdminTabSwitching();
     initAdminSearch();
     initSupabaseUI();
+    initColumnVisibility();
 
     // Auto-fetch latest cloud registrations from Supabase and refresh view
     if (window.dataStore && typeof dataStore.syncFromSupabase === 'function') {
@@ -102,16 +103,16 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             : null;
 
         return `
-        <tr id="row-${r.id}">
-            <td title="${r.id}"><strong>${r.id}</strong></td>
-            <td title="${escapeHTML(r.name)}">${escapeHTML(r.name)}</td>
-            <td title="${escapeHTML(r.email)}">${escapeHTML(r.email)}</td>
-            <td>${escapeHTML(r.phone)}</td>
-            <td title="${escapeHTML(r.college)}">${escapeHTML(r.college)}</td>
-            <td title="${escapeHTML(r.visitDate || 'Both Days')}"><span class="badge badge-gold-sm">${escapeHTML(r.visitDate ? (r.visitDate.includes('Both') ? 'Both Days' : (r.visitDate.includes('08th') ? 'Day 1 (8th)' : 'Day 2 (9th)')) : 'Both Days')}</span></td>
-            <td>₹${r.finalPrice}</td>
-            <td>${r.couponUsed || '—'}</td>
-            <td>
+        <tr id="row-${r.id}" class="${r.rejected ? 'row-rejected' : ''}">
+            <td class="col-ticketId" title="${r.id}"><strong>${r.id}</strong></td>
+            <td class="col-name" title="${escapeHTML(r.name)}">${escapeHTML(r.name)}</td>
+            <td class="col-email" title="${escapeHTML(r.email)}">${escapeHTML(r.email)}</td>
+            <td class="col-phone">${escapeHTML(r.phone)}</td>
+            <td class="col-college" title="${escapeHTML(r.college)}">${escapeHTML(r.college)}</td>
+            <td class="col-date" title="${escapeHTML(r.visitDate || 'Both Days')}"><span class="badge badge-gold-sm">${escapeHTML(r.visitDate ? (r.visitDate.includes('Both') ? 'Both Days' : (r.visitDate.includes('08th') ? 'Day 1 (8th)' : 'Day 2 (9th)')) : 'Both Days')}</span></td>
+            <td class="col-amount">₹${r.finalPrice}</td>
+            <td class="col-coupon">${r.couponUsed || '—'}</td>
+            <td class="col-referral">
                 ${refCode ? `
                     <span class="badge badge-purple" style="font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('${escapeHTML(refCode)}')" title="Click to filter by referral code ${escapeHTML(refCode)}">
                         ${escapeHTML(refCode)}
@@ -120,23 +121,29 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                 ` : `<span style="color:var(--text-muted); font-size:0.75rem; opacity:0.6;">Direct / —</span>`}
                 ${r.referralCode ? `<div style="font-size:0.68rem; color:var(--text-muted); opacity:0.6; margin-top:2px;" title="Registrant's own referral code">Own: ${escapeHTML(r.referralCode)}</div>` : ''}
             </td>
-            <td title="${r.transactionId || '—'}">${r.transactionId ? r.transactionId.substring(0, 12) : '—'}</td>
-            <td>
-                <span class="badge ${r.verified ? 'badge-verified' : 'badge-pending'}">
-                    ${r.verified ? 'Verified' : 'Pending'}
+            <td class="col-txnId" title="${r.transactionId || '—'}">${r.transactionId ? r.transactionId.substring(0, 16) : '—'}</td>
+            <td class="col-payment">
+                <span class="badge ${r.rejected ? 'badge-rejected' : (r.verified ? 'badge-verified' : 'badge-pending')}" style="${r.rejected ? 'background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.5); font-weight:700;' : ''}">
+                    ${r.rejected ? 'Rejected ✕' : (r.verified ? 'Verified ✓' : 'Pending')}
                 </span>
             </td>
-            <td>
+            <td class="col-attendance">
                 <span class="badge ${r.attended ? 'badge-verified' : 'badge-pending'}" style="cursor: pointer;" onclick="handleToggleAttendance('${r.id}')" title="Click to toggle attendance">
                     ${r.attended ? '✓ Checked In' : 'Not In'}
                 </span>
             </td>
-            <td>
+            <td class="col-actions">
                 <div class="action-btns">
                     <button class="btn-verify ${r.verified ? 'verified' : ''}"
                             onclick="handleToggleVerify('${r.id}')"
                             title="${r.verified ? 'Mark as Pending' : 'Verify Payment'}">
                         ${r.verified ? '✓' : 'Verify'}
+                    </button>
+                    <button class="btn-reject ${r.rejected ? 'is-rejected' : ''}"
+                            onclick="handleRejectPayment('${r.id}')"
+                            title="${r.rejected ? 'Payment is Rejected (click to un-reject)' : 'Reject Payment & Void Pass'}"
+                            style="${r.rejected ? 'background:#ef4444; color:#fff; border-color:#dc2626;' : 'color:#ef4444; border:1px solid rgba(239,68,68,0.4); background:rgba(239,68,68,0.08);'}">
+                        ${r.rejected ? 'Void' : 'Reject'}
                     </button>
                     ${r.paymentScreenshot ? `<button class="btn-small" onclick="viewScreenshot('${r.id}')" title="View Screenshot">📷</button>` : ''}
                     <button class="btn-delete" onclick="handleDeleteRegistration('${r.id}')" title="Delete">✕</button>
@@ -145,7 +152,30 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         </tr>
     `;
     }).join('');
+
+    applyColumnVisibility();
 }
+
+// ──────────── REJECT PAYMENT ────────────
+async function handleRejectPayment(id) {
+    const reg = dataStore.getRegistrationById(id);
+    if (!reg) return;
+    if (reg.rejected) {
+        if (confirm(`Payment for ${reg.name} (${reg.id}) is currently marked REJECTED. Do you want to un-reject and verify it?`)) {
+            await dataStore.toggleVerification(id);
+            showToast(`Payment un-rejected and verified for ${reg.name} ✓`, 'success');
+            refreshAdminView();
+        }
+        return;
+    }
+    const reason = prompt(`Reject payment for ${reg.name}? (This voids their QR pass and denies gate entry):`, 'Invalid payment screenshot / txn not found');
+    if (reason !== null) {
+        await dataStore.rejectPayment(id, reason.trim() || 'Payment verification rejected by admin');
+        showToast(`Payment REJECTED for ${reg.name}. Pass is now VOID ✕`, 'warning');
+        refreshAdminView();
+    }
+}
+window.handleRejectPayment = handleRejectPayment;
 
 // Filter registrations table by referral code (e.g. when clicking promoter link or code badge)
 function filterRegistrationsByReferral(code) {
@@ -161,6 +191,143 @@ function filterRegistrationsByReferral(code) {
     }
 }
 window.filterRegistrationsByReferral = filterRegistrationsByReferral;
+
+// ──────────── GOOGLE SHEETS STYLE COLUMN VISIBILITY ────────────
+const TABLE_COLUMNS = [
+    { id: 'col-ticketId', label: 'Ticket ID', defaultVisible: true },
+    { id: 'col-name', label: 'Name', defaultVisible: true },
+    { id: 'col-email', label: 'Email', defaultVisible: true, hideInCompact: true },
+    { id: 'col-phone', label: 'Phone', defaultVisible: true },
+    { id: 'col-college', label: 'College', defaultVisible: true, hideInCompact: true },
+    { id: 'col-date', label: 'Visiting Date', defaultVisible: true },
+    { id: 'col-amount', label: 'Amount', defaultVisible: true, hideInCompact: true },
+    { id: 'col-coupon', label: 'Coupon', defaultVisible: true, hideInCompact: true },
+    { id: 'col-referral', label: 'Referral Code', defaultVisible: true },
+    { id: 'col-txnId', label: 'Txn ID', defaultVisible: true, hideInCompact: true },
+    { id: 'col-payment', label: 'Payment', defaultVisible: true },
+    { id: 'col-attendance', label: 'Attendance', defaultVisible: true },
+    { id: 'col-actions', label: 'Actions', defaultVisible: true }
+];
+
+function getHiddenColumns() {
+    try {
+        const stored = localStorage.getItem('admin_hidden_cols');
+        if (stored) return JSON.parse(stored);
+    } catch (e) {}
+    return [];
+}
+
+function saveHiddenColumns(hidden) {
+    try {
+        localStorage.setItem('admin_hidden_cols', JSON.stringify(hidden));
+    } catch (e) {}
+    applyColumnVisibility(hidden);
+}
+
+function applyColumnVisibility(hidden = getHiddenColumns()) {
+    const table = document.getElementById('registrations-table');
+    if (!table) return;
+
+    TABLE_COLUMNS.forEach(col => {
+        const isHidden = hidden.includes(col.id);
+        table.classList.toggle(`hide-${col.id}`, isHidden);
+    });
+
+    // Update counter badge on button
+    const badge = document.getElementById('hidden-col-count');
+    if (badge) {
+        if (hidden.length > 0) {
+            badge.style.display = 'inline-block';
+            badge.textContent = `${hidden.length} hidden`;
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+
+    renderColumnMenu();
+}
+
+function toggleColumnVisibility(colId) {
+    let hidden = getHiddenColumns();
+    if (hidden.includes(colId)) {
+        hidden = hidden.filter(id => id !== colId);
+    } else {
+        hidden.push(colId);
+    }
+    saveHiddenColumns(hidden);
+}
+
+function setColumnPreset(preset) {
+    let hidden = [];
+    if (preset === 'compact') {
+        hidden = TABLE_COLUMNS.filter(c => c.hideInCompact).map(c => c.id);
+        showToast('Switched to Compact View — no horizontal scroll!', 'info');
+    } else {
+        hidden = [];
+        showToast('All columns visible', 'info');
+    }
+    saveHiddenColumns(hidden);
+}
+
+function toggleColumnMenu(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById('column-visibility-menu');
+    if (!menu) return;
+    const isOpen = menu.classList.contains('open');
+    if (isOpen) {
+        menu.classList.remove('open');
+    } else {
+        renderColumnMenu();
+        menu.classList.add('open');
+    }
+}
+
+function renderColumnMenu() {
+    const menu = document.getElementById('column-visibility-menu');
+    if (!menu) return;
+    const hidden = getHiddenColumns();
+
+    menu.innerHTML = `
+        <div class="col-menu-header">
+            <div style="font-weight:700; font-size:0.85rem; color:var(--gold);">⚙️ Hide / Show Columns</div>
+            <div class="col-menu-presets">
+                <button type="button" class="btn-preset ${hidden.length > 0 ? 'active' : ''}" onclick="setColumnPreset('compact')">Compact</button>
+                <button type="button" class="btn-preset ${hidden.length === 0 ? 'active' : ''}" onclick="setColumnPreset('all')">Show All</button>
+            </div>
+        </div>
+        <div class="col-menu-hint">Check or uncheck columns to customize table width (like Google Sheets):</div>
+        <div class="col-menu-grid">
+            ${TABLE_COLUMNS.map(col => {
+                const isVisible = !hidden.includes(col.id);
+                return `
+                    <label class="col-menu-item">
+                        <input type="checkbox" ${isVisible ? 'checked' : ''} onchange="toggleColumnVisibility('${col.id}')">
+                        <span>${col.label}</span>
+                    </label>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+function initColumnVisibility() {
+    applyColumnVisibility();
+    // Close menu when clicking outside
+    document.removeEventListener('click', handleColMenuOutsideClick);
+    document.addEventListener('click', handleColMenuOutsideClick);
+}
+
+function handleColMenuOutsideClick(e) {
+    const menu = document.getElementById('column-visibility-menu');
+    const btn = document.getElementById('btn-col-visibility');
+    if (menu && menu.classList.contains('open') && !menu.contains(e.target) && (!btn || !btn.contains(e.target))) {
+        menu.classList.remove('open');
+    }
+}
+
+window.toggleColumnMenu = toggleColumnMenu;
+window.toggleColumnVisibility = toggleColumnVisibility;
+window.setColumnPreset = setColumnPreset;
 
 
 // ──────────── TOGGLE VERIFY ────────────
@@ -261,39 +428,78 @@ async function startScanner() {
         }
 
         const config = {
-            fps: 15,
-            qrbox: { width: 250, height: 250 },
+            fps: 20,
+            qrbox: (viewfinderWidth, viewfinderHeight) => {
+                const edge = Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.72);
+                return { width: edge, height: edge };
+            },
             aspectRatio: 1.0,
-            showTorchButtonIfSupported: true
+            showTorchButtonIfSupported: true,
+            experimentalFeatures: {
+                useBarCodeDetectorIfSupported: true
+            }
         };
 
-        await html5QrScanner.start(
-            { facingMode: 'environment' },
-            config,
-            onScanSuccess,
-            onScanFailure
-        );
-
-        isScannerRunning = true;
-        showToast('Camera active! Point at ticket QR code', 'info');
-
-        // Populate camera list if multiple
+        // Query available camera devices and strictly select Back/Rear camera
+        let backCameraId = null;
         try {
             const devices = await Html5Qrcode.getCameras();
-            const select = document.getElementById('camera-select');
-            if (devices && devices.length > 1 && select) {
-                select.style.display = 'inline-block';
-                select.innerHTML = devices.map(d => `<option value="${d.id}">${d.label || 'Camera ' + d.id}</option>`).join('');
-                select.onchange = async () => {
-                    if (isScannerRunning) {
-                        await html5QrScanner.stop();
-                        await html5QrScanner.start(select.value, config, onScanSuccess, onScanFailure);
-                    }
-                };
+            if (devices && devices.length > 0) {
+                // Find back camera by matching rear/back/environment keywords
+                const backCam = devices.find(d => /back|rear|environment|facing\s*back|trás|arrière|rück|wide/i.test(d.label));
+                if (backCam) {
+                    backCameraId = backCam.id;
+                } else if (devices.length > 1) {
+                    // On mobile, the last enumerated video device is almost always the back camera
+                    backCameraId = devices[devices.length - 1].id;
+                } else {
+                    backCameraId = devices[0].id;
+                }
+
+                // Populate camera select
+                const select = document.getElementById('camera-select');
+                if (select) {
+                    select.style.display = devices.length > 1 ? 'inline-block' : 'none';
+                    select.innerHTML = devices.map(d => {
+                        const isRear = /back|rear|environment/i.test(d.label) || d.id === backCameraId;
+                        return `<option value="${d.id}" ${d.id === backCameraId ? 'selected' : ''}>${d.label || (isRear ? 'Back Camera' : 'Camera ' + d.id)}</option>`;
+                    }).join('');
+                    select.onchange = async () => {
+                        if (isScannerRunning) {
+                            await html5QrScanner.stop();
+                            await html5QrScanner.start(select.value, config, onScanSuccess, onScanFailure);
+                        }
+                    };
+                }
             }
         } catch (e) {
-            console.log('Camera list query optional:', e);
+            console.log('Camera enumeration optional error:', e);
         }
+
+        // Start strictly with back camera
+        const cameraConfig = backCameraId 
+            ? backCameraId 
+            : { facingMode: { exact: 'environment' } };
+
+        try {
+            await html5QrScanner.start(
+                cameraConfig,
+                config,
+                onScanSuccess,
+                onScanFailure
+            );
+        } catch (errExact) {
+            console.warn('Exact back camera constraint failed, falling back to facingMode environment:', errExact);
+            await html5QrScanner.start(
+                { facingMode: 'environment' },
+                config,
+                onScanSuccess,
+                onScanFailure
+            );
+        }
+
+        isScannerRunning = true;
+        showToast('Back camera active! Point at ticket QR code', 'info');
 
     } catch (err) {
         console.error('Camera start error:', err);
@@ -353,9 +559,6 @@ async function onScanSuccess(decodedText) {
     lastScannedCode = decodedText;
     lastScanTime = now;
 
-    // Play pleasant sound beep
-    playScanBeep();
-
     // Haptic vibration
     if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
 
@@ -402,11 +605,12 @@ function playScanBeep(type = 'success') {
             osc.stop(audioCtx.currentTime + 0.2);
         } else {
             osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(160, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
             osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + 0.3);
+            osc.stop(audioCtx.currentTime + 0.35);
         }
     } catch (e) {
         // audio context blocked or unsupported
@@ -424,6 +628,7 @@ function displayScanResult(result) {
     card.style.display = 'block';
 
     if (result.status === 'success') {
+        playScanBeep('success');
         statusEl.innerHTML = `
             <span class="scan-status-icon">🎉</span>
             <div class="scan-status-text success">VALID PASS — CHECKED IN!</div>
@@ -439,6 +644,22 @@ function displayScanResult(result) {
         `;
         actionsEl.innerHTML = `
             <button class="btn-small" onclick="document.getElementById('scanner-result').style.display='none'">Dismiss</button>
+        `;
+    } else if (result.status === 'payment_rejected') {
+        playScanBeep('error');
+        statusEl.innerHTML = `
+            <span class="scan-status-icon">⛔</span>
+            <div class="scan-status-text error" style="color:#ef4444; font-size:1.1rem; font-weight:800; letter-spacing:0.5px;">ENTRY DENIED — PAYMENT REJECTED!</div>
+            <p style="color:#ef4444; font-size:0.85rem; margin-top:4px; font-weight:600;">${result.message}</p>
+        `;
+        detailsEl.innerHTML = `
+            <div class="scan-detail-row"><span class="scan-detail-label">Attendee:</span><span class="scan-detail-value" style="color:#ef4444; font-weight:bold;">${escapeHTML(result.reg.name)}</span></div>
+            <div class="scan-detail-row"><span class="scan-detail-label">Ticket ID:</span><span class="scan-detail-value" style="font-family:monospace; color:#ef4444;">${result.reg.id}</span></div>
+            <div class="scan-detail-row"><span class="scan-detail-label">Pass Status:</span><span class="scan-detail-value"><span class="badge" style="background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid #ef4444; font-weight:700;">VOID / PAYMENT REJECTED</span></span></div>
+            <div class="scan-detail-row"><span class="scan-detail-label">Txn / Reason:</span><span class="scan-detail-value" style="color:var(--text-muted); font-size:0.82rem;">${escapeHTML(result.reg.transactionId || 'Payment rejected by admin')}</span></div>
+        `;
+        actionsEl.innerHTML = `
+            <button class="btn-small" style="background:#ef4444; color:#fff; font-weight:700;" onclick="document.getElementById('scanner-result').style.display='none'">Dismiss (Entry Denied)</button>
         `;
     } else if (result.status === 'already_attended') {
         playScanBeep('error');
@@ -605,7 +826,7 @@ function getBaseSiteURL() {
 }
 
 function buildPromoterReferralURL(code) {
-    return `${getBaseSiteURL()}?ref=${encodeURIComponent(code)}#register`;
+    return `${getBaseSiteURL()}?ref=${encodeURIComponent(code)}`;
 }
 
 function handlePromoterNameInput(input) {

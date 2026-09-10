@@ -9,10 +9,10 @@
     <meta property="og:title" content="Celebrate Cinema 2026 | Whistling Woods International">
     <meta property="og:description" content="Academic Trek 2026 — 08th & 09th October 2026 at Whistling Woods International, Film City, Mumbai. Promoted by CareerBeam - Vigor.">
     <meta property="og:type" content="website">
-    <link rel="stylesheet" href="style.css?v=5.0">
+    <link rel="stylesheet" href="style.css?v=5.1">
     <link rel="icon" type="image/png" href="assets/cc26-logo.png">
-    <!-- QR Code Generation (qrcode.js via jsDelivr) -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js" crossorigin="anonymous"></script>
+    <!-- QR Code Generation (qrcodejs via cdnjs) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
     <!-- QR Code Scanner (html5-qrcode via jsDelivr, more reliable than unpkg) -->
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js" crossorigin="anonymous"></script>
     <!-- Supabase Cloud Client -->
@@ -75,6 +75,21 @@
      PAGE: LANDING / HERO
      ═══════════════════════════════════════════════ -->
 <section id="page-landing" class="page active visible">
+
+    <!-- VIP Referral Welcome Banner (shown when arriving via promoter link) -->
+    <div id="landing-referral-banner" class="landing-referral-banner" style="display:none;">
+        <div class="container">
+            <div class="lrb-content">
+                <div class="lrb-badge">VIP INVITATION</div>
+                <div class="lrb-text">
+                    You're invited to Celebrate Cinema 2026 by <strong id="lrb-referrer-name" style="color:var(--gold);">Nilesh</strong>! Special student pass pre-applied.
+                </div>
+                <button class="btn btn-primary btn-small btn-glow" onclick="navigateTo('register')">
+                    Claim Pass &amp; Register &rarr;
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Hero Section -->
     <div class="hero" id="hero-section">
@@ -951,70 +966,126 @@
             <h1 class="gradient-text">Registration Confirmed!</h1>
             <p>Your entry pass for Celebrate Cinema 2026 Academic Trek is generated below.</p>
 
-            <!-- Ticket Card -->
-            <div class="glass-card ticket-card" id="ticket-card">
-                <div class="ticket-header">
-                    <div class="ticket-logos">
-                        <img src="assets/wwi-logo.png" alt="WWI Logo" class="ticket-partner-logo" style="background:transparent;padding:0;height:24px;width:auto;object-fit:contain;">
-                        <div class="ticket-brand-divider"></div>
-                        <img src="assets/cc26-logo.png" alt="CC26 Logo" class="ticket-logo">
-                        <div class="ticket-brand-divider"></div>
-                        <img src="careerbeam_logo.png" alt="CareerBeam" class="ticket-partner-logo">
-                    </div>
-                    <div>
-                        <h3>CELEBRATE CINEMA 2026</h3>
-                        <p>Academic Trek • Whistling Woods International & CareerBeam</p>
-                    </div>
-                </div>
-                <div class="ticket-divider"></div>
-                <div class="ticket-details">
-                    <div class="ticket-row">
-                        <span class="ticket-label">Attendee Name</span>
-                        <span class="ticket-value" id="ticket-name">—</span>
-                    </div>
-                    <div class="ticket-row">
-                        <span class="ticket-label">Registration ID</span>
-                        <span class="ticket-value" id="ticket-id">—</span>
-                    </div>
-                    <div class="ticket-row">
-                        <span class="ticket-label">Trek Dates</span>
-                        <span class="ticket-value" style="color:var(--gold);">08th & 09th October 2026 (9:00 AM – 5:00 PM)</span>
-                    </div>
-                    <div class="ticket-row">
-                        <span class="ticket-label">Visiting Dates</span>
-                        <span class="ticket-value" id="ticket-visit-date" style="color:var(--gold);">Both Days (08th &amp; 09th Oct)</span>
-                    </div>
-                    <div class="ticket-row">
-                        <span class="ticket-label">Venue</span>
-                        <span class="ticket-value">WWI, Film City, Goregaon East, Mumbai</span>
-                    </div>
-                    <div class="ticket-row">
-                        <span class="ticket-label">Amount Paid</span>
-                        <span class="ticket-value" id="ticket-amount">—</span>
-                    </div>
-                    <div class="ticket-row">
-                        <span class="ticket-label">Verification</span>
-                        <span class="ticket-value status-pending" id="ticket-status">Verification Pending</span>
-                    </div>
-                </div>
-                <!-- Ticket QR Code -->
-                <div class="ticket-qr-section">
-                    <div class="ticket-divider"></div>
-                    <p class="ticket-qr-label">OFFICIAL ENTRY PASS QR</p>
-                    <div class="ticket-qr-container" id="ticket-qr-container"></div>
-                    <p class="ticket-qr-hint">Present this QR code at Whistling Woods Gate for attendance scan</p>
+            <!-- Boarding Pass Ticket Card -->
+            <div class="boarding-pass" id="ticket-card">
+                <!-- Void Stamp Overlay (shown if payment rejected) -->
+                <div class="bp-void-stamp" id="ticket-void-stamp" style="display:none;">
+                    <span>VOID / PAYMENT REJECTED</span>
                 </div>
 
-                <!-- Save Pass Button -->
-                <button class="btn btn-gold save-pass-btn" onclick="savePassAsImage('confirm')" id="save-pass-confirm-btn" style="margin-top: var(--space-lg); width: 100%;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:18px;height:18px;">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
-                    Save Pass as Image
-                </button>
+                <!-- Main Section (Left) -->
+                <div class="bp-main">
+                    <!-- Top Ribbon -->
+                    <div class="bp-header">
+                        <div class="bp-logos">
+                            <img src="assets/wwi-logo.png" alt="WWI Logo" class="bp-logo-wwi">
+                            <div class="bp-brand-divider"></div>
+                            <img src="assets/cc26-logo.png" alt="CC26 Logo" class="bp-logo-cc26">
+                            <div class="bp-brand-divider"></div>
+                            <img src="careerbeam_logo.png" alt="CareerBeam" class="bp-logo-cb">
+                        </div>
+                        <div class="bp-header-badge">
+                            <span class="bp-badge-text">ACADEMIC TREK • BOARDING PASS</span>
+                        </div>
+                    </div>
+
+                    <!-- Flight / Trek Meta Strip -->
+                    <div class="bp-meta-strip">
+                        <div class="bp-meta-item">
+                            <span class="bp-meta-label">FLIGHT / EVENT</span>
+                            <span class="bp-meta-val">CC-2026</span>
+                        </div>
+                        <div class="bp-meta-item">
+                            <span class="bp-meta-label">GATE</span>
+                            <span class="bp-meta-val">01 FILM CITY</span>
+                        </div>
+                        <div class="bp-meta-item">
+                            <span class="bp-meta-label">CLASS / ACCESS</span>
+                            <span class="bp-meta-val">DELEGATE</span>
+                        </div>
+                        <div class="bp-meta-item">
+                            <span class="bp-meta-label">STATUS</span>
+                            <span class="bp-meta-val" id="ticket-status-pill">
+                                <span class="badge badge-pending" id="ticket-status">PENDING</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Passenger Body Grid -->
+                    <div class="bp-body-grid">
+                        <div class="bp-field bp-field-wide">
+                            <span class="bp-label">PASSENGER / ATTENDEE NAME</span>
+                            <span class="bp-value bp-name-val" id="ticket-name">—</span>
+                        </div>
+                        <div class="bp-field">
+                            <span class="bp-label">REGISTRATION / PNR</span>
+                            <span class="bp-value bp-pnr-val" id="ticket-id">—</span>
+                        </div>
+                        <div class="bp-field">
+                            <span class="bp-label">TREK DATES</span>
+                            <span class="bp-value" style="color:var(--gold);">08 &amp; 09 OCT 2026</span>
+                        </div>
+                        <div class="bp-field">
+                            <span class="bp-label">VISITING PASS</span>
+                            <span class="bp-value" id="ticket-visit-date" style="color:var(--gold);">Both Days</span>
+                        </div>
+                        <div class="bp-field">
+                            <span class="bp-label">COLLEGE / INSTITUTION</span>
+                            <span class="bp-value" id="ticket-college">—</span>
+                        </div>
+                        <div class="bp-field">
+                            <span class="bp-label">AMOUNT PAID</span>
+                            <span class="bp-value" id="ticket-amount">—</span>
+                        </div>
+                        <div class="bp-field bp-field-wide">
+                            <span class="bp-label">VENUE / DESTINATION</span>
+                            <span class="bp-value">Whistling Woods International, Film City, Goregaon (E), Mumbai</span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Note -->
+                    <div class="bp-footer-strip">
+                        <span>Film City Gate 01 Security clearance mandatory • Valid College Student ID required</span>
+                    </div>
+                </div>
+
+                <!-- Perforated Tear Line with Semicircle Notches -->
+                <div class="bp-perforation">
+                    <div class="bp-notch bp-notch-top"></div>
+                    <div class="bp-perforation-line"></div>
+                    <div class="bp-notch bp-notch-bottom"></div>
+                </div>
+
+                <!-- Entry Stub (Right) -->
+                <div class="bp-stub">
+                    <div class="bp-stub-header">
+                        <span class="bp-stub-title">GATE ENTRY STUB</span>
+                        <span class="bp-stub-sub">SCAN FOR ADMISSION</span>
+                    </div>
+
+                    <div class="bp-qr-wrapper">
+                        <div class="ticket-qr-container" id="ticket-qr-container"></div>
+                    </div>
+
+                    <div class="bp-stub-meta">
+                        <div class="bp-stub-id" id="ticket-stub-id">—</div>
+                        <div class="bp-barcode-visual" aria-hidden="true">
+                            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                        <div class="bp-stub-hint">SCAN AT FILM CITY GATE 01</div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Save Pass Button -->
+            <button class="btn btn-gold save-pass-btn" onclick="savePassAsImage('confirm')" id="save-pass-confirm-btn" style="margin: var(--space-md) auto var(--space-xl); max-width: 820px; width: 100%; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:18px;height:18px;">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Save Boarding Pass as Image
+            </button>
 
             <!-- Referral Share -->
             <div class="glass-card referral-card">
@@ -1083,61 +1154,114 @@
             <!-- Result Area -->
             <div id="fp-result-area" class="find-pass-result" style="display:none;">
 
-                <!-- Found Ticket Card -->
-                <div class="glass-card ticket-card" id="fp-ticket-card">
-                    <div class="ticket-header">
-                        <div class="ticket-logos">
-                            <img src="assets/wwi-logo.png" alt="WWI Logo" class="ticket-partner-logo" style="background:transparent;padding:0;height:24px;width:auto;object-fit:contain;">
-                            <div class="ticket-brand-divider"></div>
-                            <img src="assets/cc26-logo.png" alt="CC26 Logo" class="ticket-logo">
-                            <div class="ticket-brand-divider"></div>
-                            <img src="careerbeam_logo.png" alt="CareerBeam" class="ticket-partner-logo">
+                <!-- Found Boarding Pass -->
+                <div class="boarding-pass" id="fp-ticket-card">
+                    <!-- Void Stamp Overlay (shown if rejected) -->
+                    <div class="bp-void-stamp" id="fp-ticket-void-stamp" style="display:none;">
+                        <span>VOID / PAYMENT REJECTED</span>
+                    </div>
+
+                    <!-- Main Section (Left) -->
+                    <div class="bp-main">
+                        <!-- Top Ribbon -->
+                        <div class="bp-header">
+                            <div class="bp-logos">
+                                <img src="assets/wwi-logo.png" alt="WWI Logo" class="bp-logo-wwi">
+                                <div class="bp-brand-divider"></div>
+                                <img src="assets/cc26-logo.png" alt="CC26 Logo" class="bp-logo-cc26">
+                                <div class="bp-brand-divider"></div>
+                                <img src="careerbeam_logo.png" alt="CareerBeam" class="bp-logo-cb">
+                            </div>
+                            <div class="bp-header-badge">
+                                <span class="bp-badge-text">ACADEMIC TREK • BOARDING PASS</span>
+                            </div>
                         </div>
-                        <div>
-                            <h3>CELEBRATE CINEMA 2026</h3>
-                            <p>Academic Trek &bull; Whistling Woods International & CareerBeam</p>
+
+                        <!-- Flight / Trek Meta Strip -->
+                        <div class="bp-meta-strip">
+                            <div class="bp-meta-item">
+                                <span class="bp-meta-label">FLIGHT / EVENT</span>
+                                <span class="bp-meta-val">CC-2026</span>
+                            </div>
+                            <div class="bp-meta-item">
+                                <span class="bp-meta-label">GATE</span>
+                                <span class="bp-meta-val">01 FILM CITY</span>
+                            </div>
+                            <div class="bp-meta-item">
+                                <span class="bp-meta-label">CLASS / ACCESS</span>
+                                <span class="bp-meta-val">DELEGATE</span>
+                            </div>
+                            <div class="bp-meta-item">
+                                <span class="bp-meta-label">STATUS</span>
+                                <span class="bp-meta-val" id="fp-ticket-status-pill">
+                                    <span class="badge badge-pending" id="fp-ticket-status">PENDING</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Passenger Body Grid -->
+                        <div class="bp-body-grid">
+                            <div class="bp-field bp-field-wide">
+                                <span class="bp-label">PASSENGER / ATTENDEE NAME</span>
+                                <span class="bp-value bp-name-val" id="fp-ticket-name">—</span>
+                            </div>
+                            <div class="bp-field">
+                                <span class="bp-label">REGISTRATION / PNR</span>
+                                <span class="bp-value bp-pnr-val" id="fp-ticket-id">—</span>
+                            </div>
+                            <div class="bp-field">
+                                <span class="bp-label">TREK DATES</span>
+                                <span class="bp-value" style="color:var(--gold);">08 &amp; 09 OCT 2026</span>
+                            </div>
+                            <div class="bp-field">
+                                <span class="bp-label">VISITING PASS</span>
+                                <span class="bp-value" id="fp-ticket-visit-date" style="color:var(--gold);">—</span>
+                            </div>
+                            <div class="bp-field">
+                                <span class="bp-label">COLLEGE / INSTITUTION</span>
+                                <span class="bp-value" id="fp-ticket-college">—</span>
+                            </div>
+                            <div class="bp-field">
+                                <span class="bp-label">AMOUNT PAID</span>
+                                <span class="bp-value" id="fp-ticket-amount">—</span>
+                            </div>
+                            <div class="bp-field bp-field-wide">
+                                <span class="bp-label">VENUE / DESTINATION</span>
+                                <span class="bp-value">Whistling Woods International, Film City, Goregaon (E), Mumbai</span>
+                            </div>
+                        </div>
+
+                        <!-- Footer Note -->
+                        <div class="bp-footer-strip">
+                            <span>Film City Gate 01 Security clearance mandatory • Valid College Student ID required</span>
                         </div>
                     </div>
-                    <div class="ticket-divider"></div>
-                    <div class="ticket-details">
-                        <div class="ticket-row">
-                            <span class="ticket-label">Attendee Name</span>
-                            <span class="ticket-value" id="fp-ticket-name">&mdash;</span>
-                        </div>
-                        <div class="ticket-row">
-                            <span class="ticket-label">Registration ID</span>
-                            <span class="ticket-value" id="fp-ticket-id">&mdash;</span>
-                        </div>
-                        <div class="ticket-row">
-                            <span class="ticket-label">Trek Dates</span>
-                            <span class="ticket-value" style="color:var(--gold);">08th &amp; 09th October 2026 (9:00 AM &ndash; 5:00 PM)</span>
-                        </div>
-                        <div class="ticket-row">
-                            <span class="ticket-label">Visiting Dates</span>
-                            <span class="ticket-value" id="fp-ticket-visit-date" style="color:var(--gold);">&mdash;</span>
-                        </div>
-                        <div class="ticket-row">
-                            <span class="ticket-label">Venue</span>
-                            <span class="ticket-value">WWI, Film City, Goregaon East, Mumbai</span>
-                        </div>
-                        <div class="ticket-row">
-                            <span class="ticket-label">College</span>
-                            <span class="ticket-value" id="fp-ticket-college">&mdash;</span>
-                        </div>
-                        <div class="ticket-row">
-                            <span class="ticket-label">Amount Paid</span>
-                            <span class="ticket-value" id="fp-ticket-amount">&mdash;</span>
-                        </div>
-                        <div class="ticket-row">
-                            <span class="ticket-label">Verification</span>
-                            <span class="ticket-value" id="fp-ticket-status">&mdash;</span>
-                        </div>
+
+                    <!-- Perforated Tear Line with Semicircle Notches -->
+                    <div class="bp-perforation">
+                        <div class="bp-notch bp-notch-top"></div>
+                        <div class="bp-perforation-line"></div>
+                        <div class="bp-notch bp-notch-bottom"></div>
                     </div>
-                    <div class="ticket-qr-section">
-                        <div class="ticket-divider"></div>
-                        <p class="ticket-qr-label">OFFICIAL ENTRY PASS QR</p>
-                        <div class="ticket-qr-container" id="fp-qr-container"></div>
-                        <p class="ticket-qr-hint">Present this QR code at Whistling Woods Gate for attendance scan</p>
+
+                    <!-- Entry Stub (Right) -->
+                    <div class="bp-stub">
+                        <div class="bp-stub-header">
+                            <span class="bp-stub-title">GATE ENTRY STUB</span>
+                            <span class="bp-stub-sub">SCAN FOR ADMISSION</span>
+                        </div>
+
+                        <div class="bp-qr-wrapper">
+                            <div class="ticket-qr-container" id="fp-qr-container"></div>
+                        </div>
+
+                        <div class="bp-stub-meta">
+                            <div class="bp-stub-id" id="fp-ticket-stub-id">—</div>
+                            <div class="bp-barcode-visual" aria-hidden="true">
+                                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                            </div>
+                            <div class="bp-stub-hint">SCAN AT FILM CITY GATE 01</div>
+                        </div>
                     </div>
                 </div>
 
@@ -1248,6 +1372,12 @@
                         <option value="pending">Pending</option>
                         <option value="attended">Checked In</option>
                     </select>
+                    <div style="position:relative; display:inline-block;">
+                        <button class="btn btn-secondary" id="btn-col-visibility" onclick="toggleColumnMenu(event)" title="Show or Hide Table Columns (like Google Sheets)">
+                            ⚙️ Columns <span id="hidden-col-count" style="display:none;" class="badge badge-purple"></span>
+                        </button>
+                        <div class="column-visibility-menu glass-card" id="column-visibility-menu"></div>
+                    </div>
                     <button class="btn btn-secondary" id="sync-cloud-btn" onclick="handleManualSyncCloud()" title="Pull latest registrations from Cloud">⟳ Sync Cloud</button>
                     <button class="btn btn-secondary" id="export-csv-btn" onclick="handleExportCSV()">Export CSV</button>
                     <button class="btn btn-primary" id="add-reg-manual-btn" onclick="openManualRegModal()" style="background:var(--gold-gradient); color:#000; font-weight:600;">+ Add Registration</button>
@@ -1257,19 +1387,19 @@
                 <table class="admin-table" id="registrations-table">
                     <thead>
                         <tr>
-                            <th>Ticket ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>College</th>
-                            <th>Visiting Date</th>
-                            <th>Amount</th>
-                            <th>Coupon</th>
-                            <th>Referral Code</th>
-                            <th>Txn ID</th>
-                            <th>Payment</th>
-                            <th>Attendance</th>
-                            <th>Actions</th>
+                            <th class="col-ticketId">Ticket ID</th>
+                            <th class="col-name">Name</th>
+                            <th class="col-email">Email</th>
+                            <th class="col-phone">Phone</th>
+                            <th class="col-college">College</th>
+                            <th class="col-date">Visiting Date</th>
+                            <th class="col-amount">Amount</th>
+                            <th class="col-coupon">Coupon</th>
+                            <th class="col-referral">Referral Code</th>
+                            <th class="col-txnId">Txn ID</th>
+                            <th class="col-payment">Payment</th>
+                            <th class="col-attendance">Attendance</th>
+                            <th class="col-actions">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="registrations-tbody"></tbody>
@@ -1482,10 +1612,10 @@
 <div id="toast-container"></div>
 
 <!-- ═══ SCRIPTS ═══ -->
-<script src="data.js?v=5.0"></script>
-<script src="animations.js?v=5.0"></script>
-<script src="app.js?v=5.0"></script>
-<script src="admin.js?v=5.0"></script>
+<script src="data.js?v=5.1"></script>
+<script src="animations.js?v=5.1"></script>
+<script src="app.js?v=5.1"></script>
+<script src="admin.js?v=5.1"></script>
 
 </body>
 </html>

@@ -700,25 +700,51 @@ function populateConfirmation(reg) {
     document.getElementById('ticket-id').textContent = reg.id;
     document.getElementById('ticket-amount').textContent = '₹' + reg.finalPrice;
 
+    const stubId = document.getElementById('ticket-stub-id');
+    if (stubId) stubId.textContent = reg.id;
+
+    const collegeEl = document.getElementById('ticket-college');
+    if (collegeEl) collegeEl.textContent = reg.college || 'Degree College';
+
     const visitDateEl = document.getElementById('ticket-visit-date');
     if (visitDateEl) {
         visitDateEl.textContent = reg.visitDate || 'Both Days (08th & 09th Oct)';
     }
-    
-    // Status text
+
+    const isRejected = Boolean(reg.rejected) || 
+        (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
+
+    const ticketCard = document.getElementById('ticket-card');
+    const voidStamp = document.getElementById('ticket-void-stamp');
     const statusEl = document.getElementById('ticket-status');
+
+    if (ticketCard) ticketCard.classList.toggle('is-rejected', isRejected);
+    if (voidStamp) voidStamp.style.display = isRejected ? 'block' : 'none';
+
     if (statusEl) {
-        statusEl.textContent = reg.verified ? 'Payment Verified ✓' : 'Verification Pending';
-        statusEl.className = reg.verified ? 'ticket-value status-verified' : 'ticket-value status-pending';
+        if (isRejected) {
+            statusEl.textContent = 'PAYMENT REJECTED';
+            statusEl.className = 'badge';
+            statusEl.style.cssText = 'background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid #ef4444; font-weight:700;';
+        } else if (reg.verified) {
+            statusEl.textContent = 'VERIFIED ✓';
+            statusEl.className = 'badge badge-verified';
+            statusEl.style.cssText = '';
+        } else {
+            statusEl.textContent = 'PENDING VERIFICATION';
+            statusEl.className = 'badge badge-pending';
+            statusEl.style.cssText = '';
+        }
     }
 
     // Generate Ticket QR code
     generateTicketQR(reg);
 
-    // Generate referral link
+    // Generate referral link (pointing cleanly to landing page with ?ref=...)
     const baseURL = window.location.origin + window.location.pathname;
-    const referralLink = baseURL + '?ref=' + reg.referralCode + '#register';
-    document.getElementById('referral-link-input').value = referralLink;
+    const referralLink = baseURL + '?ref=' + reg.referralCode;
+    const refInput = document.getElementById('referral-link-input');
+    if (refInput) refInput.value = referralLink;
 }
 
 function generateTicketQR(reg, containerId) {
@@ -727,87 +753,99 @@ function generateTicketQR(reg, containerId) {
     if (!container) return;
     container.innerHTML = '';
 
-    // Encode just the ticket ID — simplest, most scannable, works offline
     const qrData = reg.id;
+    const isRejected = Boolean(reg.rejected) || 
+        (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
 
-    function tryGenerate(attempts) {
-        // Method 1: qrcode npm package (QRCode.toCanvas)
-        if (window.QRCode && typeof window.QRCode.toCanvas === 'function') {
-            const canvas = document.createElement('canvas');
-            window.QRCode.toCanvas(canvas, qrData, {
-                width: 200,
-                margin: 2,
-                errorCorrectionLevel: 'H',
-                color: { dark: '#12121e', light: '#ffffff' }
-            }, err => {
-                if (!err) {
-                    container.innerHTML = '';
-                    canvas.style.borderRadius = '8px';
-                    container.appendChild(canvas);
-                } else {
-                    console.warn('QRCode.toCanvas error:', err);
-                    renderQRCanvasFallback(container, reg.id);
-                }
-            });
-            return;
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-block';
+    container.appendChild(wrapper);
+
+    function onQrSuccess(canvasOrImg) {
+        wrapper.innerHTML = '';
+        wrapper.appendChild(canvasOrImg);
+
+        // If rejected, overlay VOID shield directly over the QR code
+        if (isRejected) {
+            const voidOverlay = document.createElement('div');
+            voidOverlay.style.cssText = 'position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(239,68,68,0.85); color:#ffffff; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:8px; font-weight:800; font-size:1rem; letter-spacing:1px; text-align:center; padding:8px; box-sizing:border-box; backdrop-filter:blur(2px);';
+            voidOverlay.innerHTML = '<span style="font-size:1.6rem; line-height:1;">⛔</span><span style="margin-top:4px;">VOID</span><span style="font-size:0.65rem; font-weight:600; opacity:0.9;">PAYMENT REJECTED</span>';
+            wrapper.appendChild(voidOverlay);
         }
-
-        // Method 2: QRCode constructor (some CDN builds export it this way)
-        if (window.QRCode && typeof window.QRCode === 'function') {
-            try {
-                const div = document.createElement('div');
-                div.style.background = '#fff';
-                div.style.display = 'inline-block';
-                div.style.borderRadius = '8px';
-                div.style.padding = '8px';
-                container.innerHTML = '';
-                container.appendChild(div);
-                new window.QRCode(div, {
-                    text: qrData,
-                    width: 200,
-                    height: 200,
-                    correctLevel: 3 // H
-                });
-                return;
-            } catch (e) {
-                console.warn('QRCode constructor error:', e);
-            }
-        }
-
-        // Retry while library loads
-        if (attempts > 0) {
-            setTimeout(() => tryGenerate(attempts - 1), 300);
-            return;
-        }
-
-        // Last resort: plain canvas fallback
-        renderQRCanvasFallback(container, reg.id);
     }
 
-    // Start with a short delay so page is painted and CDN is loaded
-    setTimeout(() => tryGenerate(20), 100);
-}
+    // Engine 1: QRCode.toCanvas
+    if (window.QRCode && typeof window.QRCode.toCanvas === 'function') {
+        const canvas = document.createElement('canvas');
+        window.QRCode.toCanvas(canvas, qrData, {
+            width: 170,
+            margin: 1,
+            errorCorrectionLevel: 'M',
+            color: { dark: '#000000', light: '#ffffff' }
+        }, err => {
+            if (!err) {
+                canvas.style.borderRadius = '6px';
+                onQrSuccess(canvas);
+            } else {
+                engineFallback();
+            }
+        });
+        return;
+    }
 
-function renderQRCanvasFallback(container, text) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 190;
-    canvas.height = 190;
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 190, 190);
+    // Engine 2: QRCode constructor
+    if (window.QRCode && typeof window.QRCode === 'function') {
+        try {
+            const div = document.createElement('div');
+            new window.QRCode(div, {
+                text: qrData,
+                width: 170,
+                height: 170,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: 2 // M
+            });
+            setTimeout(() => {
+                const canvas = div.querySelector('canvas') || div.querySelector('img');
+                if (canvas) {
+                    canvas.style.borderRadius = '6px';
+                    onQrSuccess(canvas);
+                } else {
+                    engineFallback();
+                }
+            }, 50);
+            return;
+        } catch (e) {
+            engineFallback();
+            return;
+        }
+    }
 
-    // Simple visual pattern representation
-    ctx.fillStyle = '#8d6aae';
-    ctx.font = "bold 12px 'Inter', 'Plus Jakarta Sans', sans-serif";
-    ctx.textAlign = 'center';
-    ctx.fillText('ENTRY PASS', 95, 30);
-    ctx.fillStyle = '#111111';
-    ctx.font = 'bold 15px monospace';
-    ctx.fillText(text, 95, 95);
-    ctx.fillStyle = '#666666';
-    ctx.font = "11px 'Inter', 'Plus Jakarta Sans', sans-serif";
-    ctx.fillText('Scan at WWI Gate', 95, 140);
-    container.appendChild(canvas);
+    engineFallback();
+
+    function engineFallback() {
+        // Engine 3: High-resolution QR API Rasterizer (Guaranteed 100% Real QR Code)
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.alt = `Ticket QR Pass ${qrData}`;
+        img.style.width = '170px';
+        img.style.height = '170px';
+        img.style.borderRadius = '6px';
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&format=png&margin=4&data=${encodeURIComponent(qrData)}`;
+        img.onload = () => {
+            const c = document.createElement('canvas');
+            c.width = 170;
+            c.height = 170;
+            const cx = c.getContext('2d');
+            cx.drawImage(img, 0, 0, 170, 170);
+            c.style.borderRadius = '6px';
+            onQrSuccess(c);
+        };
+        img.onerror = () => {
+            setTimeout(() => generateTicketQR(reg, containerId), 500);
+        };
+    }
 }
 
 
@@ -841,21 +879,33 @@ function readReferralFromURL() {
         }
     }
     if (!ref) {
-        try { ref = sessionStorage.getItem('cc2026_referral'); } catch (e) {}
+        try { ref = sessionStorage.getItem('cc2026_referral') || localStorage.getItem('cc2026_referral'); } catch (e) {}
     }
+
     if (ref) {
         const cleanRef = ref.trim().toUpperCase();
-        try { sessionStorage.setItem('cc2026_referral', cleanRef); } catch (e) {}
+        try {
+            sessionStorage.setItem('cc2026_referral', cleanRef);
+            localStorage.setItem('cc2026_referral', cleanRef);
+        } catch (e) {}
+
         // Pre-fill referral code when on register page
         const refInput = document.getElementById('reg-referral');
-        if (refInput && !refInput.value) refInput.value = cleanRef;
+        if (refInput && !refInput.value) {
+            refInput.value = cleanRef;
+        }
 
-        // Auto-navigate to register if arrived on landing with ref in URL and no explicit other page
-        if ((window.location.search.includes('ref=') || window.location.hash.includes('ref=')) && 
-            (currentPage === 'landing' || window.location.hash.includes('register'))) {
-            setTimeout(() => {
-                if (currentPage !== 'register') navigateTo('register');
-            }, 100);
+        // Show VIP Referral Banner on landing page (does NOT force-redirect, preserves landing hero experience)
+        const banner = document.getElementById('landing-referral-banner');
+        const nameEl = document.getElementById('lrb-referrer-name');
+        if (banner) {
+            let displayName = cleanRef;
+            if (typeof dataStore !== 'undefined' && typeof dataStore.getPromoters === 'function') {
+                const promoter = dataStore.getPromoters().find(p => p.code.toUpperCase() === cleanRef);
+                if (promoter) displayName = `${promoter.name} (Promoter)`;
+            }
+            if (nameEl) nameEl.textContent = displayName;
+            banner.style.display = 'block';
         }
     }
 }
@@ -1185,16 +1235,35 @@ function renderFoundTicket(reg) {
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     set('fp-ticket-name', reg.name);
     set('fp-ticket-id', reg.id);
+    set('fp-ticket-stub-id', reg.id);
     set('fp-ticket-visit-date', reg.visitDate || 'Both Days (08th & 09th Oct)');
-    set('fp-ticket-college', reg.college);
+    set('fp-ticket-college', reg.college || 'Degree College');
     set('fp-ticket-amount', '₹' + reg.finalPrice);
 
+    const isRejected = Boolean(reg.rejected) || 
+        (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
+
+    const ticketCard = document.getElementById('fp-ticket-card');
+    const voidStamp = document.getElementById('fp-ticket-void-stamp');
     const statusEl = document.getElementById('fp-ticket-status');
+
+    if (ticketCard) ticketCard.classList.toggle('is-rejected', isRejected);
+    if (voidStamp) voidStamp.style.display = isRejected ? 'block' : 'none';
+
     if (statusEl) {
-        statusEl.textContent = reg.verified ? 'Payment Verified ✓' : 'Verification Pending';
-        statusEl.className = reg.verified
-            ? 'ticket-value status-verified'
-            : 'ticket-value status-pending';
+        if (isRejected) {
+            statusEl.textContent = 'PAYMENT REJECTED';
+            statusEl.className = 'badge';
+            statusEl.style.cssText = 'background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid #ef4444; font-weight:700;';
+        } else if (reg.verified) {
+            statusEl.textContent = 'VERIFIED ✓';
+            statusEl.className = 'badge badge-verified';
+            statusEl.style.cssText = '';
+        } else {
+            statusEl.textContent = 'PENDING VERIFICATION';
+            statusEl.className = 'badge badge-pending';
+            statusEl.style.cssText = '';
+        }
     }
 
     // Generate QR in fp-qr-container using the shared robust function
@@ -1227,6 +1296,9 @@ function savePassAsImage(source) {
         return;
     }
 
+    const isRejected = Boolean(reg.rejected) || 
+        (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
+
     const qrContainerId = (source === 'fp') ? 'fp-qr-container' : 'ticket-qr-container';
     const qrCanvas = document.querySelector(`#${qrContainerId} canvas`);
 
@@ -1252,14 +1324,14 @@ function savePassAsImage(source) {
     ctx.fillRect(0, 0, W, H);
 
     // ── Border ──
-    ctx.strokeStyle = 'rgba(247,231,197,0.6)';
+    ctx.strokeStyle = isRejected ? 'rgba(239,68,68,0.7)' : 'rgba(247,231,197,0.6)';
     ctx.lineWidth = 2;
     roundRect(ctx, 14, 14, W - 28, H - 28, 14);
     ctx.stroke();
 
     // ── Header band ──
     const headerGrad = ctx.createLinearGradient(0, 0, W, 0);
-    headerGrad.addColorStop(0, 'rgba(141,106,174,0.45)');
+    headerGrad.addColorStop(0, isRejected ? 'rgba(239,68,68,0.45)' : 'rgba(141,106,174,0.45)');
     headerGrad.addColorStop(1, 'rgba(23,19,42,0.85)');
     ctx.fillStyle = headerGrad;
     roundRectFill(ctx, 14, 14, W - 28, 90, 14, 0);
@@ -1272,7 +1344,7 @@ function savePassAsImage(source) {
     ctx.font = "600 12px 'Inter', 'Plus Jakarta Sans', sans-serif";
     ctx.fillStyle = '#a882c8';
     ctx.letterSpacing = '3px';
-    ctx.fillText('THE ACADEMIC TREK  •  OFFICIAL ENTRY PASS', W / 2, 82);
+    ctx.fillText('THE ACADEMIC TREK  •  BOARDING PASS', W / 2, 82);
 
     // ── Gold divider ──
     ctx.strokeStyle = 'rgba(247,231,197,0.35)';
@@ -1286,9 +1358,9 @@ function savePassAsImage(source) {
         ['Visiting Dates', reg.visitDate || 'Both Days (08th & 09th Oct)'],
         ['Time', '9:00 AM – 5:00 PM IST'],
         ['Venue', 'WWI, Film City, Goregaon East, Mumbai'],
-        ['College', reg.college],
+        ['College', reg.college || 'Degree College'],
         ['Amount Paid', '\u20B9' + reg.finalPrice],
-        ['Payment Status', reg.verified ? 'Verified \u2713' : 'Pending Verification']
+        ['Payment Status', isRejected ? 'REJECTED (ENTRY VOID)' : (reg.verified ? 'Verified \u2713' : 'Pending Verification')]
     ];
 
     let y = 140;
@@ -1305,8 +1377,8 @@ function savePassAsImage(source) {
         ctx.fillText(label.toUpperCase(), labelX, y);
 
         ctx.font = "600 14px 'Inter', 'Plus Jakarta Sans', sans-serif";
-        ctx.fillStyle = (label === 'Payment Status' && reg.verified)
-            ? '#10b981'
+        ctx.fillStyle = (label === 'Payment Status')
+            ? (isRejected ? '#ef4444' : (reg.verified ? '#10b981' : '#f59e0b'))
             : (label === 'Visiting Dates' || label === 'Trek Dates' ? '#f7e7c5' : '#ffffff');
         ctx.textAlign = 'right';
         ctx.fillText(value, valueX, y);
@@ -1350,6 +1422,27 @@ function savePassAsImage(source) {
     ctx.font = "11px 'Inter', 'Plus Jakarta Sans', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('Scan at Whistling Woods International Entry Gate', W / 2, y + 8);
+
+    // ── Rejection Stamp (Diagonal Overlay) ──
+    if (isRejected) {
+        ctx.save();
+        ctx.translate(W / 2, H / 2 - 30);
+        ctx.rotate(-22 * Math.PI / 180);
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.9)';
+        ctx.lineWidth = 6;
+        roundRect(ctx, -220, -50, 440, 100, 14);
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.25)';
+        roundRectFill(ctx, -220, -50, 440, 100, 14, 14);
+        ctx.fillStyle = '#ef4444';
+        ctx.font = "bold 32px 'Integral CF', 'Inter', sans-serif";
+        ctx.textAlign = 'center';
+        ctx.fillText('VOID / REJECTED', 0, 0);
+        ctx.font = "bold 13px 'Inter', sans-serif";
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('PAYMENT REJECTED • ENTRY DENIED AT GATE', 0, 26);
+        ctx.restore();
+    }
 
     // ── Footer ──
     ctx.fillStyle = 'rgba(247,231,197,0.45)';
