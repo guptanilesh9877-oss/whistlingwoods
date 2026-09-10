@@ -63,7 +63,10 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             r.id.toLowerCase().includes(q) ||
             (r.phone && r.phone.includes(q)) ||
             (r.college && r.college.toLowerCase().includes(q)) ||
-            (r.visitDate && r.visitDate.toLowerCase().includes(q))
+            (r.visitDate && r.visitDate.toLowerCase().includes(q)) ||
+            (r.couponUsed && r.couponUsed.toLowerCase().includes(q)) ||
+            (r.referredBy && r.referredBy.toLowerCase().includes(q)) ||
+            (r.referralCode && r.referralCode.toLowerCase().includes(q))
         );
     }
 
@@ -79,7 +82,26 @@ function renderRegistrationsTable(filter = 'all', search = '') {
     noData.style.display = 'none';
     tableWrapper.style.display = 'block';
 
-    tbody.innerHTML = regs.map(r => `
+    // Lookup maps for promoters & student referrers
+    const promoterMap = {};
+    if (typeof dataStore.getPromoters === 'function') {
+        dataStore.getPromoters().forEach(p => {
+            if (p.code) promoterMap[p.code.trim().toUpperCase()] = p.name;
+        });
+    }
+    const studentMap = {};
+    const allRegs = dataStore.getRegistrations();
+    allRegs.forEach(reg => {
+        if (reg.referralCode) studentMap[reg.referralCode.trim().toUpperCase()] = reg.name;
+    });
+
+    tbody.innerHTML = regs.map(r => {
+        const refCode = (r.referredBy || '').trim().toUpperCase();
+        const referrerName = refCode 
+            ? (promoterMap[refCode] ? `${promoterMap[refCode]} (Promoter)` : (studentMap[refCode] ? `${studentMap[refCode]}` : null))
+            : null;
+
+        return `
         <tr id="row-${r.id}">
             <td title="${r.id}"><strong>${r.id}</strong></td>
             <td title="${escapeHTML(r.name)}">${escapeHTML(r.name)}</td>
@@ -89,6 +111,15 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             <td title="${escapeHTML(r.visitDate || 'Both Days')}"><span class="badge badge-gold-sm">${escapeHTML(r.visitDate ? (r.visitDate.includes('Both') ? 'Both Days' : (r.visitDate.includes('08th') ? 'Day 1 (8th)' : 'Day 2 (9th)')) : 'Both Days')}</span></td>
             <td>₹${r.finalPrice}</td>
             <td>${r.couponUsed || '—'}</td>
+            <td>
+                ${refCode ? `
+                    <span class="badge badge-purple" style="font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('${escapeHTML(refCode)}')" title="Click to filter by referral code ${escapeHTML(refCode)}">
+                        ${escapeHTML(refCode)}
+                    </span>
+                    ${referrerName ? `<div style="font-size:0.72rem; color:var(--lavender); margin-top:2px; font-weight:500;" title="Referred by: ${escapeHTML(referrerName)}">👤 ${escapeHTML(referrerName)}</div>` : ''}
+                ` : `<span style="color:var(--text-muted); font-size:0.75rem; opacity:0.6;">Direct / —</span>`}
+                ${r.referralCode ? `<div style="font-size:0.68rem; color:var(--text-muted); opacity:0.6; margin-top:2px;" title="Registrant's own referral code">Own: ${escapeHTML(r.referralCode)}</div>` : ''}
+            </td>
             <td title="${r.transactionId || '—'}">${r.transactionId ? r.transactionId.substring(0, 12) : '—'}</td>
             <td>
                 <span class="badge ${r.verified ? 'badge-verified' : 'badge-pending'}">
@@ -112,8 +143,25 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                 </div>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
+
+// Filter registrations table by referral code (e.g. when clicking promoter link or code badge)
+function filterRegistrationsByReferral(code) {
+    const regTabBtn = document.querySelector('#admin-tabs .tab-btn[data-tab="registrations"]');
+    if (regTabBtn) regTabBtn.click();
+
+    const searchInput = document.getElementById('search-registrations');
+    const filterSelect = document.getElementById('filter-status');
+    if (searchInput) {
+        searchInput.value = code;
+        renderRegistrationsTable(filterSelect ? filterSelect.value : 'all', code);
+        showToast(`Filtered by referral code: "${code}"`, 'info');
+    }
+}
+window.filterRegistrationsByReferral = filterRegistrationsByReferral;
+
 
 // ──────────── TOGGLE VERIFY ────────────
 async function handleToggleVerify(id) {
@@ -387,6 +435,7 @@ function displayScanResult(result) {
             <div class="scan-detail-row"><span class="scan-detail-label">College:</span><span class="scan-detail-value">${escapeHTML(result.reg.college)}</span></div>
             <div class="scan-detail-row"><span class="scan-detail-label">Phone:</span><span class="scan-detail-value">${escapeHTML(result.reg.phone)}</span></div>
             <div class="scan-detail-row"><span class="scan-detail-label">Amount:</span><span class="scan-detail-value">₹${result.reg.finalPrice}</span></div>
+            ${result.reg.referredBy ? `<div class="scan-detail-row"><span class="scan-detail-label">Referred By:</span><span class="scan-detail-value" style="font-family:monospace; color:var(--lavender); font-weight:600;">${escapeHTML(result.reg.referredBy)}</span></div>` : ''}
         `;
         actionsEl.innerHTML = `
             <button class="btn-small" onclick="document.getElementById('scanner-result').style.display='none'">Dismiss</button>
@@ -645,10 +694,11 @@ function renderPromotersTable() {
         return `
             <tr>
                 <td><strong>${escapeHTML(p.name)}</strong></td>
-                <td><span class="badge badge-purple" style="font-family:'Integral CF',sans-serif;letter-spacing:1px;">${p.code}</span></td>
-                <td><strong style="color:var(--gold);font-size:1.1rem;">${count}</strong> <span style="font-size:0.8rem;color:var(--lavender);">student${count !== 1 ? 's' : ''}</span></td>
+                <td><span class="badge badge-purple" style="font-family:'Integral CF',sans-serif;letter-spacing:1px;cursor:pointer;" onclick="filterRegistrationsByReferral('${p.code}')" title="Click to view registrations for ${p.code}">${p.code}</span></td>
+                <td><strong style="color:var(--gold);font-size:1.1rem;cursor:pointer;" onclick="filterRegistrationsByReferral('${p.code}')" title="Click to view registrations for ${p.code}">${count}</strong> <span style="font-size:0.8rem;color:var(--lavender);">student${count !== 1 ? 's' : ''}</span></td>
                 <td>
                     <div style="display:flex;gap:8px;align-items:center;">
+                        <button class="btn btn-secondary btn-small" onclick="filterRegistrationsByReferral('${p.code}')" title="View student registrations">View Students (${count})</button>
                         <button class="btn btn-secondary btn-small" onclick="copyPromoterLink('${p.code}')" title="Copy ${url}">Copy Link</button>
                         <button class="btn btn-primary btn-small btn-whatsapp" onclick="sharePromoterWhatsApp('${p.code}', '${escapeHTML(p.name)}')">WhatsApp</button>
                     </div>
@@ -670,13 +720,13 @@ function renderReferralLeaderboard() {
     }
 
     container.innerHTML = topReferrers.map((r, i) => `
-        <div class="referral-item">
+        <div class="referral-item" style="cursor:pointer;" onclick="filterRegistrationsByReferral('${r.code}')" title="Click to view all registrations from code ${r.code}">
             <div class="referral-rank">#${i + 1}</div>
             <div class="referral-info">
                 <div class="referral-name">${escapeHTML(r.name)}</div>
                 <div class="referral-code-text">Code: <strong style="color:var(--gold);">${r.code}</strong></div>
             </div>
-            <div class="referral-count">${r.count} referral${r.count !== 1 ? 's' : ''}</div>
+            <div class="referral-count"><strong style="color:var(--gold);">${r.count}</strong> referral${r.count !== 1 ? 's' : ''} ➔</div>
         </div>
     `).join('');
 }
