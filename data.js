@@ -618,7 +618,9 @@ class DataStore {
         const regs = this.getRegistrations();
         const verified = regs.filter(r => r.verified);
         const attended = regs.filter(r => r.attended);
-        const totalRevenue = verified.reduce((s, r) => s + (r.finalPrice || 0), 0);
+        // Total revenue = sum of ALL registrations' finalPrice (verified + pending payments received)
+        const totalRevenue = regs.reduce((s, r) => s + (r.finalPrice || 0), 0);
+        const verifiedRevenue = verified.reduce((s, r) => s + (r.finalPrice || 0), 0);
         const couponUsage = {};
         regs.forEach(r => {
             if (r.couponUsed) couponUsage[r.couponUsed] = (couponUsage[r.couponUsed] || 0) + 1;
@@ -629,7 +631,8 @@ class DataStore {
             pending: regs.length - verified.length,
             attended: attended.length,
             totalRevenue,
-            avgPrice: verified.length ? Math.round(totalRevenue / verified.length) : 0,
+            verifiedRevenue,
+            avgPrice: regs.length ? Math.round(totalRevenue / regs.length) : 0,
             couponUsage,
             topReferrers: this.getTopReferrers()
         };

@@ -721,47 +721,71 @@ function populateConfirmation(reg) {
     document.getElementById('referral-link-input').value = referralLink;
 }
 
-function generateTicketQR(reg) {
-    const container = document.getElementById('ticket-qr-container');
+function generateTicketQR(reg, containerId) {
+    const id = containerId || 'ticket-qr-container';
+    const container = document.getElementById(id);
     if (!container) return;
     container.innerHTML = '';
 
-    const qrData = JSON.stringify({
-        id: reg.id,
-        name: reg.name,
-        college: reg.college,
-        event: 'CC2026'
-    });
+    // Encode just the ticket ID — simplest, most scannable, works offline
+    const qrData = reg.id;
 
-    // Retry loop — CDN may load slightly after page render
-    function tryGenerate(qrDataStr, targetContainer, attempts) {
+    function tryGenerate(attempts) {
+        // Method 1: qrcode npm package (QRCode.toCanvas)
         if (window.QRCode && typeof window.QRCode.toCanvas === 'function') {
             const canvas = document.createElement('canvas');
-            window.QRCode.toCanvas(canvas, qrDataStr, {
+            window.QRCode.toCanvas(canvas, qrData, {
                 width: 200,
                 margin: 2,
-                errorCorrectionLevel: 'M',
-                color: {
-                    dark: '#12121e',
-                    light: '#ffffff'
-                }
+                errorCorrectionLevel: 'H',
+                color: { dark: '#12121e', light: '#ffffff' }
             }, err => {
                 if (!err) {
-                    targetContainer.appendChild(canvas);
+                    container.innerHTML = '';
+                    canvas.style.borderRadius = '8px';
+                    container.appendChild(canvas);
                 } else {
                     console.warn('QRCode.toCanvas error:', err);
-                    renderQRCanvasFallback(targetContainer, reg.id);
+                    renderQRCanvasFallback(container, reg.id);
                 }
             });
-        } else if (attempts > 0) {
-            setTimeout(() => tryGenerate(qrDataStr, targetContainer, attempts - 1), 250);
-        } else {
-            renderQRCanvasFallback(targetContainer, reg.id);
+            return;
         }
+
+        // Method 2: QRCode constructor (some CDN builds export it this way)
+        if (window.QRCode && typeof window.QRCode === 'function') {
+            try {
+                const div = document.createElement('div');
+                div.style.background = '#fff';
+                div.style.display = 'inline-block';
+                div.style.borderRadius = '8px';
+                div.style.padding = '8px';
+                container.innerHTML = '';
+                container.appendChild(div);
+                new window.QRCode(div, {
+                    text: qrData,
+                    width: 200,
+                    height: 200,
+                    correctLevel: 3 // H
+                });
+                return;
+            } catch (e) {
+                console.warn('QRCode constructor error:', e);
+            }
+        }
+
+        // Retry while library loads
+        if (attempts > 0) {
+            setTimeout(() => tryGenerate(attempts - 1), 300);
+            return;
+        }
+
+        // Last resort: plain canvas fallback
+        renderQRCanvasFallback(container, reg.id);
     }
 
-    // Defer slightly to ensure DOM is painted and lib is loaded
-    setTimeout(() => tryGenerate(qrData, container, 12), 60);
+    // Start with a short delay so page is painted and CDN is loaded
+    setTimeout(() => tryGenerate(20), 100);
 }
 
 function renderQRCanvasFallback(container, text) {
@@ -785,6 +809,7 @@ function renderQRCanvasFallback(container, text) {
     ctx.fillText('Scan at WWI Gate', 95, 140);
     container.appendChild(canvas);
 }
+
 
 function resetRegistrationForm() {
     const form = document.getElementById('register-form');
@@ -1172,29 +1197,11 @@ function renderFoundTicket(reg) {
             : 'ticket-value status-pending';
     }
 
-    // Generate QR in fp-qr-container
+    // Generate QR in fp-qr-container using the shared robust function
     const container = document.getElementById('fp-qr-container');
     if (container) {
         container.innerHTML = '';
-        const qrData = JSON.stringify({ id: reg.id, name: reg.name, college: reg.college, event: 'CC2026' });
-
-        function tryFpQR(attempts) {
-            if (window.QRCode && typeof window.QRCode.toCanvas === 'function') {
-                const canvas = document.createElement('canvas');
-                window.QRCode.toCanvas(canvas, qrData, {
-                    width: 200, margin: 2, errorCorrectionLevel: 'M',
-                    color: { dark: '#12121e', light: '#ffffff' }
-                }, err => {
-                    if (!err) { container.appendChild(canvas); }
-                    else { renderQRCanvasFallback(container, reg.id); }
-                });
-            } else if (attempts > 0) {
-                setTimeout(() => tryFpQR(attempts - 1), 250);
-            } else {
-                renderQRCanvasFallback(container, reg.id);
-            }
-        }
-        setTimeout(() => tryFpQR(12), 60);
+        generateTicketQR(reg, 'fp-qr-container');
     }
 }
 

@@ -257,7 +257,18 @@ async function startScanner() {
             startBtn.classList.remove('btn-secondary');
         }
         isScannerRunning = false;
-        showToast('Unable to access camera. Please check permissions or use manual check-in.', 'error');
+
+        // Specific error messages
+        const errMsg = (err && err.message) ? err.message.toLowerCase() : '';
+        if (errMsg.includes('permission') || errMsg.includes('denied') || errMsg.includes('notallowed')) {
+            showToast('Camera permission denied. Please tap the camera icon in your browser address bar and Allow access.', 'error');
+        } else if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+            showToast('Camera requires HTTPS. Open the live site at whistlingwoods.careerbeam.in to use the scanner.', 'warning');
+        } else if (!window.Html5Qrcode) {
+            showToast('QR scanner library failed to load. Check your internet connection and reload the page.', 'error');
+        } else {
+            showToast('Camera access failed. Try refreshing the page, or use Manual Check-In below.', 'error');
+        }
     }
 }
 
@@ -285,7 +296,7 @@ async function stopScanner() {
 }
 
 // Handle scan success with 2.5s debounce per code
-function onScanSuccess(decodedText) {
+async function onScanSuccess(decodedText) {
     const now = Date.now();
     if (decodedText === lastScannedCode && (now - lastScanTime) < 2500) {
         return; // debounce duplicate consecutive frames
@@ -300,13 +311,19 @@ function onScanSuccess(decodedText) {
     // Haptic vibration
     if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
 
-    // Process attendance
+    // Sync fresh from Supabase first so we have the latest attendance state
+    if (dataStore.supabaseClient) {
+        await dataStore.syncFromSupabase().catch(() => {});
+    }
+
+    // Process attendance (marks locally + pushes to Supabase via syncToSupabase)
     const result = dataStore.markAttendance(decodedText);
     displayScanResult(result);
     renderRecentCheckins();
     renderStats();
     renderRegistrationsTable();
 }
+
 
 function onScanFailure(error) {
     // Normal frame-by-frame scanning noise, suppress
