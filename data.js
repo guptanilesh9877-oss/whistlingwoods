@@ -144,10 +144,10 @@ class DataStore {
             referral_code: r.referralCode || r.referral_code || '',
             referred_by: r.referredBy || r.referred_by || '',
             coupon_used: r.couponUsed || r.coupon_used || '',
-            base_price: Number(r.basePrice ?? r.base_price ?? CONFIG.BASE_PRICE),
-            early_bird_discount: Number(r.earlyBirdDiscount ?? r.early_bird_discount ?? CONFIG.EARLY_BIRD_DISCOUNT),
-            coupon_discount: Number(r.couponDiscount ?? r.coupon_discount ?? 0),
-            final_price: Number(r.finalPrice ?? r.final_price ?? 0),
+            base_price: Math.round(Number(r.basePrice ?? r.base_price ?? CONFIG.BASE_PRICE)),
+            early_bird_discount: Math.round(Number(r.earlyBirdDiscount ?? r.early_bird_discount ?? CONFIG.EARLY_BIRD_DISCOUNT)),
+            coupon_discount: Math.round(Number(r.couponDiscount ?? r.coupon_discount ?? 0)),
+            final_price: Math.round(Number(r.finalPrice ?? r.final_price ?? 0)),
             transaction_id: txnId,
             payment_screenshot: r.paymentScreenshot || r.payment_screenshot || '',
             verified: Boolean(r.verified) && !isRejected,
@@ -187,10 +187,10 @@ class DataStore {
             referralCode: row.referral_code || row.referralCode || '',
             referredBy: row.referred_by || row.referred_by || '',
             couponUsed: row.coupon_used || row.couponUsed || '',
-            basePrice: Number(row.base_price ?? row.basePrice ?? CONFIG.BASE_PRICE),
-            earlyBirdDiscount: Number(row.early_bird_discount ?? row.earlyBirdDiscount ?? CONFIG.EARLY_BIRD_DISCOUNT),
-            couponDiscount: Number(row.coupon_discount ?? row.couponDiscount ?? 0),
-            finalPrice: Number(row.final_price ?? row.finalPrice ?? 0),
+            basePrice: Math.round(Number(row.base_price ?? row.basePrice ?? CONFIG.BASE_PRICE)),
+            earlyBirdDiscount: Math.round(Number(row.early_bird_discount ?? row.earlyBirdDiscount ?? CONFIG.EARLY_BIRD_DISCOUNT)),
+            couponDiscount: Math.round(Number(row.coupon_discount ?? row.couponDiscount ?? 0)),
+            finalPrice: Math.round(Number(row.final_price ?? row.finalPrice ?? 0)),
             transactionId: row.transaction_id || row.transactionId || '',
             paymentScreenshot: row.payment_screenshot || row.paymentScreenshot || '',
             verified: Boolean(row.verified) && !isRejected,
@@ -702,18 +702,18 @@ class DataStore {
 
     // ──────────── PRICING CALCULATOR ────────────
     calculatePrice(couponCode = '') {
-        const basePrice = CONFIG.BASE_PRICE;
-        const earlyBird = CONFIG.EARLY_BIRD_DISCOUNT;
+        const basePrice = Math.round(Number(CONFIG.BASE_PRICE) || 150);
+        const earlyBird = Math.round(Number(CONFIG.EARLY_BIRD_DISCOUNT) || 0);
         let couponDiscount = 0;
         let couponValid = false;
 
         if (couponCode) {
             const v = this.validateCoupon(couponCode);
-            if (v.valid) { couponDiscount = v.discount; couponValid = true; }
+            if (v.valid) { couponDiscount = Math.round(Number(v.discount) || 0); couponValid = true; }
         }
 
-        const subtotal = basePrice - earlyBird;
-        const finalPrice = Math.max(CONFIG.MIN_PRICE, subtotal - couponDiscount);
+        const subtotal = Math.max(0, basePrice - earlyBird);
+        const finalPrice = Math.round(Math.max(CONFIG.MIN_PRICE || 0, subtotal - couponDiscount));
 
         return { basePrice, earlyBird, subtotal, couponDiscount: couponValid ? couponDiscount : 0, couponValid, finalPrice };
     }

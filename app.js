@@ -408,12 +408,13 @@ function updatePricingDisplay() {
         }
     }
 
+    const roundedPrice = Math.round(Number(pricing.finalPrice) || 150);
     const priceTotal = document.getElementById('price-total');
-    if (priceTotal) priceTotal.textContent = '₹' + pricing.finalPrice;
+    if (priceTotal) priceTotal.textContent = '₹' + roundedPrice;
 
     // Also update payment page amount
     const paymentDisplay = document.getElementById('payment-amount-display');
-    if (paymentDisplay) paymentDisplay.textContent = '₹' + pricing.finalPrice;
+    if (paymentDisplay) paymentDisplay.textContent = '₹' + roundedPrice;
 }
 
 function validateField(input) {
@@ -523,7 +524,8 @@ function handleRegistrationSubmit() {
     }
 
     // Update payment amount display
-    document.getElementById('payment-amount-display').textContent = '₹' + pricing.finalPrice;
+    const finalIntegerPrice = Math.round(Number(pricing.finalPrice) || 150);
+    document.getElementById('payment-amount-display').textContent = '₹' + finalIntegerPrice;
 
     // Check if screenshot was previously uploaded for this registration
     const preview = document.getElementById('screenshot-preview');
@@ -1046,7 +1048,11 @@ function escapeHTML(str) {
 // ──────────── UPI PAYMENT ACTIONS ────────────
 function payWithApp(app) {
     const amountEl = document.getElementById('payment-amount-display');
-    const amount = amountEl ? amountEl.textContent.replace(/[₹,]/g, '').trim() : '150';
+    const rawAmount = amountEl ? amountEl.textContent.replace(/[₹,\s]/g, '').trim() : '150';
+    // Strictly format as an integer without decimals (e.g. '150' instead of '150.00')
+    // UPI apps (PhonePe, GPay, Paytm) and bank switches (@ibl) reject/decline decimal amounts like 150.00
+    const parsedAmount = Math.round(parseFloat(rawAmount));
+    const amount = (!isNaN(parsedAmount) && parsedAmount > 0) ? String(parsedAmount) : '150';
     const upiVpa = CONFIG.UPI_VPA || '7208070768@ibl';
     const payeeName = encodeURIComponent(CONFIG.UPI_PAYEE_NAME || 'Vigor LaunchPad');
     const note = encodeURIComponent('Celebrate Cinema 2026 Academic Trek');
