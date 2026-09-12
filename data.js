@@ -215,30 +215,31 @@ class DataStore {
             }
             if (data && Array.isArray(data)) {
                 const cloudRegs = data.map(row => this._fromDbRecord(row));
-                const cloudIds = new Set(cloudRegs.map(r => r.id));
 
-                // Preserve & auto-sync any local registrations not yet in Cloud (and not deleted)
-                const localRegs = this.getRegistrations();
-                let deletedIds = new Set();
+                // Process genuinely pending offline submissions created on this device
+                let offlineQueue = [];
                 try {
-                    deletedIds = new Set(JSON.parse(localStorage.getItem('cc2026_deleted_ids') || '[]'));
+                    offlineQueue = JSON.parse(localStorage.getItem('cc2026_offline_submissions') || '[]');
                 } catch (e) {}
 
-                const now = Date.now();
-                const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
-                const pendingNewRegs = localRegs.filter(r => {
-                    if (cloudIds.has(r.id)) return false;
-                    if (deletedIds.has(r.id)) return false;
-                    const age = now - new Date(r.timestamp || 0).getTime();
-                    return age >= 0 && age < SEVEN_DAYS;
-                });
-
-                if (pendingNewRegs.length > 0) {
-                    console.log(`⚡ Found ${pendingNewRegs.length} unsynced local registration(s), syncing to Supabase...`);
-                    for (const pending of pendingNewRegs) {
-                        cloudRegs.unshift(pending);
-                        this.syncToSupabase(pending);
+                if (offlineQueue.length > 0) {
+                    const remainingQueue = [];
+                    for (const pending of offlineQueue) {
+                        try {
+                            const dbPayload = this._toDbRecord(pending);
+                            const { error: upsertErr } = await this.supabaseClient.from('registrations').upsert(dbPayload);
+                            if (upsertErr) {
+                                remainingQueue.push(pending);
+                            } else {
+                                if (!cloudRegs.some(r => r.id === pending.id)) {
+                                    cloudRegs.unshift(pending);
+                                }
+                            }
+                        } catch (e) {
+                            remainingQueue.push(pending);
+                        }
                     }
+                    localStorage.setItem('cc2026_offline_submissions', JSON.stringify(remainingQueue));
                 }
 
                 this.saveRegistrations(cloudRegs);
@@ -401,7 +402,16 @@ class DataStore {
         };
         regs.push(registration);
         this.saveRegistrations(regs);
-        this.syncToSupabase(registration).then(() => {
+        this.syncToSupabase(registration).then(res => {
+            if (!res || !res.success) {
+                try {
+                    const q = JSON.parse(localStorage.getItem('cc2026_offline_submissions') || '[]');
+                    if (!q.some(item => item.id === registration.id)) {
+                        q.push(registration);
+                        localStorage.setItem('cc2026_offline_submissions', JSON.stringify(q));
+                    }
+                } catch (e) {}
+            }
             if (typeof refreshAdminView === 'function') refreshAdminView();
             if (typeof renderNamesWall === 'function') renderNamesWall();
         });
@@ -462,20 +472,17 @@ class DataStore {
     }
 
     async deleteRegistration(id) {
-        // Track deleted ID so it is not auto-restored from stale devices
-        try {
-            const deleted = JSON.parse(localStorage.getItem('cc2026_deleted_ids') || '[]');
-            if (!deleted.includes(id)) {
-                deleted.push(id);
-                localStorage.setItem('cc2026_deleted_ids', JSON.stringify(deleted.slice(-300)));
-            }
-        } catch (e) {}
-
         // 1. Remove from local array immediately
         const regs = this.getRegistrations().filter(r => r.id !== id);
         this.saveRegistrations(regs);
 
-        // 2. Delete from Supabase cloud database
+        // 2. Remove from offline queue if present
+        try {
+            const q = JSON.parse(localStorage.getItem('cc2026_offline_submissions') || '[]');
+            localStorage.setItem('cc2026_offline_submissions', JSON.stringify(q.filter(item => item.id !== id)));
+        } catch (e) {}
+
+        // 3. Delete from Supabase cloud database
         if (this.supabaseClient) {
             try {
                 const { error } = await this.supabaseClient
