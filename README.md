@@ -44,4 +44,4 @@ Official event registration and attendee management platform for **Celebrate Cin
 ## 🔐 Admin Access
 
 - **Route**: `/#admin-login`
-- **Default Password**: `admin2026`
+- **Default Password**: `Admin@vigor`
