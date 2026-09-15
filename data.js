@@ -609,12 +609,13 @@ class DataStore {
     getPromoters() {
         const defaultPromoters = [
             { name: 'Nilesh', code: 'NILESH' },
-            { name: 'Sahil', code: 'SAHIL' },
-            { name: 'Golu', code: 'GOLU' },
-            { name: 'Satvik', code: 'SATVIK' },
             { name: 'Tarasha', code: 'TARASHA' },
+            { name: 'Sahil', code: 'SAHIL' },
+            { name: 'Satvik', code: 'SATVIK' },
             { name: 'Muwaaz', code: 'MUWAAZ' },
-            { name: 'Rahul', code: 'RAHUL' }
+            { name: 'Rahul', code: 'RAHUL' },
+            { name: 'Golu', code: 'GOLU' },
+            { name: 'Marsha', code: 'MARSHA' }
         ];
         const stored = localStorage.getItem('wwi_cc26_promoters');
         if (!stored) {
@@ -651,6 +652,110 @@ class DataStore {
         if (!referralCode) return 0;
         const target = referralCode.trim().toUpperCase();
         return this.getRegistrations().filter(r => (r.referredBy || '').trim().toUpperCase() === target).length;
+    }
+
+    getTeamReferralStats() {
+        const teams = [
+            {
+                id: 'nilesh-tarasha',
+                name: 'Nilesh + Tarasha',
+                members: [
+                    { name: 'Nilesh', code: 'NILESH' },
+                    { name: 'Tarasha', code: 'TARASHA' }
+                ],
+                tagline: 'Team Nilesh & Tarasha',
+                icon: '👑'
+            },
+            {
+                id: 'sahil-satvik',
+                name: 'Sahil + Satvik',
+                members: [
+                    { name: 'Sahil', code: 'SAHIL' },
+                    { name: 'Satvik', code: 'SATVIK' }
+                ],
+                tagline: 'Team Sahil & Satvik',
+                icon: '⚡'
+            },
+            {
+                id: 'muwaaz-rahul',
+                name: 'Muwaaz + Rahul',
+                members: [
+                    { name: 'Muwaaz', code: 'MUWAAZ' },
+                    { name: 'Rahul', code: 'RAHUL' }
+                ],
+                tagline: 'Team Muwaaz & Rahul',
+                icon: '🔥'
+            },
+            {
+                id: 'golu-marsha',
+                name: 'Golu + Marsha',
+                members: [
+                    { name: 'Golu', code: 'GOLU' },
+                    { name: 'Marsha', code: 'MARSHA' }
+                ],
+                tagline: 'Team Golu & Marsha',
+                icon: '🚀'
+            }
+        ];
+
+        const regs = this.getRegistrations();
+
+        const stats = teams.map(team => {
+            const memberCodes = team.members.map(m => m.code.toUpperCase());
+            const memberStats = team.members.map(m => {
+                const codeUpper = m.code.toUpperCase();
+                const mRegs = regs.filter(r => (r.referredBy || '').trim().toUpperCase() === codeUpper);
+                const mVerified = mRegs.filter(r => r.verified).length;
+                const mPending = mRegs.length - mVerified;
+                const mRevenue = mRegs.reduce((sum, r) => sum + (r.finalPrice || 0), 0);
+                return {
+                    name: m.name,
+                    code: m.code,
+                    count: mRegs.length,
+                    verified: mVerified,
+                    pending: mPending,
+                    revenue: mRevenue
+                };
+            });
+
+            const total = memberStats.reduce((sum, m) => sum + m.count, 0);
+            const verified = memberStats.reduce((sum, m) => sum + m.verified, 0);
+            const pending = memberStats.reduce((sum, m) => sum + m.pending, 0);
+            const revenue = memberStats.reduce((sum, m) => sum + m.revenue, 0);
+
+            // Compute split percentages for visual duel bar
+            const member1 = memberStats[0];
+            const member2 = memberStats[1];
+            let split1 = 50;
+            let split2 = 50;
+            if (total > 0) {
+                split1 = Math.round((member1.count / total) * 100);
+                split2 = 100 - split1;
+            }
+
+            return {
+                id: team.id,
+                name: team.name,
+                icon: team.icon,
+                tagline: team.tagline,
+                codes: memberCodes,
+                members: memberStats,
+                total,
+                verified,
+                pending,
+                revenue,
+                split1,
+                split2
+            };
+        });
+
+        // Sort by total referrals descending, secondary sort by verified descending
+        stats.sort((a, b) => {
+            if (b.total !== a.total) return b.total - a.total;
+            return b.verified - a.verified;
+        });
+
+        return stats;
     }
 
     getTopReferrers(limit = 15) {

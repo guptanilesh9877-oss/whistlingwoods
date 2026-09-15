@@ -1540,11 +1540,62 @@
                     </div>
                 </div>
 
-                <!-- Leaderboard -->
-                <div class="glass-card leaderboard-card" style="margin-top: var(--space-xl);">
-                    <h3>Referral Leaderboard</h3>
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: var(--space-md);">Ranked list of top student &amp; promoter signups</p>
-                    <div class="referral-leaderboard" id="referral-leaderboard"></div>
+                <!-- Leaderboard Section with View Toggles -->
+                <div class="glass-card leaderboard-card" id="leaderboard-section-card" style="margin-top: var(--space-xl);">
+                    <div class="leaderboard-header-row">
+                        <div>
+                            <h3 class="leaderboard-title">
+                                <span class="leaderboard-icon">🏆</span>
+                                <span>Referral Championship Leaderboard</span>
+                            </h3>
+                            <p class="leaderboard-subtitle">
+                                Live conversion &amp; signup rankings for official ambassador duos and individual referrers
+                            </p>
+                        </div>
+                        <!-- View Switcher Pills -->
+                        <div class="leaderboard-view-switch" id="leaderboard-view-switch">
+                            <button type="button" class="btn-toggle active" data-view="teams" onclick="switchLeaderboardView('teams')">
+                                👥 Team Duos
+                            </button>
+                            <button type="button" class="btn-toggle" data-view="individuals" onclick="switchLeaderboardView('individuals')">
+                                👤 Individuals
+                            </button>
+                            <button type="button" class="btn-toggle" data-view="both" onclick="switchLeaderboardView('both')">
+                                🌟 View All
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Top Summary Stats Bar -->
+                    <div class="leaderboard-stats-bar" id="leaderboard-stats-bar">
+                        <!-- Populated dynamically by admin.js -->
+                    </div>
+
+                    <!-- Teamwise Leaderboard Container -->
+                    <div class="leaderboard-view-pane active" id="pane-team-leaderboard">
+                        <div class="section-sub-header">
+                            <div class="sub-header-left">
+                                <span class="badge badge-purple">OFFICIAL DUO BATTLE</span>
+                                <span class="sub-header-text">4 Ambassador Teams: Nilesh + Tarasha, Sahil + Satvik, Muwaaz + Rahul, Golu + Marsha</span>
+                            </div>
+                        </div>
+                        <div class="team-leaderboard-grid" id="team-leaderboard-grid">
+                            <!-- Populated dynamically by admin.js -->
+                        </div>
+                    </div>
+
+                    <!-- Individual Referral Leaderboard Container -->
+                    <div class="leaderboard-view-pane" id="pane-individual-leaderboard">
+                        <div class="section-sub-header" style="margin-top: var(--space-md);">
+                            <div class="sub-header-left">
+                                <span class="badge badge-gold">INDIVIDUAL AMBASSADORS &amp; STUDENTS</span>
+                                <span class="sub-header-text">Ranked list of top student &amp; promoter signups</span>
+                            </div>
+                        </div>
+                        <div class="referral-leaderboard" id="referral-leaderboard">
+                            <!-- Populated dynamically by admin.js -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

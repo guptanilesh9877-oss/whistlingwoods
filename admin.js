@@ -57,18 +57,29 @@ function renderRegistrationsTable(filter = 'all', search = '') {
 
     // Apply search
     if (search) {
-        const q = search.toLowerCase();
-        regs = regs.filter(r =>
-            r.name.toLowerCase().includes(q) ||
-            r.email.toLowerCase().includes(q) ||
-            r.id.toLowerCase().includes(q) ||
-            (r.phone && r.phone.includes(q)) ||
-            (r.college && r.college.toLowerCase().includes(q)) ||
-            (r.visitDate && r.visitDate.toLowerCase().includes(q)) ||
-            (r.couponUsed && r.couponUsed.toLowerCase().includes(q)) ||
-            (r.referredBy && r.referredBy.toLowerCase().includes(q)) ||
-            (r.referralCode && r.referralCode.toLowerCase().includes(q))
-        );
+        if (search.includes('|') || search.includes(',')) {
+            const tokens = search.split(/[|,]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
+            regs = regs.filter(r => {
+                const referred = (r.referredBy || '').toLowerCase();
+                const code = (r.referralCode || '').toLowerCase();
+                const name = (r.name || '').toLowerCase();
+                const college = (r.college || '').toLowerCase();
+                return tokens.some(tok => referred === tok || code === tok || referred.includes(tok) || name.includes(tok) || college.includes(tok));
+            });
+        } else {
+            const q = search.toLowerCase();
+            regs = regs.filter(r =>
+                r.name.toLowerCase().includes(q) ||
+                r.email.toLowerCase().includes(q) ||
+                r.id.toLowerCase().includes(q) ||
+                (r.phone && r.phone.includes(q)) ||
+                (r.college && r.college.toLowerCase().includes(q)) ||
+                (r.visitDate && r.visitDate.toLowerCase().includes(q)) ||
+                (r.couponUsed && r.couponUsed.toLowerCase().includes(q)) ||
+                (r.referredBy && r.referredBy.toLowerCase().includes(q)) ||
+                (r.referralCode && r.referralCode.toLowerCase().includes(q))
+            );
+        }
     }
 
     // Sort by newest first
@@ -191,6 +202,49 @@ function filterRegistrationsByReferral(code) {
     }
 }
 window.filterRegistrationsByReferral = filterRegistrationsByReferral;
+
+// Filter registrations table by team duos (e.g. clicking a team card or button)
+function filterRegistrationsByTeam(teamName, codes) {
+    const regTabBtn = document.querySelector('#admin-tabs .tab-btn[data-tab="registrations"]');
+    if (regTabBtn) regTabBtn.click();
+
+    const searchInput = document.getElementById('search-registrations');
+    const filterSelect = document.getElementById('filter-status');
+    const query = Array.isArray(codes) ? codes.join(' | ') : codes;
+    if (searchInput) {
+        searchInput.value = query;
+        renderRegistrationsTable(filterSelect ? filterSelect.value : 'all', query);
+        showToast(`Filtered by Team: ${teamName} (${query})`, 'info');
+    }
+}
+window.filterRegistrationsByTeam = filterRegistrationsByTeam;
+
+// Switch between Team Leaderboard, Individual Leaderboard, or All Views
+function switchLeaderboardView(view) {
+    const teamPane = document.getElementById('pane-team-leaderboard');
+    const indPane = document.getElementById('pane-individual-leaderboard');
+    const buttons = document.querySelectorAll('#leaderboard-view-switch .btn-toggle');
+
+    buttons.forEach(btn => {
+        if (btn.dataset.view === view) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    if (view === 'teams') {
+        if (teamPane) { teamPane.style.display = 'block'; teamPane.classList.add('active'); }
+        if (indPane) { indPane.style.display = 'none'; indPane.classList.remove('active'); }
+    } else if (view === 'individuals') {
+        if (teamPane) { teamPane.style.display = 'none'; teamPane.classList.remove('active'); }
+        if (indPane) { indPane.style.display = 'block'; indPane.classList.add('active'); }
+    } else { // 'both'
+        if (teamPane) { teamPane.style.display = 'block'; teamPane.classList.add('active'); }
+        if (indPane) { indPane.style.display = 'block'; indPane.classList.add('active'); }
+    }
+}
+window.switchLeaderboardView = switchLeaderboardView;
 
 // ──────────── GOOGLE SHEETS STYLE COLUMN VISIBILITY ────────────
 const TABLE_COLUMNS = [
@@ -934,25 +988,189 @@ function renderPromotersTable() {
 
 function renderReferralLeaderboard() {
     renderPromotersTable();
-    const container = document.getElementById('referral-leaderboard');
-    if (!container) return;
-    const topReferrers = dataStore.getTopReferrers();
 
-    if (topReferrers.length === 0) {
-        container.innerHTML = '<div class="no-data"><div class="no-data-icon">🏆</div><p>No student referrals recorded yet</p></div>';
-        return;
+    const teamGrid = document.getElementById('team-leaderboard-grid');
+    const indContainer = document.getElementById('referral-leaderboard');
+    const statsBar = document.getElementById('leaderboard-stats-bar');
+
+    const teamStats = dataStore.getTeamReferralStats ? dataStore.getTeamReferralStats() : [];
+    const topReferrers = dataStore.getTopReferrers ? dataStore.getTopReferrers(30) : [];
+
+    // 1. Render Top Summary Stats Bar
+    if (statsBar) {
+        const topTeam = teamStats.length > 0 && teamStats[0].total > 0 ? teamStats[0] : null;
+        const topInd = topReferrers.length > 0 ? topReferrers[0] : null;
+        const allTeamTotal = teamStats.reduce((s, t) => s + t.total, 0);
+        const allTeamVerified = teamStats.reduce((s, t) => s + t.verified, 0);
+        const allTeamRevenue = teamStats.reduce((s, t) => s + t.revenue, 0);
+
+        statsBar.innerHTML = `
+            <div class="stat-pill-item">
+                <div class="stat-pill-icon">👑</div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-label">Leading Team</span>
+                    <strong class="stat-pill-val">${topTeam ? escapeHTML(topTeam.name) : 'Tie / All 0'}</strong>
+                </div>
+            </div>
+            <div class="stat-pill-item">
+                <div class="stat-pill-icon">🔥</div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-label">Top Performer</span>
+                    <strong class="stat-pill-val">${topInd ? `${escapeHTML(topInd.name)} (${topInd.count})` : 'None yet'}</strong>
+                </div>
+            </div>
+            <div class="stat-pill-item">
+                <div class="stat-pill-icon">👥</div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-label">Team Referrals</span>
+                    <strong class="stat-pill-val" style="color:var(--gold);">${allTeamTotal} total</strong>
+                </div>
+            </div>
+            <div class="stat-pill-item">
+                <div class="stat-pill-icon">✓</div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-label">Verified Signups</span>
+                    <strong class="stat-pill-val" style="color:#10b981;">${allTeamVerified} verified</strong>
+                </div>
+            </div>
+            <div class="stat-pill-item hide-on-compact">
+                <div class="stat-pill-icon">₹</div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-label">Duo Revenue</span>
+                    <strong class="stat-pill-val" style="color:var(--gold);">₹${allTeamRevenue.toLocaleString('en-IN')}</strong>
+                </div>
+            </div>
+        `;
     }
 
-    container.innerHTML = topReferrers.map((r, i) => `
-        <div class="referral-item" style="cursor:pointer;" onclick="filterRegistrationsByReferral('${r.code}')" title="Click to view all registrations from code ${r.code}">
-            <div class="referral-rank">#${i + 1}</div>
-            <div class="referral-info">
-                <div class="referral-name">${escapeHTML(r.name)}</div>
-                <div class="referral-code-text">Code: <strong style="color:var(--gold);">${r.code}</strong></div>
-            </div>
-            <div class="referral-count"><strong style="color:var(--gold);">${r.count}</strong> referral${r.count !== 1 ? 's' : ''} ➔</div>
-        </div>
-    `).join('');
+    // 2. Render Team Leaderboard Cards
+    if (teamGrid) {
+        if (teamStats.length === 0) {
+            teamGrid.innerHTML = '<div class="no-data"><div class="no-data-icon">🏆</div><p>No teams configured</p></div>';
+        } else {
+            const rankBadges = [
+                { rank: 1, title: 'GOLD CHAMPION', badgeClass: 'rank-1', medal: '🥇', ribbon: '👑 1ST PLACE' },
+                { rank: 2, title: 'SILVER RUNNER-UP', badgeClass: 'rank-2', medal: '🥈', ribbon: '⚡ 2ND PLACE' },
+                { rank: 3, title: 'BRONZE 3RD PLACE', badgeClass: 'rank-3', medal: '🥉', ribbon: '🔥 3RD PLACE' },
+                { rank: 4, title: '4TH CONTENDER', badgeClass: 'rank-4', medal: '🏅', ribbon: '🚀 4TH PLACE' }
+            ];
+
+            teamGrid.innerHTML = teamStats.map((team, idx) => {
+                const meta = rankBadges[idx] || { rank: idx + 1, title: `#${idx + 1}`, badgeClass: 'rank-other', medal: '🏅', ribbon: `#${idx + 1}` };
+                const m1 = team.members[0];
+                const m2 = team.members[1];
+                const codesParam = JSON.stringify(team.codes).replace(/"/g, '&quot;');
+
+                return `
+                    <div class="team-card ${meta.badgeClass}">
+                        <div class="team-card-header">
+                            <div class="team-rank-ribbon">
+                                <span class="rank-medal">${meta.medal}</span>
+                                <span class="rank-title">${meta.ribbon}</span>
+                            </div>
+                            <div class="team-avatar-pair">
+                                <span class="member-chip">${escapeHTML(m1.name)}</span>
+                                <span class="pair-plus">+</span>
+                                <span class="member-chip">${escapeHTML(m2.name)}</span>
+                            </div>
+                        </div>
+
+                        <div class="team-card-body">
+                            <h4 class="team-name">${escapeHTML(team.name)}</h4>
+                            
+                            <div class="team-metrics-row">
+                                <div class="team-primary-stat">
+                                    <div class="team-metric-number">${team.total}</div>
+                                    <div class="team-metric-caption">Student Signups</div>
+                                </div>
+                                <div class="team-sub-metrics">
+                                    <div class="metric-pill pill-verified" title="Completed & Verified Payments">
+                                        <span class="pill-dot">●</span> <strong>${team.verified}</strong> Verified
+                                    </div>
+                                    <div class="metric-pill pill-pending" title="Initiated registrations pending verification">
+                                        <span class="pill-dot">●</span> <strong>${team.pending}</strong> Pending
+                                    </div>
+                                    <div class="metric-pill pill-revenue" title="Revenue generated from referrals">
+                                        ₹<strong>${team.revenue.toLocaleString('en-IN')}</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Teammate Split Breakdown -->
+                            <div class="duo-split-wrapper">
+                                <div class="duo-split-labels">
+                                    <span class="duo-label left" onclick="filterRegistrationsByReferral('${m1.code}')" title="Filter by ${m1.name}">
+                                        <strong>${escapeHTML(m1.name)}</strong>: ${m1.count} <small>(${m1.verified} ver)</small>
+                                    </span>
+                                    <span class="duo-split-ratio">${team.total > 0 ? `${team.split1}% / ${team.split2}%` : '50% / 50%'}</span>
+                                    <span class="duo-label right" onclick="filterRegistrationsByReferral('${m2.code}')" title="Filter by ${m2.name}">
+                                        <strong>${escapeHTML(m2.name)}</strong>: ${m2.count} <small>(${m2.verified} ver)</small>
+                                    </span>
+                                </div>
+                                <div class="duo-split-bar" title="Contribution split between ${m1.name} and ${m2.name}">
+                                    <div class="duo-bar-segment segment-left" style="width: ${team.split1}%;"></div>
+                                    <div class="duo-bar-segment segment-right" style="width: ${team.split2}%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Individual Code Quick Filter Tags -->
+                            <div class="team-codes-bar">
+                                <span class="codes-label">Codes:</span>
+                                <span class="badge badge-purple team-code-badge" onclick="filterRegistrationsByReferral('${m1.code}')" title="View only ${m1.name}'s (${m1.code}) referrals">
+                                    ${m1.code} (${m1.count})
+                                </span>
+                                <span class="badge badge-purple team-code-badge" onclick="filterRegistrationsByReferral('${m2.code}')" title="View only ${m2.name}'s (${m2.code}) referrals">
+                                    ${m2.code} (${m2.count})
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="team-card-footer">
+                            <button type="button" class="btn btn-primary btn-small btn-block" onclick="filterRegistrationsByTeam('${escapeHTML(team.name)}', ${codesParam})" title="View all registrations from this team">
+                                <span>View Team Students (${team.total})</span>
+                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    <polyline points="12 5 19 12 12 19"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+
+    // 3. Render Individual Referral Leaderboard
+    if (indContainer) {
+        if (topReferrers.length === 0) {
+            indContainer.innerHTML = '<div class="no-data"><div class="no-data-icon">🏆</div><p>No individual referrals recorded yet</p></div>';
+        } else {
+            indContainer.innerHTML = topReferrers.map((r, i) => {
+                const rankNum = i + 1;
+                const medal = rankNum === 1 ? '🥇' : (rankNum === 2 ? '🥈' : (rankNum === 3 ? '🥉' : `#${rankNum}`));
+                const rankClass = rankNum <= 3 ? `rank-${rankNum}` : '';
+
+                return `
+                    <div class="referral-item ${rankClass}" onclick="filterRegistrationsByReferral('${r.code}')" title="Click to view all registrations from code ${r.code}">
+                        <div class="referral-rank-badge">${medal}</div>
+                        <div class="referral-info">
+                            <div class="referral-name-row">
+                                <span class="referral-name">${escapeHTML(r.name)}</span>
+                            </div>
+                            <div class="referral-code-text">
+                                Referral Code: <strong class="referral-code-tag">${r.code}</strong>
+                            </div>
+                        </div>
+                        <div class="referral-count-pill">
+                            <strong class="count-num">${r.count}</strong>
+                            <span class="count-label">student${r.count !== 1 ? 's' : ''}</span>
+                            <span class="count-arrow">➔</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
 }
 
 // ──────────── TABS ────────────

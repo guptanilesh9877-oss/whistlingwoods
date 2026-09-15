@@ -2673,13 +2673,14 @@ select.form-input option:focus {
 .referral-code-text { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 .referral-count { font-weight: 700; color: var(--primary-light); font-size: 1.1rem; }
 
-/* Admin Promoter Referral Generator */
+/* ───── REFERRAL & TEAM LEADERBOARD ───── */
 .admin-referrals-layout {
     display: flex;
     flex-direction: column;
     gap: var(--space-xl);
-    max-width: 960px;
+    max-width: 1040px;
     margin: 0 auto;
+    width: 100%;
 }
 
 .promoter-gen-card {
@@ -2687,6 +2688,7 @@ select.form-input option:focus {
     background: var(--bg-card);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .promoter-card-header h3 {
@@ -2709,6 +2711,18 @@ select.form-input option:focus {
     margin-bottom: var(--space-md);
 }
 
+.referral-link-box {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.referral-link-box .form-input {
+    flex: 1 1 200px;
+    min-width: 0;
+}
+
 .new-link-display {
     margin-top: var(--space-lg);
     padding: var(--space-md);
@@ -2722,6 +2736,7 @@ select.form-input option:focus {
     align-items: center;
     gap: var(--space-sm);
     margin-bottom: 8px;
+    flex-wrap: wrap;
 }
 
 .promoter-badge-name {
@@ -2734,7 +2749,17 @@ select.form-input option:focus {
     background: rgba(141, 106, 174, 0.25);
     color: #dfcbfd;
     border: 1px solid rgba(141, 106, 174, 0.45);
-    padding: 3px 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.badge-gold {
+    background: rgba(212, 175, 55, 0.18);
+    color: var(--gold);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    padding: 4px 10px;
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 700;
@@ -2755,6 +2780,7 @@ select.form-input option:focus {
     background: var(--bg-card);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .promoters-table-card h3 {
@@ -2763,17 +2789,615 @@ select.form-input option:focus {
     color: var(--gold);
 }
 
+/* ───── LEADERBOARD CARD & HEADER ───── */
 .leaderboard-card {
     padding: var(--space-xl);
     background: var(--bg-card);
     border: 1px solid var(--border-glass);
     border-radius: var(--radius-lg);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
 }
 
-.leaderboard-card h3 {
+.leaderboard-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-lg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: var(--space-md);
+}
+
+.leaderboard-title {
+    font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
+    font-size: 1.25rem;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.leaderboard-subtitle {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 4px 0 0 0;
+}
+
+/* View Switcher Pills */
+.leaderboard-view-switch {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    gap: 4px;
+}
+
+.leaderboard-view-switch .btn-toggle {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.leaderboard-view-switch .btn-toggle:hover {
+    color: #ffffff;
+}
+
+.leaderboard-view-switch .btn-toggle.active {
+    background: var(--gold-gradient);
+    color: #0d0c15;
+    box-shadow: 0 2px 10px rgba(212, 175, 55, 0.35);
+}
+
+/* Summary Stats Bar */
+.leaderboard-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+}
+
+.stat-pill-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.stat-pill-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.stat-pill-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+}
+
+.stat-pill-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.stat-pill-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-pill-val {
+    font-size: 0.95rem;
+    color: #ffffff;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Section Sub-Header */
+.section-sub-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.sub-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.sub-header-text {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+/* ───── TEAM LEADERBOARD GRID & CARDS ───── */
+.team-leaderboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
+}
+
+.team-card {
+    background: rgba(23, 19, 42, 0.85);
+    border: 1px solid rgba(141, 106, 174, 0.25);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.team-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--border-glass);
+}
+
+.team-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+}
+
+/* Rank Specific Styling */
+.team-card.rank-1 {
+    border-color: rgba(212, 175, 55, 0.6);
+    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.22);
+}
+.team-card.rank-1::before {
+    background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+}
+
+.team-card.rank-2 {
+    border-color: rgba(192, 192, 210, 0.55);
+    box-shadow: 0 8px 28px rgba(192, 192, 210, 0.16);
+}
+.team-card.rank-2::before {
+    background: linear-gradient(90deg, #E0E0E0, #F5F5F5, #BDBDBD);
+}
+
+.team-card.rank-3 {
+    border-color: rgba(205, 127, 50, 0.55);
+    box-shadow: 0 8px 26px rgba(205, 127, 50, 0.16);
+}
+.team-card.rank-3::before {
+    background: linear-gradient(90deg, #CD7F32, #E89758, #CD7F32);
+}
+
+.team-card.rank-4 {
+    border-color: rgba(141, 106, 174, 0.4);
+}
+.team-card.rank-4::before {
+    background: linear-gradient(90deg, #8d6aae, #b993e3, #8d6aae);
+}
+
+/* Team Card Header */
+.team-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.team-rank-ribbon {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.rank-1 .team-rank-ribbon {
+    color: var(--gold);
+}
+
+.rank-2 .team-rank-ribbon {
+    color: #e2e8f0;
+}
+
+.rank-3 .team-rank-ribbon {
+    color: #f6ad55;
+}
+
+.rank-4 .team-rank-ribbon {
+    color: #c4b5fd;
+}
+
+.team-avatar-pair {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.78rem;
+}
+
+.member-chip {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+}
+
+.pair-plus {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+/* Team Card Body */
+.team-name {
     font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
     font-size: 1.15rem;
+    color: #ffffff;
+    margin: 0 0 var(--space-md) 0;
+    letter-spacing: 0.3px;
+}
+
+.team-metrics-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    background: rgba(0, 0, 0, 0.25);
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: var(--space-md);
+}
+
+.team-primary-stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.team-metric-number {
+    font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
+    font-size: 1.9rem;
+    font-weight: 900;
     color: var(--gold);
+    line-height: 1;
+}
+
+.team-metric-caption {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+}
+
+.team-sub-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+}
+
+.metric-pill {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.pill-verified {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.pill-pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.pill-revenue {
+    background: rgba(212, 175, 55, 0.12);
+    color: var(--gold);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    font-weight: 700;
+}
+
+.pill-dot {
+    font-size: 0.65rem;
+    line-height: 1;
+}
+
+/* Duo Split Bar */
+.duo-split-wrapper {
+    margin-bottom: var(--space-md);
+}
+
+.duo-split-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.76rem;
+    color: var(--lavender);
+    margin-bottom: 6px;
+}
+
+.duo-label {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.duo-label:hover {
+    color: var(--gold);
+    text-decoration: underline;
+}
+
+.duo-split-ratio {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.duo-split-bar {
+    height: 8px;
+    border-radius: var(--radius-full);
+    display: flex;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.duo-bar-segment {
+    height: 100%;
+    transition: width 0.4s ease;
+}
+
+.segment-left {
+    background: linear-gradient(90deg, #FFD700, #FFA500);
+}
+
+.segment-right {
+    background: linear-gradient(90deg, #8d6aae, #b993e3);
+}
+
+/* Individual Quick Filter Codes */
+.team-codes-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.codes-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.team-code-badge {
+    font-family: 'Integral CF', sans-serif;
+    letter-spacing: 0.8px;
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.team-code-badge:hover {
+    background: rgba(141, 106, 174, 0.5);
+    border-color: var(--gold);
+    transform: translateY(-1px);
+}
+
+/* Team Card Footer */
+.team-card-footer {
+    margin-top: auto;
+    padding-top: var(--space-sm);
+}
+
+.btn-block {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ───── RESPONSIVE INDIVIDUAL LEADERBOARD ───── */
+.referral-leaderboard {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.referral-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: 12px 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: var(--radius-md);
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.referral-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(212, 175, 55, 0.4);
+    transform: translateX(4px);
+}
+
+.referral-rank-badge {
+    font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--gold);
+    min-width: 38px;
+    text-align: center;
+}
+
+.referral-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.referral-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.referral-name {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+
+.referral-code-text {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.referral-code-tag {
+    color: var(--gold);
+    font-family: monospace;
+    letter-spacing: 0.5px;
+}
+
+.referral-count-pill {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+.count-num {
+    font-family: 'Integral CF', sans-serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+}
+
+.count-label {
+    font-size: 0.75rem;
+    color: var(--lavender);
+}
+
+.count-arrow {
+    color: var(--gold);
+    font-size: 0.8rem;
+    transition: transform 0.2s;
+}
+
+.referral-item:hover .count-arrow {
+    transform: translateX(3px);
+}
+
+/* Individual Top 3 Accents */
+.referral-item.rank-1 {
+    border-color: rgba(212, 175, 55, 0.45);
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.referral-item.rank-2 {
+    border-color: rgba(192, 192, 210, 0.4);
+    background: linear-gradient(90deg, rgba(192, 192, 210, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.referral-item.rank-3 {
+    border-color: rgba(205, 127, 50, 0.4);
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+/* ───── RESPONSIVE RULES FOR LEADERBOARD ───── */
+@media (max-width: 900px) {
+    .team-leaderboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: var(--space-md);
+    }
+}
+
+@media (max-width: 768px) {
+    .leaderboard-header-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .leaderboard-view-switch {
+        width: 100%;
+    }
+    .leaderboard-view-switch .btn-toggle {
+        flex: 1;
+        text-align: center;
+        padding: 8px 10px;
+    }
+    .promoter-form .form-row {
+        grid-template-columns: 1fr;
+    }
+    .hide-on-compact {
+        display: none !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .team-leaderboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .referral-item {
+        flex-wrap: wrap;
+        padding: 10px 14px;
+        gap: 8px;
+    }
+    .referral-count-pill {
+        margin-left: auto;
+    }
+    .duo-split-labels {
+        font-size: 0.72rem;
+    }
+    .team-card {
+        padding: var(--space-md);
+    }
 }
 
 /* ───── WALL OF FAME ───── */
