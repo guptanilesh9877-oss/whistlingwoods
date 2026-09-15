@@ -1552,17 +1552,42 @@
                                 Live conversion &amp; signup rankings for official ambassador duos and individual referrers
                             </p>
                         </div>
-                        <!-- View Switcher Pills -->
-                        <div class="leaderboard-view-switch" id="leaderboard-view-switch">
-                            <button type="button" class="btn-toggle active" data-view="teams" onclick="switchLeaderboardView('teams')">
-                                👥 Team Duos
+                        <!-- View Switcher Pills & Broadcast Action -->
+                        <div class="leaderboard-actions-cluster">
+                            <div class="leaderboard-view-switch" id="leaderboard-view-switch">
+                                <button type="button" class="btn-toggle active" data-view="teams" onclick="switchLeaderboardView('teams')">
+                                    👥 Team Duos
+                                </button>
+                                <button type="button" class="btn-toggle" data-view="individuals" onclick="switchLeaderboardView('individuals')">
+                                    👤 Individuals
+                                </button>
+                                <button type="button" class="btn-toggle" data-view="both" onclick="switchLeaderboardView('both')">
+                                    🌟 View All
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-small btn-whatsapp" onclick="shareLeaderboardWhatsApp()" title="Copy & share formatted leaderboard rankings on WhatsApp">
+                                <span>📲 Share on WhatsApp</span>
                             </button>
-                            <button type="button" class="btn-toggle" data-view="individuals" onclick="switchLeaderboardView('individuals')">
-                                👤 Individuals
-                            </button>
-                            <button type="button" class="btn-toggle" data-view="both" onclick="switchLeaderboardView('both')">
-                                🌟 View All
-                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filter & Sort Control Bar -->
+                    <div class="leaderboard-controls-bar">
+                        <div class="lb-search-wrap">
+                            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" id="leaderboard-search-input" class="form-input lb-search-input" placeholder="Search team, promoter, or code..." oninput="handleLeaderboardSearch(this.value)">
+                        </div>
+                        <div class="lb-sort-wrap">
+                            <label class="lb-sort-label" for="leaderboard-sort-select">Sort By:</label>
+                            <select id="leaderboard-sort-select" class="form-input lb-sort-select" onchange="handleLeaderboardSortChange(this.value)">
+                                <option value="total">🔥 Most Total Signups</option>
+                                <option value="verified">✓ Most Verified</option>
+                                <option value="conversion">🎯 Highest Conversion %</option>
+                                <option value="revenue">₹ Highest Revenue</option>
+                            </select>
                         </div>
                     </div>
 

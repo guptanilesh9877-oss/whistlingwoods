@@ -2825,7 +2825,14 @@ select.form-input option:focus {
     margin: 4px 0 0 0;
 }
 
-/* View Switcher Pills */
+/* View Switcher & Action Buttons Cluster */
+.leaderboard-actions-cluster {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .leaderboard-view-switch {
     display: inline-flex;
     background: rgba(255, 255, 255, 0.05);
@@ -2858,10 +2865,86 @@ select.form-input option:focus {
     box-shadow: 0 2px 10px rgba(212, 175, 55, 0.35);
 }
 
+/* Controls Bar: Search & Sort */
+.leaderboard-controls-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    flex-wrap: wrap;
+}
+
+.lb-search-wrap {
+    position: relative;
+    flex: 1 1 240px;
+    display: flex;
+    align-items: center;
+}
+
+.lb-search-wrap .search-icon {
+    position: absolute;
+    left: 12px;
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.lb-search-input {
+    width: 100%;
+    padding-left: 36px !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    font-size: 0.85rem;
+    height: 38px;
+    border-radius: var(--radius-md);
+}
+
+.lb-search-input:focus {
+    border-color: var(--gold) !important;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
+}
+
+.lb-sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.lb-sort-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.lb-sort-select {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: var(--gold) !important;
+    font-weight: 700;
+    font-size: 0.82rem;
+    height: 38px;
+    padding: 4px 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+}
+
+.lb-sort-select:focus {
+    border-color: var(--gold) !important;
+}
+
 /* Summary Stats Bar */
 .leaderboard-stats-bar {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: var(--space-sm);
     margin-bottom: var(--space-lg);
 }
@@ -2934,7 +3017,7 @@ select.form-input option:focus {
 /* ───── TEAM LEADERBOARD GRID & CARDS ───── */
 .team-leaderboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: var(--space-lg);
     margin-bottom: var(--space-xl);
 }
@@ -2968,13 +3051,25 @@ select.form-input option:focus {
     box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
 }
 
-/* Rank Specific Styling */
+/* Rank 1 Crown & Gold Aura Animation */
 .team-card.rank-1 {
-    border-color: rgba(212, 175, 55, 0.6);
-    box-shadow: 0 8px 30px rgba(212, 175, 55, 0.22);
+    border-color: rgba(212, 175, 55, 0.7);
+    box-shadow: 0 8px 32px rgba(212, 175, 55, 0.25);
+    animation: goldAuraPulse 4s infinite ease-in-out;
 }
 .team-card.rank-1::before {
-    background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700);
+    background: linear-gradient(90deg, #FFD700, #FFA500, #FFE259, #FFD700);
+}
+
+@keyframes goldAuraPulse {
+    0%, 100% {
+        box-shadow: 0 8px 30px rgba(212, 175, 55, 0.2);
+        border-color: rgba(212, 175, 55, 0.6);
+    }
+    50% {
+        box-shadow: 0 12px 42px rgba(212, 175, 55, 0.38);
+        border-color: rgba(255, 215, 0, 0.95);
+    }
 }
 
 .team-card.rank-2 {
@@ -3037,42 +3132,67 @@ select.form-input option:focus {
     color: #c4b5fd;
 }
 
-.team-avatar-pair {
+.team-badges-cluster {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 0.78rem;
+    gap: 6px;
+    flex-wrap: wrap;
 }
 
-.member-chip {
-    background: rgba(255, 255, 255, 0.08);
+/* Identity Row & Duo Avatar Rings */
+.team-identity-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: var(--space-md);
+}
+
+.duo-avatar-rings {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-ring {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.82rem;
+    color: #000;
+    border: 2px solid rgba(23, 19, 42, 0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.avatar-ring.ring-1 {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    z-index: 2;
+}
+
+.avatar-ring.ring-2 {
+    background: linear-gradient(135deg, #c4b5fd, #8d6aae);
+    margin-left: -10px;
+    z-index: 1;
     color: #ffffff;
-    padding: 2px 8px;
-    border-radius: var(--radius-full);
-    font-weight: 600;
 }
 
-.pair-plus {
-    color: var(--gold);
-    font-weight: 700;
-    font-size: 0.85rem;
-}
-
-/* Team Card Body */
 .team-name {
     font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
     font-size: 1.15rem;
     color: #ffffff;
-    margin: 0 0 var(--space-md) 0;
+    margin: 0;
     letter-spacing: 0.3px;
 }
 
+/* Metrics Row */
 .team-metrics-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--space-md);
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(0, 0, 0, 0.3);
     padding: var(--space-md);
     border-radius: var(--radius-md);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -3082,6 +3202,11 @@ select.form-input option:focus {
 .team-primary-stat {
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s;
+}
+
+.team-primary-stat:hover {
+    transform: scale(1.03);
 }
 
 .team-metric-number {
@@ -3109,24 +3234,30 @@ select.form-input option:focus {
 
 .metric-pill {
     font-size: 0.75rem;
-    padding: 2px 8px;
+    padding: 3px 9px;
     border-radius: 4px;
     display: inline-flex;
     align-items: center;
     gap: 5px;
     white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.metric-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .pill-verified {
     background: rgba(16, 185, 129, 0.15);
     color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
 .pill-pending {
-    background: rgba(245, 158, 11, 0.15);
+    background: rgba(245, 158, 11, 0.18);
     color: #f59e0b;
-    border: 1px solid rgba(245, 158, 11, 0.3);
+    border: 1px solid rgba(245, 158, 11, 0.4);
 }
 
 .pill-revenue {
@@ -3139,6 +3270,47 @@ select.form-input option:focus {
 .pill-dot {
     font-size: 0.65rem;
     line-height: 1;
+}
+
+/* Milestone Tracker */
+.milestone-tracker {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-md);
+}
+
+.milestone-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.73rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+
+.milestone-title strong {
+    color: var(--gold);
+}
+
+.milestone-percent {
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.milestone-progress-bar {
+    height: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.milestone-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #34d399);
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
 }
 
 /* Duo Split Bar */
@@ -3222,18 +3394,49 @@ select.form-input option:focus {
     transform: translateY(-1px);
 }
 
-/* Team Card Footer */
+/* Team Card Footer Actions */
 .team-card-footer {
     margin-top: auto;
     padding-top: var(--space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.btn-block {
-    width: 100%;
+.team-footer-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-flex {
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    font-size: 0.8rem;
+    padding: 8px 10px;
+}
+
+.btn-copy-leads {
+    width: 100%;
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+    border: 1px dashed rgba(245, 158, 11, 0.45);
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn-copy-leads:hover {
+    background: rgba(245, 158, 11, 0.22);
+    border-color: #f59e0b;
+    color: #fbbf24;
+    transform: translateY(-1px);
 }
 
 /* ───── RESPONSIVE INDIVIDUAL LEADERBOARD ───── */
@@ -3268,8 +3471,22 @@ select.form-input option:focus {
     font-size: 1.15rem;
     font-weight: 800;
     color: var(--gold);
-    min-width: 38px;
+    min-width: 34px;
     text-align: center;
+}
+
+.referral-avatar-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.25), rgba(141, 106, 174, 0.35));
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    color: var(--gold);
 }
 
 .referral-info {
@@ -3353,7 +3570,7 @@ select.form-input option:focus {
 /* ───── RESPONSIVE RULES FOR LEADERBOARD ───── */
 @media (max-width: 900px) {
     .team-leaderboard-grid {
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: var(--space-md);
     }
 }
@@ -3364,13 +3581,28 @@ select.form-input option:focus {
         align-items: flex-start;
         gap: 12px;
     }
-    .leaderboard-view-switch {
+    .leaderboard-actions-cluster {
         width: 100%;
+        justify-content: space-between;
+    }
+    .leaderboard-view-switch {
+        flex: 1;
     }
     .leaderboard-view-switch .btn-toggle {
         flex: 1;
         text-align: center;
         padding: 8px 10px;
+    }
+    .leaderboard-controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .lb-sort-wrap {
+        justify-content: space-between;
+        width: 100%;
+    }
+    .lb-sort-select {
+        flex: 1;
     }
     .promoter-form .form-row {
         grid-template-columns: 1fr;
@@ -3383,6 +3615,9 @@ select.form-input option:focus {
 @media (max-width: 600px) {
     .team-leaderboard-grid {
         grid-template-columns: 1fr;
+    }
+    .team-footer-actions {
+        flex-direction: column;
     }
     .referral-item {
         flex-wrap: wrap;

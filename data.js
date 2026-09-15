@@ -723,6 +723,20 @@ class DataStore {
             const pending = memberStats.reduce((sum, m) => sum + m.pending, 0);
             const revenue = memberStats.reduce((sum, m) => sum + m.revenue, 0);
 
+            // Collect pending leads for 1-click follow-up
+            const pendingLeads = regs.filter(r => {
+                const ref = (r.referredBy || '').trim().toUpperCase();
+                return memberCodes.includes(ref) && !r.verified;
+            }).map(r => ({
+                id: r.id,
+                name: r.name,
+                phone: r.phone || 'No phone',
+                email: r.email || '',
+                code: (r.referredBy || '').trim().toUpperCase(),
+                college: r.college || '',
+                date: r.timestamp || ''
+            }));
+
             // Compute split percentages for visual duel bar
             const member1 = memberStats[0];
             const member2 = memberStats[1];
@@ -732,6 +746,16 @@ class DataStore {
                 split1 = Math.round((member1.count / total) * 100);
                 split2 = 100 - split1;
             }
+
+            const conversionRate = total > 0 ? Math.round((verified / total) * 100) : 0;
+            let mvpName = 'Equal';
+            if (member1.count > member2.count) mvpName = member1.name;
+            else if (member2.count > member1.count) mvpName = member2.name;
+
+            // Compute next achievement milestone
+            const milestones = [5, 10, 20, 35, 50, 75, 100];
+            const nextMilestone = milestones.find(m => m > total) || (Math.ceil((total + 1) / 25) * 25);
+            const milestoneProgress = Math.min(100, Math.round((total / nextMilestone) * 100));
 
             return {
                 id: team.id,
@@ -745,7 +769,12 @@ class DataStore {
                 pending,
                 revenue,
                 split1,
-                split2
+                split2,
+                conversionRate,
+                mvp: mvpName,
+                pendingLeads,
+                nextMilestone,
+                milestoneProgress
             };
         });
 

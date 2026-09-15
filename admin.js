@@ -213,11 +213,125 @@ function filterRegistrationsByTeam(teamName, codes) {
     const query = Array.isArray(codes) ? codes.join(' | ') : codes;
     if (searchInput) {
         searchInput.value = query;
-        renderRegistrationsTable(filterSelect ? filterSelect.value : 'all', query);
+        if (filterSelect) filterSelect.value = 'all';
+        renderRegistrationsTable('all', query);
         showToast(`Filtered by Team: ${teamName} (${query})`, 'info');
     }
 }
 window.filterRegistrationsByTeam = filterRegistrationsByTeam;
+
+// Filter registrations table specifically for a team's PENDING leads (for easy conversion follow-up)
+function filterRegistrationsByTeamPending(teamName, codes) {
+    const regTabBtn = document.querySelector('#admin-tabs .tab-btn[data-tab="registrations"]');
+    if (regTabBtn) regTabBtn.click();
+
+    const searchInput = document.getElementById('search-registrations');
+    const filterSelect = document.getElementById('filter-status');
+    const query = Array.isArray(codes) ? codes.join(' | ') : codes;
+    if (searchInput) {
+        searchInput.value = query;
+        if (filterSelect) filterSelect.value = 'pending';
+        renderRegistrationsTable('pending', query);
+        showToast(`Showing Pending Leads for Team: ${teamName}`, 'warning');
+    }
+}
+window.filterRegistrationsByTeamPending = filterRegistrationsByTeamPending;
+
+// Copy pending leads message formatted ready for WhatsApp follow-up
+function copyTeamPendingLeads(teamName, codes) {
+    const memberCodes = (Array.isArray(codes) ? codes : [codes]).map(c => String(c).trim().toUpperCase());
+    const regs = dataStore.getRegistrations();
+    const pending = regs.filter(r => {
+        const ref = (r.referredBy || '').trim().toUpperCase();
+        return memberCodes.includes(ref) && !r.verified;
+    });
+
+    if (pending.length === 0) {
+        showToast(`No pending leads for Team ${teamName}! All signups verified 🎉`, 'success');
+        return;
+    }
+
+    const lines = [
+        `🎯 *Pending Registrations — Team ${teamName}* (${pending.length} Leads)`,
+        `Hey guys, these students initiated registration but haven't submitted payment/screenshot yet. Please reach out to them and convert:`,
+        ''
+    ];
+
+    pending.forEach((r, idx) => {
+        lines.push(`${idx + 1}. *${r.name}* — ${r.phone || 'No phone'} (Referral: ${r.referredBy || '—'})${r.college ? ` [${r.college}]` : ''}`);
+    });
+
+    lines.push('');
+    lines.push(`Let's get them converted! 🚀`);
+
+    const text = lines.join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+        showToast(`Copied ${pending.length} pending leads for ${teamName}! Ready to paste in WhatsApp.`, 'success');
+    }).catch(() => {
+        showToast(`Pending leads ready`, 'info');
+    });
+}
+window.copyTeamPendingLeads = copyTeamPendingLeads;
+
+// Share full live leaderboard standings formatted for WhatsApp
+function shareLeaderboardWhatsApp() {
+    const teamStats = dataStore.getTeamReferralStats ? dataStore.getTeamReferralStats() : [];
+    const topInd = dataStore.getTopReferrers ? dataStore.getTopReferrers(5) : [];
+
+    const medals = ['🥇', '🥈', '🥉', '🏅'];
+    const lines = [
+        `🏆 *CELEBRATE CINEMA 2026 — AMBASSADOR DUO CHAMPIONSHIP* 🏆`,
+        `Whistling Woods International • Live Leaderboard Standings`,
+        `━━━━━━━━━━━━━━━━━━━━━`
+    ];
+
+    teamStats.forEach((t, i) => {
+        const medal = medals[i] || '🏅';
+        lines.push(`${medal} *${i + 1}. ${t.name}*`);
+        lines.push(`   📊 ${t.total} Signups (${t.verified} Verified, ${t.pending} Pending) • ${t.conversionRate}% Conv.`);
+        lines.push(`   👥 ${t.members[0].name}: ${t.members[0].count} | ${t.members[1].name}: ${t.members[1].count}`);
+        lines.push(``);
+    });
+
+    if (topInd.length > 0) {
+        lines.push(`━━━━━━━━━━━━━━━━━━━━━`);
+        lines.push(`⭐ *Top Individual Performers:*`);
+        topInd.slice(0, 3).forEach((r, i) => {
+            lines.push(`${i + 1}. ${r.name} (${r.code}) — ${r.count} signups`);
+        });
+        lines.push(``);
+    }
+
+    lines.push(`Keep pushing team! Register student passes here:`);
+    lines.push(`${window.location.origin}${window.location.pathname}`);
+
+    const text = lines.join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+        showToast('Leaderboard text copied! Opening WhatsApp...', 'success');
+        const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        window.open(waUrl, '_blank');
+    }).catch(() => {
+        const waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        window.open(waUrl, '_blank');
+    });
+}
+window.shareLeaderboardWhatsApp = shareLeaderboardWhatsApp;
+
+// Search & Sort state
+let currentLeaderboardSearch = '';
+let currentLeaderboardSort = 'total';
+
+function handleLeaderboardSearch(query) {
+    currentLeaderboardSearch = (query || '').toLowerCase().trim();
+    renderReferralLeaderboard();
+}
+window.handleLeaderboardSearch = handleLeaderboardSearch;
+
+function handleLeaderboardSortChange(sortBy) {
+    currentLeaderboardSort = sortBy || 'total';
+    renderReferralLeaderboard();
+}
+window.handleLeaderboardSortChange = handleLeaderboardSortChange;
 
 // Switch between Team Leaderboard, Individual Leaderboard, or All Views
 function switchLeaderboardView(view) {
@@ -993,22 +1107,50 @@ function renderReferralLeaderboard() {
     const indContainer = document.getElementById('referral-leaderboard');
     const statsBar = document.getElementById('leaderboard-stats-bar');
 
-    const teamStats = dataStore.getTeamReferralStats ? dataStore.getTeamReferralStats() : [];
-    const topReferrers = dataStore.getTopReferrers ? dataStore.getTopReferrers(30) : [];
+    let teamStats = dataStore.getTeamReferralStats ? dataStore.getTeamReferralStats() : [];
+    let topReferrers = dataStore.getTopReferrers ? dataStore.getTopReferrers(50) : [];
+
+    // Apply client-side sorting to teams
+    if (currentLeaderboardSort === 'verified') {
+        teamStats.sort((a, b) => b.verified - a.verified || b.total - a.total);
+    } else if (currentLeaderboardSort === 'conversion') {
+        teamStats.sort((a, b) => b.conversionRate - a.conversionRate || b.total - a.total);
+    } else if (currentLeaderboardSort === 'revenue') {
+        teamStats.sort((a, b) => b.revenue - a.revenue || b.total - a.total);
+    } else {
+        teamStats.sort((a, b) => b.total - a.total || b.verified - a.verified);
+    }
+
+    // Apply client-side search query
+    if (currentLeaderboardSearch) {
+        const q = currentLeaderboardSearch;
+        teamStats = teamStats.filter(t => 
+            t.name.toLowerCase().includes(q) ||
+            t.codes.some(c => c.toLowerCase().includes(q)) ||
+            t.members.some(m => m.name.toLowerCase().includes(q))
+        );
+        topReferrers = topReferrers.filter(r => 
+            r.name.toLowerCase().includes(q) ||
+            r.code.toLowerCase().includes(q)
+        );
+    }
 
     // 1. Render Top Summary Stats Bar
     if (statsBar) {
-        const topTeam = teamStats.length > 0 && teamStats[0].total > 0 ? teamStats[0] : null;
+        const allTeams = dataStore.getTeamReferralStats ? dataStore.getTeamReferralStats() : [];
+        const topTeam = allTeams.length > 0 && allTeams[0].total > 0 ? allTeams[0] : null;
         const topInd = topReferrers.length > 0 ? topReferrers[0] : null;
-        const allTeamTotal = teamStats.reduce((s, t) => s + t.total, 0);
-        const allTeamVerified = teamStats.reduce((s, t) => s + t.verified, 0);
-        const allTeamRevenue = teamStats.reduce((s, t) => s + t.revenue, 0);
+        const allTeamTotal = allTeams.reduce((s, t) => s + t.total, 0);
+        const allTeamVerified = allTeams.reduce((s, t) => s + t.verified, 0);
+        const allTeamPending = allTeams.reduce((s, t) => s + t.pending, 0);
+        const allTeamRevenue = allTeams.reduce((s, t) => s + t.revenue, 0);
+        const overallConv = allTeamTotal > 0 ? Math.round((allTeamVerified / allTeamTotal) * 100) : 0;
 
         statsBar.innerHTML = `
             <div class="stat-pill-item">
                 <div class="stat-pill-icon">👑</div>
                 <div class="stat-pill-info">
-                    <span class="stat-pill-label">Leading Team</span>
+                    <span class="stat-pill-label">Leading Duo</span>
                     <strong class="stat-pill-val">${topTeam ? escapeHTML(topTeam.name) : 'Tie / All 0'}</strong>
                 </div>
             </div>
@@ -1022,15 +1164,22 @@ function renderReferralLeaderboard() {
             <div class="stat-pill-item">
                 <div class="stat-pill-icon">👥</div>
                 <div class="stat-pill-info">
-                    <span class="stat-pill-label">Team Referrals</span>
+                    <span class="stat-pill-label">Total Duo Signups</span>
                     <strong class="stat-pill-val" style="color:var(--gold);">${allTeamTotal} total</strong>
                 </div>
             </div>
             <div class="stat-pill-item">
                 <div class="stat-pill-icon">✓</div>
                 <div class="stat-pill-info">
-                    <span class="stat-pill-label">Verified Signups</span>
-                    <strong class="stat-pill-val" style="color:#10b981;">${allTeamVerified} verified</strong>
+                    <span class="stat-pill-label">Verified / Pending</span>
+                    <strong class="stat-pill-val" style="color:#10b981;">${allTeamVerified} <span style="font-size:0.75rem; color:#f59e0b;">(${allTeamPending} pending)</span></strong>
+                </div>
+            </div>
+            <div class="stat-pill-item">
+                <div class="stat-pill-icon">🎯</div>
+                <div class="stat-pill-info">
+                    <span class="stat-pill-label">Conversion Rate</span>
+                    <strong class="stat-pill-val" style="color:var(--lavender);">${overallConv}%</strong>
                 </div>
             </div>
             <div class="stat-pill-item hide-on-compact">
@@ -1046,7 +1195,13 @@ function renderReferralLeaderboard() {
     // 2. Render Team Leaderboard Cards
     if (teamGrid) {
         if (teamStats.length === 0) {
-            teamGrid.innerHTML = '<div class="no-data"><div class="no-data-icon">🏆</div><p>No teams configured</p></div>';
+            teamGrid.innerHTML = `
+                <div class="no-data" style="grid-column: 1 / -1; padding: var(--space-xl);">
+                    <div class="no-data-icon">🔍</div>
+                    <p>No teams match "${escapeHTML(currentLeaderboardSearch)}"</p>
+                    <button class="btn btn-secondary btn-small" onclick="handleLeaderboardSearch(''); document.getElementById('leaderboard-search-input').value = '';">Clear Search</button>
+                </div>
+            `;
         } else {
             const rankBadges = [
                 { rank: 1, title: 'GOLD CHAMPION', badgeClass: 'rank-1', medal: '🥇', ribbon: '👑 1ST PLACE' },
@@ -1060,6 +1215,10 @@ function renderReferralLeaderboard() {
                 const m1 = team.members[0];
                 const m2 = team.members[1];
                 const codesParam = JSON.stringify(team.codes).replace(/"/g, '&quot;');
+                const teamNameEsc = escapeHTML(team.name).replace(/'/g, "\\'");
+
+                const m1Initial = (m1.name || 'P1').charAt(0).toUpperCase();
+                const m2Initial = (m2.name || 'P2').charAt(0).toUpperCase();
 
                 return `
                     <div class="team-card ${meta.badgeClass}">
@@ -1068,31 +1227,49 @@ function renderReferralLeaderboard() {
                                 <span class="rank-medal">${meta.medal}</span>
                                 <span class="rank-title">${meta.ribbon}</span>
                             </div>
-                            <div class="team-avatar-pair">
-                                <span class="member-chip">${escapeHTML(m1.name)}</span>
-                                <span class="pair-plus">+</span>
-                                <span class="member-chip">${escapeHTML(m2.name)}</span>
+                            <div class="team-badges-cluster">
+                                <span class="badge badge-success" title="Conversion rate of registrations that paid & verified">🎯 ${team.conversionRate}% Conv</span>
+                                <span class="badge badge-purple" title="Leading member in this duo">${team.mvp !== 'Equal' ? `⭐ ${escapeHTML(team.mvp)} Lead` : '🤝 Tied'}</span>
                             </div>
                         </div>
 
                         <div class="team-card-body">
-                            <h4 class="team-name">${escapeHTML(team.name)}</h4>
+                            <!-- Team Name & Duo Avatars -->
+                            <div class="team-identity-row">
+                                <div class="duo-avatar-rings">
+                                    <span class="avatar-ring ring-1" title="${escapeHTML(m1.name)} (${m1.code})">${m1Initial}</span>
+                                    <span class="avatar-ring ring-2" title="${escapeHTML(m2.name)} (${m2.code})">${m2Initial}</span>
+                                </div>
+                                <h4 class="team-name">${escapeHTML(team.name)}</h4>
+                            </div>
                             
+                            <!-- Primary Metric & Sub-Pills -->
                             <div class="team-metrics-row">
-                                <div class="team-primary-stat">
+                                <div class="team-primary-stat" onclick="filterRegistrationsByTeam('${teamNameEsc}', ${codesParam})" title="Click to view all registrations from ${escapeHTML(team.name)}" style="cursor:pointer;">
                                     <div class="team-metric-number">${team.total}</div>
                                     <div class="team-metric-caption">Student Signups</div>
                                 </div>
                                 <div class="team-sub-metrics">
-                                    <div class="metric-pill pill-verified" title="Completed & Verified Payments">
+                                    <div class="metric-pill pill-verified" onclick="filterRegistrationsByTeam('${teamNameEsc}', ${codesParam})" title="Verified & paid signups" style="cursor:pointer;">
                                         <span class="pill-dot">●</span> <strong>${team.verified}</strong> Verified
                                     </div>
-                                    <div class="metric-pill pill-pending" title="Initiated registrations pending verification">
+                                    <div class="metric-pill pill-pending" onclick="filterRegistrationsByTeamPending('${teamNameEsc}', ${codesParam})" title="Click to view/filter pending signups" style="cursor:pointer;">
                                         <span class="pill-dot">●</span> <strong>${team.pending}</strong> Pending
                                     </div>
                                     <div class="metric-pill pill-revenue" title="Revenue generated from referrals">
                                         ₹<strong>${team.revenue.toLocaleString('en-IN')}</strong>
                                     </div>
+                                </div>
+                            </div>
+
+                            <!-- Milestone Tracker Bar -->
+                            <div class="milestone-tracker" title="Progress towards next milestone">
+                                <div class="milestone-label-row">
+                                    <span class="milestone-title">🎯 Next Goal: <strong>${team.nextMilestone} Signups</strong></span>
+                                    <span class="milestone-percent">${team.milestoneProgress}%</span>
+                                </div>
+                                <div class="milestone-progress-bar">
+                                    <div class="milestone-fill" style="width: ${team.milestoneProgress}%;"></div>
                                 </div>
                             </div>
 
@@ -1102,7 +1279,7 @@ function renderReferralLeaderboard() {
                                     <span class="duo-label left" onclick="filterRegistrationsByReferral('${m1.code}')" title="Filter by ${m1.name}">
                                         <strong>${escapeHTML(m1.name)}</strong>: ${m1.count} <small>(${m1.verified} ver)</small>
                                     </span>
-                                    <span class="duo-split-ratio">${team.total > 0 ? `${team.split1}% / ${team.split2}%` : '50% / 50%'}</span>
+                                    <span class="duo-split-ratio">${team.total > 0 ? `${team.split1}% vs ${team.split2}%` : '50% vs 50%'}</span>
                                     <span class="duo-label right" onclick="filterRegistrationsByReferral('${m2.code}')" title="Filter by ${m2.name}">
                                         <strong>${escapeHTML(m2.name)}</strong>: ${m2.count} <small>(${m2.verified} ver)</small>
                                     </span>
@@ -1115,7 +1292,7 @@ function renderReferralLeaderboard() {
 
                             <!-- Individual Code Quick Filter Tags -->
                             <div class="team-codes-bar">
-                                <span class="codes-label">Codes:</span>
+                                <span class="codes-label">Quick Filter:</span>
                                 <span class="badge badge-purple team-code-badge" onclick="filterRegistrationsByReferral('${m1.code}')" title="View only ${m1.name}'s (${m1.code}) referrals">
                                     ${m1.code} (${m1.count})
                                 </span>
@@ -1125,14 +1302,25 @@ function renderReferralLeaderboard() {
                             </div>
                         </div>
 
+                        <!-- Team Card Action Buttons -->
                         <div class="team-card-footer">
-                            <button type="button" class="btn btn-primary btn-small btn-block" onclick="filterRegistrationsByTeam('${escapeHTML(team.name)}', ${codesParam})" title="View all registrations from this team">
-                                <span>View Team Students (${team.total})</span>
-                                <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;">
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    <polyline points="12 5 19 12 12 19"></polyline>
-                                </svg>
-                            </button>
+                            <div class="team-footer-actions">
+                                <button type="button" class="btn btn-primary btn-small btn-flex" onclick="filterRegistrationsByTeam('${teamNameEsc}', ${codesParam})" title="View all registrations from this team">
+                                    <span>View All (${team.total})</span>
+                                    <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px;">
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        <polyline points="12 5 19 12 12 19"></polyline>
+                                    </svg>
+                                </button>
+                                <button type="button" class="btn btn-secondary btn-small btn-flex" onclick="filterRegistrationsByTeamPending('${teamNameEsc}', ${codesParam})" title="Filter exclusively unverified / pending leads">
+                                    <span>⏳ Follow-up (${team.pending})</span>
+                                </button>
+                            </div>
+                            ${team.pending > 0 ? `
+                                <button type="button" class="btn btn-copy-leads btn-small" onclick="copyTeamPendingLeads('${teamNameEsc}', ${codesParam})" title="Copy formatted pending leads list to WhatsApp">
+                                    <span>📋 Copy ${team.pending} Pending Leads</span>
+                                </button>
+                            ` : ''}
                         </div>
                     </div>
                 `;
@@ -1143,22 +1331,29 @@ function renderReferralLeaderboard() {
     // 3. Render Individual Referral Leaderboard
     if (indContainer) {
         if (topReferrers.length === 0) {
-            indContainer.innerHTML = '<div class="no-data"><div class="no-data-icon">🏆</div><p>No individual referrals recorded yet</p></div>';
+            indContainer.innerHTML = `
+                <div class="no-data" style="padding: var(--space-xl);">
+                    <div class="no-data-icon">🏆</div>
+                    <p>No referrals found matching query</p>
+                </div>
+            `;
         } else {
             indContainer.innerHTML = topReferrers.map((r, i) => {
                 const rankNum = i + 1;
                 const medal = rankNum === 1 ? '🥇' : (rankNum === 2 ? '🥈' : (rankNum === 3 ? '🥉' : `#${rankNum}`));
                 const rankClass = rankNum <= 3 ? `rank-${rankNum}` : '';
+                const initial = (r.name || 'S').charAt(0).toUpperCase();
 
                 return `
                     <div class="referral-item ${rankClass}" onclick="filterRegistrationsByReferral('${r.code}')" title="Click to view all registrations from code ${r.code}">
                         <div class="referral-rank-badge">${medal}</div>
+                        <div class="referral-avatar-badge">${initial}</div>
                         <div class="referral-info">
                             <div class="referral-name-row">
                                 <span class="referral-name">${escapeHTML(r.name)}</span>
                             </div>
                             <div class="referral-code-text">
-                                Referral Code: <strong class="referral-code-tag">${r.code}</strong>
+                                Code: <strong class="referral-code-tag">${r.code}</strong>
                             </div>
                         </div>
                         <div class="referral-count-pill">
