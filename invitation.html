@@ -7,662 +7,717 @@
     <title>Principal's Felicitation Invitation | Celebrate Cinema 2026 — WWI</title>
     <meta name="description" content="You are cordially invited to the Principal's Felicitation Ceremony at Celebrate Cinema 2026, Whistling Woods International, Film City Mumbai. Please confirm your attendance.">
     <meta property="og:title" content="Principal's Felicitation — Celebrate Cinema 2026 | WWI">
-    <meta property="og:description" content="Exclusive felicitation ceremony for distinguished principals at Whistling Woods International, Film City, Mumbai — 08th & 09th October 2026.">
+    <meta property="og:description" content="Exclusive felicitation ceremony for distinguished principals at WWI, Film City Mumbai — Oct 2026.">
     <meta property="og:type" content="website">
-
-    <!-- Supabase -->
+    <link rel="icon" type="image/png" href="assets/cc26-logo.png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="icon" type="image/png" href="assets/cc26-logo.png">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DESIGN SYSTEM — Exactly mirrors Celebrate Cinema 2026 main site
+   ═══════════════════════════════════════════════════════════ */
 
-    <style>
-        /* ═══════════════════════════════════════
-           DESIGN SYSTEM — mirrors main site exactly
-           ═══════════════════════════════════════ */
+@font-face {
+    font-family: 'Integral CF';
+    src: url('assets/fonts/integral cf bold.ttf') format('truetype');
+    font-weight: 700; font-display: swap;
+}
+@font-face {
+    font-family: 'Helvetica Custom';
+    src: url('assets/fonts/helvetica.otf') format('opentype');
+    font-weight: 400; font-display: swap;
+}
+@font-face {
+    font-family: 'Helvetica Custom';
+    src: url('assets/fonts/helvetica-bold.ttf') format('truetype');
+    font-weight: 700; font-display: swap;
+}
 
-        @font-face {
-            font-family: 'Integral CF';
-            src: url('assets/fonts/integral cf bold.ttf') format('truetype');
-            font-weight: 700;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Helvetica Custom';
-            src: url('assets/fonts/helvetica.otf') format('opentype');
-            font-weight: 400;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Helvetica Custom';
-            src: url('assets/fonts/helvetica-bold.ttf') format('truetype');
-            font-weight: 700;
-            font-display: swap;
-        }
+:root {
+    --primary:       #8d6aae;
+    --primary-dark:  #6f4f8e;
+    --primary-light: #a882c8;
+    --primary-glow:  rgba(141,106,174,0.45);
+    --gold:          #f7e7c5;
+    --gold-light:    #fff6e5;
+    --gold-dark:     #dfcfad;
+    --gold-glow:     rgba(247,231,197,0.35);
+    --lavender:      #8d7ea4;
+    --bg-body:       #12121e;
+    --bg-card:       rgba(26,22,40,0.88);
+    --bg-input:      rgba(255,255,255,0.05);
+    --bg-input-focus:rgba(255,255,255,0.08);
+    --border-subtle: rgba(141,106,174,0.22);
+    --border-glass:  rgba(247,231,197,0.20);
+    --border-focus:  rgba(141,106,174,0.65);
+    --text-primary:  #f7e7c5;
+    --text-secondary:rgba(247,231,197,0.82);
+    --text-muted:    #8d7ea4;
+    --success:       #10b981;
+    --error:         #ef4444;
+    --transition-fast:   0.2s cubic-bezier(0.4,0,0.2,1);
+    --transition-base:   0.35s cubic-bezier(0.4,0,0.2,1);
+    --transition-smooth: 0.5s cubic-bezier(0.16,1,0.3,1);
+    --radius-sm: 6px; --radius-md: 10px;
+    --radius-lg: 14px; --radius-xl: 20px;
+}
 
-        :root {
-            --primary: #8d6aae;
-            --primary-dark: #6f4f8e;
-            --primary-light: #a882c8;
-            --primary-glow: rgba(141, 106, 174, 0.45);
-            --gold: #f7e7c5;
-            --gold-light: #fff6e5;
-            --gold-dark: #dfcfad;
-            --gold-glow: rgba(247, 231, 197, 0.35);
-            --lavender: #8d7ea4;
-            --navy: #12121e;
-            --bg-dark: #12121e;
-            --bg-body: #12121e;
-            --bg-card: rgba(26, 22, 40, 0.88);
-            --bg-card-hover: rgba(36, 30, 56, 0.92);
-            --bg-glass: rgba(22, 19, 36, 0.90);
-            --bg-input: rgba(255, 255, 255, 0.05);
-            --bg-input-focus: rgba(255, 255, 255, 0.09);
-            --border-subtle: rgba(141, 106, 174, 0.22);
-            --border-glass: rgba(247, 231, 197, 0.20);
-            --border-focus: rgba(141, 106, 174, 0.65);
-            --text-primary: #f7e7c5;
-            --text-secondary: rgba(247, 231, 197, 0.82);
-            --text-muted: #8d7ea4;
-            --text-accent: #8d6aae;
-            --success: #10b981;
-            --success-bg: rgba(16, 185, 129, 0.12);
-            --error: #ef4444;
-            --error-bg: rgba(239, 68, 68, 0.12);
-            --radius-sm: 6px;
-            --radius-md: 10px;
-            --radius-lg: 14px;
-            --radius-xl: 20px;
-            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-base: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-smooth: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:16px; }
 
-        *, *::before, *::after {
-            margin: 0; padding: 0; box-sizing: border-box;
-        }
+body {
+    font-family: 'Inter','Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-feature-settings: 'cv05' 1,'cv08' 1,'cv01' 1;
+    background: var(--bg-body);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+input,button,select,textarea {
+    font-family: 'Inter','Plus Jakarta Sans',-apple-system,sans-serif;
+    font-feature-settings: 'cv05' 1,'cv08' 1,'cv01' 1;
+}
 
-        html { scroll-behavior: smooth; font-size: 16px; }
+/* ── PARTICLE CANVAS ── */
+#particles-canvas {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; z-index:0;
+}
 
-        body {
-            font-family: 'Inter', 'Plus Jakarta Sans', 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-feature-settings: 'cv05' 1, 'cv08' 1, 'cv01' 1;
-            background-color: var(--bg-body);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+/* ── AMBIENT GLOWS ── */
+body::before {
+    content:''; position:fixed; top:-20%; left:-10%; width:60vw; height:60vw;
+    background:radial-gradient(circle,rgba(141,106,174,0.20) 0%,transparent 65%);
+    pointer-events:none; z-index:0;
+}
+body::after {
+    content:''; position:fixed; bottom:-20%; right:-10%; width:60vw; height:60vw;
+    background:radial-gradient(circle,rgba(247,231,197,0.08) 0%,transparent 65%);
+    pointer-events:none; z-index:0;
+}
 
-        input, button, select, textarea {
-            font-family: 'Inter', 'Plus Jakarta Sans', -apple-system, sans-serif;
-            font-feature-settings: 'cv05' 1, 'cv08' 1, 'cv01' 1;
-        }
+/* ── HORIZONTAL FILM-STRIP TEXTURE ── */
+.film-strip-top {
+    position:fixed; top:0; left:0; right:0; height:6px; z-index:200;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--primary-dark) 0px, var(--primary-dark) 14px,
+        transparent 14px, transparent 18px,
+        var(--primary-dark) 18px, var(--primary-dark) 22px,
+        transparent 22px, transparent 30px
+    );
+    opacity: 0.55;
+}
 
-        /* ── Particle Canvas ── */
-        #particles-canvas {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none; z-index: 0;
-        }
+/* ── NAVBAR ── */
+.navbar {
+    position:fixed; top:6px; left:0; right:0; height:70px;
+    background:rgba(18,18,30,0.88);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border-subtle);
+    z-index:100;
+    transition:all var(--transition-base);
+}
+.navbar.scrolled {
+    background:rgba(18,18,30,0.98);
+    box-shadow:0 8px 30px rgba(0,0,0,0.6);
+    border-bottom-color:rgba(141,106,174,0.35);
+}
+.nav-inner {
+    display:flex; align-items:center; justify-content:space-between;
+    height:100%; width:100%; max-width:1200px; margin:0 auto; padding:0 24px;
+}
+.brand-lockup {
+    display:flex; align-items:center; gap:10px;
+    background:rgba(255,255,255,0.04);
+    padding:5px 12px; border-radius:var(--radius-md);
+    border:1px solid rgba(255,255,255,0.08);
+    transition:all var(--transition-fast);
+    text-decoration:none; cursor:pointer;
+}
+.brand-lockup:hover {
+    background:rgba(255,255,255,0.08);
+    border-color:rgba(141,106,174,0.35);
+}
+.nav-wwi-logo  { height:22px; width:auto; object-fit:contain; }
+.nav-cc26-logo { height:28px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
+.nav-cb-logo   { height:20px; width:auto; object-fit:contain; background:#fff; padding:2px 6px; border-radius:4px; }
+.brand-divider { width:1px; height:18px; background:rgba(247,231,197,0.35); }
+.brand-text    { display:flex; flex-direction:column; margin-left:4px; }
+.nav-subtitle  { font-size:0.62rem; letter-spacing:1.5px; color:var(--gold); font-weight:600; text-transform:uppercase; }
 
-        /* ── Background glows ── */
-        body::before {
-            content: '';
-            position: fixed; top: -20%; left: -10%;
-            width: 60vw; height: 60vw;
-            background: radial-gradient(circle, rgba(141, 106, 174, 0.18) 0%, transparent 65%);
-            pointer-events: none; z-index: 0;
-        }
-        body::after {
-            content: '';
-            position: fixed; bottom: -20%; right: -10%;
-            width: 60vw; height: 60vw;
-            background: radial-gradient(circle, rgba(247, 231, 197, 0.08) 0%, transparent 65%);
-            pointer-events: none; z-index: 0;
-        }
+.nav-pill {
+    font-family:'Integral CF',sans-serif;
+    font-size:0.7rem; font-weight:700; letter-spacing:1px;
+    color:var(--bg-body);
+    background:linear-gradient(135deg,var(--gold) 0%,#e8d4a8 100%);
+    padding:7px 18px; border-radius:100px;
+    border:none; white-space:nowrap;
+    box-shadow:0 4px 16px var(--gold-glow);
+}
 
-        /* ── Navbar ── */
-        .navbar {
-            position: fixed; top: 0; left: 0; right: 0;
-            height: 76px;
-            background: rgba(18, 18, 30, 0.88);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border-subtle);
-            z-index: 100;
-            transition: all var(--transition-base);
-        }
-        .navbar.scrolled {
-            background: rgba(18, 18, 30, 0.98);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-            border-bottom-color: rgba(141, 106, 174, 0.35);
-        }
-        .nav-inner {
-            display: flex; align-items: center; justify-content: space-between;
-            height: 100%; width: 100%; max-width: 1200px;
-            margin: 0 auto; padding: 0 24px;
-        }
-        .brand-lockup {
-            display: flex; align-items: center; gap: 10px;
-            background: rgba(255,255,255,0.04);
-            padding: 5px 12px; border-radius: var(--radius-md);
-            border: 1px solid rgba(255,255,255,0.08);
-            transition: all var(--transition-fast);
-            text-decoration: none; cursor: pointer;
-        }
-        .brand-lockup:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(141, 106, 174, 0.35);
-        }
-        .nav-wwi-logo { height: 22px; width: auto; object-fit: contain; }
-        .nav-cc26-logo { height: 28px; width: auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4)); }
-        .nav-cb-logo { height: 20px; width: auto; object-fit: contain; background: #fff; padding: 2px 6px; border-radius: 4px; }
-        .brand-divider { width: 1px; height: 18px; background: rgba(247,231,197,0.35); }
-        .brand-text-block { display: flex; flex-direction: column; }
-        .nav-subtitle { font-size: 0.65rem; letter-spacing: 1.5px; color: var(--gold); font-weight: 600; text-transform: uppercase; }
+/* ── HERO BANNER ── */
+.hero-banner-wrap {
+    position:relative; width:100%;
+    margin-top:76px; /* navbar + film strip */
+    overflow:hidden; line-height:0;
+    background:var(--bg-body);
+}
+.hero-banner-img {
+    display:block; width:100%; height:auto;
+    object-fit:cover; object-position:center top;
+}
+/* Gradient fade from banner into dark bg */
+.hero-banner-fade {
+    position:absolute; bottom:0; left:0; right:0; height:48%;
+    background:linear-gradient(to bottom,transparent 0%,rgba(18,18,30,0.85) 75%,#12121e 100%);
+    pointer-events:none;
+}
 
-        .nav-badge {
-            font-family: 'Integral CF', sans-serif;
-            font-size: 0.72rem; font-weight: 700; letter-spacing: 1px;
-            color: var(--bg-dark);
-            background: linear-gradient(135deg, var(--gold) 0%, #e8d4a8 100%);
-            padding: 6px 16px; border-radius: 100px;
-            border: none;
-        }
+/* ── INVITATION BADGE OVERLAY on banner ── */
+.hero-overlay-badge {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+    z-index:5;
+    pointer-events:none;
+}
+.hero-overlay-badge .eyebrow {
+    font-family:'Integral CF',sans-serif;
+    font-size:clamp(0.6rem,1.2vw,0.85rem);
+    letter-spacing:4px; text-transform:uppercase;
+    color:var(--gold); opacity:0.9;
+    margin-bottom:10px;
+    text-shadow:0 2px 12px rgba(0,0,0,0.8);
+}
+.hero-overlay-badge .big-title {
+    font-family:'Integral CF',sans-serif;
+    font-size:clamp(1.6rem,5vw,4rem);
+    font-weight:700; line-height:1.1;
+    letter-spacing:2px; text-transform:uppercase;
+    text-shadow:0 4px 24px rgba(0,0,0,0.9);
+}
+.hero-overlay-badge .big-title .w-cream   { color:#f7e7c5; }
+.hero-overlay-badge .big-title .w-purple  { color:#8d6aae; }
 
-        /* ── Main Layout ── */
-        main {
-            position: relative; z-index: 1;
-            min-height: 100vh;
-            padding: 100px 16px 64px;
-            display: flex; flex-direction: column; align-items: center;
-        }
+/* ── CONTROL DOCK (below banner, matches homepage) ── */
+.hero-dock {
+    width:100%; background:var(--bg-body);
+    padding:20px 24px 40px;
+    display:flex; justify-content:center;
+    position:relative; z-index:3;
+}
+.hero-dock-inner {
+    display:flex; align-items:center; justify-content:space-between;
+    width:100%; max-width:1160px;
+    background:rgba(22,19,36,0.95);
+    border:1px solid rgba(141,106,174,0.40);
+    border-radius:60px;
+    padding:13px 28px;
+    box-shadow:0 16px 40px rgba(0,0,0,0.6),0 0 30px rgba(141,106,174,0.15);
+    backdrop-filter:blur(20px);
+    flex-wrap:wrap; gap:12px;
+}
+.dock-label {
+    font-family:'Integral CF',sans-serif;
+    font-size:0.72rem; font-weight:700; letter-spacing:2px; color:var(--gold);
+    white-space:nowrap;
+}
+.dock-meta-group {
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+}
+.dock-meta-item {
+    display:flex; align-items:center; gap:7px;
+    font-size:0.82rem; font-weight:500;
+    color:var(--text-secondary); white-space:nowrap;
+}
+.dock-meta-item svg { width:14px; height:14px; color:var(--primary-light); flex-shrink:0; }
+.dock-divider { width:1px; height:38px; background:rgba(141,106,174,0.35); flex-shrink:0; }
+.dock-cta {
+    font-family:'Integral CF',sans-serif;
+    font-size:0.78rem; font-weight:700; letter-spacing:1px;
+    color:var(--gold); background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    border:1px solid rgba(247,231,197,0.30);
+    padding:11px 26px; border-radius:30px;
+    cursor:pointer; transition:all var(--transition-base);
+    box-shadow:0 4px 20px var(--primary-glow);
+    white-space:nowrap;
+}
+.dock-cta:hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 28px var(--primary-glow);
+    color:#fff;
+    border-color:rgba(247,231,197,0.5);
+}
 
-        /* ── Invitation Hero ── */
-        .invitation-hero {
-            text-align: center;
-            max-width: 680px;
-            margin: 0 auto 48px;
-            padding: 0 8px;
-        }
+/* ── SECTION LAYOUT ── */
+.section-wrap {
+    position:relative; z-index:1;
+    max-width:1100px; margin:0 auto;
+    padding:0 24px 80px;
+}
 
-        .ceremony-seal {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 88px; height: 88px;
-            background: linear-gradient(135deg, rgba(141,106,174,0.22) 0%, rgba(247,231,197,0.12) 100%);
-            border: 1.5px solid rgba(247,231,197,0.35);
-            border-radius: 50%;
-            margin-bottom: 24px;
-            position: relative;
-            animation: sealPulse 3s ease-in-out infinite;
-        }
-        .ceremony-seal::before {
-            content: '';
-            position: absolute; inset: -8px;
-            border-radius: 50%;
-            border: 1px dashed rgba(247,231,197,0.2);
-            animation: rotateSlow 20s linear infinite;
-        }
-        @keyframes sealPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(141,106,174,0.3); }
-            50% { box-shadow: 0 0 0 14px rgba(141,106,174,0); }
-        }
-        @keyframes rotateSlow { to { transform: rotate(360deg); } }
+/* ── SECTION INTRO ── */
+.section-intro {
+    text-align:center;
+    padding:56px 0 44px;
+}
+.eyebrow-tag {
+    display:inline-block;
+    color:var(--gold); font-size:0.72rem; font-weight:700;
+    letter-spacing:3px; text-transform:uppercase;
+    margin-bottom:14px; opacity:0.9;
+}
+.section-title {
+    font-family:'Integral CF','Helvetica Custom',sans-serif;
+    font-size:clamp(1.8rem,4vw,2.8rem);
+    font-weight:700; letter-spacing:1px; line-height:1.2;
+    margin-bottom:16px;
+}
+.gradient-text {
+    background:linear-gradient(135deg,#ffffff 0%,var(--gold) 40%,#ffffff 80%,var(--primary-light) 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.section-subtitle {
+    color:var(--text-secondary);
+    font-size:clamp(0.95rem,2vw,1.1rem);
+    line-height:1.75; max-width:560px; margin:0 auto;
+}
 
-        .seal-icon {
-            width: 40px; height: 40px;
-            color: var(--gold);
-            filter: drop-shadow(0 2px 8px rgba(247,231,197,0.4));
-        }
+/* ── HIGHLIGHT STRIPS (between hero + form) ── */
+.highlights-row {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px; margin-bottom:48px;
+}
+.highlight-card {
+    background:rgba(22,19,36,0.75);
+    border:1px solid var(--border-subtle);
+    border-radius:var(--radius-lg);
+    padding:24px 22px;
+    text-align:center;
+    backdrop-filter:blur(12px);
+    transition:all var(--transition-base);
+    position:relative; overflow:hidden;
+}
+.highlight-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,transparent,var(--primary-light),transparent);
+    opacity:0.6;
+}
+.highlight-card:hover {
+    border-color:rgba(141,106,174,0.45);
+    transform:translateY(-3px);
+    box-shadow:0 14px 36px rgba(0,0,0,0.4);
+}
+.hc-icon {
+    width:44px; height:44px;
+    background:rgba(141,106,174,0.14);
+    border:1px solid rgba(141,106,174,0.25);
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 14px;
+}
+.hc-icon svg { width:22px; height:22px; color:var(--gold); }
+.hc-title {
+    font-family:'Integral CF',sans-serif;
+    font-size:0.8rem; letter-spacing:0.5px; font-weight:700;
+    color:var(--text-primary); margin-bottom:6px;
+}
+.hc-sub { font-size:0.78rem; color:var(--text-muted); line-height:1.5; }
 
-        .eyebrow-tag {
-            display: inline-block;
-            color: var(--gold);
-            font-size: 0.72rem; font-weight: 700;
-            letter-spacing: 3px; text-transform: uppercase;
-            margin-bottom: 12px;
-            opacity: 0.9;
-        }
+/* ── ORNAMENT DIVIDER ── */
+.ornament-divider {
+    display:flex; align-items:center; gap:16px;
+    margin:0 auto 44px; max-width:500px;
+}
+.ornament-line {
+    flex:1; height:1px;
+    background:linear-gradient(to right,transparent,rgba(247,231,197,0.28),transparent);
+}
+.ornament-diamond {
+    width:7px; height:7px; background:var(--gold);
+    transform:rotate(45deg); opacity:0.55; flex-shrink:0;
+}
+.ornament-text {
+    font-size:0.68rem; letter-spacing:2.5px; text-transform:uppercase;
+    color:var(--text-muted); font-weight:600; white-space:nowrap;
+}
 
-        .hero-title {
-            font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 700;
-            letter-spacing: 1px;
-            line-height: 1.2;
-            margin-bottom: 16px;
-        }
+/* ── FORM AREA: Two-column layout ── */
+.form-layout {
+    display:grid;
+    grid-template-columns:1fr 420px;
+    gap:36px;
+    align-items:start;
+}
 
-        .gradient-text {
-            background: linear-gradient(135deg, #ffffff 0%, var(--gold) 40%, #ffffff 80%, var(--primary-light) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+/* Left: Invitation letter card */
+.letter-card {
+    background:linear-gradient(145deg,rgba(23,19,42,0.92) 0%,rgba(15,12,30,0.96) 100%);
+    border:1px solid rgba(141,106,174,0.30);
+    border-radius:var(--radius-xl);
+    padding:40px 36px;
+    position:relative; overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+}
+.letter-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--primary-dark),var(--primary),var(--primary-light),var(--gold-dark),var(--primary-light),var(--primary));
+    background-size:200%;
+    animation:shimmerBorder 4s linear infinite;
+}
+@keyframes shimmerBorder { 0%{background-position:0%} 100%{background-position:200%} }
 
-        .hero-subtitle {
-            color: var(--text-secondary);
-            font-size: clamp(0.95rem, 2vw, 1.1rem);
-            line-height: 1.7;
-            max-width: 520px;
-            margin: 0 auto 28px;
-        }
+/* Decorative seal */
+.letter-seal {
+    display:flex; align-items:center; gap:16px; margin-bottom:28px;
+}
+.seal-circle {
+    width:64px; height:64px; border-radius:50%;
+    background:linear-gradient(135deg,rgba(141,106,174,0.22),rgba(247,231,197,0.10));
+    border:1.5px solid rgba(247,231,197,0.35);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+    position:relative;
+    animation:sealGlow 3s ease-in-out infinite;
+}
+@keyframes sealGlow {
+    0%,100%{box-shadow:0 0 0 0 rgba(141,106,174,0.3);}
+    50%{box-shadow:0 0 0 10px rgba(141,106,174,0);}
+}
+.seal-circle::before {
+    content:''; position:absolute; inset:-7px; border-radius:50%;
+    border:1px dashed rgba(247,231,197,0.2);
+    animation:rotateSlow 20s linear infinite;
+}
+@keyframes rotateSlow{to{transform:rotate(360deg);}}
+.seal-circle svg { width:28px; height:28px; color:var(--gold); filter:drop-shadow(0 2px 8px rgba(247,231,197,0.4)); }
+.seal-text .seal-title {
+    font-family:'Integral CF',sans-serif;
+    font-size:0.9rem; font-weight:700; letter-spacing:0.5px;
+    color:var(--text-primary); margin-bottom:2px;
+}
+.seal-text .seal-sub { font-size:0.78rem; color:var(--text-muted); }
 
-        .event-meta-pills {
-            display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
-        }
-        .meta-pill {
-            display: inline-flex; align-items: center; gap: 7px;
-            background: rgba(141,106,174,0.12);
-            border: 1px solid rgba(141,106,174,0.28);
-            border-radius: 100px;
-            padding: 7px 16px;
-            font-size: 0.82rem; font-weight: 500;
-            color: var(--text-secondary);
-        }
-        .meta-pill svg { width: 14px; height: 14px; color: var(--gold); flex-shrink: 0; }
+.letter-body {
+    color:var(--text-secondary);
+    font-size:0.92rem; line-height:1.8;
+    margin-bottom:28px;
+    border-top:1px solid var(--border-subtle);
+    padding-top:22px;
+}
+.letter-body strong { color:var(--gold); font-weight:600; }
 
-        /* ── Ornament divider ── */
-        .ornament-divider {
-            display: flex; align-items: center; gap: 16px;
-            margin: 0 auto 48px;
-            max-width: 480px;
-        }
-        .ornament-line {
-            flex: 1; height: 1px;
-            background: linear-gradient(to right, transparent, rgba(247,231,197,0.3), transparent);
-        }
-        .ornament-diamond {
-            width: 8px; height: 8px;
-            background: var(--gold);
-            transform: rotate(45deg);
-            opacity: 0.6;
-        }
-        .ornament-text {
-            font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
-            color: var(--text-muted); font-weight: 600; white-space: nowrap;
-        }
+/* Event details rows */
+.event-details { display:flex; flex-direction:column; gap:12px; }
+.event-detail-row {
+    display:flex; align-items:flex-start; gap:13px;
+    padding:14px 16px;
+    background:rgba(141,106,174,0.07);
+    border:1px solid rgba(141,106,174,0.15);
+    border-radius:var(--radius-md);
+}
+.edr-icon {
+    width:36px; height:36px; border-radius:8px;
+    background:rgba(141,106,174,0.15);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.edr-icon svg { width:18px; height:18px; color:var(--primary-light); }
+.edr-content .edr-label { font-size:0.7rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text-muted); margin-bottom:2px; }
+.edr-content .edr-value { font-size:0.9rem; font-weight:600; color:var(--text-primary); }
 
-        /* ── Form Card ── */
-        .form-wrapper {
-            width: 100%;
-            max-width: 600px;
-        }
+/* Signature block */
+.letter-signature {
+    margin-top:28px; padding-top:22px;
+    border-top:1px solid var(--border-subtle);
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:16px;
+}
+.sig-block .sig-name { font-size:0.88rem; font-weight:700; color:var(--gold); }
+.sig-block .sig-role { font-size:0.75rem; color:var(--text-muted); margin-top:2px; }
+.sig-logos { display:flex; align-items:center; gap:10px; }
+.sig-logos img { object-fit:contain; }
 
-        .invitation-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-xl);
-            padding: 40px 40px 36px;
-            box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 40px rgba(141,106,174,0.08);
-            position: relative;
-            overflow: hidden;
-        }
-        .invitation-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--primary-dark), var(--primary), var(--primary-light), var(--gold), var(--primary-light), var(--primary));
-            background-size: 200% 100%;
-            animation: shimmerBorder 4s linear infinite;
-        }
-        @keyframes shimmerBorder {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 200% 0%; }
-        }
+/* ── FORM CARD (Right side) ── */
+.rsvp-card {
+    background:var(--bg-card);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    border:1px solid var(--border-glass);
+    border-radius:var(--radius-xl);
+    padding:36px 32px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.5),0 0 40px rgba(141,106,174,0.08);
+    position:sticky; top:90px;
+    overflow:hidden;
+}
+.rsvp-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--primary-dark),var(--primary),var(--gold-dark));
+    background-size:200%;
+    animation:shimmerBorder 3s linear infinite;
+}
 
-        .card-header {
-            margin-bottom: 28px;
-        }
-        .card-header h2 {
-            font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
-            font-size: 1.35rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--text-primary);
-            margin-bottom: 6px;
-        }
-        .card-header p {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            line-height: 1.55;
-        }
+.card-head { margin-bottom:24px; }
+.card-head h2 {
+    font-family:'Integral CF',sans-serif;
+    font-size:1.25rem; font-weight:700; letter-spacing:0.5px;
+    color:var(--text-primary); margin-bottom:5px;
+}
+.card-head p { font-size:0.82rem; color:var(--text-muted); line-height:1.55; }
 
-        /* ── Form Fields ── */
-        .form-grid {
-            display: grid;
-            gap: 20px;
-        }
-        .form-row-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
+/* ── FORM FIELDS ── */
+.form-grid { display:flex; flex-direction:column; gap:16px; }
+.form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-label {
+    font-size:0.78rem; font-weight:600;
+    color:var(--text-secondary);
+    letter-spacing:0.3px;
+    display:flex; align-items:center; gap:5px;
+}
+.req-dot { width:5px; height:5px; background:var(--primary-light); border-radius:50%; }
+.form-input {
+    width:100%; background:var(--bg-input);
+    border:1px solid var(--border-subtle);
+    border-radius:var(--radius-md);
+    color:var(--text-primary); font-size:0.88rem;
+    padding:11px 14px;
+    transition:all var(--transition-fast);
+    outline:none; appearance:none;
+}
+.form-input::placeholder { color:rgba(141,126,164,0.5); }
+.form-input:focus {
+    background:var(--bg-input-focus);
+    border-color:var(--border-focus);
+    box-shadow:0 0 0 3px rgba(141,106,174,0.15);
+}
+.form-input:hover:not(:focus) { border-color:rgba(141,106,174,0.4); }
 
-        .form-group {
-            display: flex; flex-direction: column; gap: 6px;
-        }
-        .form-label {
-            font-size: 0.8rem; font-weight: 600;
-            color: var(--text-secondary);
-            letter-spacing: 0.3px;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .form-label .required-dot {
-            width: 5px; height: 5px;
-            background: var(--primary-light);
-            border-radius: 50%; display: inline-block;
-        }
-        .form-input {
-            width: 100%;
-            background: var(--bg-input);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-md);
-            color: var(--text-primary);
-            font-size: 0.92rem;
-            padding: 12px 15px;
-            transition: all var(--transition-fast);
-            outline: none;
-            appearance: none;
-            -webkit-appearance: none;
-        }
-        .form-input::placeholder { color: rgba(141,126,164,0.55); }
-        .form-input:focus {
-            background: var(--bg-input-focus);
-            border-color: var(--border-focus);
-            box-shadow: 0 0 0 3px rgba(141,106,174,0.15);
-        }
-        .form-input:hover:not(:focus) {
-            border-color: rgba(141,106,174,0.4);
-        }
+/* ── RSVP TOGGLE ── */
+.rsvp-label {
+    font-size:0.78rem; font-weight:600; color:var(--text-secondary);
+    margin-bottom:10px; display:flex; align-items:center; gap:5px;
+}
+.rsvp-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.rsvp-opt { position:relative; }
+.rsvp-opt input[type="radio"] { position:absolute; opacity:0; width:0; height:0; }
+.rsvp-opt label {
+    display:flex; flex-direction:column; align-items:center;
+    gap:8px; padding:16px 10px;
+    background:var(--bg-input);
+    border:1.5px solid var(--border-subtle);
+    border-radius:var(--radius-lg);
+    cursor:pointer; text-align:center;
+    transition:all var(--transition-base); user-select:none;
+}
+.rsvp-opt label:hover {
+    background:rgba(141,106,174,0.09);
+    border-color:rgba(141,106,174,0.4);
+}
+.rsvp-opt input:checked + label.yes-label {
+    border-color:#10b981; background:rgba(16,185,129,0.10);
+    box-shadow:0 0 0 3px rgba(16,185,129,0.12);
+}
+.rsvp-opt input:checked + label.no-label {
+    border-color:rgba(239,68,68,0.6); background:rgba(239,68,68,0.08);
+    box-shadow:0 0 0 3px rgba(239,68,68,0.10);
+}
+.rsvp-emoji { font-size:1.6rem; line-height:1; }
+.rsvp-opt-title { font-size:0.82rem; font-weight:700; color:var(--text-primary); }
+.rsvp-opt-sub   { font-size:0.7rem; color:var(--text-muted); }
 
-        /* ── RSVP Toggle ── */
-        .rsvp-section {
-            margin-top: 4px;
-        }
-        .rsvp-label-text {
-            font-size: 0.8rem; font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .rsvp-options {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-        }
+.radio-indicator {
+    display:flex; align-items:center; justify-content:center;
+    width:18px; height:18px; border-radius:50%;
+    border:2px solid rgba(141,126,164,0.45);
+    transition:all var(--transition-fast);
+    flex-shrink:0;
+}
+.radio-dot {
+    width:8px; height:8px; border-radius:50%; background:#fff;
+    transform:scale(0); opacity:0; transition:all var(--transition-fast);
+}
+.rsvp-opt input:checked + label .radio-indicator { border-color:#10b981; background:#10b981; }
+.rsvp-opt input:checked + label.no-label .radio-indicator { border-color:var(--error); background:var(--error); }
+.rsvp-opt input:checked + label .radio-dot { transform:scale(1); opacity:1; }
 
-        .rsvp-option {
-            position: relative;
-        }
-        .rsvp-option input[type="radio"] {
-            position: absolute; opacity: 0; width: 0; height: 0;
-        }
-        .rsvp-option label {
-            display: flex; align-items: center; gap: 12px;
-            padding: 16px 18px;
-            background: var(--bg-input);
-            border: 1.5px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            cursor: pointer;
-            transition: all var(--transition-base);
-            user-select: none;
-        }
-        .rsvp-option label:hover {
-            background: rgba(141,106,174,0.08);
-            border-color: rgba(141,106,174,0.4);
-        }
-        .rsvp-option input:checked + label {
-            border-color: var(--primary);
-            background: rgba(141,106,174,0.14);
-            box-shadow: 0 0 0 3px rgba(141,106,174,0.15), inset 0 0 20px rgba(141,106,174,0.05);
-        }
-        .rsvp-option input:checked + label.attending-label {
-            border-color: #10b981;
-            background: rgba(16,185,129,0.10);
-            box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
-        }
-        .rsvp-option input:checked + label.decline-label {
-            border-color: rgba(239,68,68,0.6);
-            background: rgba(239,68,68,0.08);
-            box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
-        }
+/* ── SUBMIT BUTTON ── */
+.btn-submit {
+    width:100%; padding:14px 28px;
+    background:linear-gradient(135deg,var(--primary) 0%,var(--primary-dark) 100%);
+    color:var(--gold);
+    border:1px solid rgba(247,231,197,0.28);
+    border-radius:var(--radius-md);
+    font-family:'Integral CF',sans-serif;
+    font-size:0.85rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+    cursor:pointer; transition:all var(--transition-base);
+    position:relative; overflow:hidden;
+    box-shadow:0 6px 24px var(--primary-glow);
+    margin-top:20px;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.btn-submit:hover:not(:disabled) {
+    transform:translateY(-2px);
+    box-shadow:0 10px 32px var(--primary-glow);
+    color:#fff; border-color:rgba(247,231,197,0.5);
+}
+.btn-submit:active:not(:disabled) { transform:translateY(0); }
+.btn-submit:disabled { opacity:0.6; cursor:not-allowed; }
+.btn-submit svg { width:16px; height:16px; transition:transform var(--transition-fast); }
+.btn-submit:hover svg { transform:translateX(4px); }
 
-        .rsvp-radio-custom {
-            width: 20px; height: 20px; border-radius: 50%;
-            border: 2px solid rgba(141,126,164,0.5);
-            flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            transition: all var(--transition-fast);
-        }
-        .rsvp-option input:checked + label .rsvp-radio-custom {
-            border-color: var(--primary);
-            background: var(--primary);
-        }
-        .rsvp-option input:checked + label.attending-label .rsvp-radio-custom {
-            border-color: #10b981; background: #10b981;
-        }
-        .rsvp-option input:checked + label.decline-label .rsvp-radio-custom {
-            border-color: var(--error); background: var(--error);
-        }
-        .rsvp-radio-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: white; opacity: 0;
-            transform: scale(0);
-            transition: all var(--transition-fast);
-        }
-        .rsvp-option input:checked + label .rsvp-radio-dot {
-            opacity: 1; transform: scale(1);
-        }
+/* Ripple */
+.ripple {
+    position:absolute; border-radius:50%;
+    background:rgba(255,255,255,0.22);
+    transform:scale(0);
+    animation:rippleAnim 0.6s linear;
+    pointer-events:none;
+}
+@keyframes rippleAnim { to{transform:scale(4);opacity:0;} }
 
-        .rsvp-option-content { flex: 1; }
-        .rsvp-option-title {
-            font-weight: 600; font-size: 0.9rem;
-            color: var(--text-primary);
-            margin-bottom: 2px;
-        }
-        .rsvp-option-sub {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-        .rsvp-option-icon {
-            font-size: 1.5rem; line-height: 1;
-        }
+/* Loading spinner */
+.spinner {
+    width:17px; height:17px;
+    border:2px solid rgba(247,231,197,0.3);
+    border-top-color:var(--gold);
+    border-radius:50%;
+    animation:spin 0.7s linear infinite;
+    display:none;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.btn-submit.loading .spinner { display:block; }
+.btn-submit.loading .btn-text { opacity:0.7; }
 
-        /* ── Submit Button ── */
-        .btn-submit {
-            width: 100%;
-            padding: 15px 28px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--gold);
-            border: 1px solid rgba(247,231,197,0.30);
-            border-radius: var(--radius-md);
-            font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
-            font-size: 0.9rem; font-weight: 700;
-            letter-spacing: 1.5px; text-transform: uppercase;
-            cursor: pointer;
-            transition: all var(--transition-base);
-            position: relative; overflow: hidden;
-            box-shadow: 0 6px 24px rgba(141,106,174,0.45);
-            margin-top: 24px;
-        }
-        .btn-submit:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 32px rgba(141,106,174,0.6);
-            color: #ffffff;
-            border-color: rgba(247,231,197,0.5);
-        }
-        .btn-submit:active:not(:disabled) { transform: translateY(0); }
-        .btn-submit:disabled {
-            opacity: 0.65; cursor: not-allowed; transform: none;
-        }
+/* Error message */
+.form-error {
+    margin-top:12px;
+    padding:11px 15px;
+    background:rgba(239,68,68,0.10);
+    border:1px solid rgba(239,68,68,0.28);
+    border-radius:var(--radius-md);
+    font-size:0.82rem; color:#fc8181;
+    display:none;
+}
+.form-error.visible { display:block; }
 
-        /* Ripple */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.25);
-            transform: scale(0);
-            animation: rippleAnim 0.6s linear;
-            pointer-events: none;
-        }
-        @keyframes rippleAnim {
-            to { transform: scale(4); opacity: 0; }
-        }
+/* ── SUCCESS VIEW ── */
+#success-view {
+    display:none;
+    text-align:center;
+    padding:20px 8px 8px;
+    animation:fadeSlideUp 0.6s var(--transition-smooth) both;
+}
+@keyframes fadeSlideUp {
+    from{opacity:0;transform:translateY(18px);}
+    to{opacity:1;transform:translateY(0);}
+}
+.success-ring {
+    width:76px; height:76px; border-radius:50%;
+    background:rgba(16,185,129,0.10);
+    border:1.5px solid rgba(16,185,129,0.35);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 20px;
+    animation:successPop 0.5s 0.15s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes successPop {
+    from{transform:scale(0) rotate(-12deg);}
+    to{transform:scale(1) rotate(0);}
+}
+.success-ring svg { width:34px; height:34px; color:#10b981; }
+.success-title {
+    font-family:'Integral CF',sans-serif;
+    font-size:1.45rem; font-weight:700; color:var(--text-primary);
+    margin-bottom:10px;
+}
+.success-msg { font-size:0.9rem; color:var(--text-secondary); line-height:1.65; max-width:320px; margin:0 auto 20px; }
+.success-name { color:var(--gold); font-weight:700; }
+.success-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:9px 20px; border-radius:100px;
+    font-size:0.82rem; font-weight:600; margin-bottom:22px;
+}
+.success-badge.yes { background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:#6ee7b7; }
+.success-badge.no  { background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.25); color:#fc8181; }
+.success-contact { font-size:0.78rem; color:var(--text-muted); line-height:1.6; }
+.success-contact a { color:var(--gold); text-decoration:none; font-weight:600; }
 
-        .btn-inner { display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-spinner {
-            width: 18px; height: 18px;
-            border: 2px solid rgba(247,231,197,0.35);
-            border-top-color: var(--gold);
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            display: none;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .btn-submit.loading .btn-spinner { display: block; }
-        .btn-submit.loading .btn-text { opacity: 0.7; }
+/* ── FOOTER ── */
+.page-footer {
+    text-align:center; padding:0 24px 56px;
+    position:relative; z-index:1;
+    margin-top:8px;
+}
+.footer-branding {
+    display:flex; align-items:center; justify-content:center;
+    gap:14px; flex-wrap:wrap; margin-bottom:14px;
+}
+.footer-branding img { object-fit:contain; }
+.footer-dot { color:rgba(247,231,197,0.3); font-size:1.1rem; }
+.footer-text { font-size:0.78rem; color:var(--text-muted); line-height:1.65; }
+.footer-text a { color:var(--gold); text-decoration:none; }
+.footer-text strong { color:var(--text-secondary); }
 
-        /* ── Form Messages ── */
-        .form-message {
-            margin-top: 14px;
-            padding: 12px 16px;
-            border-radius: var(--radius-md);
-            font-size: 0.85rem; font-weight: 500;
-            display: none;
-        }
-        .form-message.error {
-            background: var(--error-bg);
-            border: 1px solid rgba(239,68,68,0.3);
-            color: #fc8181;
-            display: block;
-        }
-        .form-message.success-inline {
-            background: var(--success-bg);
-            border: 1px solid rgba(16,185,129,0.3);
-            color: #6ee7b7;
-            display: block;
-        }
+/* Film strip bottom */
+.film-strip-bottom {
+    width:100%; height:10px; margin-bottom:18px;
+    background:repeating-linear-gradient(
+        90deg,
+        rgba(141,106,174,0.25) 0px, rgba(141,106,174,0.25) 14px,
+        transparent 14px, transparent 18px,
+        rgba(141,106,174,0.25) 18px, rgba(141,106,174,0.25) 22px,
+        transparent 22px, transparent 30px
+    );
+}
 
-        /* ── Success State ── */
-        #success-view {
-            display: none;
-            text-align: center;
-            padding: 48px 32px;
-            animation: fadeSlideUp 0.6s var(--transition-smooth) both;
-        }
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+/* ── TOAST ── */
+#toast {
+    position:fixed; bottom:28px; left:50%;
+    transform:translateX(-50%) translateY(16px);
+    background:rgba(26,22,40,0.96); backdrop-filter:blur(16px);
+    border:1px solid var(--border-glass); border-radius:100px;
+    padding:12px 26px; font-size:0.875rem; font-weight:500;
+    color:var(--text-primary); z-index:999;
+    opacity:0; pointer-events:none;
+    transition:all var(--transition-smooth);
+    white-space:nowrap; max-width:90vw;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-        .success-icon-wrap {
-            width: 80px; height: 80px;
-            background: var(--success-bg);
-            border: 1.5px solid rgba(16,185,129,0.35);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px;
-            animation: successPop 0.5s 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-        }
-        @keyframes successPop {
-            from { transform: scale(0) rotate(-15deg); }
-            to { transform: scale(1) rotate(0deg); }
-        }
-        .success-icon-wrap svg { width: 36px; height: 36px; color: #10b981; }
-
-        .success-title {
-            font-family: 'Integral CF', sans-serif;
-            font-size: 1.5rem; font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-        .success-subtitle {
-            color: var(--text-secondary);
-            font-size: 0.95rem; line-height: 1.65;
-            max-width: 380px; margin: 0 auto 28px;
-        }
-        .success-name-highlight {
-            font-weight: 700; color: var(--gold);
-        }
-        .success-attending-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 20px; border-radius: 100px;
-            font-size: 0.85rem; font-weight: 600;
-            margin-bottom: 28px;
-        }
-        .success-attending-badge.yes {
-            background: rgba(16,185,129,0.12);
-            border: 1px solid rgba(16,185,129,0.3);
-            color: #6ee7b7;
-        }
-        .success-attending-badge.no {
-            background: rgba(239,68,68,0.10);
-            border: 1px solid rgba(239,68,68,0.25);
-            color: #fc8181;
-        }
-
-        /* ── Footer ── */
-        .page-footer {
-            margin-top: 56px;
-            text-align: center;
-            padding: 0 16px;
-        }
-        .footer-branding {
-            display: flex; align-items: center; justify-content: center;
-            gap: 14px; flex-wrap: wrap; margin-bottom: 14px;
-        }
-        .footer-branding img { object-fit: contain; }
-        .footer-dot { color: rgba(247,231,197,0.3); font-size: 1.1rem; }
-        .footer-text {
-            font-size: 0.8rem; color: var(--text-muted);
-            line-height: 1.6;
-        }
-        .footer-text a { color: var(--gold); text-decoration: none; }
-        .footer-text a:hover { text-decoration: underline; }
-
-        /* ── Toast ── */
-        #toast {
-            position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
-            background: rgba(26,22,40,0.96);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-glass);
-            border-radius: 100px;
-            padding: 12px 24px;
-            font-size: 0.875rem; font-weight: 500;
-            color: var(--text-primary);
-            z-index: 999;
-            opacity: 0; pointer-events: none;
-            transition: all 0.35s var(--transition-smooth);
-            white-space: nowrap;
-            max-width: 90vw;
-        }
-        #toast.show {
-            opacity: 1; transform: translateX(-50%) translateY(0);
-        }
-
-        /* ── Responsive ── */
-        @media (max-width: 640px) {
-            .invitation-card { padding: 28px 20px 24px; }
-            .form-row-2 { grid-template-columns: 1fr; }
-            .rsvp-options { grid-template-columns: 1fr; }
-            .hero-title { font-size: 1.75rem; }
-            .rsvp-option label { padding: 13px 14px; }
-        }
-        @media (max-width: 480px) {
-            main { padding: 90px 12px 48px; }
-            .brand-text-block { display: none; }
-        }
-    </style>
+/* ══ RESPONSIVE ══ */
+@media(max-width:960px) {
+    .form-layout { grid-template-columns:1fr; }
+    .rsvp-card { position:static; }
+    .highlights-row { grid-template-columns:1fr 1fr 1fr; }
+}
+@media(max-width:680px) {
+    .highlights-row { grid-template-columns:1fr; }
+    .hero-dock-inner { border-radius:20px; flex-direction:column; align-items:flex-start; padding:18px 20px; }
+    .dock-divider { display:none; }
+    .form-row-2 { grid-template-columns:1fr; }
+    .rsvp-grid { grid-template-columns:1fr; }
+    .letter-card { padding:28px 20px; }
+    .rsvp-card { padding:26px 18px; }
+    .hero-overlay-badge { padding:0 16px; }
+    .letter-signature { flex-direction:column; }
+    .section-wrap { padding:0 16px 60px; }
+}
+@media(max-width:480px) {
+    .brand-text { display:none; }
+    .nav-inner { padding:0 14px; }
+    .hero-dock { padding:12px 12px 32px; }
+}
+</style>
 </head>
 <body>
+
+<!-- Film Strip Top -->
+<div class="film-strip-top"></div>
 
 <!-- Particle Canvas -->
 <canvas id="particles-canvas"></canvas>
@@ -676,419 +731,480 @@
             <img src="assets/cc26-logo.png" alt="Celebrate Cinema 2026" class="nav-cc26-logo">
             <div class="brand-divider"></div>
             <img src="careerbeam_logo.png" alt="CareerBeam" class="nav-cb-logo">
-            <div class="brand-text-block" style="margin-left:4px;">
+            <div class="brand-text">
                 <span class="nav-subtitle">CELEBRATE CINEMA 2026</span>
             </div>
         </a>
-        <div class="nav-badge">Principal's Invitation</div>
+        <div class="nav-pill">Principal's Invitation</div>
     </div>
 </nav>
 
-<!-- ═══ MAIN ═══ -->
-<main>
+<!-- ═══ HERO BANNER ═══ -->
+<div class="hero-banner-wrap">
+    <img src="assets/banner-desktop.jpg" alt="Celebrate Cinema 2026 – Impact of Big Screen Cinema" class="hero-banner-img" id="hero-img">
+    <div class="hero-banner-fade"></div>
 
-    <!-- Hero Section -->
-    <div class="invitation-hero">
-        <div class="ceremony-seal">
-            <svg class="seal-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
+    <!-- Title overlay on banner -->
+    <div class="hero-overlay-badge" id="hero-overlay">
+        <div class="eyebrow">Whistling Woods International × CareerBeam</div>
+        <div class="big-title">
+            <span class="w-cream">PRINCIPAL'S </span><span class="w-purple">FELICITATION</span><br>
+            <span class="w-purple">CEREMONY </span><span class="w-cream">2026</span>
         </div>
+    </div>
+</div>
 
-        <div class="eyebrow-tag">Whistling Woods International × CareerBeam</div>
-        <h1 class="hero-title">
-            <span class="gradient-text">Principal's Felicitation</span><br>
-            Ceremony Invitation
-        </h1>
-        <p class="hero-subtitle">
-            We cordially invite you to the exclusive felicitation ceremony honouring distinguished principals
-            at <strong style="color:var(--gold);">Celebrate Cinema 2026</strong> — Academic Trek at Whistling Woods International, Film City, Mumbai.
-        </p>
-
-        <div class="event-meta-pills">
-            <span class="meta-pill">
+<!-- ═══ CONTROL DOCK (below banner, matches homepage) ═══ -->
+<div class="hero-dock">
+    <div class="hero-dock-inner">
+        <span class="dock-label">FELICITATION CEREMONY</span>
+        <div class="dock-meta-group">
+            <div class="dock-meta-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 08th &amp; 09th October 2026
-            </span>
-            <span class="meta-pill">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                Film City, Goregaon East, Mumbai
-            </span>
-            <span class="meta-pill">
+            </div>
+            <div class="dock-meta-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 9:00 AM — 5:00 PM
-            </span>
+            </div>
+            <div class="dock-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Film City, Goregaon East, Mumbai
+            </div>
+        </div>
+        <div class="dock-divider"></div>
+        <button class="dock-cta" onclick="document.getElementById('rsvp-form-section').scrollIntoView({behavior:'smooth'})">
+            Confirm RSVP &nbsp;↓
+        </button>
+    </div>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="section-wrap">
+
+    <!-- Section Intro -->
+    <div class="section-intro">
+        <span class="eyebrow-tag">Exclusive Invitation</span>
+        <h1 class="section-title">
+            You're Cordially<br><span class="gradient-text">Invited</span>
+        </h1>
+        <p class="section-subtitle">
+            We are honoured to invite distinguished principals to a special felicitation ceremony
+            celebrating the spirit of cinema, education, and creative excellence at
+            <strong style="color:var(--gold);">Whistling Woods International</strong>, Film City, Mumbai.
+        </p>
+    </div>
+
+    <!-- Highlight Cards -->
+    <div class="highlights-row">
+        <div class="highlight-card">
+            <div class="hc-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div class="hc-title">Felicitation Ceremony</div>
+            <div class="hc-sub">Honouring principals shaping the future of cinema &amp; media education</div>
+        </div>
+        <div class="highlight-card">
+            <div class="hc-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div class="hc-title">Masterclasses &amp; Panel</div>
+            <div class="hc-sub">Exclusive sessions with Bollywood luminaries and film industry leaders</div>
+        </div>
+        <div class="highlight-card">
+            <div class="hc-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </div>
+            <div class="hc-title">Film City Campus Tour</div>
+            <div class="hc-sub">Guided tour of Whistling Woods International — Asia's premier film school</div>
         </div>
     </div>
 
-    <!-- Ornament Divider -->
+    <!-- Ornament -->
     <div class="ornament-divider">
         <div class="ornament-line"></div>
         <div class="ornament-diamond"></div>
-        <span class="ornament-text">Confirm Your Attendance</span>
+        <span class="ornament-text">Your RSVP</span>
         <div class="ornament-diamond"></div>
         <div class="ornament-line"></div>
     </div>
 
-    <!-- Form Card -->
-    <div class="form-wrapper">
-        <div class="invitation-card" id="form-card">
+    <!-- Two Column: Letter + Form -->
+    <div class="form-layout" id="rsvp-form-section">
 
+        <!-- LEFT: Invitation Letter -->
+        <div class="letter-card">
+            <!-- Seal Header -->
+            <div class="letter-seal">
+                <div class="seal-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                </div>
+                <div class="seal-text">
+                    <div class="seal-title">Official Felicitation Invitation</div>
+                    <div class="seal-sub">Celebrate Cinema 2026 — Academic Trek</div>
+                </div>
+            </div>
+
+            <!-- Letter Body -->
+            <div class="letter-body">
+                <p style="margin-bottom:14px;">
+                    Dear Principal,
+                </p>
+                <p style="margin-bottom:14px;">
+                    It is our immense pleasure to extend this exclusive invitation to you for the
+                    <strong>Principal's Felicitation Ceremony</strong> at
+                    <strong>Celebrate Cinema 2026</strong> — the premier academic trek experience
+                    at <strong>Whistling Woods International</strong>, Asia's finest film, communication,
+                    and media arts school.
+                </p>
+                <p style="margin-bottom:14px;">
+                    This ceremony is a tribute to the educational institutions and the visionary
+                    leaders who are nurturing the next generation of filmmakers, storytellers,
+                    and creative professionals in India.
+                </p>
+                <p>
+                    We look forward to honouring your institution's commitment to excellence
+                    and celebrating the <strong>Impact of Big Screen Cinema</strong> together.
+                </p>
+            </div>
+
+            <!-- Event Details -->
+            <div class="event-details">
+                <div class="event-detail-row">
+                    <div class="edr-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                    <div class="edr-content">
+                        <div class="edr-label">Date</div>
+                        <div class="edr-value">08th &amp; 09th October 2026</div>
+                    </div>
+                </div>
+                <div class="event-detail-row">
+                    <div class="edr-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div class="edr-content">
+                        <div class="edr-label">Time</div>
+                        <div class="edr-value">9:00 AM to 5:00 PM</div>
+                    </div>
+                </div>
+                <div class="event-detail-row">
+                    <div class="edr-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    </div>
+                    <div class="edr-content">
+                        <div class="edr-label">Venue</div>
+                        <div class="edr-value">Whistling Woods International, Film City, Goregaon East, Mumbai</div>
+                    </div>
+                </div>
+                <div class="event-detail-row">
+                    <div class="edr-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    </div>
+                    <div class="edr-content">
+                        <div class="edr-label">Helpline</div>
+                        <div class="edr-value"><a href="tel:+918699260386" style="color:var(--gold);text-decoration:none;">+91 86992 60386</a> (Nilesh Gupta)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Signature -->
+            <div class="letter-signature">
+                <div class="sig-block">
+                    <div class="sig-name">Nilesh Gupta</div>
+                    <div class="sig-role">Marketing &amp; Events Executive, CareerBeam – Vigor</div>
+                </div>
+                <div class="sig-logos">
+                    <img src="assets/wwi-logo.png" alt="WWI" style="height:20px;">
+                    <span style="color:rgba(247,231,197,0.3);">•</span>
+                    <img src="assets/cc26-logo.png" alt="CC26" style="height:26px;">
+                    <span style="color:rgba(247,231,197,0.3);">•</span>
+                    <img src="careerbeam_logo.png" alt="CareerBeam" style="height:17px;background:#fff;padding:2px 5px;border-radius:3px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: RSVP Form -->
+        <div class="rsvp-card">
             <!-- Form View -->
             <div id="form-view">
-                <div class="card-header">
-                    <h2>Your Details &amp; RSVP</h2>
-                    <p>Please fill in your information so we can make the necessary arrangements. All fields are required.</p>
+                <div class="card-head">
+                    <h2>Confirm Your RSVP</h2>
+                    <p>Please share your details so we can make the best arrangements for you.</p>
                 </div>
 
                 <form id="invitation-form" novalidate>
                     <div class="form-grid">
-
                         <!-- Full Name -->
                         <div class="form-group">
                             <label class="form-label" for="inv-name">
-                                <span class="required-dot"></span>
-                                Full Name
+                                <span class="req-dot"></span> Full Name
                             </label>
                             <input type="text" id="inv-name" class="form-input" placeholder="e.g. Dr. Ramesh Sharma" autocomplete="name" required>
                         </div>
 
-                        <!-- College Name -->
+                        <!-- College -->
                         <div class="form-group">
                             <label class="form-label" for="inv-college">
-                                <span class="required-dot"></span>
-                                College / Institution Name
+                                <span class="req-dot"></span> College / Institution Name
                             </label>
                             <input type="text" id="inv-college" class="form-input" placeholder="e.g. KC College, Mumbai" autocomplete="organization" required>
                         </div>
 
-                        <!-- Email & Phone row -->
+                        <!-- Email + Phone -->
                         <div class="form-row-2">
                             <div class="form-group">
                                 <label class="form-label" for="inv-email">
-                                    <span class="required-dot"></span>
-                                    Email Address
+                                    <span class="req-dot"></span> Email
                                 </label>
                                 <input type="email" id="inv-email" class="form-input" placeholder="principal@college.edu" autocomplete="email" required>
                             </div>
                             <div class="form-group">
                                 <label class="form-label" for="inv-phone">
-                                    <span class="required-dot"></span>
-                                    Phone Number
+                                    <span class="req-dot"></span> Phone
                                 </label>
                                 <input type="tel" id="inv-phone" class="form-input" placeholder="98765 43210" autocomplete="tel" required maxlength="15">
                             </div>
                         </div>
 
                         <!-- RSVP -->
-                        <div class="rsvp-section">
-                            <div class="rsvp-label-text">
-                                <span class="required-dot"></span>
-                                Will you be attending the Felicitation Ceremony?
-                            </div>
-                            <div class="rsvp-options">
-                                <div class="rsvp-option">
+                        <div>
+                            <div class="rsvp-label"><span class="req-dot"></span> Will you be attending?</div>
+                            <div class="rsvp-grid">
+                                <div class="rsvp-opt">
                                     <input type="radio" id="rsvp-yes" name="rsvp" value="yes" required>
-                                    <label for="rsvp-yes" class="attending-label">
-                                        <div class="rsvp-radio-custom"><div class="rsvp-radio-dot"></div></div>
-                                        <div class="rsvp-option-content">
-                                            <div class="rsvp-option-title">Yes, I'll attend</div>
-                                            <div class="rsvp-option-sub">Confirming presence</div>
-                                        </div>
-                                        <div class="rsvp-option-icon">🎓</div>
+                                    <label for="rsvp-yes" class="yes-label">
+                                        <div class="rsvp-emoji">🎓</div>
+                                        <div class="rsvp-opt-title">Yes, I'll attend</div>
+                                        <div class="rsvp-opt-sub">Confirming presence</div>
+                                        <div class="radio-indicator"><div class="radio-dot"></div></div>
                                     </label>
                                 </div>
-                                <div class="rsvp-option">
+                                <div class="rsvp-opt">
                                     <input type="radio" id="rsvp-no" name="rsvp" value="no">
-                                    <label for="rsvp-no" class="decline-label">
-                                        <div class="rsvp-radio-custom"><div class="rsvp-radio-dot"></div></div>
-                                        <div class="rsvp-option-content">
-                                            <div class="rsvp-option-title">Unable to attend</div>
-                                            <div class="rsvp-option-sub">Regretfully declining</div>
-                                        </div>
-                                        <div class="rsvp-option-icon">🙏</div>
+                                    <label for="rsvp-no" class="no-label">
+                                        <div class="rsvp-emoji">🙏</div>
+                                        <div class="rsvp-opt-title">Unable to attend</div>
+                                        <div class="rsvp-opt-sub">Regretfully declining</div>
+                                        <div class="radio-indicator"><div class="radio-dot"></div></div>
                                     </label>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                    </div><!-- /form-grid -->
-
-                    <span class="form-message" id="form-error"></span>
+                    <div class="form-error" id="form-error"></div>
 
                     <button type="submit" class="btn-submit" id="submit-btn">
-                        <div class="btn-inner">
-                            <div class="btn-spinner"></div>
-                            <span class="btn-text">Confirm RSVP &amp; Submit</span>
-                            <svg style="width:18px;height:18px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <line x1="5" y1="12" x2="19" y2="12"></line>
-                                <polyline points="12 5 19 12 12 19"></polyline>
-                            </svg>
-                        </div>
+                        <div class="spinner"></div>
+                        <span class="btn-text">Confirm RSVP</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
                     </button>
                 </form>
             </div>
 
             <!-- Success View -->
             <div id="success-view">
-                <div class="success-icon-wrap">
+                <div class="success-ring">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                 </div>
                 <div class="success-title">Thank You!</div>
-                <p class="success-subtitle">
-                    Your RSVP has been received, <span class="success-name-highlight" id="success-name"></span>.
+                <p class="success-msg">
+                    Your RSVP has been received, <span class="success-name" id="success-name"></span>.
                     We look forward to welcoming you at the felicitation ceremony.
                 </p>
-                <div class="success-attending-badge" id="success-badge"></div>
-                <p style="font-size:0.82rem; color:var(--text-muted);">
-                    For any queries, please contact us at<br>
-                    <a href="tel:+918699260386" style="color:var(--gold); text-decoration:none; font-weight:600;">+91 86992 60386</a>
-                    &nbsp;(Nilesh Gupta, CareerBeam)
+                <div class="success-badge" id="success-badge"></div>
+                <p class="success-contact">
+                    For queries, reach us at<br>
+                    <a href="tel:+918699260386">+91 86992 60386</a> (Nilesh Gupta, CareerBeam)
                 </p>
             </div>
-
-        </div><!-- /invitation-card -->
-    </div>
-
-    <!-- Footer -->
-    <footer class="page-footer">
-        <div class="footer-branding">
-            <img src="assets/wwi-logo.png" alt="WWI" style="height:22px;">
-            <span class="footer-dot">•</span>
-            <img src="assets/cc26-logo.png" alt="CC26" style="height:28px;">
-            <span class="footer-dot">•</span>
-            <img src="careerbeam_logo.png" alt="CareerBeam" style="height:18px; background:#fff; padding:2px 6px; border-radius:3px;">
         </div>
-        <p class="footer-text">
-            Celebrate Cinema 2026 — Academic Trek &nbsp;|&nbsp;
-            Whistling Woods International, Film City, Goregaon East, Mumbai<br>
-            Promoted &amp; Managed by <strong>CareerBeam – Vigor</strong> &nbsp;•&nbsp;
-            Inquiries: <a href="tel:+918699260386">+91 86992 60386</a>
-        </p>
-    </footer>
 
-</main>
+    </div><!-- /form-layout -->
+
+</div><!-- /section-wrap -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="page-footer">
+    <div class="film-strip-bottom"></div>
+    <div class="footer-branding">
+        <img src="assets/wwi-logo.png" alt="WWI" style="height:22px;">
+        <span class="footer-dot">•</span>
+        <img src="assets/cc26-logo.png" alt="CC26" style="height:28px;">
+        <span class="footer-dot">•</span>
+        <img src="careerbeam_logo.png" alt="CareerBeam" style="height:18px;background:#fff;padding:2px 6px;border-radius:3px;">
+    </div>
+    <p class="footer-text">
+        <strong>Celebrate Cinema 2026 — Academic Trek</strong><br>
+        Whistling Woods International, Film City, Goregaon East, Mumbai<br>
+        Promoted &amp; Managed by <strong>CareerBeam – Vigor</strong> &nbsp;•&nbsp;
+        Inquiries: <a href="tel:+918699260386">+91 86992 60386</a>
+    </p>
+</footer>
 
 <!-- Toast -->
 <div id="toast"></div>
 
 <script>
 /* ══════════════════════════════════════════════
-   INVITATION PAGE — Principal RSVP
+   INVITATION PAGE — Principal RSVP Logic
    ══════════════════════════════════════════════ */
-
-// ── Supabase Config (same credentials as main site) ──
 const SUPABASE_URL  = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
-
 let sbClient = null;
 
-function initSupabase() {
-    const tryInit = (attempts = 20) => {
-        if (window.supabase && typeof window.supabase.createClient === 'function') {
+(function initSupabase() {
+    const tryInit = (n=20) => {
+        if (window.supabase && typeof window.supabase.createClient==='function') {
             sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-            console.log('⚡ Supabase ready (invitation page)');
-        } else if (attempts > 0) {
-            setTimeout(() => tryInit(attempts - 1), 150);
-        }
+        } else if (n>0) setTimeout(()=>tryInit(n-1), 150);
     };
     tryInit();
-}
+})();
 
-// ── Navbar scroll effect ──
+/* ── Navbar scroll ── */
 window.addEventListener('scroll', () => {
     document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
 });
 
-// ── Particles (lightweight clone of main site system) ──
-(function initParticles() {
+/* ── Particles (lightweight) ── */
+(function() {
     const canvas = document.getElementById('particles-canvas');
     const ctx = canvas.getContext('2d');
-    let particles = [];
-    let W, H;
+    let pts = [], W, H;
 
-    function resize() {
-        W = canvas.width = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
+    function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
 
-    function randomBetween(a, b) { return a + Math.random() * (b - a); }
+    function rand(a,b){return a+Math.random()*(b-a);}
+    function mkPt(){return{x:rand(0,W),y:rand(0,H),r:rand(0.5,2),vx:rand(-0.12,0.12),vy:rand(-0.22,-0.06),a:rand(0.1,0.45),c:Math.random()>0.5?'141,106,174':'247,231,197'};}
+    for(let i=0;i<65;i++) pts.push(mkPt());
 
-    function createParticle() {
-        return {
-            x: randomBetween(0, W),
-            y: randomBetween(0, H),
-            r: randomBetween(0.5, 2),
-            vx: randomBetween(-0.15, 0.15),
-            vy: randomBetween(-0.25, -0.05),
-            alpha: randomBetween(0.1, 0.45),
-            color: Math.random() > 0.5 ? '141,106,174' : '247,231,197'
-        };
-    }
-
-    for (let i = 0; i < 60; i++) particles.push(createParticle());
-
-    function animate() {
-        ctx.clearRect(0, 0, W, H);
-        particles.forEach((p, i) => {
-            p.x += p.vx;
-            p.y += p.vy;
-            if (p.y < -4) { particles[i] = createParticle(); particles[i].y = H + 4; }
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
-            ctx.fill();
+    (function draw(){
+        ctx.clearRect(0,0,W,H);
+        pts.forEach((p,i)=>{
+            p.x+=p.vx; p.y+=p.vy;
+            if(p.y<-4){pts[i]=mkPt();pts[i].y=H+4;}
+            ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+            ctx.fillStyle=`rgba(${p.c},${p.a})`; ctx.fill();
         });
-        requestAnimationFrame(animate);
-    }
-    animate();
+        requestAnimationFrame(draw);
+    })();
 })();
 
-// ── Ripple effect on submit button ──
+/* ── Hero overlay: hide on mobile, show on desktop ── */
+function positionHeroOverlay() {
+    const img = document.getElementById('hero-img');
+    const overlay = document.getElementById('hero-overlay');
+    if (!img || !overlay) return;
+    if (window.innerWidth < 600) {
+        overlay.style.display = 'none';
+    } else {
+        overlay.style.display = 'block';
+    }
+}
+window.addEventListener('resize', positionHeroOverlay);
+positionHeroOverlay();
+
+/* ── Ripple ── */
 document.getElementById('submit-btn').addEventListener('click', function(e) {
-    const btn = this;
-    const rect = btn.getBoundingClientRect();
-    const ripple = document.createElement('span');
-    const size = Math.max(rect.width, rect.height);
-    ripple.className = 'ripple';
-    ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
-    btn.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 700);
+    const btn=this, rect=btn.getBoundingClientRect();
+    const rip=document.createElement('span');
+    const size=Math.max(rect.width,rect.height);
+    rip.className='ripple';
+    rip.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+    btn.appendChild(rip); setTimeout(()=>rip.remove(),700);
 });
 
-// ── Toast helper ──
-function showToast(msg, duration = 3500) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), duration);
+/* ── Toast ── */
+function showToast(msg, dur=3500) {
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), dur);
 }
 
-// ── Form validation & submission ──
+/* ── Form Submit ── */
 document.getElementById('invitation-form').addEventListener('submit', async function(e) {
     e.preventDefault();
-
     const name    = document.getElementById('inv-name').value.trim();
     const college = document.getElementById('inv-college').value.trim();
     const email   = document.getElementById('inv-email').value.trim().toLowerCase();
-    const phone   = document.getElementById('inv-phone').value.trim().replace(/\s+/g, '');
+    const phone   = document.getElementById('inv-phone').value.trim().replace(/\s+/g,'');
     const rsvpEl  = document.querySelector('input[name="rsvp"]:checked');
     const errEl   = document.getElementById('form-error');
     const btn     = document.getElementById('submit-btn');
 
-    // Reset error
-    errEl.className = 'form-message';
-    errEl.textContent = '';
-
-    // Validate
-    if (!name)    { showErr('Please enter your full name.'); return; }
-    if (!college) { showErr('Please enter your college or institution name.'); return; }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showErr('Please enter a valid email address.'); return;
-    }
-    if (!phone || phone.length < 7) {
-        showErr('Please enter a valid phone number.'); return;
-    }
-    if (!rsvpEl) {
-        showErr('Please indicate whether you will be attending the ceremony.'); return;
-    }
-
-    const attending = rsvpEl.value === 'yes';
-
-    // Loading state
-    btn.disabled = true;
-    btn.classList.add('loading');
-    btn.querySelector('.btn-text').textContent = 'Submitting…';
-
-    try {
-        if (!sbClient) {
-            // Fallback: store locally and show success
-            saveLocalRsvp({ name, college, email, phone, attending });
-            showSuccess(name, attending);
-            return;
-        }
-
-        // Check for duplicate email
-        const { data: existing } = await sbClient
-            .from('principal_rsvps')
-            .select('id, attending')
-            .eq('email', email)
-            .maybeSingle();
-
-        if (existing) {
-            // Update existing record
-            await sbClient
-                .from('principal_rsvps')
-                .update({ name, college, phone, attending, submitted_at: new Date().toISOString() })
-                .eq('email', email);
-            showSuccess(name, attending);
-            return;
-        }
-
-        // Insert new record
-        const { error } = await sbClient
-            .from('principal_rsvps')
-            .insert([{ name, college, email, phone, attending }]);
-
-        if (error) {
-            console.error('Supabase insert error:', error);
-            // Fallback to local
-            saveLocalRsvp({ name, college, email, phone, attending });
-            showSuccess(name, attending);
-        } else {
-            showSuccess(name, attending);
-        }
-    } catch (err) {
-        console.error('Submission error:', err);
-        saveLocalRsvp({ name, college, email, phone, attending });
-        showSuccess(name, attending);
-    }
+    errEl.classList.remove('visible'); errEl.textContent='';
 
     function showErr(msg) {
-        errEl.textContent = msg;
-        errEl.className = 'form-message error';
-        btn.disabled = false;
-        btn.classList.remove('loading');
-        btn.querySelector('.btn-text').textContent = 'Confirm RSVP & Submit';
+        errEl.textContent=msg; errEl.classList.add('visible');
+        btn.disabled=false; btn.classList.remove('loading');
+        btn.querySelector('.btn-text').textContent='Confirm RSVP';
+    }
+
+    if (!name)    return showErr('Please enter your full name.');
+    if (!college) return showErr('Please enter your college or institution name.');
+    if (!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr('Please enter a valid email address.');
+    if (!phone||phone.length<7) return showErr('Please enter a valid phone number.');
+    if (!rsvpEl) return showErr('Please indicate whether you will be attending.');
+
+    const attending = rsvpEl.value==='yes';
+    btn.disabled=true; btn.classList.add('loading');
+    btn.querySelector('.btn-text').textContent='Submitting…';
+
+    try {
+        if (sbClient) {
+            const { data:existing } = await sbClient
+                .from('principal_rsvps').select('id').eq('email',email).maybeSingle();
+            if (existing) {
+                await sbClient.from('principal_rsvps')
+                    .update({ name, college, phone, attending, submitted_at:new Date().toISOString() })
+                    .eq('email',email);
+            } else {
+                const { error } = await sbClient.from('principal_rsvps')
+                    .insert([{ name, college, email, phone, attending }]);
+                if (error) throw error;
+            }
+        } else {
+            _saveLocal({ name, college, email, phone, attending });
+        }
+        showSuccess(name, attending);
+    } catch(err) {
+        console.error(err);
+        _saveLocal({ name, college, email, phone, attending });
+        showSuccess(name, attending);
     }
 });
 
 function showSuccess(name, attending) {
-    document.getElementById('form-view').style.display = 'none';
-    const sv = document.getElementById('success-view');
-    sv.style.display = 'block';
-
-    document.getElementById('success-name').textContent = name.split(' ')[0];
-
-    const badge = document.getElementById('success-badge');
-    if (attending) {
-        badge.className = 'success-attending-badge yes';
-        badge.innerHTML = '<span>🎓</span> Attending the Felicitation Ceremony';
-    } else {
-        badge.className = 'success-attending-badge no';
-        badge.innerHTML = '<span>🙏</span> Unable to Attend';
-    }
-
-    // Scroll to card
-    document.getElementById('form-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById('form-view').style.display='none';
+    const sv=document.getElementById('success-view'); sv.style.display='block';
+    document.getElementById('success-name').textContent=name.split(' ')[0];
+    const badge=document.getElementById('success-badge');
+    badge.className = attending ? 'success-badge yes' : 'success-badge no';
+    badge.innerHTML = attending
+        ? '<span>🎓</span> Attending the Felicitation Ceremony'
+        : '<span>🙏</span> Response recorded — unable to attend';
+    document.getElementById('rsvp-form-section').scrollIntoView({behavior:'smooth', block:'center'});
     showToast(attending ? '✓ RSVP confirmed! See you there.' : '✓ Response recorded. Thank you.');
 }
 
-function saveLocalRsvp(data) {
+function _saveLocal(data) {
     try {
-        const key = 'cc2026_principal_rsvps';
-        const existing = JSON.parse(localStorage.getItem(key) || '[]');
-        existing.unshift({ ...data, id: `RSVP-${Date.now()}`, submitted_at: new Date().toISOString() });
-        localStorage.setItem(key, JSON.stringify(existing));
-    } catch (e) {}
+        const k='cc2026_principal_rsvps';
+        const arr=JSON.parse(localStorage.getItem(k)||'[]');
+        arr.unshift({...data, id:`RSVP-${Date.now()}`, submitted_at:new Date().toISOString()});
+        localStorage.setItem(k, JSON.stringify(arr));
+    } catch(e) {}
 }
-
-// ── Init ──
-document.addEventListener('DOMContentLoaded', initSupabase);
 </script>
 </body>
 </html>
