@@ -1351,6 +1351,7 @@
             <button class="tab-btn" data-tab="attendance">Attendance Scanner</button>
             <button class="tab-btn" data-tab="coupons">Coupon Manager</button>
             <button class="tab-btn" data-tab="referrals">Referral Leaderboard</button>
+            <button class="tab-btn" data-tab="principals" onclick="loadPrincipalsTab()">🎓 Principals RSVP</button>
         </div>
 
         <!-- Tab: Registrations -->
@@ -1624,6 +1625,38 @@
                 </div>
             </div>
         </div>
+
+        <!-- Tab: Principals RSVP -->
+        <div class="tab-content" id="tab-principals">
+            <div class="table-controls" style="margin-bottom: var(--space-md);">
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                    <input type="text" id="search-principals" class="form-input" placeholder="Search by name, college, or email..." oninput="handlePrincipalsSearch(this.value)" style="max-width:320px;">
+                    <button class="btn btn-secondary" onclick="loadPrincipalsTab()" id="sync-principals-btn">⟳ Refresh</button>
+                    <button class="btn btn-secondary" onclick="exportPrincipalsCSV()">Export CSV</button>
+                </div>
+                <div id="principals-stats" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;"></div>
+            </div>
+            <div class="table-wrapper" id="principals-table-wrapper">
+                <table class="admin-table" id="principals-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Name</th>
+                            <th>College / Institution</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>RSVP Status</th>
+                            <th>Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="principals-tbody"></tbody>
+                </table>
+            </div>
+            <div id="no-principals" class="no-data" style="display:none;">
+                <p>No principal RSVPs received yet</p>
+            </div>
+        </div>
+
     </div>
 </section>
 

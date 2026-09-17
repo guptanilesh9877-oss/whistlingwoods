@@ -1732,3 +1732,165 @@ async function handleSaveManualReg(e) {
     }
 }
 
+// ══════════════════════════════════════════════
+// PRINCIPALS RSVP — Admin Dashboard
+// ══════════════════════════════════════════════
+
+let _allPrincipalRsvps = [];  // cache for search
+
+async function loadPrincipalsTab() {
+    const syncBtn = document.getElementById('sync-principals-btn');
+    if (syncBtn) { syncBtn.disabled = true; syncBtn.textContent = '⟳ Loading…'; }
+
+    let rsvps = [];
+
+    try {
+        const client = window.dataStore && window.dataStore.supabaseClient;
+        if (client) {
+            const { data, error } = await client
+                .from('principal_rsvps')
+                .select('*')
+                .order('submitted_at', { ascending: false });
+
+            if (!error && data && Array.isArray(data)) {
+                rsvps = data;
+            } else if (error) {
+                console.warn('Principals RSVP fetch error:', error.message);
+            }
+        }
+    } catch (e) {
+        console.warn('Principals RSVP load error:', e);
+    }
+
+    // Fallback: local storage (set by invitation.html when Supabase was unavailable)
+    if (rsvps.length === 0) {
+        try {
+            const local = JSON.parse(localStorage.getItem('cc2026_principal_rsvps') || '[]');
+            if (local.length > 0) rsvps = local;
+        } catch (e) {}
+    }
+
+    _allPrincipalRsvps = rsvps;
+    renderPrincipalsTable(rsvps);
+    renderPrincipalsStats(rsvps);
+
+    if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '⟳ Refresh'; }
+}
+
+function renderPrincipalsStats(rsvps) {
+    const statsEl = document.getElementById('principals-stats');
+    if (!statsEl) return;
+
+    const total     = rsvps.length;
+    const attending = rsvps.filter(r => r.attending === true || r.attending === 'true').length;
+    const declined  = total - attending;
+
+    statsEl.innerHTML = `
+        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto;">
+            <div class="stat-label" style="font-size:0.72rem;">Total RSVPs</div>
+            <div class="stat-value" style="font-size:1.4rem;">${total}</div>
+        </div>
+        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto; border-color:rgba(16,185,129,0.35);">
+            <div class="stat-label" style="font-size:0.72rem;">✓ Attending</div>
+            <div class="stat-value" style="font-size:1.4rem; color:#10b981;">${attending}</div>
+        </div>
+        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto; border-color:rgba(239,68,68,0.35);">
+            <div class="stat-label" style="font-size:0.72rem;">✗ Declined</div>
+            <div class="stat-value" style="font-size:1.4rem; color:#ef4444;">${declined}</div>
+        </div>
+    `;
+}
+
+function renderPrincipalsTable(rsvps) {
+    const tbody   = document.getElementById('principals-tbody');
+    const noData  = document.getElementById('no-principals');
+    const wrapper = document.getElementById('principals-table-wrapper');
+
+    if (!tbody) return;
+
+    if (!rsvps || rsvps.length === 0) {
+        if (noData)  noData.style.display  = 'block';
+        if (wrapper) wrapper.style.display  = 'none';
+        return;
+    }
+
+    if (noData)  noData.style.display  = 'none';
+    if (wrapper) wrapper.style.display  = 'block';
+
+    tbody.innerHTML = rsvps.map((r, idx) => {
+        const isAttending = r.attending === true || r.attending === 'true';
+        const submittedAt = r.submitted_at
+            ? new Date(r.submitted_at).toLocaleString('en-IN', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+              })
+            : '—';
+
+        const rsvpBadge = isAttending
+            ? `<span class="badge badge-success" style="background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.35);">🎓 Attending</span>`
+            : `<span class="badge" style="background:rgba(239,68,68,0.10);color:#fc8181;border:1px solid rgba(239,68,68,0.28);">🙏 Declined</span>`;
+
+        return `<tr>
+            <td style="color:var(--text-muted);font-size:0.8rem;">${idx + 1}</td>
+            <td style="font-weight:600;">${_escHtml(r.name || '—')}</td>
+            <td style="color:var(--text-secondary);">${_escHtml(r.college || '—')}</td>
+            <td><a href="mailto:${_escHtml(r.email || '')}" style="color:var(--primary-light);text-decoration:none;" title="Email">${_escHtml(r.email || '—')}</a></td>
+            <td><a href="tel:${_escHtml(r.phone || '')}" style="color:var(--text-secondary);text-decoration:none;">${_escHtml(r.phone || '—')}</a></td>
+            <td>${rsvpBadge}</td>
+            <td style="color:var(--text-muted);font-size:0.8rem;white-space:nowrap;">${submittedAt}</td>
+        </tr>`;
+    }).join('');
+}
+
+function handlePrincipalsSearch(query) {
+    if (!query || !query.trim()) {
+        renderPrincipalsTable(_allPrincipalRsvps);
+        return;
+    }
+    const q = query.trim().toLowerCase();
+    const filtered = _allPrincipalRsvps.filter(r =>
+        (r.name    || '').toLowerCase().includes(q) ||
+        (r.college || '').toLowerCase().includes(q) ||
+        (r.email   || '').toLowerCase().includes(q) ||
+        (r.phone   || '').includes(q)
+    );
+    renderPrincipalsTable(filtered);
+}
+
+function exportPrincipalsCSV() {
+    const rsvps = _allPrincipalRsvps;
+    if (!rsvps.length) { showToast('No data to export.', 'info'); return; }
+
+    const headers = ['#', 'Name', 'College / Institution', 'Email', 'Phone', 'RSVP', 'Submitted At'];
+    const rows = rsvps.map((r, i) => [
+        i + 1,
+        `"${(r.name    || '').replace(/"/g, '""')}"`,
+        `"${(r.college || '').replace(/"/g, '""')}"`,
+        r.email || '',
+        r.phone || '',
+        (r.attending === true || r.attending === 'true') ? 'Attending' : 'Declined',
+        r.submitted_at ? new Date(r.submitted_at).toLocaleString('en-IN') : ''
+    ]);
+
+    const csv  = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `principal_rsvps_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast(`✓ Exported ${rsvps.length} principal RSVP records as CSV`, 'success');
+}
+
+// Private HTML-escape helper (avoids collision with any existing escapeHtml)
+function _escHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
