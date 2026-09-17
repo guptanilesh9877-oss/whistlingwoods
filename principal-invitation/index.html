@@ -145,14 +145,15 @@ body::after {
 .hero-banner-wrap {
     position:relative; width:100%;
     margin-top:70px; overflow:hidden; line-height:0; background:var(--bg-body);
+    display:flex; justify-content:center;
 }
 .hero-banner-img {
-    display:block; width:100%; height:auto;
-    object-fit:cover; object-position:center top;
+    display:block; width:100%; max-width:1440px; height:auto;
+    object-fit:cover; object-position:center;
 }
 .hero-banner-fade {
-    position:absolute; bottom:0; left:0; right:0; height:60%;
-    background:linear-gradient(to bottom,transparent 0%,rgba(18,18,30,0.85) 70%,#12121e 100%);
+    position:absolute; bottom:0; left:0; right:0; height:35px;
+    background:linear-gradient(to bottom, transparent 0%, rgba(18,18,30,0.6) 60%, #12121e 100%);
     pointer-events:none;
 }
 
@@ -656,9 +657,9 @@ body::after {
     </div>
 </nav>
 
-<!-- ═══ BANNER (full-bleed, clean fade) ═══ -->
+<!-- ═══ BANNER (Impact of Big Screen Cinema) ═══ -->
 <div class="hero-banner-wrap">
-    <img src="../assets/banner-desktop.jpg" alt="Celebrate Cinema 2026 – Whistling Woods International" class="hero-banner-img">
+    <img src="../assets/invitation-banner.jpg" alt="Impact of Big Screen Cinema – Celebrate Cinema 2026 – Whistling Woods International" class="hero-banner-img">
     <div class="hero-banner-fade"></div>
 </div>
 
