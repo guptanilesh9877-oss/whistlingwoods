@@ -157,7 +157,7 @@ body::after {
 /* ── Dock ── */
 .hero-dock {
     width:100%; background:var(--bg-body);
-    padding:20px 24px 40px;
+    padding:18px 24px 36px;
     display:flex; justify-content:center;
     position:relative; z-index:3;
 }
@@ -166,33 +166,39 @@ body::after {
     width:100%; max-width:1160px;
     background:rgba(22,19,36,0.95);
     border:1px solid rgba(141,106,174,0.40);
-    border-radius:60px; padding:13px 28px;
+    border-radius:60px; padding:12px 12px 12px 28px;
     box-shadow:0 16px 40px rgba(0,0,0,0.6),0 0 30px rgba(141,106,174,0.15);
-    backdrop-filter:blur(20px); flex-wrap:wrap; gap:12px;
+    backdrop-filter:blur(20px);
+    gap:16px; flex-wrap:nowrap;
 }
 .dock-label {
     font-family:'Integral CF',sans-serif;
-    font-size:0.72rem; font-weight:700; letter-spacing:2px; color:var(--gold); white-space:nowrap;
+    font-size:0.7rem; font-weight:700; letter-spacing:2px; color:var(--gold);
+    white-space:nowrap; flex-shrink:0;
 }
-.dock-meta-group { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+.dock-meta-group { display:flex; align-items:center; gap:6px; flex:1; justify-content:center; flex-wrap:nowrap; overflow:hidden; }
 .dock-meta-item {
-    display:flex; align-items:center; gap:7px;
-    font-size:0.82rem; font-weight:500; color:var(--text-secondary); white-space:nowrap;
+    display:flex; align-items:center; gap:6px;
+    font-size:0.78rem; font-weight:500; color:var(--text-secondary); white-space:nowrap;
 }
-.dock-meta-item svg { width:14px; height:14px; color:var(--primary-light); flex-shrink:0; }
-.dock-divider { width:1px; height:38px; background:rgba(141,106,174,0.35); flex-shrink:0; }
+.dock-meta-item svg { width:13px; height:13px; color:var(--primary-light); flex-shrink:0; }
+.dock-sep { color:rgba(141,106,174,0.4); font-size:0.9rem; }
+.dock-divider { width:1px; height:32px; background:rgba(141,106,174,0.35); flex-shrink:0; }
 .dock-cta {
     font-family:'Integral CF',sans-serif;
-    font-size:0.78rem; font-weight:700; letter-spacing:1px;
+    font-size:0.76rem; font-weight:700; letter-spacing:1px;
     color:var(--gold); background:linear-gradient(135deg,var(--primary),var(--primary-dark));
     border:1px solid rgba(247,231,197,0.30);
-    padding:11px 26px; border-radius:30px;
+    padding:11px 22px; border-radius:40px;
     cursor:pointer; transition:all var(--transition-base);
-    box-shadow:0 4px 20px var(--primary-glow); white-space:nowrap;
+    box-shadow:0 4px 20px var(--primary-glow); white-space:nowrap; flex-shrink:0;
 }
-.dock-cta:hover {
-    transform:translateY(-2px); box-shadow:0 8px 28px var(--primary-glow);
-    color:#fff; border-color:rgba(247,231,197,0.5);
+.dock-cta:hover { transform:translateY(-2px); box-shadow:0 8px 28px var(--primary-glow); color:#fff; border-color:rgba(247,231,197,0.5); }
+@media(max-width:860px) {
+    .hero-dock-inner { border-radius:20px; padding:16px 20px; flex-wrap:wrap; justify-content:flex-start; }
+    .dock-meta-group { justify-content:flex-start; flex-wrap:wrap; gap:10px; }
+    .dock-divider { display:none; }
+    .dock-cta { width:100%; text-align:center; justify-content:center; border-radius:10px; }
 }
 
 /* ── Section wrap ── */
@@ -585,15 +591,17 @@ body::after {
         <div class="dock-meta-group">
             <div class="dock-meta-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                08th &amp; 09th October 2026
+                8th &amp; 9th Oct 2026
             </div>
+            <span class="dock-sep">·</span>
             <div class="dock-meta-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                Ceremony: 12:30 PM – 1:30 PM, 8th Oct
+                12:30 – 1:30 PM, 8th Oct
             </div>
+            <span class="dock-sep">·</span>
             <div class="dock-meta-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                Film City, Goregaon East, Mumbai
+                Film City, Mumbai
             </div>
         </div>
         <div class="dock-divider"></div>
