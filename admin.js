@@ -1388,6 +1388,11 @@ function initAdminTabSwitching() {
             if (newTab.dataset.tab !== 'attendance' && isScannerRunning) {
                 stopScanner();
             }
+
+            // Auto-load Principals tab data on tab switch
+            if (newTab.dataset.tab === 'principals') {
+                loadPrincipalsTab();
+            }
         });
     });
 }
@@ -1738,14 +1743,26 @@ async function handleSaveManualReg(e) {
 
 let _allPrincipalRsvps = [];  // cache for search
 
+const PRINCIPALS_SB_URL = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
+const PRINCIPALS_SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
+
 async function loadPrincipalsTab() {
     const syncBtn = document.getElementById('sync-principals-btn');
     if (syncBtn) { syncBtn.disabled = true; syncBtn.textContent = '⟳ Loading…'; }
 
     let rsvps = [];
 
+    // 1. Try Supabase SDK client (from dataStore or create directly)
     try {
-        const client = window.dataStore && window.dataStore.supabaseClient;
+        let client = (typeof dataStore !== 'undefined' && dataStore?.supabaseClient) ||
+                     (window.dataStore && window.dataStore.supabaseClient);
+
+        if (!client && window.supabase && typeof window.supabase.createClient === 'function') {
+            const url = (typeof CONFIG !== 'undefined' && CONFIG.SUPABASE_URL) || PRINCIPALS_SB_URL;
+            const key = (typeof CONFIG !== 'undefined' && CONFIG.SUPABASE_ANON_KEY) || PRINCIPALS_SB_KEY;
+            client = window.supabase.createClient(url, key);
+        }
+
         if (client) {
             const { data, error } = await client
                 .from('principal_rsvps')
@@ -1755,14 +1772,35 @@ async function loadPrincipalsTab() {
             if (!error && data && Array.isArray(data)) {
                 rsvps = data;
             } else if (error) {
-                console.warn('Principals RSVP fetch error:', error.message);
+                console.warn('Principals RSVP Supabase SDK error:', error.message);
             }
         }
     } catch (e) {
-        console.warn('Principals RSVP load error:', e);
+        console.warn('Principals RSVP SDK exception:', e);
     }
 
-    // Fallback: local storage (set by invitation.html when Supabase was unavailable)
+    // 2. Direct REST API fallback (guaranteed to succeed in any browser)
+    if (rsvps.length === 0) {
+        try {
+            const url = `${PRINCIPALS_SB_URL}/rest/v1/principal_rsvps?select=*&order=submitted_at.desc`;
+            const resp = await fetch(url, {
+                headers: {
+                    'apikey': PRINCIPALS_SB_KEY,
+                    'Authorization': `Bearer ${PRINCIPALS_SB_KEY}`
+                }
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    rsvps = data;
+                }
+            }
+        } catch (e) {
+            console.warn('Principals REST fetch error:', e);
+        }
+    }
+
+    // 3. Fallback: local storage (if submitted offline on this browser)
     if (rsvps.length === 0) {
         try {
             const local = JSON.parse(localStorage.getItem('cc2026_principal_rsvps') || '[]');

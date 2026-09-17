@@ -915,3 +915,4 @@ class DataStore {
 
 // Global singleton
 const dataStore = new DataStore();
+window.dataStore = dataStore;
