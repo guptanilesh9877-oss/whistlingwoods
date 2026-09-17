@@ -264,7 +264,16 @@ body::after {
     background:rgba(141,106,174,0.18); border:1px solid rgba(141,106,174,0.35);
     font-family:'Integral CF',sans-serif;
     font-size:0.68rem; font-weight:700; letter-spacing:2px;
-    color:var(--gold); text-transform:uppercase; margin-bottom:20px;
+    color:var(--gold); text-transform:uppercase; margin-bottom:18px;
+}
+.keynote-lead {
+    font-size:clamp(0.98rem,2vw,1.15rem);
+    color:var(--text-primary); font-weight:600; line-height:1.65;
+    max-width:800px; margin:0 auto 12px;
+}
+.keynote-focus-intro {
+    font-size:0.75rem; font-weight:700; letter-spacing:2px;
+    text-transform:uppercase; color:var(--lavender); margin-bottom:16px;
 }
 .keynote-title {
     font-family:'Integral CF','Helvetica Custom',sans-serif;
@@ -668,23 +677,23 @@ body::after {
     <div class="hero-dock-inner">
         <div class="dock-left-badge">
             <span class="pulse-dot"></span>
-            OCTOBER 8, 2026
+            08 OCTOBER 2026
         </div>
 
         <div class="dock-timeline">
             <div class="dock-schedule-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                <strong>12:00 PM</strong> Dialogue with Subhash Ghai
+                <strong>12:00 PM to 12:30 PM</strong> Dialogue discussion
             </div>
             <span class="dock-dot-sep">·</span>
             <div class="dock-schedule-item">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                <strong>12:30 PM</strong> Principal Felicitation &amp; Lunch
+                <strong>12:30 PM to 1:00 PM</strong> Felicitation
             </div>
             <span class="dock-dot-sep">·</span>
             <div class="dock-schedule-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                Film City, Mumbai
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <strong>1:00 PM onwards</strong> Lunch
             </div>
         </div>
 
@@ -700,12 +709,17 @@ body::after {
 <!-- ═══ MAIN CONTENT WRAPPER ═══ -->
 <div class="section-wrap">
 
-    <!-- ═══ KEYNOTE THEME SHOWCASE (From Official Invitation Flyer) ═══ -->
+    <!-- ═══ KEYNOTE THEME SHOWCASE ═══ -->
     <div class="keynote-showcase">
         <div class="keynote-tag">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
             Special Session Curated for Education Leaders
         </div>
+
+        <p class="keynote-lead">
+            We are pleased to invite you to be a part of an insightful and an engaging session curated especially for education leaders.
+        </p>
+        <div class="keynote-focus-intro">The session will focus on—</div>
 
         <h1 class="keynote-title">
             The Skills That Will Outlive Technology:<br>
@@ -713,7 +727,7 @@ body::after {
         </h1>
 
         <p class="keynote-desc">
-            As technology takes over more tasks, capabilities such as judgement, creativity, curiosity, and critical thinking are becoming increasingly important. The session will explore how education can deliberately develop these human capabilities and prepare students for a rapidly evolving future.
+            As technology continues to transform, human capabilities such as judgement, creativity, curiosity, and critical thinking—are becoming more important than ever. This session will explore how education can intentionally cultivate these essential human capabilities, empowering students to think deeply, adapt confidently, and thrive in a rapidly changing world.
         </p>
 
         <!-- 4 Festival Pillars Bar (from bottom of flyer) -->
@@ -762,15 +776,18 @@ body::after {
             </div>
 
             <div class="letter-body">
-                <p>Dear Principal &amp; Education Leader,</p>
+                <p>Dear Education Leader,</p>
                 <p>
-                    We are pleased to invite you to be a part of an insightful and engaging session curated especially for education leaders at <strong>Celebrate Cinema 2026</strong>.
+                    We are pleased to invite you to be a part of an insightful and an engaging session curated especially for education leaders.
                 </p>
                 <p>
-                    This session brings together visionary heads of institutions to celebrate educational excellence, foster creative leadership, and explore the evolving role of educators in an AI-driven world.
+                    The session will focus on— <strong>THE SKILLS THAT WILL OUTLIVE TECHNOLOGY: PREPARING STUDENTS FOR WHAT MACHINES CANNOT</strong>.
                 </p>
                 <p>
-                    <strong>We look forward to your gracious presence and participation.</strong>
+                    As technology continues to transform, human capabilities such as judgement, creativity, curiosity, and critical thinking—are becoming more important than ever. This session will explore how education can intentionally cultivate these essential human capabilities, empowering students to think deeply, adapt confidently, and thrive in a rapidly changing world.
+                </p>
+                <p style="color:var(--gold);font-weight:600;margin-top:14px;">
+                    We look forward to your gracious presence and participation.
                 </p>
             </div>
 
@@ -778,7 +795,7 @@ body::after {
             <div class="itinerary-box">
                 <div class="itinerary-head">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    Program Itinerary — October 8, 2026
+                    Schedule — 08 October 2026
                 </div>
 
                 <div class="itinerary-timeline">
@@ -788,9 +805,9 @@ body::after {
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                         </div>
                         <div class="itinerary-details">
-                            <div class="itinerary-time">12:00 PM – 12:30 PM</div>
-                            <div class="itinerary-title">Dialogue with Subhash Ghai</div>
-                            <div class="itinerary-desc">Keynote conversation on cultivating human potential, creative instincts, and preparing students for what machines cannot replicate.</div>
+                            <div class="itinerary-time">12:00 PM to 12:30 PM</div>
+                            <div class="itinerary-title">Dialogue discussion</div>
+                            <div class="itinerary-desc">Curated session exploring how education can intentionally cultivate human capabilities that machines cannot replicate.</div>
                         </div>
                     </div>
 
@@ -800,9 +817,9 @@ body::after {
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                         </div>
                         <div class="itinerary-details">
-                            <div class="itinerary-time">12:30 PM – 1:00 PM</div>
-                            <div class="itinerary-title">Principal Felicitation Ceremony</div>
-                            <div class="itinerary-desc">Honouring educational leaders for their pioneering contribution to guiding youth and championing creative thinking.</div>
+                            <div class="itinerary-time">12:30 PM to 1:00 PM</div>
+                            <div class="itinerary-title">Felicitation</div>
+                            <div class="itinerary-desc">Honouring educational leaders and principals for their visionary leadership.</div>
                         </div>
                     </div>
 
@@ -812,9 +829,9 @@ body::after {
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                         </div>
                         <div class="itinerary-details">
-                            <div class="itinerary-time">1:00 PM Onwards</div>
-                            <div class="itinerary-title">Followed by Networking Lunch</div>
-                            <div class="itinerary-desc">Join fellow principals &amp; academia dignitaries for lunch, campus tours, exhibits, and screenings.</div>
+                            <div class="itinerary-time">1:00 PM onwards</div>
+                            <div class="itinerary-title">Lunch</div>
+                            <div class="itinerary-desc">Followed by networking, exhibits, screenings and campus tour.</div>
                         </div>
                     </div>
                 </div>
@@ -824,7 +841,7 @@ body::after {
             <div class="event-details">
                 <div class="event-detail-row">
                     <div class="edr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
-                    <div><div class="edr-label">Festival Dates</div><div class="edr-value">08th &amp; 09th October 2026 (9:00 AM – 5:00 PM)</div></div>
+                    <div><div class="edr-label">Date</div><div class="edr-value">08 October 2026</div></div>
                 </div>
                 <div class="event-detail-row">
                     <div class="edr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
@@ -862,7 +879,7 @@ body::after {
             <div id="form-view">
                 <div class="card-head">
                     <h2>Confirm Your RSVP</h2>
-                    <p>Kindly submit your response for the Dialogue with Subhash Ghai &amp; Felicitation on October 8, 2026.</p>
+                    <p>Kindly submit your response for the Dialogue discussion &amp; Felicitation on 08 October 2026.</p>
                 </div>
 
                 <form id="invitation-form" novalidate>
@@ -951,7 +968,7 @@ body::after {
                 <div class="success-title">RSVP Confirmed!</div>
                 <p class="success-msg">
                     Thank you, <span class="success-name" id="success-name"></span>. Your RSVP has been recorded.
-                    We look forward to welcoming you to the special session on October 8, 2026.
+                    We look forward to your gracious presence and participation on 08 October 2026.
                 </p>
                 <div class="success-badge" id="success-badge"></div>
                 <p class="success-contact">
