@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8d6aae">
+    <title>Principal's Invitation | Celebrate Cinema 2026 — Whistling Woods International</title>
+    <meta name="description" content="Exclusive invitation for Principals and Education Leaders: Dialogue with Subhash Ghai & Felicitation Ceremony at Celebrate Cinema 2026, Whistling Woods International, Film City Mumbai.">
+    <link rel="icon" type="image/png" href="../assets/cc26-logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN SYSTEM — Celebrate Cinema 2026
+   Whistling Woods International Official Theme
+   ═══════════════════════════════════════════ */
+@font-face {
+    font-family:'Integral CF';
+    src:url('../assets/fonts/integral cf bold.ttf') format('truetype');
+    font-weight:700; font-display:swap;
+}
+@font-face {
+    font-family:'Helvetica Custom';
+    src:url('../assets/fonts/helvetica.otf') format('opentype');
+    font-weight:400; font-display:swap;
+}
+@font-face {
+    font-family:'Helvetica Custom';
+    src:url('../assets/fonts/helvetica-bold.ttf') format('truetype');
+    font-weight:700; font-display:swap;
+}
+
+:root {
+    --primary:#8d6aae; --primary-dark:#6f4f8e; --primary-light:#a882c8;
+    --primary-glow:rgba(141,106,174,0.45);
+    --gold:#f7e7c5; --gold-light:#fff6e5; --gold-dark:#dfcfad;
+    --gold-glow:rgba(247,231,197,0.35);
+    --lavender:#8d7ea4;
+    --bg-body:#12121e; --bg-card:rgba(26,22,40,0.92);
+    --bg-card-alt:rgba(20,16,34,0.85);
+    --bg-input:rgba(255,255,255,0.05); --bg-input-focus:rgba(255,255,255,0.08);
+    --border-subtle:rgba(141,106,174,0.24); --border-glass:rgba(247,231,197,0.22);
+    --border-focus:rgba(141,106,174,0.70);
+    --text-primary:#f7e7c5; --text-secondary:rgba(247,231,197,0.85); --text-muted:#8d7ea4;
+    --success:#10b981; --error:#ef4444;
+    --transition-fast:0.2s cubic-bezier(0.4,0,0.2,1);
+    --transition-base:0.35s cubic-bezier(0.4,0,0.2,1);
+    --transition-smooth:0.5s cubic-bezier(0.16,1,0.3,1);
+    --radius-sm:6px; --radius-md:10px; --radius-lg:14px; --radius-xl:22px;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body {
+    font-family:'Inter','Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    font-feature-settings:'cv05' 1,'cv08' 1,'cv01' 1;
+    background:var(--bg-body); color:var(--text-primary);
+    line-height:1.6; overflow-x:hidden;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+input,button,select,textarea {
+    font-family:'Plus Jakarta Sans','Inter',-apple-system,sans-serif;
+}
+
+/* ── Particles Canvas ── */
+#particles-canvas {
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    pointer-events:none; z-index:0;
+}
+/* ── Ambient Background Glows ── */
+body::before {
+    content:''; position:fixed; top:-20%; left:-10%; width:60vw; height:60vw;
+    background:radial-gradient(circle,rgba(141,106,174,0.20) 0%,transparent 65%);
+    pointer-events:none; z-index:0;
+}
+body::after {
+    content:''; position:fixed; bottom:-20%; right:-10%; width:60vw; height:60vw;
+    background:radial-gradient(circle,rgba(247,231,197,0.08) 0%,transparent 65%);
+    pointer-events:none; z-index:0;
+}
+
+/* ── Top Film Strip Accent ── */
+.film-strip-top {
+    position:fixed; top:0; left:0; right:0; height:5px; z-index:200;
+    background:repeating-linear-gradient(90deg,
+        var(--primary-dark) 0px, var(--primary-dark) 14px,
+        transparent 14px, transparent 18px,
+        var(--primary-dark) 18px, var(--primary-dark) 22px,
+        transparent 22px, transparent 30px);
+    opacity:0.55;
+}
+
+/* ── Navbar ── */
+.navbar {
+    position:fixed; top:0; left:0; right:0; height:70px;
+    background:rgba(18,18,30,0.92);
+    backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border-subtle);
+    z-index:100; transition:all var(--transition-base);
+}
+.navbar.scrolled {
+    background:rgba(18,18,30,0.98);
+    box-shadow:0 8px 30px rgba(0,0,0,0.65);
+    border-bottom-color:rgba(141,106,174,0.35);
+}
+.nav-inner {
+    display:flex; align-items:center; justify-content:space-between;
+    height:100%; max-width:1200px; margin:0 auto; padding:0 24px;
+}
+.brand-lockup {
+    display:flex; align-items:center; gap:10px;
+    background:rgba(255,255,255,0.04); padding:6px 14px;
+    border-radius:var(--radius-md); border:1px solid rgba(255,255,255,0.08);
+    transition:all var(--transition-fast); text-decoration:none;
+}
+.brand-lockup:hover { background:rgba(255,255,255,0.08); border-color:rgba(141,106,174,0.35); }
+.nav-wwi-logo  {height:22px;width:auto;object-fit:contain;}
+.nav-cc26-logo {height:28px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));}
+.nav-cb-logo   {height:20px;width:auto;object-fit:contain;background:#fff;padding:2px 6px;border-radius:4px;}
+.brand-divider {width:1px;height:18px;background:rgba(247,231,197,0.35);}
+.brand-text    {display:flex;flex-direction:column;margin-left:4px;}
+.nav-subtitle  {font-size:0.62rem;letter-spacing:1.5px;color:var(--gold);font-weight:600;text-transform:uppercase;}
+.nav-cta-btn {
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:0.76rem; font-weight:700; letter-spacing:0.5px;
+    color:var(--bg-body);
+    background:linear-gradient(135deg,var(--gold) 0%,#e8d4a8 100%);
+    padding:8px 18px; border-radius:100px;
+    border:none; cursor:pointer; text-decoration:none;
+    display:inline-flex; align-items:center; gap:6px;
+    box-shadow:0 4px 16px var(--gold-glow);
+    transition:all var(--transition-fast);
+}
+.nav-cta-btn:hover {
+    transform:translateY(-1px);
+    box-shadow:0 6px 20px var(--gold-glow);
+    color:#12121e;
+}
+.nav-cta-btn svg { width:13px; height:13px; stroke-width:2.5; }
+
+/* ── Banner (full-bleed, natural fade) ── */
+.hero-banner-wrap {
+    position:relative; width:100%;
+    margin-top:70px; overflow:hidden; line-height:0; background:var(--bg-body);
+}
+.hero-banner-img {
+    display:block; width:100%; height:auto;
+    object-fit:cover; object-position:center top;
+}
+.hero-banner-fade {
+    position:absolute; bottom:0; left:0; right:0; height:60%;
+    background:linear-gradient(to bottom,transparent 0%,rgba(18,18,30,0.85) 70%,#12121e 100%);
+    pointer-events:none;
+}
+
+/* ── Unified Control Dock (Redesigned — sleek, responsive, no awkward wrap) ── */
+.hero-dock {
+    width:100%; background:var(--bg-body);
+    padding:14px 24px 34px;
+    display:flex; justify-content:center;
+    position:relative; z-index:3;
+}
+.hero-dock-inner {
+    display:flex; align-items:center; justify-content:space-between;
+    width:100%; max-width:1160px;
+    background:rgba(22,19,36,0.95);
+    border:1px solid rgba(141,106,174,0.38);
+    border-radius:100px; padding:10px 14px 10px 24px;
+    box-shadow:0 16px 40px rgba(0,0,0,0.6),0 0 30px rgba(141,106,174,0.12);
+    backdrop-filter:blur(20px);
+    gap:16px;
+}
+.dock-left-badge {
+    display:flex; align-items:center; gap:8px;
+    font-family:'Integral CF',sans-serif;
+    font-size:0.68rem; font-weight:700; letter-spacing:1.8px; color:var(--gold);
+    white-space:nowrap; flex-shrink:0;
+}
+.pulse-dot {
+    width:8px; height:8px; border-radius:50%;
+    background:#10b981; box-shadow:0 0 10px #10b981;
+    animation:pulseDot 2s infinite ease-in-out;
+}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.8);}}
+
+.dock-timeline {
+    display:flex; align-items:center; gap:12px;
+    flex:1; justify-content:center; min-width:0;
+}
+.dock-schedule-item {
+    display:flex; align-items:center; gap:7px;
+    font-size:0.80rem; font-weight:500; color:var(--text-secondary);
+    white-space:nowrap;
+}
+.dock-schedule-item strong { color:var(--gold); font-weight:600; }
+.dock-schedule-item svg { width:14px; height:14px; color:var(--primary-light); flex-shrink:0; }
+.dock-dot-sep { color:rgba(141,106,174,0.45); font-size:0.9rem; }
+.dock-divider-v { width:1px; height:32px; background:rgba(141,106,174,0.3); flex-shrink:0; }
+
+.dock-cta-btn {
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:0.84rem; font-weight:700; letter-spacing:0.3px;
+    color:var(--gold);
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    border:1px solid rgba(247,231,197,0.35);
+    padding:10px 24px; border-radius:100px;
+    cursor:pointer; transition:all var(--transition-base);
+    box-shadow:0 4px 18px var(--primary-glow);
+    white-space:nowrap; flex-shrink:0;
+    display:inline-flex; align-items:center; gap:8px;
+}
+.dock-cta-btn:hover {
+    transform:translateY(-2px);
+    box-shadow:0 8px 28px var(--primary-glow);
+    color:#ffffff; border-color:rgba(247,231,197,0.6);
+}
+.dock-cta-btn svg {
+    width:15px; height:15px; stroke-width:2.5;
+    transition:transform var(--transition-fast);
+}
+.dock-cta-btn:hover svg { transform:translateY(2px); }
+
+/* Responsive Dock for screens <= 920px */
+@media(max-width:920px) {
+    .hero-dock { padding:10px 16px 28px; }
+    .hero-dock-inner {
+        border-radius:18px; padding:16px 18px;
+        flex-direction:column; align-items:stretch; gap:14px;
+    }
+    .dock-left-badge { justify-content:center; }
+    .dock-timeline { flex-direction:column; gap:8px; align-items:center; }
+    .dock-dot-sep, .dock-divider-v { display:none; }
+    .dock-cta-btn { width:100%; justify-content:center; padding:12px; }
+}
+
+/* ── Main Container ── */
+.section-wrap {
+    position:relative; z-index:1;
+    max-width:1160px; margin:0 auto;
+    padding:0 24px 80px;
+}
+
+/* ── Keynote / Flyer Focus Showcase Card ── */
+.keynote-showcase {
+    background:linear-gradient(135deg,rgba(35,28,58,0.7) 0%,rgba(20,16,36,0.9) 100%);
+    border:1px solid rgba(141,106,174,0.35);
+    border-radius:var(--radius-xl);
+    padding:44px 40px; margin-bottom:50px;
+    position:relative; overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    text-align:center;
+}
+.keynote-showcase::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,transparent,var(--primary-light),var(--gold),var(--primary-light),transparent);
+}
+.keynote-tag {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:6px 16px; border-radius:100px;
+    background:rgba(141,106,174,0.18); border:1px solid rgba(141,106,174,0.35);
+    font-family:'Integral CF',sans-serif;
+    font-size:0.68rem; font-weight:700; letter-spacing:2px;
+    color:var(--gold); text-transform:uppercase; margin-bottom:20px;
+}
+.keynote-title {
+    font-family:'Integral CF','Helvetica Custom',sans-serif;
+    font-size:clamp(1.5rem,3.2vw,2.35rem);
+    font-weight:700; letter-spacing:0.5px; line-height:1.28;
+    color:#ffffff; max-width:860px; margin:0 auto 18px;
+}
+.gradient-text {
+    background:linear-gradient(135deg,#ffffff 0%,var(--gold) 45%,#ffffff 80%,var(--primary-light) 100%);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.keynote-desc {
+    color:var(--text-secondary); font-size:clamp(0.92rem,1.8vw,1.05rem);
+    line-height:1.8; max-width:760px; margin:0 auto 30px;
+}
+
+/* ── 4 Festival Pillars Bar (from bottom of flyer) ── */
+.pillars-bar {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+    max-width:960px; margin:0 auto;
+}
+.pillar-card {
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(141,106,174,0.22);
+    border-radius:var(--radius-md);
+    padding:14px 12px;
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    font-size:0.78rem; font-weight:600; color:var(--text-primary);
+    transition:all var(--transition-fast);
+}
+.pillar-card:hover {
+    background:rgba(141,106,174,0.12);
+    border-color:rgba(141,106,174,0.45);
+    transform:translateY(-2px);
+}
+.pillar-card svg { width:16px; height:16px; color:var(--gold); flex-shrink:0; }
+
+@media(max-width:820px) {
+    .pillars-bar { grid-template-columns:1fr 1fr; }
+    .keynote-showcase { padding:32px 20px; }
+}
+@media(max-width:480px) {
+    .pillars-bar { grid-template-columns:1fr; }
+}
+
+/* ── Ornament Divider ── */
+.ornament-divider {
+    display:flex; align-items:center; gap:16px;
+    margin:0 auto 46px; max-width:480px;
+}
+.ornament-line {
+    flex:1; height:1px;
+    background:linear-gradient(to right,transparent,rgba(247,231,197,0.28),transparent);
+}
+.ornament-diamond { width:7px; height:7px; background:var(--gold); transform:rotate(45deg); opacity:0.6; flex-shrink:0; }
+.ornament-text { font-size:0.68rem; letter-spacing:2.5px; text-transform:uppercase; color:var(--text-muted); font-weight:600; white-space:nowrap; }
+
+/* ── Two-Column Layout (Letter + RSVP Form) ── */
+.form-layout {
+    display:grid; grid-template-columns:1fr 430px; gap:36px;
+    align-items:start;
+}
+
+/* ── Official Letter Card ── */
+.letter-card {
+    background:linear-gradient(145deg,rgba(24,19,44,0.95) 0%,rgba(16,13,32,0.98) 100%);
+    border:1px solid rgba(141,106,174,0.32);
+    border-radius:var(--radius-xl); padding:38px 34px;
+    position:relative; overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,0.55);
+}
+.letter-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--primary-dark),var(--primary),var(--gold),var(--primary),var(--primary-dark));
+    background-size:200%; animation:shimmerBorder 4s linear infinite;
+}
+@keyframes shimmerBorder{0%{background-position:0%}100%{background-position:200%}}
+
+.letter-seal-header { display:flex; align-items:center; gap:16px; margin-bottom:24px; }
+.seal-circle {
+    width:58px; height:58px; border-radius:50%;
+    background:linear-gradient(135deg,rgba(141,106,174,0.25),rgba(247,231,197,0.12));
+    border:1.5px solid rgba(247,231,197,0.4);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    position:relative;
+}
+.seal-circle svg { width:26px; height:26px; color:var(--gold); }
+.seal-title { font-family:'Integral CF',sans-serif; font-size:0.86rem; font-weight:700; color:var(--text-primary); margin-bottom:2px; }
+.seal-sub { font-size:0.75rem; color:var(--text-muted); }
+
+.letter-body {
+    color:var(--text-secondary); font-size:0.91rem; line-height:1.8; margin-bottom:26px;
+    border-top:1px solid var(--border-subtle); padding-top:20px;
+}
+.letter-body p { margin-bottom:12px; }
+.letter-body strong { color:var(--gold); font-weight:600; }
+
+/* ── Official Itinerary Box (from flyer) ── */
+.itinerary-box {
+    background:rgba(141,106,174,0.08);
+    border:1px solid rgba(141,106,174,0.22);
+    border-radius:var(--radius-lg); padding:20px;
+    margin-bottom:24px;
+}
+.itinerary-head {
+    display:flex; align-items:center; gap:8px;
+    font-family:'Integral CF',sans-serif;
+    font-size:0.74rem; font-weight:700; letter-spacing:1.5px;
+    color:var(--gold); text-transform:uppercase; margin-bottom:16px;
+}
+.itinerary-head svg { width:15px; height:15px; color:var(--primary-light); }
+
+.itinerary-timeline { display:flex; flex-direction:column; gap:14px; }
+.itinerary-step {
+    display:flex; gap:14px; position:relative;
+}
+.itinerary-step:not(:last-child)::after {
+    content:''; position:absolute; left:13px; top:28px; bottom:-8px;
+    width:2px; background:rgba(141,106,174,0.25);
+}
+.itinerary-icon-wrap {
+    width:28px; height:28px; border-radius:50%;
+    background:rgba(141,106,174,0.2); border:1px solid rgba(141,106,174,0.4);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    z-index:1;
+}
+.itinerary-step.featured .itinerary-icon-wrap {
+    background:rgba(247,231,197,0.18); border-color:var(--gold);
+}
+.itinerary-icon-wrap svg { width:13px; height:13px; color:var(--gold); }
+.itinerary-details { flex:1; }
+.itinerary-time {
+    font-size:0.75rem; font-weight:700; color:var(--primary-light);
+    letter-spacing:0.5px; margin-bottom:2px;
+}
+.itinerary-title {
+    font-size:0.88rem; font-weight:700; color:var(--text-primary);
+}
+.itinerary-desc {
+    font-size:0.78rem; color:var(--text-muted); line-height:1.5; margin-top:2px;
+}
+
+/* ── Event Details Meta Rows ── */
+.event-details { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+.event-detail-row {
+    display:flex; align-items:center; gap:12px;
+    padding:11px 14px;
+    background:rgba(255,255,255,0.03); border:1px solid rgba(141,106,174,0.16);
+    border-radius:var(--radius-md);
+}
+.edr-icon {
+    width:32px; height:32px; border-radius:8px;
+    background:rgba(141,106,174,0.16);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.edr-icon svg { width:15px; height:15px; color:var(--primary-light); }
+.edr-label { font-size:0.66rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text-muted); }
+.edr-value { font-size:0.84rem; font-weight:600; color:var(--text-primary); }
+
+.letter-signature {
+    padding-top:18px; border-top:1px solid var(--border-subtle);
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;
+}
+.sig-name { font-size:0.86rem; font-weight:700; color:var(--gold); }
+.sig-role { font-size:0.72rem; color:var(--text-muted); }
+.sig-logos { display:flex; align-items:center; gap:8px; }
+.sig-logos img { object-fit:contain; }
+
+/* ── RSVP Card (Form Column) ── */
+.rsvp-card {
+    background:var(--bg-card);
+    border:1px solid rgba(141,106,174,0.35);
+    border-radius:var(--radius-xl); padding:34px 30px;
+    position:sticky; top:90px;
+    box-shadow:0 24px 60px rgba(0,0,0,0.65),0 0 35px rgba(141,106,174,0.12);
+    backdrop-filter:blur(18px);
+    scroll-margin-top:90px;
+    transition:box-shadow 0.4s ease, border-color 0.4s ease;
+}
+.rsvp-card.pulse-glow {
+    border-color:rgba(247,231,197,0.7) !important;
+    box-shadow:0 0 50px rgba(141,106,174,0.6), 0 0 30px rgba(247,231,197,0.3) !important;
+}
+.rsvp-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--primary-light));
+    border-radius:var(--radius-xl) var(--radius-xl) 0 0;
+}
+.card-head { margin-bottom:22px; }
+.card-head h2 {
+    font-family:'Integral CF',sans-serif;
+    font-size:1.15rem; font-weight:700; letter-spacing:0.5px;
+    color:var(--text-primary); margin-bottom:6px;
+}
+.card-head p { font-size:0.80rem; color:var(--text-muted); line-height:1.55; }
+
+/* ── Form Controls ── */
+.form-grid { display:flex; flex-direction:column; gap:16px; }
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-row-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.form-label {
+    font-size:0.75rem; font-weight:600; letter-spacing:0.3px;
+    color:var(--text-secondary); display:flex; align-items:center; gap:5px;
+}
+.req-dot { width:5px; height:5px; border-radius:50%; background:var(--gold); }
+.form-input {
+    width:100%; padding:11px 14px;
+    background:var(--bg-input); border:1px solid var(--border-subtle);
+    border-radius:var(--radius-md); font-size:0.875rem;
+    color:var(--text-primary); transition:all var(--transition-fast); outline:none;
+}
+.form-input::placeholder { color:rgba(141,126,164,0.6); }
+.form-input:focus {
+    background:var(--bg-input-focus); border-color:var(--border-focus);
+    box-shadow:0 0 0 3px rgba(141,106,174,0.22); color:#fff;
+}
+.form-input.invalid {
+    border-color:var(--error);
+    box-shadow:0 0 0 3px rgba(239,68,68,0.18);
+}
+
+/* ── RSVP Options Toggle ── */
+.rsvp-section-label {
+    font-size:0.75rem; font-weight:700; letter-spacing:0.8px;
+    text-transform:uppercase; color:var(--gold); margin-bottom:6px;
+    display:flex; align-items:center; gap:6px;
+}
+.rsvp-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.rsvp-opt { position:relative; }
+.rsvp-opt input[type="radio"] { position:absolute; opacity:0; width:0; height:0; }
+.rsvp-opt label {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:13px 10px; border-radius:var(--radius-md);
+    background:rgba(255,255,255,0.04); border:1.5px solid var(--border-subtle);
+    cursor:pointer; transition:all var(--transition-fast); text-align:center; gap:6px;
+}
+.rsvp-opt label:hover {
+    background:rgba(141,106,174,0.12); border-color:rgba(141,106,174,0.45);
+}
+.rsvp-opt-icon { width:20px; height:20px; }
+.rsvp-opt-icon svg { width:100%; height:100%; }
+.rsvp-opt-title { font-size:0.82rem; font-weight:700; }
+.rsvp-opt-sub   { font-size:0.68rem; color:var(--text-muted); line-height:1.2; }
+
+/* Radio Checked States */
+.rsvp-opt input[type="radio"]:checked + label {
+    background:rgba(16,185,129,0.12); border-color:#10b981;
+    box-shadow:0 0 16px rgba(16,185,129,0.22);
+}
+.rsvp-opt input[type="radio"]:checked + label .rsvp-opt-title { color:#6ee7b7; }
+.rsvp-opt input[type="radio"]:checked + label .rsvp-opt-sub   { color:rgba(110,231,183,0.75); }
+.rsvp-opt.no input[type="radio"]:checked + label {
+    background:rgba(239,68,68,0.10); border-color:var(--error);
+    box-shadow:0 0 16px rgba(239,68,68,0.18);
+}
+.rsvp-opt.no input[type="radio"]:checked + label .rsvp-opt-title { color:#fc8181; }
+.rsvp-opt.no input[type="radio"]:checked + label .rsvp-opt-sub   { color:rgba(252,129,129,0.75); }
+
+/* ── Submit Button ── */
+.btn-submit {
+    position:relative; width:100%; padding:13px 20px;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-size:0.88rem; font-weight:700; letter-spacing:0.5px;
+    color:var(--gold);
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    border:1px solid rgba(247,231,197,0.32);
+    border-radius:var(--radius-md); cursor:pointer;
+    overflow:hidden; transition:all var(--transition-base);
+    box-shadow:0 6px 24px var(--primary-glow); margin-top:8px;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.btn-submit:hover:not(:disabled) {
+    transform:translateY(-2px);
+    box-shadow:0 10px 32px var(--primary-glow);
+    color:#fff; border-color:rgba(247,231,197,0.6);
+}
+.btn-submit:active:not(:disabled) { transform:translateY(0); }
+.btn-submit:disabled { opacity:0.6; cursor:not-allowed; }
+.btn-submit svg { width:16px; height:16px; transition:transform var(--transition-fast); }
+.btn-submit:hover svg { transform:translateX(4px); }
+
+.spinner {
+    width:17px; height:17px;
+    border:2px solid rgba(247,231,197,0.3); border-top-color:var(--gold);
+    border-radius:50%; animation:spin 0.7s linear infinite; display:none;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.btn-submit.loading .spinner { display:block; }
+.btn-submit.loading .btn-text { opacity:0.7; }
+
+.form-error {
+    margin-top:12px; padding:11px 15px;
+    background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.28);
+    border-radius:var(--radius-md); font-size:0.82rem; color:#fc8181; display:none;
+}
+.form-error.visible { display:block; }
+
+/* ── Success State ── */
+#success-view { display:none; text-align:center; padding:18px 8px 8px; animation:fadeUp 0.6s var(--transition-smooth) both; }
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+.success-ring {
+    width:72px; height:72px; border-radius:50%;
+    background:rgba(16,185,129,0.12); border:1.5px solid rgba(16,185,129,0.38);
+    display:flex; align-items:center; justify-content:center;
+    margin:0 auto 18px;
+}
+.success-ring svg { width:32px; height:32px; color:#10b981; }
+.success-title { font-family:'Integral CF',sans-serif; font-size:1.35rem; font-weight:700; color:var(--text-primary); margin-bottom:10px; }
+.success-msg { font-size:0.88rem; color:var(--text-secondary); line-height:1.65; max-width:320px; margin:0 auto 18px; }
+.success-name { color:var(--gold); font-weight:700; }
+.success-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:9px 20px; border-radius:100px;
+    font-size:0.82rem; font-weight:600; margin-bottom:20px;
+}
+.success-badge.yes { background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:#6ee7b7; }
+.success-badge.no  { background:rgba(239,68,68,0.10); border:1px solid rgba(239,68,68,0.25); color:#fc8181; }
+.success-contact { font-size:0.77rem; color:var(--text-muted); line-height:1.6; }
+.success-contact a { color:var(--gold); text-decoration:none; font-weight:600; }
+
+/* ── Footer ── */
+.page-footer { text-align:center; padding:0 24px 56px; position:relative; z-index:1; }
+.film-strip-bottom {
+    width:100%; height:8px; margin-bottom:24px;
+    background:repeating-linear-gradient(90deg,
+        rgba(141,106,174,0.2) 0px, rgba(141,106,174,0.2) 14px,
+        transparent 14px, transparent 18px,
+        rgba(141,106,174,0.2) 18px, rgba(141,106,174,0.2) 22px,
+        transparent 22px, transparent 30px);
+}
+.footer-branding { display:flex; align-items:center; justify-content:center; gap:14px; flex-wrap:wrap; margin-bottom:14px; }
+.footer-branding img { object-fit:contain; }
+.footer-dot { color:rgba(247,231,197,0.3); font-size:1.1rem; }
+.footer-text { font-size:0.78rem; color:var(--text-muted); line-height:1.65; }
+.footer-text a { color:var(--gold); text-decoration:none; }
+
+/* ── Toast ── */
+#toast {
+    position:fixed; bottom:28px; left:50%;
+    transform:translateX(-50%) translateY(16px);
+    background:rgba(26,22,40,0.96); backdrop-filter:blur(16px);
+    border:1px solid var(--border-glass); border-radius:100px;
+    padding:12px 26px; font-size:0.875rem; font-weight:500;
+    color:var(--text-primary); z-index:999;
+    opacity:0; pointer-events:none; transition:all var(--transition-smooth);
+    white-space:nowrap; max-width:90vw;
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ── Responsive Rules ── */
+@media(max-width:960px) {
+    .form-layout { grid-template-columns:1fr; }
+    .rsvp-card { position:static; order:2; }
+    .letter-card { order:1; }
+}
+@media(max-width:640px) {
+    .form-row-2 { grid-template-columns:1fr; }
+    .rsvp-grid { grid-template-columns:1fr 1fr; }
+    .letter-card,.rsvp-card { padding:24px 18px; }
+    .section-wrap { padding:0 16px 60px; }
+}
+@media(max-width:420px) {
+    .brand-text { display:none; }
+    .rsvp-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="film-strip-top"></div>
+<canvas id="particles-canvas"></canvas>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="navbar" id="navbar">
+    <div class="nav-inner">
+        <a class="brand-lockup" href="https://whistlingwoods.careerbeam.in">
+            <img src="../assets/wwi-logo.png" alt="Whistling Woods International" class="nav-wwi-logo">
+            <div class="brand-divider"></div>
+            <img src="../assets/cc26-logo.png" alt="Celebrate Cinema 2026" class="nav-cc26-logo">
+            <div class="brand-divider"></div>
+            <img src="../careerbeam_logo.png" alt="CareerBeam" class="nav-cb-logo">
+            <div class="brand-text">
+                <span class="nav-subtitle">CELEBRATE CINEMA 2026</span>
+            </div>
+        </a>
+        <button class="nav-cta-btn" onclick="scrollToRSVP(event)">
+            Confirm RSVP
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+        </button>
+    </div>
+</nav>
+
+<!-- ═══ BANNER (full-bleed, clean fade) ═══ -->
+<div class="hero-banner-wrap">
+    <img src="../assets/banner-desktop.jpg" alt="Celebrate Cinema 2026 – Whistling Woods International" class="hero-banner-img">
+    <div class="hero-banner-fade"></div>
+</div>
+
+<!-- ═══ DOCK (Redesigned — high polish, single line on desktop, clean cards on mobile) ═══ -->
+<div class="hero-dock">
+    <div class="hero-dock-inner">
+        <div class="dock-left-badge">
+            <span class="pulse-dot"></span>
+            OCTOBER 8, 2026
+        </div>
+
+        <div class="dock-timeline">
+            <div class="dock-schedule-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <strong>12:00 PM</strong> Dialogue with Subhash Ghai
+            </div>
+            <span class="dock-dot-sep">·</span>
+            <div class="dock-schedule-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <strong>12:30 PM</strong> Principal Felicitation &amp; Lunch
+            </div>
+            <span class="dock-dot-sep">·</span>
+            <div class="dock-schedule-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Film City, Mumbai
+            </div>
+        </div>
+
+        <div class="dock-divider-v"></div>
+
+        <button class="dock-cta-btn" id="dock-rsvp-btn" onclick="scrollToRSVP(event)">
+            Confirm RSVP
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+        </button>
+    </div>
+</div>
+
+<!-- ═══ MAIN CONTENT WRAPPER ═══ -->
+<div class="section-wrap">
+
+    <!-- ═══ KEYNOTE THEME SHOWCASE (From Official Invitation Flyer) ═══ -->
+    <div class="keynote-showcase">
+        <div class="keynote-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            Special Session Curated for Education Leaders
+        </div>
+
+        <h1 class="keynote-title">
+            The Skills That Will Outlive Technology:<br>
+            <span class="gradient-text">Preparing Students for What Machines Cannot</span>
+        </h1>
+
+        <p class="keynote-desc">
+            As technology takes over more tasks, capabilities such as judgement, creativity, curiosity, and critical thinking are becoming increasingly important. The session will explore how education can deliberately develop these human capabilities and prepare students for a rapidly evolving future.
+        </p>
+
+        <!-- 4 Festival Pillars Bar (from bottom of flyer) -->
+        <div class="pillars-bar">
+            <div class="pillar-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Celebrity Panel Discussions</span>
+            </div>
+            <div class="pillar-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                <span>Workshops &amp; Masterclasses</span>
+            </div>
+            <div class="pillar-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                <span>Industry Exhibits</span>
+            </div>
+            <div class="pillar-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                <span>Special Screenings</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ornament Divider -->
+    <div class="ornament-divider">
+        <div class="ornament-line"></div><div class="ornament-diamond"></div>
+        <span class="ornament-text">Official Invitation &amp; RSVP</span>
+        <div class="ornament-diamond"></div><div class="ornament-line"></div>
+    </div>
+
+    <!-- ═══ TWO-COLUMN LAYOUT: LETTER (Left) + RSVP FORM (Right) ═══ -->
+    <div class="form-layout" id="rsvp-section-anchor">
+
+        <!-- LEFT — Official Invitation Letter & Detailed Itinerary -->
+        <div class="letter-card">
+            <div class="letter-seal-header">
+                <div class="seal-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
+                </div>
+                <div>
+                    <div class="seal-title">Whistling Woods International</div>
+                    <div class="seal-sub">Institute of Film, Communication &amp; Creative Arts</div>
+                </div>
+            </div>
+
+            <div class="letter-body">
+                <p>Dear Principal &amp; Education Leader,</p>
+                <p>
+                    We are pleased to invite you to be a part of an insightful and engaging session curated especially for education leaders at <strong>Celebrate Cinema 2026</strong>.
+                </p>
+                <p>
+                    This session brings together visionary heads of institutions to celebrate educational excellence, foster creative leadership, and explore the evolving role of educators in an AI-driven world.
+                </p>
+                <p>
+                    <strong>We look forward to your gracious presence and participation.</strong>
+                </p>
+            </div>
+
+            <!-- Detailed Schedule Box matching the flyer -->
+            <div class="itinerary-box">
+                <div class="itinerary-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Program Itinerary — October 8, 2026
+                </div>
+
+                <div class="itinerary-timeline">
+                    <!-- Step 1 -->
+                    <div class="itinerary-step featured">
+                        <div class="itinerary-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        </div>
+                        <div class="itinerary-details">
+                            <div class="itinerary-time">12:00 PM – 12:30 PM</div>
+                            <div class="itinerary-title">Dialogue with Subhash Ghai</div>
+                            <div class="itinerary-desc">Keynote conversation on cultivating human potential, creative instincts, and preparing students for what machines cannot replicate.</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="itinerary-step featured">
+                        <div class="itinerary-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </div>
+                        <div class="itinerary-details">
+                            <div class="itinerary-time">12:30 PM – 1:00 PM</div>
+                            <div class="itinerary-title">Principal Felicitation Ceremony</div>
+                            <div class="itinerary-desc">Honouring educational leaders for their pioneering contribution to guiding youth and championing creative thinking.</div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="itinerary-step">
+                        <div class="itinerary-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </div>
+                        <div class="itinerary-details">
+                            <div class="itinerary-time">1:00 PM Onwards</div>
+                            <div class="itinerary-title">Followed by Networking Lunch</div>
+                            <div class="itinerary-desc">Join fellow principals &amp; academia dignitaries for lunch, campus tours, exhibits, and screenings.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Event Details Rows -->
+            <div class="event-details">
+                <div class="event-detail-row">
+                    <div class="edr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
+                    <div><div class="edr-label">Festival Dates</div><div class="edr-value">08th &amp; 09th October 2026 (9:00 AM – 5:00 PM)</div></div>
+                </div>
+                <div class="event-detail-row">
+                    <div class="edr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                    <div><div class="edr-label">Venue</div><div class="edr-value">Whistling Woods International, Film City, Goregaon East, Mumbai</div></div>
+                </div>
+                <div class="event-detail-row">
+                    <div class="edr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>
+                    <div>
+                        <div class="edr-label">RSVP Helpline &amp; Coordinators</div>
+                        <div class="edr-value">
+                            <a href="tel:+919569884046" style="color:var(--gold);text-decoration:none;">+91 95698 84046</a> (Tarasha Pahuja) &nbsp;•&nbsp;
+                            <a href="tel:+918699260386" style="color:var(--gold);text-decoration:none;">+91 86992 60386</a> (Nilesh Gupta)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="letter-signature">
+                <div>
+                    <div class="sig-name">Tarasha Pahuja &amp; Nilesh Gupta</div>
+                    <div class="sig-role">Outreach &amp; Event Coordination — CareerBeam &amp; WWI</div>
+                </div>
+                <div class="sig-logos">
+                    <img src="../assets/wwi-logo.png" alt="WWI" style="height:18px;">
+                    <span style="color:rgba(247,231,197,0.3);">•</span>
+                    <img src="../assets/cc26-logo.png" alt="CC26" style="height:24px;">
+                    <span style="color:rgba(247,231,197,0.3);">•</span>
+                    <img src="../careerbeam_logo.png" alt="CareerBeam" style="height:15px;background:#fff;padding:2px 5px;border-radius:3px;">
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT — RSVP FORM (Destination of "Confirm RSVP" click) -->
+        <div class="rsvp-card" id="rsvp-card">
+            <div id="form-view">
+                <div class="card-head">
+                    <h2>Confirm Your RSVP</h2>
+                    <p>Kindly submit your response for the Dialogue with Subhash Ghai &amp; Felicitation on October 8, 2026.</p>
+                </div>
+
+                <form id="invitation-form" novalidate>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="inv-name">
+                                <span class="req-dot"></span> Full Name
+                            </label>
+                            <input type="text" id="inv-name" class="form-input" placeholder="e.g. Dr. Ramesh Sharma" autocomplete="name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="inv-college">
+                                <span class="req-dot"></span> College / Institution Name
+                            </label>
+                            <input type="text" id="inv-college" class="form-input" placeholder="e.g. St. Xavier's College, Mumbai" autocomplete="organization" required>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label class="form-label" for="inv-email"><span class="req-dot"></span> Email</label>
+                                <input type="email" id="inv-email" class="form-input" placeholder="principal@college.edu" autocomplete="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="inv-phone"><span class="req-dot"></span> Phone No.</label>
+                                <input type="tel" id="inv-phone" class="form-input" placeholder="9876543210" autocomplete="tel" required>
+                            </div>
+                        </div>
+
+                        <!-- RSVP Attendance Options -->
+                        <div class="form-group">
+                            <span class="rsvp-section-label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                Felicitation &amp; Dialogue Attendance
+                            </span>
+                            <div class="rsvp-grid">
+                                <div class="rsvp-opt yes">
+                                    <input type="radio" id="rsvp-yes" name="rsvp" value="yes" checked>
+                                    <label for="rsvp-yes">
+                                        <div class="rsvp-opt-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
+                                        </div>
+                                        <div class="rsvp-opt-title">Yes, Attending</div>
+                                        <div class="rsvp-opt-sub">Joining Dialogue &amp; Lunch</div>
+                                    </label>
+                                </div>
+                                <div class="rsvp-opt no">
+                                    <input type="radio" id="rsvp-no" name="rsvp" value="no">
+                                    <label for="rsvp-no">
+                                        <div class="rsvp-opt-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </div>
+                                        <div class="rsvp-opt-title">Unable to Attend</div>
+                                        <div class="rsvp-opt-sub">Sending warm regrets</div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-error" id="form-error"></div>
+
+                        <button type="submit" class="btn-submit" id="submit-btn">
+                            <div class="spinner"></div>
+                            <span class="btn-text">Confirm RSVP</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Success State -->
+            <div id="success-view">
+                <div class="success-ring">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <div class="success-title">RSVP Confirmed!</div>
+                <p class="success-msg">
+                    Thank you, <span class="success-name" id="success-name"></span>. Your RSVP has been recorded.
+                    We look forward to welcoming you to the special session on October 8, 2026.
+                </p>
+                <div class="success-badge" id="success-badge"></div>
+                <p class="success-contact">
+                    For any assistance, please connect with<br>
+                    <a href="tel:+919569884046">+91 95698 84046</a> — Tarasha Pahuja &nbsp;|&nbsp;
+                    <a href="tel:+918699260386">+91 86992 60386</a> — Nilesh Gupta
+                </p>
+            </div>
+        </div>
+
+    </div><!-- /form-layout -->
+</div><!-- /section-wrap -->
+
+<!-- ═══ FOOTER ═══ -->
+<footer class="page-footer">
+    <div class="film-strip-bottom"></div>
+    <div class="footer-branding">
+        <img src="../assets/wwi-logo.png" alt="Whistling Woods International" style="height:22px;">
+        <span class="footer-dot">•</span>
+        <img src="../assets/cc26-logo.png" alt="Celebrate Cinema 2026" style="height:28px;">
+        <span class="footer-dot">•</span>
+        <img src="../careerbeam_logo.png" alt="CareerBeam" style="height:18px;background:#fff;padding:2px 6px;border-radius:3px;">
+    </div>
+    <p class="footer-text">
+        <strong style="color:var(--text-secondary);">Celebrate Cinema 2026 — Special Session for Education Leaders</strong><br>
+        Whistling Woods International, Film City, Goregaon East, Mumbai 400065<br>
+        Outreach &amp; Event Coordination: <strong style="color:var(--text-secondary);">Tarasha Pahuja</strong> (<a href="tel:+919569884046">+91 95698 84046</a>) &nbsp;•&nbsp; <strong style="color:var(--text-secondary);">Nilesh Gupta</strong> (<a href="tel:+918699260386">+91 86992 60386</a>)
+    </p>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+/* ── Supabase Setup ── */
+const SUPABASE_URL  = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
+let sbClient = null;
+
+(function(){
+    const t = (n = 20) => {
+        if (window.supabase && typeof window.supabase.createClient === 'function') {
+            sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+        } else if (n > 0) {
+            setTimeout(() => t(n - 1), 150);
+        }
+    };
+    t();
+})();
+
+/* ── Navbar Scroll Class ── */
+window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 30);
+});
+
+/* ── "Confirm RSVP" Smooth Scroll & Focus Function ── */
+function scrollToRSVP(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const rsvpCard = document.getElementById('rsvp-card');
+    if (!rsvpCard) return;
+
+    // Smoothly scroll directly to the form card with header clearance
+    rsvpCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Subtle gentle glow highlight on the card
+    rsvpCard.classList.add('pulse-glow');
+    setTimeout(() => rsvpCard.classList.remove('pulse-glow'), 1600);
+
+    // Focus on the first input field
+    setTimeout(() => {
+        const nameInput = document.getElementById('inv-name');
+        if (nameInput) {
+            try { nameInput.focus({ preventScroll: true }); } catch (_) { nameInput.focus(); }
+        }
+    }, 550);
+}
+
+// Support direct hash navigation (#rsvp or #form)
+window.addEventListener('DOMContentLoaded', () => {
+    if (window.location.hash === '#rsvp' || window.location.hash === '#form') {
+        setTimeout(scrollToRSVP, 400);
+    }
+});
+
+/* ── Subtle Particles Canvas ── */
+(function(){
+    const c = document.getElementById('particles-canvas'), ctx = c.getContext('2d');
+    let pts = [], W, H;
+    function resize(){ W = c.width = innerWidth; H = c.height = innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+    function r(a, b){ return a + Math.random() * (b - a); }
+    function mk(){
+        return {
+            x: r(0, W), y: r(0, H), rx: r(0.5, 2),
+            vx: r(-0.12, 0.12), vy: r(-0.22, -0.06),
+            a: r(0.1, 0.38),
+            c: Math.random() > 0.5 ? '141,106,174' : '247,231,197'
+        };
+    }
+    for (let i = 0; i < 60; i++) pts.push(mk());
+    (function draw(){
+        ctx.clearRect(0, 0, W, H);
+        pts.forEach((p, i) => {
+            p.x += p.vx; p.y += p.vy;
+            if (p.y < -4) { pts[i] = mk(); pts[i].y = H + 4; }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.rx, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${p.c},${p.a})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(draw);
+    })();
+})();
+
+/* ── Toast Notification ── */
+function showToast(msg, dur = 3500) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), dur);
+}
+
+/* ── Form Submission Handler ── */
+document.getElementById('invitation-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const name    = document.getElementById('inv-name').value.trim();
+    const college = document.getElementById('inv-college').value.trim();
+    const email   = document.getElementById('inv-email').value.trim().toLowerCase();
+    const phone   = document.getElementById('inv-phone').value.trim().replace(/\s+/g, '');
+    const rsvpEl  = document.querySelector('input[name="rsvp"]:checked');
+    const errEl   = document.getElementById('form-error');
+    const btn     = document.getElementById('submit-btn');
+
+    errEl.classList.remove('visible');
+    errEl.textContent = '';
+
+    function showErr(msg) {
+        errEl.textContent = msg;
+        errEl.classList.add('visible');
+        btn.disabled = false;
+        btn.classList.remove('loading');
+        btn.querySelector('.btn-text').textContent = 'Confirm RSVP';
+    }
+
+    if (!name) return showErr('Please enter your full name.');
+    if (!college) return showErr('Please enter your college or institution name.');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showErr('Please enter a valid email address.');
+    if (!phone || phone.length < 7) return showErr('Please enter a valid phone number.');
+    if (!rsvpEl) return showErr('Please select your attendance status.');
+
+    const attending = rsvpEl.value === 'yes';
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btn.querySelector('.btn-text').textContent = 'Submitting…';
+
+    try {
+        if (sbClient) {
+            const { data: ex } = await sbClient
+                .from('principal_rsvps')
+                .select('id')
+                .eq('email', email)
+                .maybeSingle();
+
+            if (ex) {
+                await sbClient.from('principal_rsvps')
+                    .update({ name, college, phone, attending, submitted_at: new Date().toISOString() })
+                    .eq('email', email);
+            } else {
+                const { error } = await sbClient
+                    .from('principal_rsvps')
+                    .insert([{ name, college, email, phone, attending }]);
+                if (error) throw error;
+            }
+        } else {
+            _saveLocal({ name, college, email, phone, attending });
+        }
+        showSuccess(name, attending);
+    } catch(err) {
+        console.error('Supabase save notice:', err);
+        _saveLocal({ name, college, email, phone, attending });
+        showSuccess(name, attending);
+    }
+});
+
+function showSuccess(name, attending) {
+    document.getElementById('form-view').style.display = 'none';
+    document.getElementById('success-view').style.display = 'block';
+    document.getElementById('success-name').textContent = name.split(' ')[0];
+    const b = document.getElementById('success-badge');
+    b.className = attending ? 'success-badge yes' : 'success-badge no';
+    b.innerHTML = attending
+        ? '<svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> Attending Dialogue &amp; Felicitation'
+        : '<svg style="width:16px;height:16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Response recorded';
+    document.getElementById('rsvp-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showToast(attending ? '✓ RSVP confirmed! See you on October 8th.' : '✓ Response recorded. Thank you.');
+}
+
+function _saveLocal(d) {
+    try {
+        const k = 'cc2026_principal_rsvps', a = JSON.parse(localStorage.getItem(k) || '[]');
+        a.unshift({ ...d, id: `RSVP-${Date.now()}`, submitted_at: new Date().toISOString() });
+        localStorage.setItem(k, JSON.stringify(a));
+    } catch(e) {}
+}
+</script>
+</body>
+</html>
