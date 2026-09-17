@@ -141,15 +141,15 @@ body::after {
 }
 .nav-cta-btn svg { width:13px; height:13px; stroke-width:2.5; }
 
-/* ── Banner (full-bleed, natural fade) ── */
+/* ── Banner (full-bleed, edge-to-edge covers entire screen width) ── */
 .hero-banner-wrap {
     position:relative; width:100%;
     margin-top:70px; overflow:hidden; line-height:0; background:var(--bg-body);
-    display:flex; justify-content:center;
+    display:block; padding:0;
 }
 .hero-banner-img {
-    display:block; width:100%; max-width:1440px; height:auto;
-    object-fit:cover; object-position:center;
+    display:block; width:100%; width:100vw; max-width:100%; height:auto;
+    object-fit:cover; object-position:center top;
 }
 .hero-banner-fade {
     position:absolute; bottom:0; left:0; right:0; height:35px;
