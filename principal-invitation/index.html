@@ -365,55 +365,47 @@ body::after {
 .seal-sub { font-size:0.75rem; color:var(--text-muted); }
 
 .letter-body {
-    color:var(--text-secondary); font-size:0.91rem; line-height:1.8; margin-bottom:26px;
-    border-top:1px solid var(--border-subtle); padding-top:20px;
+    color:var(--text-secondary); font-size:0.93rem; line-height:1.78; margin-bottom:24px;
+    border-top:1px solid var(--border-subtle); padding-top:22px;
 }
-.letter-body p { margin-bottom:12px; }
-.letter-body strong { color:var(--gold); font-weight:600; }
-
-/* ── Official Itinerary Box (from flyer) ── */
-.itinerary-box {
-    background:rgba(141,106,174,0.08);
-    border:1px solid rgba(141,106,174,0.22);
-    border-radius:var(--radius-lg); padding:20px;
-    margin-bottom:24px;
+.letter-body p { margin-bottom:14px; }
+.letter-focus-block {
+    margin:18px 0 20px; padding:16px 20px;
+    background:rgba(141,106,174,0.14); border-left:3.5px solid var(--gold);
+    border-radius:0 var(--radius-md) var(--radius-md) 0;
 }
-.itinerary-head {
-    display:flex; align-items:center; gap:8px;
+.letter-focus-label {
+    display:block; font-size:0.75rem; font-weight:700; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--lavender); margin-bottom:6px;
+}
+.letter-focus-title {
     font-family:'Integral CF',sans-serif;
-    font-size:0.74rem; font-weight:700; letter-spacing:1.5px;
-    color:var(--gold); text-transform:uppercase; margin-bottom:16px;
+    font-size:clamp(0.96rem,2vw,1.18rem); font-weight:700; line-height:1.35;
+    color:var(--gold); letter-spacing:0.5px;
 }
-.itinerary-head svg { width:15px; height:15px; color:var(--primary-light); }
-
-.itinerary-timeline { display:flex; flex-direction:column; gap:14px; }
-.itinerary-step {
-    display:flex; gap:14px; position:relative;
+.letter-meta-section {
+    margin:22px 0 16px; padding:16px 18px;
+    background:rgba(22,19,36,0.85); border:1px solid rgba(141,106,174,0.26);
+    border-radius:var(--radius-lg); display:flex; flex-direction:column; gap:16px;
 }
-.itinerary-step:not(:last-child)::after {
-    content:''; position:absolute; left:13px; top:28px; bottom:-8px;
-    width:2px; background:rgba(141,106,174,0.25);
+.letter-meta-item { display:flex; flex-direction:column; gap:6px; }
+.letter-meta-label {
+    font-family:'Integral CF',sans-serif; font-size:0.72rem; font-weight:700;
+    letter-spacing:1.5px; text-transform:uppercase; color:var(--gold);
 }
-.itinerary-icon-wrap {
-    width:28px; height:28px; border-radius:50%;
-    background:rgba(141,106,174,0.2); border:1px solid rgba(141,106,174,0.4);
-    display:flex; align-items:center; justify-content:center; flex-shrink:0;
-    z-index:1;
+.letter-meta-date-val { font-size:0.96rem; font-weight:700; color:var(--text-primary); }
+.letter-schedule-grid { display:flex; flex-direction:column; gap:8px; }
+.letter-schedule-item {
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:9px 12px; background:rgba(141,106,174,0.10);
+    border:1px solid rgba(141,106,174,0.18); border-radius:var(--radius-md);
+    font-size:0.86rem;
 }
-.itinerary-step.featured .itinerary-icon-wrap {
-    background:rgba(247,231,197,0.18); border-color:var(--gold);
-}
-.itinerary-icon-wrap svg { width:13px; height:13px; color:var(--gold); }
-.itinerary-details { flex:1; }
-.itinerary-time {
-    font-size:0.75rem; font-weight:700; color:var(--primary-light);
-    letter-spacing:0.5px; margin-bottom:2px;
-}
-.itinerary-title {
-    font-size:0.88rem; font-weight:700; color:var(--text-primary);
-}
-.itinerary-desc {
-    font-size:0.78rem; color:var(--text-muted); line-height:1.5; margin-top:2px;
+.letter-schedule-item .lsi-name { font-weight:600; color:var(--text-primary); }
+.letter-schedule-item .lsi-time { font-weight:700; color:var(--gold); white-space:nowrap; }
+.letter-closing {
+    font-size:0.96rem; font-weight:700; color:var(--gold);
+    margin-top:20px; line-height:1.5;
 }
 
 /* ── Event Details Meta Rows ── */
@@ -709,59 +701,10 @@ body::after {
 <!-- ═══ MAIN CONTENT WRAPPER ═══ -->
 <div class="section-wrap">
 
-    <!-- ═══ KEYNOTE THEME SHOWCASE ═══ -->
-    <div class="keynote-showcase">
-        <div class="keynote-tag">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            Special Session Curated for Education Leaders
-        </div>
-
-        <p class="keynote-lead">
-            We are pleased to invite you to be a part of an insightful and an engaging session curated especially for education leaders.
-        </p>
-        <div class="keynote-focus-intro">The session will focus on—</div>
-
-        <h1 class="keynote-title">
-            The Skills That Will Outlive Technology:<br>
-            <span class="gradient-text">Preparing Students for What Machines Cannot</span>
-        </h1>
-
-        <p class="keynote-desc">
-            As technology continues to transform, human capabilities such as judgement, creativity, curiosity, and critical thinking—are becoming more important than ever. This session will explore how education can intentionally cultivate these essential human capabilities, empowering students to think deeply, adapt confidently, and thrive in a rapidly changing world.
-        </p>
-
-        <!-- 4 Festival Pillars Bar (from bottom of flyer) -->
-        <div class="pillars-bar">
-            <div class="pillar-card">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                <span>Celebrity Panel Discussions</span>
-            </div>
-            <div class="pillar-card">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                <span>Workshops &amp; Masterclasses</span>
-            </div>
-            <div class="pillar-card">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-                <span>Industry Exhibits</span>
-            </div>
-            <div class="pillar-card">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
-                <span>Special Screenings</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Ornament Divider -->
-    <div class="ornament-divider">
-        <div class="ornament-line"></div><div class="ornament-diamond"></div>
-        <span class="ornament-text">Official Invitation &amp; RSVP</span>
-        <div class="ornament-diamond"></div><div class="ornament-line"></div>
-    </div>
-
     <!-- ═══ TWO-COLUMN LAYOUT: LETTER (Left) + RSVP FORM (Right) ═══ -->
     <div class="form-layout" id="rsvp-section-anchor">
 
-        <!-- LEFT — Official Invitation Letter & Detailed Itinerary -->
+        <!-- LEFT — Official Invitation Letter -->
         <div class="letter-card">
             <div class="letter-seal-header">
                 <div class="seal-circle">
@@ -776,73 +719,54 @@ body::after {
             </div>
 
             <div class="letter-body">
-                <p>Dear Education Leader,</p>
+                <p style="font-size:1.02rem;font-weight:600;color:var(--text-primary);margin-bottom:14px;">Dear Education Leader,</p>
                 <p>
                     We are pleased to invite you to be a part of an insightful and an engaging session curated especially for education leaders.
                 </p>
-                <p>
-                    The session will focus on— <strong>THE SKILLS THAT WILL OUTLIVE TECHNOLOGY: PREPARING STUDENTS FOR WHAT MACHINES CANNOT</strong>.
-                </p>
+
+                <div class="letter-focus-block">
+                    <span class="letter-focus-label">The session will focus on—</span>
+                    <div class="letter-focus-title">
+                        THE SKILLS THAT WILL OUTLIVE TECHNOLOGY:<br>
+                        PREPARING STUDENTS FOR WHAT MACHINES CANNOT
+                    </div>
+                </div>
+
                 <p>
                     As technology continues to transform, human capabilities such as judgement, creativity, curiosity, and critical thinking—are becoming more important than ever. This session will explore how education can intentionally cultivate these essential human capabilities, empowering students to think deeply, adapt confidently, and thrive in a rapidly changing world.
                 </p>
-                <p style="color:var(--gold);font-weight:600;margin-top:14px;">
+
+                <div class="letter-meta-section">
+                    <div class="letter-meta-item">
+                        <div class="letter-meta-label">Date:</div>
+                        <div class="letter-meta-date-val">08 October 2026</div>
+                    </div>
+                    <div class="letter-meta-item">
+                        <div class="letter-meta-label">Schedule:</div>
+                        <div class="letter-schedule-grid">
+                            <div class="letter-schedule-item">
+                                <span class="lsi-name">Dialogue discussion</span>
+                                <span class="lsi-time">12:00 PM to 12:30 PM</span>
+                            </div>
+                            <div class="letter-schedule-item">
+                                <span class="lsi-name">Felicitation</span>
+                                <span class="lsi-time">12:30 PM to 1:00 PM</span>
+                            </div>
+                            <div class="letter-schedule-item">
+                                <span class="lsi-name">Lunch</span>
+                                <span class="lsi-time">1:00 PM onwards</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="letter-closing">
                     We look forward to your gracious presence and participation.
                 </p>
             </div>
 
-            <!-- Detailed Schedule Box matching the flyer -->
-            <div class="itinerary-box">
-                <div class="itinerary-head">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                    Schedule — 08 October 2026
-                </div>
-
-                <div class="itinerary-timeline">
-                    <!-- Step 1 -->
-                    <div class="itinerary-step featured">
-                        <div class="itinerary-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                        </div>
-                        <div class="itinerary-details">
-                            <div class="itinerary-time">12:00 PM to 12:30 PM</div>
-                            <div class="itinerary-title">Dialogue discussion</div>
-                            <div class="itinerary-desc">Curated session exploring how education can intentionally cultivate human capabilities that machines cannot replicate.</div>
-                        </div>
-                    </div>
-
-                    <!-- Step 2 -->
-                    <div class="itinerary-step featured">
-                        <div class="itinerary-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        </div>
-                        <div class="itinerary-details">
-                            <div class="itinerary-time">12:30 PM to 1:00 PM</div>
-                            <div class="itinerary-title">Felicitation</div>
-                            <div class="itinerary-desc">Honouring educational leaders and principals for their visionary leadership.</div>
-                        </div>
-                    </div>
-
-                    <!-- Step 3 -->
-                    <div class="itinerary-step">
-                        <div class="itinerary-icon-wrap">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                        </div>
-                        <div class="itinerary-details">
-                            <div class="itinerary-time">1:00 PM onwards</div>
-                            <div class="itinerary-title">Lunch</div>
-                            <div class="itinerary-desc">Followed by networking, exhibits, screenings and campus tour.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Event Details Rows -->
             <div class="event-details">
-                <div class="event-detail-row">
-                    <div class="edr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>
-                    <div><div class="edr-label">Date</div><div class="edr-value">08 October 2026</div></div>
-                </div>
                 <div class="event-detail-row">
                     <div class="edr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
                     <div><div class="edr-label">Venue</div><div class="edr-value">Whistling Woods International, Film City, Goregaon East, Mumbai</div></div>
