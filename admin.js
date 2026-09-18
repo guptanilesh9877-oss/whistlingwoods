@@ -156,7 +156,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                             style="${r.rejected ? 'background:#ef4444; color:#fff; border-color:#dc2626;' : 'color:#ef4444; border:1px solid rgba(239,68,68,0.4); background:rgba(239,68,68,0.08);'}">
                         ${r.rejected ? 'Void' : 'Reject'}
                     </button>
-                    ${r.paymentScreenshot ? `<button class="btn-small" onclick="viewScreenshot('${r.id}')" title="View Screenshot">📷</button>` : ''}
+                    ${r.paymentScreenshot ? `<button class="btn-small" onclick="viewScreenshot('${r.id}')" title="${isFreeKES ? 'View College ID / Fee Receipt' : 'View Screenshot'}">${isFreeKES ? '🪪' : '📷'}</button>` : ''}
                     <button class="btn-delete" onclick="handleDeleteRegistration('${r.id}')" title="Delete">✕</button>
                 </div>
             </td>
@@ -538,22 +538,36 @@ async function handleDeleteRegistration(id) {
     }
 }
 
-// ──────────── VIEW SCREENSHOT ────────────
+// ──────────── VIEW SCREENSHOT / ID CARD ────────────
 function viewScreenshot(id) {
     const reg = dataStore.getRegistrationById(id);
     if (!reg || !reg.paymentScreenshot) return;
+    const isFreeKES = (reg.transactionId === 'FREE-KES-SHROFF') || (reg.couponUsed === 'FREE-KES-SHROFF') || (reg.id && reg.id.startsWith('KS'));
+    const titleText = isFreeKES ? `College ID / Fee Receipt — ${escapeHTML(reg.name)}` : `Payment Screenshot — ${escapeHTML(reg.name)}`;
+    const isPdf = reg.paymentScreenshot.startsWith('PDF:') || reg.paymentScreenshot.startsWith('data:application/pdf');
 
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay open';
     overlay.onclick = () => overlay.remove();
     overlay.innerHTML = `
-        <div class="modal-content glass-card" onclick="event.stopPropagation()" style="max-width: 500px; padding: 24px; border: 1px solid var(--border-glass);">
+        <div class="modal-content glass-card" onclick="event.stopPropagation()" style="max-width: 550px; padding: 24px; border: 1px solid var(--border-glass);">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-                <h3>Payment Screenshot — ${escapeHTML(reg.name)}</h3>
+                <h3 style="font-size:1.1rem; color:var(--gold);">${titleText}</h3>
                 <button class="btn-small" onclick="this.closest('.modal-overlay').remove()">Close ✕</button>
             </div>
-            <img src="${reg.paymentScreenshot}" alt="Payment Screenshot" style="max-width:100%; max-height:400px; object-fit:contain; border-radius:12px; display:block; margin:0 auto;">
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 14px; text-align:center;">Txn ID: <strong>${reg.transactionId || 'N/A'}</strong></p>
+            ${isPdf ? `
+                <div style="text-align:center; padding:32px; background:rgba(255,255,255,0.04); border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+                    <div style="font-size:3rem; margin-bottom:10px;">📄</div>
+                    <p style="color:var(--text); font-weight:600;">Uploaded Document (PDF)</p>
+                    <p style="color:var(--lavender); font-size:0.85rem; margin-top:6px;">${escapeHTML(reg.paymentScreenshot.replace(/^PDF:/, ''))}</p>
+                </div>
+            ` : `
+                <img src="${reg.paymentScreenshot}" alt="${isFreeKES ? 'ID Card / Fee Receipt' : 'Payment Screenshot'}" style="max-width:100%; max-height:440px; object-fit:contain; border-radius:12px; display:block; margin:0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.5);">
+            `}
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted); border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
+                <span>College: <strong style="color:var(--text);">${escapeHTML(reg.college || 'KES Shroff')}</strong></span>
+                <span>${isFreeKES ? '<strong style="color:#4ade80;">FREE REGISTRATION</strong>' : `Txn ID: <strong>${escapeHTML(reg.transactionId || 'N/A')}</strong>`}</span>
+            </div>
         </div>
     `;
     document.body.appendChild(overlay);
