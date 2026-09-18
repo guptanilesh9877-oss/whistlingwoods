@@ -107,7 +107,7 @@ function navigateTo(page) {
 function handleHashRoute() {
     const rawHash = (window.location.hash || '').replace(/^#/, '');
     const cleanHash = rawHash.split('?')[0].split('&')[0] || 'landing';
-    const validPages = ['landing', 'register', 'payment', 'confirmation', 'admin-login', 'admin', 'names', 'find-pass'];
+    const validPages = ['landing', 'register', 'payment', 'confirmation', 'admin-login', 'admin', 'names', 'find-pass', 'kes-shroff'];
     const page = validPages.includes(cleanHash) ? cleanHash : 'landing';
 
     // Also check referral in case query parameters are in hash

@@ -1,0 +1,12 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/kes-shroff", "destination": "/kes-shroff.html" },
+    { "source": "/kes-shroff/", "destination": "/kes-shroff.html" },
+    { "source": "/kes-shroff/index", "destination": "/kes-shroff.html" },
+    { "source": "/kes-shroff/index.html", "destination": "/kes-shroff.html" },
+    { "source": "/principal-invitation", "destination": "/principal-invitation/index.html" },
+    { "source": "/principal-invitation/", "destination": "/principal-invitation/index.html" }
+  ]
+}
