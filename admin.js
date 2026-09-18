@@ -112,6 +112,8 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         const referrerName = refCode 
             ? (promoterMap[refCode] ? `${promoterMap[refCode]} (Promoter)` : (studentMap[refCode] ? `${studentMap[refCode]}` : null))
             : null;
+        // Detect KES Shroff free registration
+        const isFreeKES = (r.transactionId === 'FREE-KES-SHROFF') || (r.couponUsed === 'FREE-KES-SHROFF') || (r.id && r.id.startsWith('KS'));
 
         return `
         <tr id="row-${r.id}" class="${r.rejected ? 'row-rejected' : ''}">
@@ -121,7 +123,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             <td class="col-phone">${escapeHTML(r.phone)}</td>
             <td class="col-college" title="${escapeHTML(r.college)}">${escapeHTML(r.college)}</td>
             <td class="col-date" title="${escapeHTML(r.visitDate || 'Both Days')}"><span class="badge badge-gold-sm">${escapeHTML(r.visitDate ? (r.visitDate.includes('Both') ? 'Both Days' : (r.visitDate.includes('08th') ? 'Day 1 (8th)' : 'Day 2 (9th)')) : 'Both Days')}</span></td>
-            <td class="col-amount">₹${r.finalPrice}</td>
+            <td class="col-amount">${isFreeKES ? `<span style="color:#4ade80; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#4ade80; opacity:0.7; margin-top:2px;">KES Shroff</div>` : `₹${r.finalPrice}`}</td>
             <td class="col-coupon">${r.couponUsed || '—'}</td>
             <td class="col-referral">
                 ${refCode ? `
@@ -134,9 +136,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             </td>
             <td class="col-txnId" title="${r.transactionId || '—'}">${r.transactionId ? r.transactionId.substring(0, 16) : '—'}</td>
             <td class="col-payment">
-                <span class="badge ${r.rejected ? 'badge-rejected' : (r.verified ? 'badge-verified' : 'badge-pending')}" style="${r.rejected ? 'background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.5); font-weight:700;' : ''}">
-                    ${r.rejected ? 'Rejected ✕' : (r.verified ? 'Verified ✓' : 'Pending')}
-                </span>
+                ${isFreeKES && !r.rejected ? `<span class="badge badge-verified" style="background:rgba(34,197,94,0.15); color:#4ade80; border:1px solid rgba(34,197,94,0.4);">Free Reg ✓</span>` : `<span class="badge ${r.rejected ? 'badge-rejected' : (r.verified ? 'badge-verified' : 'badge-pending')}" style="${r.rejected ? 'background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.5); font-weight:700;' : ''}">${r.rejected ? 'Rejected ✕' : (r.verified ? 'Verified ✓' : 'Pending')}</span>`}
             </td>
             <td class="col-attendance">
                 <span class="badge ${r.attended ? 'badge-verified' : 'badge-pending'}" style="cursor: pointer;" onclick="handleToggleAttendance('${r.id}')" title="Click to toggle attendance">

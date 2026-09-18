@@ -1,0 +1,639 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8d6aae">
+    <title>KES Shroff College - Celebrate Cinema 2026 | Free Registration</title>
+    <meta name="description" content="Free registration for KES Shroff College students at Celebrate Cinema 2026 Academic Trek - Whistling Woods International, Film City Mumbai.">
+    <link rel="icon" type="image/png" href="../assets/cc26-logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0d0b14; --surface: #1a1628; --surface2: #221d33;
+            --border: rgba(255,255,255,0.08); --gold: #f7e7c5; --gold-accent: #d4a843;
+            --purple: #8d6aae; --purple-light: #b48fd4; --lavender: #c4b5e4;
+            --text: #f0eaf8; --text-muted: #9085a8; --green: #22c55e;
+            --red: #ef4444; --radius: 16px; --shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+        body::before { content: ''; position: fixed; top: -20%; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse, rgba(141,106,174,0.18) 0%, transparent 70%); pointer-events: none; z-index: 0; }
+        .navbar { position: sticky; top: 0; z-index: 100; backdrop-filter: blur(20px); background: rgba(13,11,20,0.85); border-bottom: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo { height: 36px; width: auto; }
+        .nav-brand-text { font-size: 0.78rem; font-weight: 700; color: var(--gold); letter-spacing: 0.5px; line-height: 1.3; }
+        .nav-brand-sub { font-size: 0.68rem; font-weight: 500; color: var(--text-muted); display: block; }
+        .nav-tag { background: linear-gradient(135deg, rgba(141,106,174,0.25), rgba(212,168,67,0.2)); border: 1px solid rgba(141,106,174,0.4); border-radius: 20px; padding: 5px 14px; font-size: 0.72rem; font-weight: 700; color: var(--purple-light); letter-spacing: 0.5px; }
+        .container { max-width: 780px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+        .hero-banner { text-align: center; padding: 48px 20px 36px; }
+        .hero-eyebrow { display: inline-block; background: linear-gradient(135deg, rgba(212,168,67,0.2), rgba(247,231,197,0.1)); border: 1px solid rgba(212,168,67,0.3); border-radius: 20px; padding: 6px 18px; font-size: 0.72rem; font-weight: 700; color: var(--gold-accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+        .hero-title { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 800; background: linear-gradient(135deg, #f7e7c5 0%, #d4a843 40%, #b48fd4 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.2; margin-bottom: 12px; }
+        .hero-sub { color: var(--lavender); font-size: 1rem; margin-bottom: 8px; }
+        .hero-college-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 6px 16px; font-size: 0.8rem; font-weight: 600; color: #4ade80; margin-top: 10px; }
+        .event-info-strip { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 0 20px 32px; }
+        .info-chip { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; font-size: 0.82rem; color: var(--text); }
+        .info-chip svg { width: 16px; height: 16px; color: var(--gold-accent); flex-shrink: 0; }
+        .steps { display: flex; align-items: center; justify-content: center; padding: 0 20px 28px; }
+        .step { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); }
+        .step.active { color: var(--lavender); }
+        .step.done { color: var(--green); }
+        .step-num { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; }
+        .step.active .step-num { background: var(--purple); border-color: var(--purple); color: #fff; }
+        .step.done .step-num { background: var(--green); border-color: var(--green); color: #fff; }
+        .step-connector { flex: 1; max-width: 40px; height: 1px; background: var(--border); margin: 0 6px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow); }
+        .card-title { font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .card-title svg { width: 18px; height: 18px; color: var(--purple-light); }
+        .free-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(16,185,129,0.15)); border: 1px solid rgba(34,197,94,0.4); border-radius: var(--radius); padding: 14px 20px; margin-bottom: 24px; width: 100%; }
+        .free-badge-icon { font-size: 1.6rem; }
+        .free-badge-text { flex: 1; }
+        .free-badge-title { font-size: 1rem; font-weight: 700; color: #4ade80; display: block; }
+        .free-badge-sub { font-size: 0.78rem; color: rgba(74,222,128,0.75); display: block; margin-top: 2px; }
+        .free-price { font-size: 1.6rem; font-weight: 900; color: #4ade80; }
+        .form-group { margin-bottom: 18px; }
+        .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--lavender); margin-bottom: 7px; }
+        .form-input { width: 100%; background: var(--surface2); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 12px 14px; font-size: 0.9rem; color: var(--text); font-family: 'Inter', sans-serif; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none; }
+        .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(141,106,174,0.15); }
+        .form-input:disabled { opacity: 0.7; cursor: not-allowed; }
+        select.form-input { cursor: pointer; }
+        select.form-input option { background: var(--surface2); color: var(--text); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        @media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } }
+        .upload-zone { border: 2px dashed rgba(141,106,174,0.4); border-radius: 12px; padding: 28px 20px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; background: rgba(141,106,174,0.04); }
+        .upload-zone:hover { border-color: var(--purple); background: rgba(141,106,174,0.08); }
+        .upload-zone.has-file { border-color: rgba(34,197,94,0.5); background: rgba(34,197,94,0.05); }
+        .upload-zone.error-pulse { border-color: var(--red); animation: pulseError 0.6s ease; }
+        @keyframes pulseError { 0%,100% { box-shadow: none; } 50% { box-shadow: 0 0 0 4px rgba(239,68,68,0.25); } }
+        .upload-icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+        .upload-zone p { font-size: 0.85rem; color: var(--lavender); font-weight: 500; }
+        .upload-zone small { font-size: 0.73rem; color: var(--text-muted); margin-top: 4px; display: block; }
+        .upload-preview { max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: contain; display: none; }
+        .upload-filename { font-size: 0.8rem; color: #4ade80; font-weight: 600; margin-top: 8px; display: none; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.2s; text-decoration: none; width: 100%; }
+        .btn-primary { background: linear-gradient(135deg, #8d6aae 0%, #6a48a0 100%); color: #fff; box-shadow: 0 4px 24px rgba(141,106,174,0.35); }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(141,106,174,0.45); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-green { background: linear-gradient(135deg, #16a34a 0%, #15803d 100%); color: #fff; box-shadow: 0 4px 20px rgba(22,163,74,0.35); flex: 1; }
+        .btn-green:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(22,163,74,0.45); }
+        .btn-green:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-sec { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 10px 20px; font-size: 0.82rem; width: auto; border-radius: 10px; font-family: 'Inter', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .btn-sec:hover { border-color: var(--purple); color: var(--lavender); }
+        .page { display: none; }
+        .page.active { display: block; }
+        .ticket-wrapper { background: linear-gradient(135deg, #1a1628 0%, #221d33 100%); border: 1px solid rgba(212,168,67,0.3); border-radius: 20px; overflow: hidden; box-shadow: 0 16px 60px rgba(0,0,0,0.6); }
+        .ticket-header { background: linear-gradient(135deg, #8d6aae 0%, #6a48a0 60%, #4a3580 100%); padding: 24px 28px; text-align: center; }
+        .ticket-header-logo { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px; }
+        .ticket-logo { height: 44px; }
+        .ticket-event-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; color: var(--gold); }
+        .ticket-event-sub { font-size: 0.78rem; color: rgba(255,255,255,0.75); margin-top: 2px; }
+        .ticket-free-badge { display: inline-block; background: rgba(34,197,94,0.25); border: 1px solid rgba(34,197,94,0.5); border-radius: 20px; padding: 4px 14px; font-size: 0.72rem; font-weight: 700; color: #4ade80; letter-spacing: 1px; margin-top: 8px; }
+        .ticket-body { padding: 24px 28px; }
+        .ticket-name { font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+        .ticket-college { font-size: 0.85rem; color: var(--purple-light); margin-bottom: 20px; font-weight: 500; }
+        .ticket-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .ticket-detail { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px; }
+        .ticket-detail-label { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .ticket-detail-value { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+        .ticket-qr-section { text-align: center; padding: 20px; background: rgba(255,255,255,0.03); border-radius: 12px; margin-top: 20px; }
+        .ticket-qr-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; }
+        .ticket-id-badge { font-family: monospace; font-size: 0.85rem; color: var(--gold); background: rgba(212,168,67,0.08); border: 1px solid rgba(212,168,67,0.2); border-radius: 8px; padding: 8px 16px; display: inline-block; margin-top: 8px; }
+        .ticket-dashes { border-top: 2px dashed rgba(255,255,255,0.1); margin: 20px 0; }
+        .ticket-footer { padding: 16px 28px; background: rgba(255,255,255,0.02); border-top: 1px solid var(--border); text-align: center; }
+        .ticket-footer p { font-size: 0.75rem; color: var(--text-muted); }
+        .ticket-footer strong { color: var(--lavender); }
+        #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { padding: 12px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; animation: toastIn 0.3s ease; max-width: 340px; }
+        @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: none; opacity: 1; } }
+        .toast-success { background: rgba(22,163,74,0.95); color: #fff; }
+        .toast-error   { background: rgba(239,68,68,0.95); color: #fff; }
+        .toast-info    { background: rgba(141,106,174,0.95); color: #fff; }
+        .confetti-piece { position: fixed; border-radius: 2px; animation: confettiFall 2.5s ease-in forwards; pointer-events: none; z-index: 9998; }
+        @keyframes confettiFall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+        .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .site-footer { text-align: center; padding: 32px 20px 48px; color: var(--text-muted); font-size: 0.78rem; border-top: 1px solid var(--border); margin-top: 40px; }
+        .site-footer a { color: var(--purple-light); text-decoration: none; }
+        .info-note { background: rgba(141,106,174,0.1); border: 1px solid rgba(141,106,174,0.25); border-radius: 10px; padding: 12px 14px; font-size: 0.8rem; color: var(--lavender); margin-bottom: 18px; display: flex; align-items: flex-start; gap: 10px; }
+        .info-note svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; color: var(--purple-light); }
+        @media (max-width: 600px) { .card { padding: 20px; } .ticket-body, .ticket-header { padding: 18px; } .ticket-details-grid { grid-template-columns: 1fr; } .ticket-footer { padding: 14px 18px; } }
+    </style>
+</head>
+<body>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a class="nav-brand" href="../index.html">
+        <img src="../assets/cc26-logo.png" alt="CC2026" class="nav-logo" onerror="this.style.display='none'">
+        <div>
+            <span class="nav-brand-text">Celebrate Cinema 2026</span>
+            <span class="nav-brand-sub">Academic Trek &bull; Film City, Mumbai</span>
+        </div>
+    </a>
+    <span class="nav-tag">KES Shroff Portal</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero-banner">
+    <div class="container">
+        <div class="hero-eyebrow">&#127916; Special Institution Access</div>
+        <h1 class="hero-title">Celebrate Cinema 2026<br>Academic Trek</h1>
+        <p class="hero-sub">08th &amp; 09th October 2026 &bull; Whistling Woods International, Film City</p>
+        <div class="hero-college-tag">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            KES Shroff College &mdash; Free Registration
+        </div>
+    </div>
+</div>
+
+<!-- EVENT INFO -->
+<div class="event-info-strip">
+    <div class="info-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        08th &amp; 09th Oct 2026
+    </div>
+    <div class="info-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        9:00 AM &ndash; 5:00 PM
+    </div>
+    <div class="info-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        Film City, Goregaon East
+    </div>
+    <div class="info-chip" style="border-color:rgba(34,197,94,0.3); color:#4ade80; background:rgba(34,197,94,0.06);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        100% Free for KES Shroff Students
+    </div>
+</div>
+
+<!-- STEPS -->
+<div class="steps">
+    <div class="step active" id="step1"><div class="step-num">1</div><span>Your Details</span></div>
+    <div class="step-connector"></div>
+    <div class="step" id="step2"><div class="step-num">2</div><span>Upload ID</span></div>
+    <div class="step-connector"></div>
+    <div class="step" id="step3"><div class="step-num">3</div><span>Your Pass</span></div>
+</div>
+
+<!-- PAGE 1: FORM -->
+<div class="page active" id="page-form">
+    <div class="container">
+        <div class="card">
+            <div class="free-badge">
+                <span class="free-badge-icon">&#127903;&#65039;</span>
+                <div class="free-badge-text">
+                    <span class="free-badge-title">Free Academic Trek Pass</span>
+                    <span class="free-badge-sub">Exclusively for KES Shroff College students &mdash; No payment required</span>
+                </div>
+                <span class="free-price">FREE</span>
+            </div>
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Student Details
+            </div>
+            <form id="kes-reg-form" novalidate>
+                <div class="form-group">
+                    <label class="form-label" for="ks-name">Full Name *</label>
+                    <input type="text" id="ks-name" class="form-input" required placeholder="Enter your full name" autocomplete="name">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="ks-email">Email Address *</label>
+                        <input type="email" id="ks-email" class="form-input" required placeholder="your@email.com" autocomplete="email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ks-phone">Phone Number *</label>
+                        <input type="tel" id="ks-phone" class="form-input" required placeholder="+91 XXXXX XXXXX" autocomplete="tel">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="ks-year">Year of Study *</label>
+                        <select id="ks-year" class="form-input" required>
+                            <option value="">Select Year</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                            <option value="PG">Post Graduate</option>
+                            <option value="Alumni">Alumni</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="ks-college">College</label>
+                        <input type="text" id="ks-college" class="form-input" value="KES Shroff College" disabled>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ks-visit">Visiting On *</label>
+                    <select id="ks-visit" class="form-input" required>
+                        <option value="" selected disabled>Select visiting date</option>
+                        <option value="Both Days (08th &amp; 09th Oct)">Both Days (08th &amp; 09th Oct) &mdash; Full 2-Day Trek</option>
+                        <option value="08th October 2026 (Day 1)">08th October 2026 (Day 1 Only)</option>
+                        <option value="09th October 2026 (Day 2)">09th October 2026 (Day 2 Only)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ks-department">Department / Stream (Optional)</label>
+                    <input type="text" id="ks-department" class="form-input" placeholder="e.g. B.Com, BAF, BMS, etc.">
+                </div>
+                <button type="submit" class="btn btn-primary" id="ks-next-btn">
+                    Continue to ID Upload
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+            </form>
+        </div>
+        <div class="card" style="background:rgba(141,106,174,0.06); border-color:rgba(141,106,174,0.2);">
+            <p style="font-size:0.8rem; color:var(--text-muted); text-align:center;">
+                &#128222; Need help? Contact <strong style="color:var(--lavender);">Nilesh Gupta</strong> &mdash;
+                <a href="tel:+918699260386" style="color:var(--purple-light);">+91 86992 60386</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 2: ID UPLOAD -->
+<div class="page" id="page-upload">
+    <div class="container">
+        <div class="card">
+            <div class="card-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h2M15 12h2M7 16h10"/></svg>
+                Upload Student ID Card
+            </div>
+            <div class="info-note">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>Please upload your <strong>KES Shroff College ID Card</strong>. If you don't have your ID card, you may upload your <strong>fee receipt</strong> instead.</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">
+                    Student ID Card / Fee Receipt *
+                    <span style="color:var(--gold-accent);font-size:0.72rem;background:rgba(212,168,67,0.1);padding:2px 8px;border-radius:4px;border:1px solid rgba(212,168,67,0.25);margin-left:6px;">Mandatory</span>
+                </label>
+                <div class="upload-zone" id="upload-zone">
+                    <input type="file" id="id-card-input" accept="image/*,.pdf" hidden>
+                    <div id="upload-placeholder">
+                        <span class="upload-icon">&#129714;</span>
+                        <p><strong>Click or drag to upload your ID card</strong></p>
+                        <small>JPG, PNG, or PDF &bull; Max 5 MB<br>If no ID card, upload fee receipt</small>
+                    </div>
+                    <img id="upload-preview" class="upload-preview" alt="ID card preview">
+                    <div class="upload-filename" id="upload-filename"></div>
+                </div>
+            </div>
+            <div style="display:flex; gap:12px; margin-top:4px;">
+                <button class="btn-sec" id="ks-back-btn" type="button">&#8592; Back</button>
+                <button class="btn btn-green" id="ks-submit-btn" type="button">
+                    <span id="submit-label">Complete Free Registration</span>
+                    <div class="spinner" id="submit-spinner" style="display:none;"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 3: TICKET -->
+<div class="page" id="page-ticket">
+    <div class="container">
+        <div style="text-align:center; padding: 0 0 24px;">
+            <div style="font-size:2.5rem; margin-bottom:8px;">&#127881;</div>
+            <h2 style="font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--gold); margin-bottom:6px;">You're In!</h2>
+            <p style="color:var(--lavender); font-size:0.9rem;">Your free Academic Trek pass has been confirmed.</p>
+        </div>
+        <div class="ticket-wrapper">
+            <div class="ticket-header">
+                <div class="ticket-header-logo">
+                    <img src="../assets/cc26-logo.png" alt="CC2026" class="ticket-logo" onerror="this.style.display='none'">
+                    <img src="../assets/wwi-logo.png" alt="WWI" class="ticket-logo" onerror="this.style.display='none'">
+                </div>
+                <div class="ticket-event-name">Celebrate Cinema 2026</div>
+                <div class="ticket-event-sub">Academic Trek &bull; Film City, Mumbai</div>
+                <div class="ticket-free-badge">&#10003; FREE REGISTRATION &mdash; KES SHROFF COLLEGE</div>
+            </div>
+            <div class="ticket-body">
+                <div class="ticket-name" id="t-name">&mdash;</div>
+                <div class="ticket-college" id="t-college">KES Shroff College</div>
+                <div class="ticket-details-grid">
+                    <div class="ticket-detail">
+                        <div class="ticket-detail-label">Registration ID</div>
+                        <div class="ticket-detail-value" id="t-id" style="font-family:monospace; color:var(--gold);">&mdash;</div>
+                    </div>
+                    <div class="ticket-detail">
+                        <div class="ticket-detail-label">Pass Type</div>
+                        <div class="ticket-detail-value" style="color:#4ade80;">Free Entry</div>
+                    </div>
+                    <div class="ticket-detail">
+                        <div class="ticket-detail-label">Visit Date</div>
+                        <div class="ticket-detail-value" id="t-visit">&mdash;</div>
+                    </div>
+                    <div class="ticket-detail">
+                        <div class="ticket-detail-label">Year of Study</div>
+                        <div class="ticket-detail-value" id="t-year">&mdash;</div>
+                    </div>
+                </div>
+                <div class="ticket-dashes"></div>
+                <div class="ticket-qr-section">
+                    <div id="t-qr" style="display:flex;align-items:center;justify-content:center;min-height:170px;"></div>
+                    <div class="ticket-qr-label">Scan this QR at the gate for entry</div>
+                    <div class="ticket-id-badge" id="t-id-badge">&mdash;</div>
+                </div>
+            </div>
+            <div class="ticket-footer">
+                <p>&#128205; <strong>Whistling Woods International</strong>, Film City, Goregaon East, Mumbai</p>
+                <p style="margin-top:6px;">Carry this pass + <strong>original college ID</strong> for entry verification</p>
+            </div>
+        </div>
+        <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+            <button class="btn-sec" id="new-reg-btn">Register Another Student</button>
+            <a href="../index.html" class="btn-sec">&#8592; Main Website</a>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+
+<footer class="site-footer">
+    <p>Celebrate Cinema 2026 &mdash; The Academic Trek</p>
+    <p style="margin-top:4px;">Promoted &amp; Managed by <strong>CareerBeam &ndash; Vigor</strong> &bull; <a href="tel:+918699260386">+91 86992 60386</a> (Nilesh Gupta)</p>
+    <p style="margin-top:6px; font-size:0.72rem; opacity:0.5;">Exclusive registration portal for KES Shroff College students.</p>
+</footer>
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+var KES = {
+    SUPABASE_URL: 'https://rnylpxfjhxpmjwolsqcd.supabase.co',
+    SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8',
+    STORAGE_KEY: 'cc2026_registrations',
+    SOURCE: 'kes-shroff',
+    COLLEGE: 'KES Shroff College'
+};
+
+// ── STATE ───────────────────────────────────────────────────────────────────
+var sb = null, reg = null, idImg = null;
+
+// ── SUPABASE INIT ──────────────────────────────────────────────────────────
+(function init(n) {
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+        sb = window.supabase.createClient(KES.SUPABASE_URL, KES.SUPABASE_KEY);
+        console.log('Supabase ready for KES Shroff portal');
+    } else if (n > 0) { setTimeout(function(){ init(n-1); }, 300); }
+}(20));
+
+// ── TOAST ───────────────────────────────────────────────────────────────────
+function toast(msg, type) {
+    type = type || 'info';
+    var t = document.createElement('div');
+    t.className = 'toast toast-' + type;
+    t.textContent = msg;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(function(){ t.remove(); }, 4500);
+}
+
+// ── ID GENERATOR ──────────────────────────────────────────────────────────
+function makeId() {
+    var r = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return 'KS' + Date.now().toString(36).toUpperCase().slice(-4) + r;
+}
+
+// ── PAGE SWITCHER ─────────────────────────────────────────────────────────
+function goTo(pageId) {
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById(pageId).classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    updateSteps(pageId);
+}
+
+function updateSteps(pageId) {
+    var map = {'page-form': 1, 'page-upload': 2, 'page-ticket': 3};
+    var active = map[pageId] || 1;
+    [1,2,3].forEach(function(n) {
+        var el = document.getElementById('step' + n);
+        el.classList.remove('active', 'done');
+        if (n < active) el.classList.add('done');
+        else if (n === active) el.classList.add('active');
+    });
+}
+
+// ── FORM SUBMIT ──────────────────────────────────────────────────────────
+document.getElementById('kes-reg-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var name  = document.getElementById('ks-name').value.trim();
+    var email = document.getElementById('ks-email').value.trim().toLowerCase();
+    var phone = document.getElementById('ks-phone').value.trim();
+    var year  = document.getElementById('ks-year').value;
+    var visit = document.getElementById('ks-visit').value;
+    var dept  = document.getElementById('ks-department').value.trim();
+
+    if (!name || name.length < 2) { toast('Please enter your full name', 'error'); document.getElementById('ks-name').focus(); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('Please enter a valid email address', 'error'); document.getElementById('ks-email').focus(); return; }
+    if (!phone || phone.replace(/\D/g,'').length < 10) { toast('Please enter a valid phone number', 'error'); document.getElementById('ks-phone').focus(); return; }
+    if (!year) { toast('Please select your year of study', 'error'); return; }
+    if (!visit) { toast('Please select your visiting date', 'error'); return; }
+
+    // Check duplicate
+    try {
+        var all = JSON.parse(localStorage.getItem(KES.STORAGE_KEY) || '[]');
+        var dup = all.find(function(r){ return r.email === email && r.registrationSource === KES.SOURCE; });
+        if (dup) { toast('Already registered! Showing your pass.', 'info'); fillTicket(dup); goTo('page-ticket'); return; }
+    } catch(err) {}
+
+    reg = {
+        id: makeId(), name: name, email: email, phone: phone,
+        year: year, college: KES.COLLEGE, visitDate: visit, department: dept,
+        registrationSource: KES.SOURCE, basePrice: 0, earlyBirdDiscount: 0,
+        couponDiscount: 0, finalPrice: 0, transactionId: 'FREE-KES-SHROFF',
+        paymentScreenshot: '', idCardUpload: '', verified: false,
+        attended: false, attendedAt: null, referralCode: '',
+        referredBy: '', couponUsed: '', timestamp: new Date().toISOString()
+    };
+    goTo('page-upload');
+});
+
+// ── BACK ─────────────────────────────────────────────────────────────────
+document.getElementById('ks-back-btn').addEventListener('click', function(){ goTo('page-form'); });
+
+// ── FILE UPLOAD ───────────────────────────────────────────────────────────
+var zone  = document.getElementById('upload-zone');
+var fInput = document.getElementById('id-card-input');
+
+zone.addEventListener('click', function(){ fInput.click(); });
+zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.classList.add('has-file'); });
+zone.addEventListener('dragleave', function(){ if (!idImg) zone.classList.remove('has-file'); });
+zone.addEventListener('drop', function(e){ e.preventDefault(); var f = e.dataTransfer.files[0]; if (f) handleFile(f); });
+fInput.addEventListener('change', function(){ if (fInput.files[0]) handleFile(fInput.files[0]); });
+
+function handleFile(file) {
+    if (file.size > 5 * 1024 * 1024) { toast('File too large. Max 5 MB.', 'error'); return; }
+    var fnEl = document.getElementById('upload-filename');
+    var prev  = document.getElementById('upload-preview');
+    var placeholder = document.getElementById('upload-placeholder');
+    fnEl.textContent = '\u2713  ' + file.name;
+    fnEl.style.display = 'block';
+    zone.classList.add('has-file');
+    zone.classList.remove('error-pulse');
+
+    if (file.type.startsWith('image/')) {
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+            var img = new Image();
+            img.onload = function() {
+                var canvas = document.createElement('canvas');
+                var MAX = 900, w = img.width, h = img.height;
+                if (w > MAX) { h = h * MAX / w; w = MAX; }
+                if (h > MAX) { w = w * MAX / h; h = MAX; }
+                canvas.width = w; canvas.height = h;
+                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                idImg = canvas.toDataURL('image/jpeg', 0.8);
+                prev.src = idImg; prev.style.display = 'block';
+                placeholder.style.display = 'none';
+            };
+            img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        idImg = 'PDF:' + file.name;
+        placeholder.innerHTML = '<span class="upload-icon">&#128196;</span><p><strong>PDF uploaded successfully</strong></p>';
+    }
+    toast('ID card uploaded \u2713', 'success');
+}
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────
+document.getElementById('ks-submit-btn').addEventListener('click', async function() {
+    if (!idImg) {
+        zone.classList.remove('error-pulse');
+        void zone.offsetWidth;
+        zone.classList.add('error-pulse');
+        toast('Please upload your ID card or fee receipt', 'error');
+        return;
+    }
+    if (!reg) { toast('Session lost. Please fill the form again.', 'error'); goTo('page-form'); return; }
+
+    reg.idCardUpload = idImg;
+    reg.paymentScreenshot = idImg;
+
+    var btn = document.getElementById('ks-submit-btn');
+    var lbl = document.getElementById('submit-label');
+    var spn = document.getElementById('submit-spinner');
+    btn.disabled = true; lbl.style.display = 'none'; spn.style.display = 'block';
+
+    try {
+        saveLocal(reg);
+        await pushSupabase(reg);
+        fillTicket(reg);
+        goTo('page-ticket');
+        confetti();
+        toast('Registration successful! Your pass is ready \uD83C\uDFAC', 'success');
+    } catch(err) {
+        console.error(err);
+        fillTicket(reg);
+        goTo('page-ticket');
+        toast('Registered! Will sync when online.', 'info');
+    } finally {
+        btn.disabled = false; lbl.style.display = 'block'; spn.style.display = 'none';
+    }
+});
+
+// ── LOCAL SAVE ────────────────────────────────────────────────────────────
+function saveLocal(r) {
+    try {
+        var all = JSON.parse(localStorage.getItem(KES.STORAGE_KEY) || '[]');
+        if (!all.some(function(x){ return x.id === r.id; })) {
+            all.push(r);
+            try { localStorage.setItem(KES.STORAGE_KEY, JSON.stringify(all)); }
+            catch(e2) {
+                var lite = all.map(function(x){ return Object.assign({}, x, {paymentScreenshot: '', idCardUpload: ''}); });
+                localStorage.setItem(KES.STORAGE_KEY, JSON.stringify(lite));
+            }
+        }
+    } catch(e) { console.warn('LocalStorage error:', e); }
+}
+
+// ── SUPABASE PUSH ─────────────────────────────────────────────────────────
+async function pushSupabase(r) {
+    if (!sb) { offline(r); return; }
+    var visitStr = r.visitDate || '';
+    var combinedYear = visitStr ? (r.year + '__VD__' + visitStr) : r.year;
+    if (r.department) combinedYear += ' | ' + r.department;
+    var dbR = {
+        id: r.id, name: r.name, email: r.email, phone: r.phone,
+        college: r.college, year: combinedYear,
+        referral_code: '', referred_by: 'SOURCE:kes-shroff',
+        coupon_used: 'FREE-KES-SHROFF',
+        base_price: 0, early_bird_discount: 0, coupon_discount: 0, final_price: 0,
+        transaction_id: 'FREE-KES-SHROFF',
+        payment_screenshot: (r.paymentScreenshot || '').substring(0, 2000),
+        verified: true, attended: false, attended_at: null, timestamp: r.timestamp
+    };
+    var res = await sb.from('registrations').upsert([dbR]);
+    if (res.error) { offline(r); throw res.error; }
+    console.log('KES Shroff synced:', r.id);
+}
+
+function offline(r) {
+    try {
+        var q = JSON.parse(localStorage.getItem('cc2026_offline_submissions') || '[]');
+        if (!q.some(function(x){ return x.id === r.id; })) { q.push(r); localStorage.setItem('cc2026_offline_submissions', JSON.stringify(q)); }
+    } catch(e) {}
+}
+
+// ── FILL TICKET ───────────────────────────────────────────────────────────
+function fillTicket(r) {
+    document.getElementById('t-name').textContent    = r.name    || '\u2014';
+    document.getElementById('t-college').textContent = r.college || KES.COLLEGE;
+    document.getElementById('t-id').textContent      = r.id      || '\u2014';
+    document.getElementById('t-id-badge').textContent = r.id     || '\u2014';
+    document.getElementById('t-visit').textContent   = r.visitDate || 'Both Days';
+    document.getElementById('t-year').textContent    = r.year    || '\u2014';
+    makeQR(r.id);
+}
+
+function makeQR(id) {
+    var c = document.getElementById('t-qr');
+    c.innerHTML = '';
+    if (!id) return;
+    if (window.QRCode && typeof window.QRCode === 'function') {
+        try {
+            var tmp = document.createElement('div');
+            new window.QRCode(tmp, { text: id, width: 170, height: 170, colorDark: '#000', colorLight: '#fff', correctLevel: (window.QRCode.CorrectLevel ? window.QRCode.CorrectLevel.M : 0) });
+            setTimeout(function() {
+                var img = tmp.querySelector('img'), cvs = tmp.querySelector('canvas');
+                var el = (img && img.src && img.src.length > 50) ? img : cvs;
+                if (el) { el.style.cssText = 'width:170px;height:170px;border-radius:8px;display:block;'; c.appendChild(el); }
+            }, 100);
+            return;
+        } catch(e) {}
+    }
+    c.innerHTML = '<div style="font-family:monospace;font-size:0.8rem;color:var(--gold);background:rgba(0,0,0,0.3);border-radius:8px;padding:20px;">' + id + '</div>';
+}
+
+// ── NEW REGISTRATION ──────────────────────────────────────────────────────
+document.getElementById('new-reg-btn').addEventListener('click', function() {
+    reg = null; idImg = null;
+    document.getElementById('kes-reg-form').reset();
+    document.getElementById('ks-college').value = KES.COLLEGE;
+    document.getElementById('upload-placeholder').style.display = '';
+    document.getElementById('upload-preview').style.display = 'none';
+    document.getElementById('upload-filename').style.display = 'none';
+    zone.classList.remove('has-file');
+    goTo('page-form');
+});
+
+// ── CONFETTI ──────────────────────────────────────────────────────────────
+function confetti() {
+    var colors = ['#f7e7c5','#d4a843','#8d6aae','#b48fd4','#4ade80','#60a5fa','#f472b6'];
+    for (var i = 0; i < 80; i++) {
+        (function(idx) {
+            setTimeout(function() {
+                var c = document.createElement('div');
+                c.className = 'confetti-piece';
+                c.style.cssText = 'left:' + (Math.random()*100) + 'vw;top:-20px;background:' + colors[Math.floor(Math.random()*colors.length)] + ';width:' + (6+Math.random()*8) + 'px;height:' + (6+Math.random()*8) + 'px;animation-duration:' + (1.5+Math.random()*2) + 's;animation-delay:' + (Math.random()*0.5) + 's;border-radius:' + (Math.random()>0.5?'50%':'2px') + ';';
+                document.body.appendChild(c);
+                setTimeout(function(){ c.remove(); }, 4000);
+            }, idx * 20);
+        })(i);
+    }
+}
+</script>
+</body>
+</html>
