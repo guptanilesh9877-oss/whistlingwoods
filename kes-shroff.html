@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#8d6aae">
     <title>KES Shroff College | Student Registration — Celebrate Cinema 2026</title>
     <meta name="description" content="Official Registration for KES Shroff College students at Celebrate Cinema 2026 Academic Trek — Whistling Woods International, Film City Mumbai.">
-    <link rel="icon" type="image/png" href="assets/cc26-logo.png">
+    <link rel="icon" type="image/png" href="/assets/cc26-logo.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,12 +14,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Main Website Stylesheet -->
-    <link rel="stylesheet" href="style.css?v=5.4">
+    <link rel="stylesheet" href="/style.css?v=5.5">
 
     <!-- Supabase & QR Code & html2canvas -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
-    <script src="assets/html2canvas.min.js"></script>
+    <script src="/assets/html2canvas.min.js"></script>
 
     <style>
         /* ═══════════════════════════════════════════════
@@ -732,14 +732,14 @@
 <!-- Top Navigation -->
 <header class="ks-nav">
     <div class="ks-nav-inner">
-        <a href="./" class="ks-brand-lockup" title="Back to Celebrate Cinema 2026">
-            <img src="assets/wwi-logo.png" alt="Whistling Woods" style="height:22px;">
+        <a href="/" class="ks-brand-lockup" title="Back to Celebrate Cinema 2026">
+            <img src="/assets/wwi-logo.png" alt="Whistling Woods" style="height:22px;">
             <div style="width:1px; height:18px; background:rgba(247,231,197,0.35);"></div>
-            <img src="assets/cc26-logo.png" alt="Celebrate Cinema 2026" style="height:28px;">
+            <img src="/assets/cc26-logo.png" alt="Celebrate Cinema 2026" style="height:28px;">
             <div style="width:1px; height:18px; background:rgba(247,231,197,0.35);"></div>
-            <img src="careerbeam_logo.png" alt="CareerBeam" style="height:20px; background:#fff; padding:2px 6px; border-radius:4px;">
+            <img src="/careerbeam_logo.png" alt="CareerBeam" style="height:20px; background:#fff; padding:2px 6px; border-radius:4px;">
         </a>
-        <a href="./" class="ks-btn-back">
+        <a href="/" class="ks-btn-back">
             <span>← Main Website</span>
         </a>
     </div>
@@ -1031,11 +1031,11 @@
                 <!-- Header Ribbon -->
                 <div class="bp-header">
                     <div class="bp-logos">
-                        <img src="assets/wwi-logo.png" alt="WWI Logo" class="bp-logo-wwi">
+                        <img src="/assets/wwi-logo.png" alt="WWI Logo" class="bp-logo-wwi">
                         <div class="bp-brand-divider"></div>
-                        <img src="assets/cc26-logo.png" alt="CC26 Logo" class="bp-logo-cc26">
+                        <img src="/assets/cc26-logo.png" alt="CC26 Logo" class="bp-logo-cc26">
                         <div class="bp-brand-divider"></div>
-                        <img src="careerbeam_logo.png" alt="CareerBeam" class="bp-logo-cb">
+                        <img src="/careerbeam_logo.png" alt="CareerBeam" class="bp-logo-cb">
                     </div>
                     <div class="bp-header-badge">
                         <span class="bp-badge-text">KES SHROFF • DELEGATE PASS</span>
@@ -1181,11 +1181,11 @@
 <!-- Footer -->
 <footer class="footer" style="margin-top:60px;">
     <div class="footer-branding-row">
-        <img src="assets/wwi-logo.png" alt="Whistling Woods International" class="footer-wwi-logo">
+        <img src="/assets/wwi-logo.png" alt="Whistling Woods International" class="footer-wwi-logo">
         <span class="footer-divider-dot">•</span>
-        <img src="assets/cc26-logo.png" alt="Celebrate Cinema 2026" class="footer-cc26-logo">
+        <img src="/assets/cc26-logo.png" alt="Celebrate Cinema 2026" class="footer-cc26-logo">
         <span class="footer-divider-dot">•</span>
-        <img src="careerbeam_logo.png" alt="CareerBeam" class="footer-cb-logo">
+        <img src="/careerbeam_logo.png" alt="CareerBeam" class="footer-cb-logo">
     </div>
     <p class="footer-title">Celebrate Cinema 2026 — The Academic Trek</p>
     <p class="footer-sub">Whistling Woods International, Film City, Goregaon East, Mumbai</p>
@@ -1202,10 +1202,8 @@
 (function cleanUrl() {
     try {
         var p = window.location.pathname;
-        if (p.includes('index.html') || p.includes('index')) {
-            var clean = p.replace(/\/index(\.html)?$/, '');
-            if (!clean) clean = '/kes-shroff';
-            window.history.replaceState({}, document.title, clean + window.location.search + window.location.hash);
+        if (p.includes('index.html') || p.includes('index') || p.endsWith('/kes-shroff/')) {
+            window.history.replaceState({}, document.title, '/kes-shroff' + window.location.search + window.location.hash);
         }
     } catch(e) {}
 })();
@@ -1216,13 +1214,19 @@ var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 var LOCAL_STORAGE_KEY = 'cc2026_registrations';
 
 var sbClient = null;
-if (window.supabase && typeof window.supabase.createClient === 'function') {
-    try {
-        sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-    } catch(e) {
-        console.warn('Supabase initialization warning:', e);
+function getSbClient() {
+    if (sbClient) return sbClient;
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+        try {
+            sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+            return sbClient;
+        } catch(e) {
+            console.warn('Supabase client init error:', e);
+        }
     }
+    return null;
 }
+getSbClient();
 
 // ── PARTICLES BACKGROUND ──────────────────────────────────────
 (function initParticles() {
@@ -1333,7 +1337,7 @@ function handleSelectedFile(file) {
             var img = new Image();
             img.onload = function() {
                 var canvas = document.createElement('canvas');
-                var MAX_DIM = 960;
+                var MAX_DIM = 800;
                 var width = img.width;
                 var height = img.height;
                 if (width > MAX_DIM) {
@@ -1348,7 +1352,7 @@ function handleSelectedFile(file) {
                 canvas.height = height;
                 var ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
-                currentFileBase64 = canvas.toDataURL('image/jpeg', 0.82);
+                currentFileBase64 = canvas.toDataURL('image/jpeg', 0.75);
 
                 previewImg.src = currentFileBase64;
                 previewImg.style.display = 'block';
@@ -1356,20 +1360,30 @@ function handleSelectedFile(file) {
                 uploadPrompt.style.display = 'none';
                 previewBox.style.display = 'block';
                 uploadZone.classList.add('has-file');
-                showToast('Document attached successfully ✓', 'info');
+                showToast('ID Card / Fee Receipt attached ✓', 'info');
             };
             img.src = evt.target.result;
         };
         reader.readAsDataURL(file);
     } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-        currentFileBase64 = 'PDF:' + file.name;
         previewImg.style.display = 'none';
         previewPdf.style.display = 'block';
         pdfFilename.textContent = file.name;
         uploadPrompt.style.display = 'none';
         previewBox.style.display = 'block';
         uploadZone.classList.add('has-file');
-        showToast('PDF Document attached ✓', 'info');
+
+        if (file.size <= 3 * 1024 * 1024) {
+            var pdfReader = new FileReader();
+            pdfReader.onload = function(evt) {
+                currentFileBase64 = evt.target.result;
+                showToast('PDF Document attached ✓', 'info');
+            };
+            pdfReader.readAsDataURL(file);
+        } else {
+            currentFileBase64 = 'PDF:' + file.name;
+            showToast('PDF Document attached ✓', 'info');
+        }
     } else {
         showToast('Please upload an image (JPG, PNG) or PDF.', 'error');
     }
@@ -1473,11 +1487,12 @@ document.getElementById('kes-form').addEventListener('submit', async function(e)
         showToast('Registration Confirmed! Your boarding pass is ready.', 'info');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch(err) {
-        console.warn('Completed with local cache:', err);
-        renderTicket(regData);
-        switchStep('step-ticket');
-        showToast('Pass generated and saved locally.', 'info');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        console.error('Registration failed to sync to database:', err);
+        showToast('Could not save registration to database: ' + (err.message || 'Please check your connection') + '. Please try again.', 'error');
+        btn.disabled = false;
+        btnText.style.display = 'inline-block';
+        btnSpinner.style.display = 'none';
+        return;
     } finally {
         btn.disabled = false;
         btnText.style.display = 'inline-block';
@@ -1499,11 +1514,17 @@ function saveLocal(r) {
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(lite));
             }
         }
+        var offlineQueue = JSON.parse(localStorage.getItem('cc2026_offline_submissions') || '[]');
+        if (!offlineQueue.some(function(x){ return x.id === r.id; })) {
+            offlineQueue.push(r);
+            try {
+                localStorage.setItem('cc2026_offline_submissions', JSON.stringify(offlineQueue));
+            } catch(e) {}
+        }
     } catch(e) {}
 }
 
 async function saveSupabase(r) {
-    if (!sbClient) return;
     var row = {
         id: r.id,
         name: r.name,
@@ -1519,14 +1540,67 @@ async function saveSupabase(r) {
         coupon_discount: 0,
         final_price: 0,
         transaction_id: 'FREE-KES-SHROFF',
-        payment_screenshot: (r.paymentScreenshot || '').substring(0, 5000),
+        payment_screenshot: r.paymentScreenshot || '',
         verified: true,
         attended: false,
         attended_at: null,
         timestamp: r.timestamp
     };
-    var res = await sbClient.from('registrations').upsert([row]);
-    if (res.error) throw res.error;
+
+    var saved = false;
+    var lastError = null;
+
+    // Strategy 1: Direct native fetch to Supabase REST API (instant, resilient, zero CDN dependency)
+    try {
+        var restRes = await fetch(SUPABASE_URL + '/rest/v1/registrations', {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_ANON,
+                'Authorization': 'Bearer ' + SUPABASE_ANON,
+                'Content-Type': 'application/json',
+                'Prefer': 'resolution=merge-duplicates'
+            },
+            body: JSON.stringify(row)
+        });
+
+        if (restRes.ok || restRes.status === 201 || restRes.status === 204 || restRes.status === 200) {
+            console.log('⚡ Record persisted to Supabase via Direct REST API:', r.id);
+            saved = true;
+            return true;
+        } else {
+            var errText = await restRes.text();
+            console.warn('Direct REST API non-ok status:', restRes.status, errText);
+            lastError = new Error('Database error ' + restRes.status + ': ' + errText);
+        }
+    } catch(fetchErr) {
+        console.warn('Direct REST API fetch exception:', fetchErr);
+        lastError = fetchErr;
+    }
+
+    // Strategy 2: Supabase JS SDK client fallback
+    if (!saved) {
+        try {
+            var client = getSbClient();
+            if (client) {
+                var res = await client.from('registrations').upsert([row]);
+                if (!res.error) {
+                    console.log('⚡ Record persisted to Supabase via SDK client:', r.id);
+                    saved = true;
+                    return true;
+                } else {
+                    console.warn('SDK client error:', res.error);
+                    lastError = new Error(res.error.message || 'Supabase SDK error');
+                }
+            }
+        } catch(sdkErr) {
+            console.warn('Supabase SDK exception:', sdkErr);
+            lastError = sdkErr;
+        }
+    }
+
+    if (!saved) {
+        throw (lastError || new Error('Could not establish connection to registration database.'));
+    }
 }
 
 function renderTicket(r) {

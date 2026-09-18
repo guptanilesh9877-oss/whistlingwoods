@@ -33,7 +33,8 @@ const DEFAULT_COUPONS = [
     { code: 'CINEMA50', discount: 50, active: true, description: '₹50 off' },
     { code: 'EARLYBIRD25', discount: 25, active: true, description: '₹25 off' },
     { code: 'WWI100', discount: 100, active: true, description: '₹100 off — Free Entry!' },
-    { code: 'FILMS30', discount: 30, active: true, description: '₹30 off' }
+    { code: 'FILMS30', discount: 30, active: true, description: '₹30 off' },
+    { code: 'FREE-KES-SHROFF', discount: 150, active: true, description: 'KES Shroff Special — 100% Free Entry' }
 ];
 
 // ============================================

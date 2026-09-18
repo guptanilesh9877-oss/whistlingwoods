@@ -72,6 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ──────────── ROUTING ────────────
 function navigateTo(page) {
+    if (page === 'kes-shroff') {
+        window.location.href = '/kes-shroff';
+        return;
+    }
     if (page === currentPage) return;
 
     // Admin guard
@@ -107,7 +111,11 @@ function navigateTo(page) {
 function handleHashRoute() {
     const rawHash = (window.location.hash || '').replace(/^#/, '');
     const cleanHash = rawHash.split('?')[0].split('&')[0] || 'landing';
-    const validPages = ['landing', 'register', 'payment', 'confirmation', 'admin-login', 'admin', 'names', 'find-pass', 'kes-shroff'];
+    if (cleanHash === 'kes-shroff') {
+        window.location.href = '/kes-shroff';
+        return;
+    }
+    const validPages = ['landing', 'register', 'payment', 'confirmation', 'admin-login', 'admin', 'names', 'find-pass'];
     const page = validPages.includes(cleanHash) ? cleanHash : 'landing';
 
     // Also check referral in case query parameters are in hash
