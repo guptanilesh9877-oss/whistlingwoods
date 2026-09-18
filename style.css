@@ -3635,7 +3635,7 @@ select.form-input option:focus {
     }
 }
 
-/* ───── WALL OF FAME ───── */
+/* ───── WHO'S ATTENDING (STUDENT ATTENDEES WALL) ───── */
 .names-counter {
     display: inline-flex;
     align-items: center;
@@ -3656,7 +3656,7 @@ select.form-input option:focus {
 
 .names-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
     gap: var(--space-md);
     margin-bottom: var(--space-3xl);
 }
@@ -3668,6 +3668,11 @@ select.form-input option:focus {
     padding: var(--space-lg) var(--space-md);
     text-align: center;
     transition: all var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 140px;
 }
 
 .name-card:hover {
@@ -3687,11 +3692,177 @@ select.form-input option:focus {
     font-weight: 700;
     color: #ffffff;
     font-size: 1.1rem;
+    flex-shrink: 0;
 }
 
 .name-card-name {
     font-weight: 600;
     font-size: 0.95rem;
+    line-height: 1.3;
+}
+
+.name-card-college {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ── 33rd "and more...." Highlight Card ── */
+.name-card.more-card {
+    background: linear-gradient(145deg, rgba(141, 106, 174, 0.22) 0%, rgba(247, 231, 197, 0.10) 100%);
+    border: 1.5px dashed var(--gold);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.name-card.more-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(247, 231, 197, 0.15), transparent);
+    animation: shimmerMore 3s infinite;
+}
+
+@keyframes shimmerMore {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.name-card.more-card:hover {
+    border-color: #ffffff;
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 12px 30px rgba(141, 106, 174, 0.35), 0 0 22px rgba(247, 231, 197, 0.25);
+}
+
+.more-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(247, 231, 197, 0.14);
+    border: 1.5px solid var(--gold);
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    flex-shrink: 0;
+}
+
+.more-card-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.more-card-title {
+    font-family: 'Integral CF', 'Helvetica Custom', sans-serif;
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.more-card-sub {
+    font-size: 0.76rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.more-card-action {
+    font-size: 0.70rem;
+    color: var(--lavender);
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+/* ── Nav Attendee Badge ── */
+.nav-attendee-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 7px;
+    font-size: 0.66rem;
+    font-weight: 700;
+    font-family: 'Integral CF', 'Plus Jakarta Sans', sans-serif;
+    color: #120e24;
+    background: linear-gradient(135deg, #f7e7c5, #ffffff);
+    border-radius: 100px;
+    margin-left: 6px;
+    vertical-align: middle;
+    box-shadow: 0 0 10px rgba(247, 231, 197, 0.45);
+    animation: navBadgePulse 2.8s infinite;
+}
+
+@keyframes navBadgePulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(247, 231, 197, 0.35); }
+    50% { transform: scale(1.06); box-shadow: 0 0 14px rgba(247, 231, 197, 0.7); }
+}
+
+/* ── Hero Social Proof Ticker ── */
+.hero-social-proof {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    padding: 8px 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(141, 106, 174, 0.28);
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    backdrop-filter: blur(10px);
+}
+
+.hero-social-proof:hover {
+    background: rgba(141, 106, 174, 0.16);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(141, 106, 174, 0.25);
+}
+
+.hsp-avatars {
+    display: flex;
+    align-items: center;
+}
+
+.hsp-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid #141124;
+    margin-left: -7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.hsp-avatars .hsp-avatar:first-child {
+    margin-left: 0;
+}
+
+.hsp-text {
+    font-size: 0.80rem;
+    color: var(--text-secondary);
+}
+
+.hsp-text strong {
+    color: var(--gold);
+}
+
+.hsp-text u {
+    color: #fff;
+    text-decoration-color: var(--gold);
+    text-underline-offset: 2px;
 }
 
 .names-cta {

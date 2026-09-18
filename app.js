@@ -58,6 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
     handleHashRoute();
     window.addEventListener('hashchange', handleHashRoute);
 
+    // Update attendee counts on nav badges and hero
+    updateAttendeeBadges();
+
     // Show landing with animation
     requestAnimationFrame(() => {
         const landing = document.getElementById('page-landing');
@@ -933,24 +936,138 @@ function shareTwitter() {
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(link)}`, '_blank');
 }
 
-// ──────────── NAMES WALL ────────────
+// ──────────── WHO'S ATTENDING / ATTENDEES WALL ────────────
+const CURATED_STUDENT_DELEGATES = [
+    { name: 'Aarav Sharma', college: "St. Xavier's College, Mumbai" },
+    { name: 'Ananya Iyer', college: 'Jai Hind College, Churchgate' },
+    { name: 'Rohan Desai', college: 'K.C. College, Churchgate' },
+    { name: 'Tanvi Mehta', college: 'Mithibai College, Vile Parle' },
+    { name: 'Kabir Kapoor', college: 'H.R. College of Commerce & Economics' },
+    { name: 'Priya Nair', college: 'Sophia College for Women' },
+    { name: 'Siddharth Verma', college: 'N.M. College of Commerce' },
+    { name: 'Meera Joshi', college: 'Ramnarain Ruia College, Matunga' },
+    { name: 'Aditya Malhotra', college: 'Wilson College, Chowpatty' },
+    { name: 'Ishaan Sen', college: 'Symbiosis Centre for Media, Pune' },
+    { name: 'Riya Patel', college: "Bhavan's College, Andheri" },
+    { name: 'Devansh Roy', college: 'R.D. National College, Bandra' },
+    { name: 'Sneha Kulkarni', college: 'D.G. Ruparel College, Matunga' },
+    { name: 'Arjun Reddy', college: 'Whistling Woods International' },
+    { name: 'Diya Chopra', college: "St. Andrew's College, Bandra" },
+    { name: 'Varun Singhal', college: 'S.I.E.S. College of Arts & Science' },
+    { name: 'Natasha Fernandez', college: 'Kelkar V.G. Vaze College, Mulund' },
+    { name: 'Yash Vardhan', college: 'Thakur College of Science & Commerce' },
+    { name: 'Shreya Bannerjee', college: 'K.J. Somaiya College, Vidyavihar' },
+    { name: 'Vivaan Gupta', college: 'L.S. Raheja College of Arts, Juhu' },
+    { name: 'Alisha Merchant', college: 'K.P.B. Hinduja College, Charni Road' },
+    { name: 'Pranav Kulkarni', college: 'Fergusson College, Pune' },
+    { name: 'Tara Deshmukh', college: 'V.E.S. College of Arts & Science' },
+    { name: 'Sameer Khan', college: 'M.M.K. College, Bandra' },
+    { name: 'Kritika Sengupta', college: 'D.Y. Patil University Media School' },
+    { name: 'Nikhil Bhatia', college: 'R.A. Podar College, Matunga' },
+    { name: 'Avani Saxena', college: 'Amity University Mumbai' },
+    { name: 'Rahul Chawla', college: 'Guru Nanak Khalsa College' },
+    { name: 'Simran Kaur', college: 'Vivekanand Education Society' },
+    { name: 'Arman Qureshi', college: 'Patkar-Varde College, Goregaon' },
+    { name: 'Sanjana Rao', college: 'B.K. Birla College, Kalyan' },
+    { name: 'Harshvardhan Joshi', college: 'Sathaye College, Vile Parle' }
+];
+
+// Calculate dynamic attendee count starting at 2256 and increasing 100-120 everyday
+function getSimulatedAttendeeCount(actualRegsCount = 0) {
+    const BASE_COUNT = 2256;
+    // Anchor date: September 18, 2026
+    const anchor = new Date(2026, 8, 18); // month 8 is September
+    const now = new Date();
+
+    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const diffTime = todayMidnight.getTime() - anchor.getTime();
+    const daysPassed = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+
+    // Deterministic daily increment between 100 and 120 per day
+    let totalIncrement = 0;
+    for (let d = 1; d <= daysPassed; d++) {
+        const daily = 100 + ((d * 37 + 13) % 21); // exactly 100..120
+        totalIncrement += daily;
+    }
+
+    // Intraday progression as hours pass (only on days after day 0)
+    const hours = now.getHours() + (now.getMinutes() / 60);
+    const todayTarget = 100 + (((daysPassed + 1) * 37 + 13) % 21);
+    const intradayProgress = daysPassed > 0 ? Math.floor((hours / 24) * todayTarget) : 0;
+
+    const finalCount = BASE_COUNT + totalIncrement + intradayProgress + (actualRegsCount || 0);
+
+    // Persist highest seen count in localStorage so it never dips
+    try {
+        const cached = parseInt(localStorage.getItem('cc2026_attendee_count') || '0', 10);
+        if (cached > finalCount) {
+            return cached + (actualRegsCount || 0);
+        }
+        localStorage.setItem('cc2026_attendee_count', finalCount.toString());
+    } catch (e) {}
+
+    return finalCount;
+}
+
+// Update nav badges and hero tickers across the site
+function updateAttendeeBadges() {
+    const regs = (typeof dataStore !== 'undefined' && dataStore.getRegistrations) ? dataStore.getRegistrations() : [];
+    const count = getSimulatedAttendeeCount(regs.length);
+    const kFormatted = (Math.floor(count / 100) / 10).toFixed(1) + 'k+';
+    document.querySelectorAll('.nav-attendee-badge').forEach(el => {
+        el.textContent = kFormatted;
+    });
+    document.querySelectorAll('.hsp-count-display').forEach(el => {
+        el.textContent = count.toLocaleString('en-IN') + '+ Students';
+    });
+}
+
 function renderNamesWall() {
     const grid = document.getElementById('names-grid');
     const noData = document.getElementById('no-names');
     const counter = document.getElementById('names-total-count');
-    const regs = dataStore.getRegistrations();
+    const regs = (typeof dataStore !== 'undefined' && dataStore.getRegistrations) ? dataStore.getRegistrations() : [];
 
+    if (!grid) return;
     grid.innerHTML = '';
+    if (noData) noData.style.display = 'none';
+    grid.style.display = 'grid';
 
-    if (regs.length === 0) {
-        noData.style.display = 'block';
-        grid.style.display = 'none';
-        counter.textContent = '0';
-        return;
+    // Calculate dynamic total count starting from 2256 + 100-120 daily increase
+    const totalCount = getSimulatedAttendeeCount(regs.length);
+
+    // Update nav and hero badges
+    updateAttendeeBadges();
+
+    // Animate the main page counter
+    if (counter) {
+        animateCounter(counter, totalCount, 1400);
     }
 
-    noData.style.display = 'none';
-    grid.style.display = 'grid';
+    // Build list of exactly 32 students:
+    // Real registrations appear first, then filled by curated students
+    const displayList = [];
+    const seenNames = new Set();
+
+    regs.forEach(r => {
+        if (r && r.name && displayList.length < 32) {
+            const cleanName = r.name.trim();
+            if (!seenNames.has(cleanName.toLowerCase())) {
+                displayList.push({
+                    name: cleanName,
+                    college: r.college ? r.college.trim() : 'Registered Student Delegate'
+                });
+                seenNames.add(cleanName.toLowerCase());
+            }
+        }
+    });
+
+    CURATED_STUDENT_DELEGATES.forEach(cs => {
+        if (displayList.length < 32 && !seenNames.has(cs.name.toLowerCase())) {
+            displayList.push(cs);
+            seenNames.add(cs.name.toLowerCase());
+        }
+    });
 
     const gradients = [
         'linear-gradient(135deg, #8d6aae, #6b4e8a)',
@@ -961,29 +1078,49 @@ function renderNamesWall() {
         'linear-gradient(135deg, #8d6aae, #f7e7c5)',
     ];
 
-    regs.forEach((reg, i) => {
+    // 1. Render exactly 32 student cards
+    displayList.forEach((student, i) => {
         const card = document.createElement('div');
         card.className = 'name-card';
-        card.style.transitionDelay = (i * 60) + 'ms';
+        card.style.transitionDelay = (Math.min(i, 24) * 35) + 'ms';
 
-        const initial = reg.name.charAt(0).toUpperCase();
+        const initial = student.name.charAt(0).toUpperCase();
         const gradient = gradients[i % gradients.length];
 
         card.innerHTML = `
             <div class="name-card-initial" style="background: ${gradient};">${initial}</div>
-            <div class="name-card-name">${escapeHTML(reg.name)}</div>
+            <div class="name-card-name">${escapeHTML(student.name)}</div>
+            ${student.college ? `<div class="name-card-college">${escapeHTML(student.college)}</div>` : ''}
         `;
 
         grid.appendChild(card);
     });
 
-    // Animate counter
-    animateCounter(counter, regs.length, 1200);
+    // 2. Render the 33rd element: "and more...." highlight card
+    const remainingCount = Math.max(0, totalCount - displayList.length);
+    const moreCard = document.createElement('div');
+    moreCard.className = 'name-card more-card';
+    moreCard.style.transitionDelay = (Math.min(displayList.length, 24) * 35) + 'ms';
+    moreCard.onclick = () => navigateTo('register');
+    moreCard.setAttribute('title', 'Click to claim your spot on the attendee list');
+    moreCard.innerHTML = `
+        <div class="more-card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+        </div>
+        <div class="more-card-title">and more....</div>
+        <div class="more-card-sub">+${remainingCount.toLocaleString('en-IN')} students</div>
+        <div class="more-card-action">Claim Your Spot &rarr;</div>
+    `;
+    grid.appendChild(moreCard);
 
     // Stagger reveal cards
     requestAnimationFrame(() => {
         document.querySelectorAll('.name-card').forEach((card, i) => {
-            setTimeout(() => card.classList.add('revealed'), i * 60);
+            setTimeout(() => card.classList.add('revealed'), Math.min(i, 24) * 35);
         });
     });
 }

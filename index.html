@@ -41,7 +41,7 @@
         <ul class="nav-links" id="nav-links">
             <li><span class="nav-link active" data-page="landing">Home</span></li>
             <li><span class="nav-link" onclick="scrollToGuidelines(event)" style="cursor:pointer;">Do's &amp; Don'ts</span></li>
-            <li><span class="nav-link" data-page="names">Wall of Fame</span></li>
+            <li><span class="nav-link" data-page="names">Who's Attending <span class="nav-attendee-badge">2.2k+</span></span></li>
             <li><span class="nav-link" data-page="find-pass">Find My Pass</span></li>
             <li><span class="nav-link nav-cta" data-page="register">Register Now</span></li>
         </ul>
@@ -63,7 +63,7 @@
     <span class="nav-link" data-page="landing" onclick="navigateAndClose('landing')">Home</span>
     <span class="nav-link" onclick="scrollToGuidelinesAndClose()">Do's &amp; Don'ts</span>
     <span class="nav-link" data-page="register" onclick="navigateAndClose('register')">Register Now</span>
-    <span class="nav-link" data-page="names" onclick="navigateAndClose('names')">Wall of Fame</span>
+    <span class="nav-link" data-page="names" onclick="navigateAndClose('names')">Who's Attending <span class="nav-attendee-badge">2.2k+</span></span>
     <span class="nav-link" data-page="find-pass" onclick="navigateAndClose('find-pass')">Find My Pass</span>
     <div class="mobile-nav-contact">
         <p>Inquiries & Bookings</p>
@@ -135,6 +135,9 @@
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
+                    </button>
+                    <button class="btn btn-secondary" onclick="navigateTo('names')" style="display:inline-flex;align-items:center;gap:6px;" title="See who is attending">
+                        👥 Who's Attending <span class="nav-attendee-badge" style="margin-left:0;">2.2k+</span>
                     </button>
                     <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20have%20an%20inquiry%20regarding%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-secondary btn-whatsapp">
                         <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="currentColor">
@@ -227,6 +230,9 @@
                             <line x1="5" y1="12" x2="19" y2="12"></line>
                             <polyline points="12 5 19 12 12 19"></polyline>
                         </svg>
+                    </button>
+                    <button class="btn btn-secondary btn-full" onclick="navigateTo('names')" style="display:inline-flex;align-items:center;justify-content:center;gap:8px;">
+                        👥 Who's Attending <span class="nav-attendee-badge" style="margin-left:0;">2.2k+</span>
                     </button>
                     <a href="https://wa.me/918699260386?text=Hi%20Nilesh,%20I%20have%20an%20inquiry%20regarding%20Celebrate%20Cinema%202026%20Academic%20Trek" target="_blank" class="btn btn-secondary btn-whatsapp btn-full">
                         <svg class="btn-icon-svg" viewBox="0 0 24 24" fill="currentColor">
@@ -1316,7 +1322,7 @@
                 <p style="color:var(--text-muted); font-size:0.85rem; margin-top:2px;">Celebrate Cinema 2026 • Live Database</p>
             </div>
             <div class="admin-header-actions">
-                <button class="btn btn-secondary" onclick="navigateTo('names')">View Public Wall</button>
+                <button class="btn btn-secondary" onclick="navigateTo('names')">View Who's Attending</button>
                 <button class="btn btn-secondary" onclick="handleAdminLogout()">Logout</button>
             </div>
         </div>
@@ -1661,26 +1667,26 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════
-     PAGE: NAMES WALL (Public)
+     PAGE: WHO'S ATTENDING (Public Attendee Wall)
      ═══════════════════════════════════════════════ -->
 <section id="page-names" class="page">
     <div class="container">
         <div class="page-header">
-            <h1 class="gradient-text">Wall of Fame</h1>
-            <p>Meet the cinephile students joining Celebrate Cinema 2026 Academic Trek</p>
+            <h1 class="gradient-text">Who's Attending</h1>
+            <p>Explore the growing community of students and young creators joining Celebrate Cinema 2026 Academic Trek</p>
             <div class="names-counter">
-                <span id="names-total-count" class="counter-value">0</span>
-                <span>Students Registered</span>
+                <span id="names-total-count" class="counter-value">2,256</span>
+                <span>Students Registered &amp; Counting</span>
             </div>
         </div>
         <div class="names-grid" id="names-grid"></div>
         <div id="no-names" class="no-data" style="display: none;">
-            <p>Be the first to claim your spot on the Wall of Fame!</p>
+            <p>Be the first to claim your spot on the attendee list!</p>
         </div>
         <div class="names-cta">
-            <p>Want to see your name here?</p>
+            <p>Want to see your name on the attendee list?</p>
             <button class="btn btn-primary btn-glow" onclick="navigateTo('register')">
-                Register
+                Claim Your Spot &mdash; Register Now
                 <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
