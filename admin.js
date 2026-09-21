@@ -1607,6 +1607,14 @@ function refreshAdminView() {
     renderRegistrationsTable(filter ? filter.value : 'all', search ? search.value : '');
     renderReferralLeaderboard();
     renderRecentCheckins();
+
+    const activeTab = document.querySelector('#admin-tabs .tab-btn.active');
+    if (activeTab && activeTab.dataset.tab === 'colleges' && typeof renderCollegesGrid === 'function') {
+        const colleges = dataStore.getCollegePartners();
+        const regs = dataStore.getRegistrations();
+        renderCollegesStats(colleges, regs);
+        renderCollegesGrid(colleges, regs);
+    }
 }
 
 // ──────────── MANUAL SYNC CLOUD ────────────
@@ -1982,23 +1990,29 @@ async function loadCollegesTab() {
     const syncBtn = document.getElementById('sync-colleges-btn');
     if (syncBtn) { syncBtn.disabled = true; syncBtn.textContent = '⟳ Syncing…'; }
 
-    try {
-        if (typeof dataStore !== 'undefined' && dataStore.syncFromSupabase) {
-            await dataStore.syncFromSupabase();
-        }
-    } catch(e) {
-        console.warn('Sync colleges error:', e);
-    }
-
-    const colleges = (typeof dataStore !== 'undefined' && dataStore.getCollegePartners)
+    // 1. Immediate instant render from memory/cache
+    let colleges = (typeof dataStore !== 'undefined' && dataStore.getCollegePartners)
         ? dataStore.getCollegePartners()
         : [];
-    const regs = (typeof dataStore !== 'undefined' && dataStore.getRegistrations)
+    let regs = (typeof dataStore !== 'undefined' && dataStore.getRegistrations)
         ? dataStore.getRegistrations()
         : [];
 
     renderCollegesStats(colleges, regs);
     renderCollegesGrid(colleges, regs);
+
+    // 2. Fetch latest updates from Supabase cloud
+    try {
+        if (typeof dataStore !== 'undefined' && dataStore.syncFromSupabase) {
+            await dataStore.syncFromSupabase();
+            colleges = dataStore.getCollegePartners();
+            regs = dataStore.getRegistrations();
+            renderCollegesStats(colleges, regs);
+            renderCollegesGrid(colleges, regs);
+        }
+    } catch(e) {
+        console.warn('Sync colleges error:', e);
+    }
 
     if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '⟳ Refresh'; }
 }
