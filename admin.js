@@ -210,7 +210,11 @@ function filterRegistrationsByTeam(teamName, codes) {
 
     const searchInput = document.getElementById('search-registrations');
     const filterSelect = document.getElementById('filter-status');
-    const query = Array.isArray(codes) ? codes.join(' | ') : codes;
+    let codeList = Array.isArray(codes) ? [...codes] : [codes];
+    if (teamName.toLowerCase().includes('sahil') || teamName.toLowerCase().includes('satvik')) {
+        if (!codeList.includes('shroff')) codeList.push('shroff');
+    }
+    const query = codeList.join(' | ');
     if (searchInput) {
         searchInput.value = query;
         if (filterSelect) filterSelect.value = 'all';
@@ -227,7 +231,11 @@ function filterRegistrationsByTeamPending(teamName, codes) {
 
     const searchInput = document.getElementById('search-registrations');
     const filterSelect = document.getElementById('filter-status');
-    const query = Array.isArray(codes) ? codes.join(' | ') : codes;
+    let codeList = Array.isArray(codes) ? [...codes] : [codes];
+    if (teamName.toLowerCase().includes('sahil') || teamName.toLowerCase().includes('satvik')) {
+        if (!codeList.includes('shroff')) codeList.push('shroff');
+    }
+    const query = codeList.join(' | ');
     if (searchInput) {
         searchInput.value = query;
         if (filterSelect) filterSelect.value = 'pending';
@@ -240,10 +248,22 @@ window.filterRegistrationsByTeamPending = filterRegistrationsByTeamPending;
 // Copy pending leads message formatted ready for WhatsApp follow-up
 function copyTeamPendingLeads(teamName, codes) {
     const memberCodes = (Array.isArray(codes) ? codes : [codes]).map(c => String(c).trim().toUpperCase());
+    const isSahilSatvik = teamName.toLowerCase().includes('sahil') || teamName.toLowerCase().includes('satvik');
     const regs = dataStore.getRegistrations();
     const pending = regs.filter(r => {
+        if (r.verified) return false;
         const ref = (r.referredBy || '').trim().toUpperCase();
-        return memberCodes.includes(ref) && !r.verified;
+        if (memberCodes.includes(ref)) return true;
+        if (isSahilSatvik) {
+            return (
+                (r.couponUsed === 'FREE-KES-SHROFF') || 
+                (r.transactionId === 'FREE-KES-SHROFF') || 
+                (r.referredBy && r.referredBy.includes('kes-shroff')) ||
+                (r.id && r.id.startsWith('KS-')) ||
+                (r.college && r.college.toLowerCase().includes('shroff'))
+            );
+        }
+        return false;
     });
 
     if (pending.length === 0) {
@@ -253,7 +273,7 @@ function copyTeamPendingLeads(teamName, codes) {
 
     const lines = [
         `🎯 *Pending Registrations — Team ${teamName}* (${pending.length} Leads)`,
-        `Hey guys, these students initiated registration but haven't submitted payment/screenshot yet. Please reach out to them and convert:`,
+        `Hey guys, these students initiated registration but haven't completed verification yet. Please reach out to them and convert:`,
         ''
     ];
 
@@ -1291,11 +1311,11 @@ function renderReferralLeaderboard() {
                             <div class="duo-split-wrapper">
                                 <div class="duo-split-labels">
                                     <span class="duo-label left" onclick="filterRegistrationsByReferral('${m1.code}')" title="Filter by ${m1.name}">
-                                        <strong>${escapeHTML(m1.name)}</strong>: ${m1.count} <small>(${m1.verified} ver)</small>
+                                        <strong>${escapeHTML(m1.name)}</strong>: ${m1.count} <small>(${m1.verified} ver${m1.delegationCount > 0 ? ` · ${m1.delegationCount} del` : ''})</small>
                                     </span>
                                     <span class="duo-split-ratio">${team.total > 0 ? `${team.split1}% vs ${team.split2}%` : '50% vs 50%'}</span>
                                     <span class="duo-label right" onclick="filterRegistrationsByReferral('${m2.code}')" title="Filter by ${m2.name}">
-                                        <strong>${escapeHTML(m2.name)}</strong>: ${m2.count} <small>(${m2.verified} ver)</small>
+                                        <strong>${escapeHTML(m2.name)}</strong>: ${m2.count} <small>(${m2.verified} ver${m2.delegationCount > 0 ? ` · ${m2.delegationCount} del` : ''})</small>
                                     </span>
                                 </div>
                                 <div class="duo-split-bar" title="Contribution split between ${m1.name} and ${m2.name}">
@@ -1406,6 +1426,11 @@ function initAdminTabSwitching() {
             // Auto-load Principals tab data on tab switch
             if (newTab.dataset.tab === 'principals') {
                 loadPrincipalsTab();
+            }
+
+            // Auto-load Colleges tab data on tab switch
+            if (newTab.dataset.tab === 'colleges') {
+                loadCollegesTab();
             }
         });
     });
@@ -1946,3 +1971,416 @@ function _escHtml(str) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
 }
+
+// ════════════════════════════════════════════════════════════════
+// 🏛️ PARTNER COLLEGE PORTALS MANAGEMENT (Dynamic Multi-College)
+// ════════════════════════════════════════════════════════════════
+
+var _editingCollegeSlug = null;
+
+async function loadCollegesTab() {
+    const syncBtn = document.getElementById('sync-colleges-btn');
+    if (syncBtn) { syncBtn.disabled = true; syncBtn.textContent = '⟳ Syncing…'; }
+
+    try {
+        if (typeof dataStore !== 'undefined' && dataStore.syncFromSupabase) {
+            await dataStore.syncFromSupabase();
+        }
+    } catch(e) {
+        console.warn('Sync colleges error:', e);
+    }
+
+    const colleges = (typeof dataStore !== 'undefined' && dataStore.getCollegePartners)
+        ? dataStore.getCollegePartners()
+        : [];
+    const regs = (typeof dataStore !== 'undefined' && dataStore.getRegistrations)
+        ? dataStore.getRegistrations()
+        : [];
+
+    renderCollegesStats(colleges, regs);
+    renderCollegesGrid(colleges, regs);
+
+    if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '⟳ Refresh'; }
+}
+
+function renderCollegesStats(colleges, regs) {
+    const statsEl = document.getElementById('colleges-stats-row');
+    if (!statsEl) return;
+
+    const collegeSlugs = colleges.map(c => c.slug.toLowerCase());
+    let totalDelegationRegs = 0;
+    let totalDelegationVerified = 0;
+
+    regs.forEach(r => {
+        const colLower = (r.college || '').toLowerCase();
+        const refLower = (r.referredBy || '').toLowerCase();
+        const coupLower = (r.couponUsed || '').toLowerCase();
+        const idLower = (r.id || '').toLowerCase();
+
+        const isDelegation = (
+            colLower.includes('shroff') || 
+            coupLower.includes('free-kes') ||
+            idLower.startsWith('ks-') ||
+            collegeSlugs.some(slug => refLower.includes(slug) || coupLower.includes(slug) || colLower.includes(slug))
+        );
+
+        if (isDelegation) {
+            totalDelegationRegs++;
+            if (r.verified) totalDelegationVerified++;
+        }
+    });
+
+    const pending = totalDelegationRegs - totalDelegationVerified;
+
+    statsEl.innerHTML = `
+        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto;">
+            <div class="stat-label" style="font-size:0.72rem;">Partner Portals</div>
+            <div class="stat-value" style="font-size:1.4rem; color:var(--gold);">${colleges.length} Active</div>
+        </div>
+        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto;">
+            <div class="stat-label" style="font-size:0.72rem;">Delegation Signups</div>
+            <div class="stat-value" style="font-size:1.4rem; color:var(--gold);">${totalDelegationRegs}</div>
+        </div>
+        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto; border-color:rgba(16,185,129,0.35);">
+            <div class="stat-label" style="font-size:0.72rem;">✓ Verified (ID Card)</div>
+            <div class="stat-value" style="font-size:1.4rem; color:#10b981;">${totalDelegationVerified}</div>
+        </div>
+        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto; border-color:rgba(245,158,11,0.35);">
+            <div class="stat-label" style="font-size:0.72rem;">⏳ Pending Verification</div>
+            <div class="stat-value" style="font-size:1.4rem; color:#f59e0b;">${pending}</div>
+        </div>
+    `;
+}
+
+function renderCollegesGrid(colleges, regs) {
+    const grid = document.getElementById('colleges-list-grid');
+    const noColleges = document.getElementById('no-colleges');
+    if (!grid) return;
+
+    if (!colleges || colleges.length === 0) {
+        grid.innerHTML = '';
+        if (noColleges) noColleges.style.display = 'block';
+        return;
+    }
+
+    if (noColleges) noColleges.style.display = 'none';
+
+    const origin = window.location.origin || 'https://whistlingwoods.careerbeam.in';
+
+    grid.innerHTML = colleges.map(c => {
+        const isFlagship = c.slug === 'kes-shroff';
+        
+        // Find matching registrations for this college
+        let colRegs = [];
+        if (isFlagship) {
+            colRegs = regs.filter(r => (
+                (r.couponUsed === 'FREE-KES-SHROFF') || 
+                (r.transactionId === 'FREE-KES-SHROFF') || 
+                (r.referredBy && r.referredBy.includes('kes-shroff')) ||
+                (r.id && r.id.startsWith('KS-')) ||
+                (r.college && r.college.toLowerCase().includes('shroff'))
+            ));
+        } else {
+            colRegs = regs.filter(r => (
+                (r.referredBy && r.referredBy.includes(c.slug)) ||
+                (r.couponUsed && r.couponUsed.toLowerCase().includes(c.slug)) ||
+                (r.college && r.college.toLowerCase().includes(c.slug))
+            ));
+        }
+
+        const total = colRegs.length;
+        const verified = colRegs.filter(r => r.verified).length;
+        const pending = total - verified;
+
+        const livePath = isFlagship ? '/kes-shroff' : `/c/${c.slug}`;
+        const liveUrl = `${origin}${livePath}`;
+        const poc1 = (c.pocs && c.pocs[0]) || { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' };
+        const poc2 = (c.pocs && c.pocs[1]) || { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' };
+        const splitCodes = Array.isArray(c.referralCodes) && c.referralCodes.length > 0 ? c.referralCodes.join(', ') : 'SATVIK, SAHIL';
+
+        return `
+            <div class="glass-card" style="padding:22px; border-radius:16px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; background:rgba(26,22,40,0.85);">
+                <!-- Ambient glow accent -->
+                <div style="position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--primary), var(--gold-accent));"></div>
+
+                <div>
+                    <!-- Header Badges -->
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <span style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--gold); display:inline-flex; align-items:center; gap:5px;">
+                            <span>🏛️</span> <span>College Portal</span>
+                        </span>
+                        ${isFlagship ? `
+                            <span style="background:rgba(212,168,67,0.18); border:1px solid rgba(212,168,67,0.4); color:var(--gold); font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px;">
+                                ★ Flagship Partner
+                            </span>
+                        ` : `
+                            <span style="background:rgba(141,106,174,0.18); border:1px solid rgba(141,106,174,0.4); color:var(--primary-light); font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px;">
+                                Active Link
+                            </span>
+                        `}
+                    </div>
+
+                    <!-- College Title -->
+                    <h4 style="font-family:'Playfair Display', Georgia, serif; font-size:1.15rem; color:#ffffff; margin:0 0 4px 0; line-height:1.35;">
+                        ${_escHtml(c.name)}
+                    </h4>
+                    <div style="font-size:0.82rem; color:var(--gold); margin-bottom:14px;">
+                        ${_escHtml(c.shortName || c.name)}
+                    </div>
+
+                    <!-- Live URL Box -->
+                    <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:10px 12px; margin-bottom:16px;">
+                        <div style="font-size:0.72rem; color:var(--lavender); margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>Live Registration Link:</span>
+                            <a href="${livePath}" target="_blank" style="color:var(--gold); text-decoration:none; font-size:0.72rem; font-weight:600;">Open Portal ↗</a>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <input type="text" readonly value="${liveUrl}" style="background:transparent; border:none; color:var(--gold); font-family:monospace; font-size:0.82rem; width:100%; outline:none;" onclick="this.select()">
+                            <button type="button" class="btn-small" onclick="copyCollegeLink('${liveUrl}')" style="padding:4px 10px; font-size:0.72rem; white-space:nowrap;" title="Copy portal link">
+                                📋 Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Registration Metrics -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px;">
+                        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:8px 10px; text-align:center;">
+                            <div style="font-size:0.68rem; color:var(--lavender);">Signups</div>
+                            <div style="font-size:1.25rem; font-weight:800; color:var(--gold);">${total}</div>
+                        </div>
+                        <div style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
+                            <div style="font-size:0.68rem; color:#10b981;">Verified</div>
+                            <div style="font-size:1.25rem; font-weight:800; color:#10b981;">${verified}</div>
+                        </div>
+                        <div style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
+                            <div style="font-size:0.68rem; color:#f59e0b;">Pending</div>
+                            <div style="font-size:1.25rem; font-weight:800; color:#f59e0b;">${pending}</div>
+                        </div>
+                    </div>
+
+                    <!-- Assigned Leads -->
+                    <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:10px; padding:10px 12px; margin-bottom:16px;">
+                        <div style="font-size:0.72rem; color:var(--gold); font-weight:700; margin-bottom:6px;">
+                            👥 Community &amp; Partnership Leads
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; margin-bottom:4px;">
+                            <span>${_escHtml(poc1.name)}</span>
+                            <a href="tel:${poc1.phone}" style="color:var(--gold); text-decoration:none; font-family:monospace; font-size:0.75rem;">${poc1.phone}</a>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem;">
+                            <span>${_escHtml(poc2.name)}</span>
+                            <a href="tel:${poc2.phone}" style="color:var(--gold); text-decoration:none; font-family:monospace; font-size:0.75rem;">${poc2.phone}</a>
+                        </div>
+                    </div>
+
+                    <!-- Split attribution notice -->
+                    <div style="font-size:0.73rem; color:var(--lavender); margin-bottom:16px;">
+                        🎯 <strong>Leaderboard Split:</strong> Free registrations divided equally among <strong>${splitCodes}</strong>.
+                    </div>
+                </div>
+
+                <!-- Footer Action Buttons -->
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px; margin-top:8px;">
+                    <div style="display:flex; gap:6px;">
+                        <button type="button" class="btn btn-secondary btn-small" onclick="filterRegistrationsByCollege('${c.slug}', '${_escHtml(c.name).replace(/'/g, "\\'")}')" title="View all student leads from this college">
+                            🔍 Filter Leads (${total})
+                        </button>
+                        <button type="button" class="btn-small" onclick="editCollegeModal('${c.slug}')" style="background:rgba(255,255,255,0.06); border:1px solid var(--border-subtle); color:var(--gold);">
+                            ✏️ Edit
+                        </button>
+                    </div>
+                    ${!isFlagship ? `
+                        <button type="button" class="btn-small" onclick="handleDeleteCollege('${c.slug}')" style="background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.3); color:#fca5a5;" title="Delete this portal">
+                            🗑️
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function openAddCollegeModal() {
+    _editingCollegeSlug = null;
+    const modal = document.getElementById('modal-college-portal');
+    const title = document.getElementById('college-modal-title');
+    const form = document.getElementById('form-college-portal');
+    if (!modal || !form) return;
+
+    form.reset();
+    const slugInput = document.getElementById('col-input-slug');
+    if (slugInput) slugInput.removeAttribute('readonly');
+
+    document.getElementById('col-input-poc1-name').value = 'Satvik Satam';
+    document.getElementById('col-input-poc1-phone').value = '9136045359';
+    document.getElementById('col-input-poc1-role').value = 'Community & Partnership Lead';
+
+    document.getElementById('col-input-poc2-name').value = 'Sahil Mishra';
+    document.getElementById('col-input-poc2-phone').value = '6206686464';
+    document.getElementById('col-input-poc2-role').value = 'Community & Partnership Lead';
+
+    document.getElementById('col-input-referrals').value = 'SATVIK, SAHIL';
+    document.getElementById('col-input-streams').value = 'BMS, B.Com, BAF, BBI, BFM, BAMMC, B.Sc IT, B.Sc CS, B.Sc Data Science, B.A, M.Com, M.Sc, Other';
+
+    if (title) title.textContent = '➕ Add Partner College Portal';
+    modal.style.display = 'flex';
+}
+
+function editCollegeModal(slug) {
+    if (!slug) return;
+    _editingCollegeSlug = slug;
+
+    const col = (typeof dataStore !== 'undefined' && dataStore.getCollegePartnerBySlug)
+        ? dataStore.getCollegePartnerBySlug(slug)
+        : null;
+    if (!col) return;
+
+    const modal = document.getElementById('modal-college-portal');
+    const title = document.getElementById('college-modal-title');
+    if (!modal) return;
+
+    document.getElementById('col-input-name').value = col.name || '';
+    document.getElementById('col-input-shortname').value = col.shortName || '';
+    const slugInput = document.getElementById('col-input-slug');
+    slugInput.value = col.slug || '';
+    if (col.slug === 'kes-shroff') {
+        slugInput.setAttribute('readonly', 'true');
+    } else {
+        slugInput.removeAttribute('readonly');
+    }
+
+    const poc1 = (col.pocs && col.pocs[0]) || {};
+    const poc2 = (col.pocs && col.pocs[1]) || {};
+    document.getElementById('col-input-poc1-name').value = poc1.name || '';
+    document.getElementById('col-input-poc1-phone').value = poc1.phone || '';
+    document.getElementById('col-input-poc1-role').value = poc1.role || 'Community & Partnership Lead';
+
+    document.getElementById('col-input-poc2-name').value = poc2.name || '';
+    document.getElementById('col-input-poc2-phone').value = poc2.phone || '';
+    document.getElementById('col-input-poc2-role').value = poc2.role || 'Community & Partnership Lead';
+
+    document.getElementById('col-input-referrals').value = Array.isArray(col.referralCodes) ? col.referralCodes.join(', ') : 'SATVIK, SAHIL';
+    document.getElementById('col-input-streams').value = Array.isArray(col.streams) ? col.streams.join(', ') : '';
+
+    if (title) title.textContent = `✏️ Edit Portal: ${col.shortName || col.name}`;
+    modal.style.display = 'flex';
+}
+
+function closeCollegeModal() {
+    const modal = document.getElementById('modal-college-portal');
+    if (modal) modal.style.display = 'none';
+}
+
+function autoGenerateSlug(val) {
+    // Only auto-generate if adding a new college
+    if (_editingCollegeSlug) return;
+    const slugInput = document.getElementById('col-input-slug');
+    if (!slugInput) return;
+    const generated = (val || '').toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-');
+    slugInput.value = generated;
+}
+
+async function saveCollegeModalForm(e) {
+    if (e && e.preventDefault) e.preventDefault();
+    const btn = document.getElementById('btn-save-college');
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving Portal…'; }
+
+    try {
+        const name = document.getElementById('col-input-name').value.trim();
+        const shortName = document.getElementById('col-input-shortname').value.trim();
+        let slug = document.getElementById('col-input-slug').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
+        if (!slug) slug = shortName.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+
+        const poc1Name = document.getElementById('col-input-poc1-name').value.trim();
+        const poc1Phone = document.getElementById('col-input-poc1-phone').value.trim().replace(/\D/g, '');
+        const poc1Role = document.getElementById('col-input-poc1-role').value.trim() || 'Community & Partnership Lead';
+
+        const poc2Name = document.getElementById('col-input-poc2-name').value.trim();
+        const poc2Phone = document.getElementById('col-input-poc2-phone').value.trim().replace(/\D/g, '');
+        const poc2Role = document.getElementById('col-input-poc2-role').value.trim() || 'Community & Partnership Lead';
+
+        const refRaw = document.getElementById('col-input-referrals').value;
+        const referralCodes = refRaw.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+
+        const streamsRaw = document.getElementById('col-input-streams').value;
+        const streams = streamsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+        const college = {
+            name,
+            shortName,
+            slug,
+            pocs: [
+                { name: poc1Name, phone: poc1Phone, role: poc1Role },
+                { name: poc2Name, phone: poc2Phone, role: poc2Role }
+            ],
+            referralCodes: referralCodes.length > 0 ? referralCodes : ['SATVIK', 'SAHIL'],
+            streams: streams.length > 0 ? streams : ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'Other'],
+            theme: { primaryColor: '#8d6aae', accentColor: '#f7e7c5' },
+            createdAt: new Date().toISOString()
+        };
+
+        const res = await dataStore.saveCollegePartner(college);
+        closeCollegeModal();
+        showToast(res.message || 'Portal saved and activated!', 'success');
+        await loadCollegesTab();
+    } catch(err) {
+        console.error('Error saving college portal:', err);
+        showToast('Failed to save portal: ' + err.message, 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Save & Activate Portal ✓'; }
+    }
+}
+
+async function handleDeleteCollege(slug) {
+    const col = dataStore.getCollegePartnerBySlug(slug);
+    if (!col) return;
+    if (!confirm(`Are you sure you want to delete the portal for "${col.name}"?\n(Live URL: /c/${col.slug})`)) return;
+
+    const res = await dataStore.deleteCollegePartner(slug);
+    if (res.success) {
+        showToast(res.message, 'success');
+        await loadCollegesTab();
+    } else {
+        showToast(res.message, 'error');
+    }
+}
+
+function copyCollegeLink(url) {
+    const fullUrl = url.startsWith('http') ? url : (window.location.origin + url);
+    navigator.clipboard.writeText(fullUrl).then(() => {
+        showToast(`✓ Copied live link: ${fullUrl}`, 'success');
+    }).catch(() => {
+        prompt('Copy this link:', fullUrl);
+    });
+}
+
+function filterRegistrationsByCollege(slug, collegeName) {
+    const regTabBtn = document.querySelector('#admin-tabs .tab-btn[data-tab="registrations"]');
+    if (regTabBtn) regTabBtn.click();
+
+    const searchInput = document.getElementById('search-registrations');
+    const filterSelect = document.getElementById('filter-status');
+    const query = slug === 'kes-shroff' ? 'shroff' : slug;
+    if (searchInput) {
+        searchInput.value = query;
+        if (filterSelect) filterSelect.value = 'all';
+        renderRegistrationsTable('all', query);
+        showToast(`Filtered registrations for: ${collegeName}`, 'info');
+    }
+}
+
+// Expose functions on window for onclick attributes
+window.loadCollegesTab = loadCollegesTab;
+window.renderCollegesStats = renderCollegesStats;
+window.renderCollegesGrid = renderCollegesGrid;
+window.openAddCollegeModal = openAddCollegeModal;
+window.editCollegeModal = editCollegeModal;
+window.closeCollegeModal = closeCollegeModal;
+window.autoGenerateSlug = autoGenerateSlug;
+window.saveCollegeModalForm = saveCollegeModalForm;
+window.handleDeleteCollege = handleDeleteCollege;
+window.copyCollegeLink = copyCollegeLink;
+window.filterRegistrationsByCollege = filterRegistrationsByCollege;

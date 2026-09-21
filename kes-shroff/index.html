@@ -363,6 +363,11 @@
             .form-row {
                 grid-template-columns: 1fr;
             }
+            .ks-form-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
             .ks-privilege-card {
                 flex-direction: column;
                 text-align: center;
@@ -853,12 +858,15 @@
 
                 <!-- College Locked -->
                 <div class="form-group">
-                    <label class="form-label" for="reg-college">College / Institution</label>
-                    <div style="position:relative;">
-                        <input type="text" id="reg-college" class="form-input" value="KES Shroff College of Arts & Commerce" readonly style="padding-right:110px; background:rgba(255,255,255,0.03); color:var(--gold); cursor:not-allowed;">
-                        <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:0.72rem; color:var(--gold); font-weight:700; background:rgba(212,168,67,0.15); padding:3px 10px; border-radius:12px; border:1px solid rgba(247,231,197,0.3);">
-                            Verified Partner 🔒
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; flex-wrap:wrap; gap:8px;">
+                        <label class="form-label" for="reg-college" style="margin-bottom:0;">College / Institution</label>
+                        <span class="ks-verified-badge" style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; color:var(--gold); font-weight:700; background:rgba(212,168,67,0.15); padding:3px 10px; border-radius:12px; border:1px solid rgba(247,231,197,0.3); white-space:nowrap;">
+                            <span>Verified Partner</span> <span>🔒</span>
                         </span>
+                    </div>
+                    <div style="position:relative;">
+                        <input type="text" id="reg-college" class="form-input" value="KES Shroff College of Arts & Commerce" readonly style="background:rgba(255,255,255,0.03); color:var(--gold); cursor:not-allowed; padding-left:38px; width:100%;">
+                        <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:1.05rem; opacity:0.85;">🏛️</span>
                     </div>
                 </div>
 
@@ -950,7 +958,7 @@
         <div class="executive-contact-card">
             <div class="contact-card-header">
                 <span class="contact-badge">KES SHROFF COLLEGE COORDINATION</span>
-                <h3>Student Coordinators &amp; Support</h3>
+                <h3>Community &amp; Partnership Leads</h3>
                 <p>Have any questions regarding registration, group schedules, or travel coordination? Contact directly:</p>
             </div>
             
@@ -962,7 +970,7 @@
                             <div class="coord-avatar">👤</div>
                             <div class="coord-details">
                                 <h4>Satvik Satam</h4>
-                                <div class="coord-role">Student Coordinator</div>
+                                <div class="coord-role">Community &amp; Partnership Lead</div>
                                 <div class="coord-college">KES Shroff College • Celebrate Cinema 2026</div>
                             </div>
                         </div>
@@ -987,7 +995,7 @@
                             <div class="coord-avatar">👤</div>
                             <div class="coord-details">
                                 <h4>Sahil Mishra</h4>
-                                <div class="coord-role">Student Coordinator</div>
+                                <div class="coord-role">Community &amp; Partnership Lead</div>
                                 <div class="coord-college">KES Shroff College • Celebrate Cinema 2026</div>
                             </div>
                         </div>
@@ -1140,9 +1148,9 @@
         <!-- Coordinator Support Block on Confirmation Page -->
         <div class="executive-contact-card" style="margin-top:36px;">
             <div class="contact-card-header">
-                <span class="contact-badge">COORDINATOR CONTACTS</span>
+                <span class="contact-badge">COMMUNITY &amp; PARTNERSHIP LEADS</span>
                 <h3 style="font-size:1.25rem;">Need Assistance with Entry or Travel?</h3>
-                <p>Reach out to your student coordinators anytime:</p>
+                <p>Reach out to your Community &amp; Partnership Leads anytime:</p>
             </div>
             <div class="contact-coordinators-grid">
                 <div class="coord-box">

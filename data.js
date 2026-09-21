@@ -215,7 +215,17 @@ class DataStore {
                 return;
             }
             if (data && Array.isArray(data)) {
-                const cloudRegs = data.map(row => this._fromDbRecord(row));
+                // Extract any system config rows (like partner colleges)
+                const configRow = data.find(row => row.id === 'CONFIG_COLLEGES');
+                if (configRow && configRow.payment_screenshot) {
+                    try {
+                        localStorage.setItem('wwi_cc26_colleges', configRow.payment_screenshot);
+                    } catch(e) {}
+                }
+
+                const cloudRegs = data
+                    .filter(row => row.id !== 'CONFIG_COLLEGES')
+                    .map(row => this._fromDbRecord(row));
 
                 // Process genuinely pending offline submissions created on this device
                 let offlineQueue = [];
@@ -353,20 +363,22 @@ class DataStore {
     // ──────────── REGISTRATIONS ────────────
     getRegistrations() {
         try {
-            return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.REGISTRATIONS) || '[]');
+            const list = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.REGISTRATIONS) || '[]');
+            return list.filter(r => r.id !== 'CONFIG_COLLEGES');
         } catch {
             return [];
         }
     }
 
     saveRegistrations(regs) {
+        const cleanRegs = (regs || []).filter(r => r.id !== 'CONFIG_COLLEGES');
         try {
-            localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(regs));
+            localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(cleanRegs));
         } catch (e) {
             console.warn('LocalStorage save failed, trying without heavy screenshot payloads:', e);
             try {
                 // If quota exceeded, strip long base64 screenshots locally to preserve metadata
-                const lightweight = regs.map(r => ({
+                const lightweight = cleanRegs.map(r => ({
                     ...r,
                     paymentScreenshot: (r.paymentScreenshot && r.paymentScreenshot.length > 500) ? '' : r.paymentScreenshot
                 }));
@@ -649,6 +661,129 @@ class DataStore {
         return { success: true, message: `Promoter link created for ${cleanName}!`, code: cleanCode };
     }
 
+    // ──────────── PARTNER COLLEGES ────────────
+    getCollegePartners() {
+        const defaultColleges = [
+            {
+                slug: 'kes-shroff',
+                name: 'KES Shroff College of Arts & Commerce',
+                shortName: 'KES Shroff',
+                pocs: [
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' },
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SATVIK', 'SAHIL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with KES Shroff College, admission is granted on a complimentary basis for all enrolled students. Kindly attach your Student ID Card or recent College Fee Receipt to receive your verified academic delegate pass.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            }
+        ];
+
+        const stored = localStorage.getItem('wwi_cc26_colleges');
+        if (!stored) {
+            localStorage.setItem('wwi_cc26_colleges', JSON.stringify(defaultColleges));
+            return defaultColleges;
+        }
+        try {
+            const list = JSON.parse(stored);
+            if (!Array.isArray(list) || list.length === 0) return defaultColleges;
+            return list;
+        } catch (e) {
+            return defaultColleges;
+        }
+    }
+
+    async saveCollegePartner(college) {
+        if (!college || !college.name || !college.slug) return { success: false, message: 'College name and slug required' };
+        college.slug = college.slug.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-');
+        
+        const list = this.getCollegePartners();
+        const existingIdx = list.findIndex(c => c.slug === college.slug);
+        if (existingIdx >= 0) {
+            list[existingIdx] = Object.assign({}, list[existingIdx], college);
+        } else {
+            list.push(college);
+        }
+        localStorage.setItem('wwi_cc26_colleges', JSON.stringify(list));
+
+        // Sync to Supabase cloud
+        try {
+            const payload = {
+                id: 'CONFIG_COLLEGES',
+                name: 'SYSTEM CONFIG - PARTNER COLLEGES',
+                email: 'system@celebratecinema.com',
+                phone: '0000000000',
+                college: 'SYSTEM',
+                year: 'CONFIG',
+                payment_screenshot: JSON.stringify(list),
+                transaction_id: 'SYSTEM_CONFIG',
+                coupon_used: 'CONFIG',
+                base_price: 0,
+                final_price: 0,
+                verified: false,
+                timestamp: new Date().toISOString()
+            };
+            if (this.supabaseClient) {
+                await this.supabaseClient.from('registrations').upsert(payload);
+            } else {
+                fetch(CONFIG.SUPABASE_URL + '/rest/v1/registrations', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': CONFIG.SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify(payload)
+                }).catch(e => console.warn('Supabase college sync error:', e));
+            }
+        } catch(e) {
+            console.warn('Failed to sync colleges to cloud:', e);
+        }
+
+        return { success: true, message: `College portal for ${college.name} saved!`, slug: college.slug };
+    }
+
+    async deleteCollegePartner(slug) {
+        if (slug === 'kes-shroff') {
+            return { success: false, message: 'KES Shroff flagship portal cannot be deleted' };
+        }
+        let list = this.getCollegePartners();
+        list = list.filter(c => c.slug !== slug);
+        localStorage.setItem('wwi_cc26_colleges', JSON.stringify(list));
+
+        try {
+            const payload = {
+                id: 'CONFIG_COLLEGES',
+                name: 'SYSTEM CONFIG - PARTNER COLLEGES',
+                email: 'system@celebratecinema.com',
+                phone: '0000000000',
+                college: 'SYSTEM',
+                year: 'CONFIG',
+                payment_screenshot: JSON.stringify(list),
+                transaction_id: 'SYSTEM_CONFIG',
+                coupon_used: 'CONFIG',
+                base_price: 0,
+                final_price: 0,
+                verified: false,
+                timestamp: new Date().toISOString()
+            };
+            if (this.supabaseClient) {
+                await this.supabaseClient.from('registrations').upsert(payload);
+            }
+        } catch(e) {}
+
+        return { success: true, message: 'College portal deleted successfully' };
+    }
+
+    getCollegePartnerBySlug(slug) {
+        if (!slug) return null;
+        const s = slug.toLowerCase().trim();
+        return this.getCollegePartners().find(c => c.slug === s) || null;
+    }
+
     getReferralCount(referralCode) {
         if (!referralCode) return 0;
         const target = referralCode.trim().toUpperCase();
@@ -701,21 +836,88 @@ class DataStore {
 
         const regs = this.getRegistrations();
 
+        // ── CALCULATE COLLEGE DELEGATION EQUAL SPLITS ───────────────
+        // 1. KES Shroff free registrations (divided equally between Sahil and Satvik)
+        const kesRegs = regs.filter(r => (
+            (r.couponUsed === 'FREE-KES-SHROFF') || 
+            (r.transactionId === 'FREE-KES-SHROFF') || 
+            (r.referredBy && r.referredBy.includes('kes-shroff')) ||
+            (r.id && r.id.startsWith('KS-')) ||
+            (r.college && r.college.toLowerCase().includes('shroff'))
+        ));
+        const kesCount = kesRegs.length;
+        const kesVerified = kesRegs.filter(r => r.verified).length;
+
+        const sahilKesCount = Math.ceil(kesCount / 2);
+        const satvikKesCount = Math.floor(kesCount / 2);
+        const sahilKesVer = Math.ceil(kesVerified / 2);
+        const satvikKesVer = Math.floor(kesVerified / 2);
+
+        // 2. Any other partner college registrations split among their assigned codes
+        const partnerColleges = this.getCollegePartners();
+        const otherCollegeBonus = {};
+        const otherCollegeVerBonus = {};
+
+        partnerColleges.forEach(col => {
+            if (col.slug === 'kes-shroff') return;
+            const colRegs = regs.filter(r => (
+                (r.referredBy && r.referredBy.includes(col.slug)) ||
+                (r.couponUsed && r.couponUsed.toUpperCase().includes(col.slug.toUpperCase())) ||
+                (r.college && r.college.toLowerCase().includes(col.slug))
+            ));
+            if (colRegs.length > 0 && Array.isArray(col.referralCodes) && col.referralCodes.length > 0) {
+                const codes = col.referralCodes.map(c => c.toUpperCase());
+                const splitTotal = Math.floor(colRegs.length / codes.length);
+                const remainder = colRegs.length % codes.length;
+                const verTotal = colRegs.filter(r => r.verified).length;
+                const splitVer = Math.floor(verTotal / codes.length);
+
+                codes.forEach((code, idx) => {
+                    const extra = idx < remainder ? 1 : 0;
+                    otherCollegeBonus[code] = (otherCollegeBonus[code] || 0) + splitTotal + extra;
+                    otherCollegeVerBonus[code] = (otherCollegeVerBonus[code] || 0) + splitVer;
+                });
+            }
+        });
+
         const stats = teams.map(team => {
             const memberCodes = team.members.map(m => m.code.toUpperCase());
             const memberStats = team.members.map(m => {
                 const codeUpper = m.code.toUpperCase();
                 const mRegs = regs.filter(r => (r.referredBy || '').trim().toUpperCase() === codeUpper);
-                const mVerified = mRegs.filter(r => r.verified).length;
-                const mPending = mRegs.length - mVerified;
-                const mRevenue = mRegs.reduce((sum, r) => sum + (r.finalPrice || 0), 0);
+                let count = mRegs.length;
+                let verified = mRegs.filter(r => r.verified).length;
+                let delegationCount = 0;
+
+                // Credit Sahil & Satvik equally for KES Shroff
+                if (codeUpper === 'SAHIL') {
+                    count += sahilKesCount;
+                    verified += sahilKesVer;
+                    delegationCount += sahilKesCount;
+                } else if (codeUpper === 'SATVIK') {
+                    count += satvikKesCount;
+                    verified += satvikKesVer;
+                    delegationCount += satvikKesCount;
+                }
+
+                // Add other college bonuses if assigned
+                if (otherCollegeBonus[codeUpper]) {
+                    count += otherCollegeBonus[codeUpper];
+                    verified += (otherCollegeVerBonus[codeUpper] || 0);
+                    delegationCount += otherCollegeBonus[codeUpper];
+                }
+
+                const pending = count - verified;
+                const revenue = mRegs.reduce((sum, r) => sum + (r.finalPrice || 0), 0);
+
                 return {
                     name: m.name,
                     code: m.code,
-                    count: mRegs.length,
-                    verified: mVerified,
-                    pending: mPending,
-                    revenue: mRevenue
+                    count,
+                    verified,
+                    pending,
+                    revenue,
+                    delegationCount
                 };
             });
 
@@ -792,11 +994,26 @@ class DataStore {
         const regs = this.getRegistrations();
         const counts = {};
         regs.forEach(r => {
-            if (r.referredBy) {
+            if (r.referredBy && !r.referredBy.startsWith('SOURCE:')) {
                 const code = r.referredBy.trim().toUpperCase();
                 counts[code] = (counts[code] || 0) + 1;
             }
         });
+
+        // Add college delegation equal splits
+        const kesRegs = regs.filter(r => (
+            (r.couponUsed === 'FREE-KES-SHROFF') || 
+            (r.transactionId === 'FREE-KES-SHROFF') || 
+            (r.referredBy && r.referredBy.includes('kes-shroff')) ||
+            (r.id && r.id.startsWith('KS-')) ||
+            (r.college && r.college.toLowerCase().includes('shroff'))
+        ));
+        if (kesRegs.length > 0) {
+            const sahilShare = Math.ceil(kesRegs.length / 2);
+            const satvikShare = Math.floor(kesRegs.length / 2);
+            counts['SAHIL'] = (counts['SAHIL'] || 0) + sahilShare;
+            counts['SATVIK'] = (counts['SATVIK'] || 0) + satvikShare;
+        }
 
         const promoters = this.getPromoters();
         const promoterMap = {};
