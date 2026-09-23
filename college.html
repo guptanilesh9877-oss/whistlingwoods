@@ -1075,12 +1075,51 @@
             var col = colleges.find(function(c) { return c.slug === slug; });
 
             if (!col) {
-                // If not found, use first or fallback
-                col = colleges[0] || DEFAULT_COLLEGES[0];
+                // Show a friendly "portal not found" page instead of silently using the wrong college
+                showPortalNotFound(slug, colleges);
+                return;
             }
 
             _currentCollege = col;
             renderCollegePortal(col);
+        }
+
+        // ── PORTAL NOT FOUND STATE ────────────────────────────────────
+        function showPortalNotFound(slug, colleges) {
+            document.title = 'Portal Not Found | Celebrate Cinema 2026';
+            // Hide main content and show error message
+            var main = document.querySelector('main');
+            if (main) {
+                main.innerHTML = [
+                    '<div style="min-height:80vh; display:flex; align-items:center; justify-content:center; padding:40px 20px;">',
+                    '  <div style="text-align:center; max-width:520px; background:rgba(26,22,40,0.88); border:1px solid rgba(141,106,174,0.3); border-radius:20px; padding:48px 36px;">',
+                    '    <div style="font-size:4rem; margin-bottom:20px;">🔍</div>',
+                    '    <h1 style="font-family:\'Playfair Display\',Georgia,serif; font-size:1.8rem; color:#ffffff; margin:0 0 12px 0;">College Portal Not Found</h1>',
+                    '    <p style="color:var(--gold); font-size:0.9rem; margin-bottom:8px; font-family:monospace; background:rgba(0,0,0,0.3); padding:6px 14px; border-radius:8px; display:inline-block;">/c/' + slug + '</p>',
+                    '    <p style="color:var(--lavender); font-size:0.9rem; line-height:1.6; margin:16px 0 24px 0;">',
+                    '      This college portal link doesn\'t exist yet or hasn\'t been activated. If you\'re a student, please contact your college coordinator for the correct link.',
+                    '    </p>',
+                    '    <div style="margin-bottom:20px;">',
+                    '      <p style="color:var(--gold); font-size:0.82rem; font-weight:700; margin-bottom:10px;">Available College Portals:</p>',
+                    (colleges.length > 0 ? colleges.map(function(c) {
+                        return '      <a href="/c/' + c.slug + '" style="display:inline-block; margin:4px; background:rgba(141,106,174,0.15); border:1px solid rgba(141,106,174,0.4); color:var(--primary-light); padding:6px 14px; border-radius:8px; text-decoration:none; font-size:0.82rem;">' + (c.shortName || c.name) + '</a>';
+                    }).join('') : '      <span style="color:var(--lavender); font-size:0.82rem;">No portals active yet</span>'),
+                    '    </div>',
+                    '    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">',
+                    '      <a href="/" style="display:inline-flex; align-items:center; gap:8px; padding:12px 24px; background:linear-gradient(135deg,#8d6aae,#6f4f8e); color:#fff; border-radius:10px; text-decoration:none; font-weight:600; font-size:0.9rem;">',
+                    '        ← Main Registration',
+                    '      </a>',
+                    '      <a href="/kes-shroff" style="display:inline-flex; align-items:center; gap:8px; padding:12px 24px; background:rgba(212,168,67,0.15); border:1px solid rgba(212,168,67,0.5); color:var(--gold); border-radius:10px; text-decoration:none; font-weight:600; font-size:0.9rem;">',
+                    '        KES Shroff Portal →',
+                    '      </a>',
+                    '    </div>',
+                    '    <p style="font-size:0.75rem; color:var(--lavender); margin-top:20px; opacity:0.7;">',
+                    '      Admin: If you just created this portal, please sync cloud data from the admin dashboard and share the link again.',
+                    '    </p>',
+                    '  </div>',
+                    '</div>'
+                ].join('\n');
+            }
         }
 
         function renderCollegePortal(col) {

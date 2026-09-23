@@ -708,7 +708,7 @@ class DataStore {
         }
         localStorage.setItem('wwi_cc26_colleges', JSON.stringify(list));
 
-        // Sync to Supabase cloud
+        // Sync to Supabase cloud — always use REST for reliable upsert of CONFIG_COLLEGES
         try {
             const payload = {
                 id: 'CONFIG_COLLEGES',
@@ -725,19 +725,30 @@ class DataStore {
                 verified: false,
                 timestamp: new Date().toISOString()
             };
+            // Always attempt REST API upsert (works without SDK being ready)
+            const restUrl = CONFIG.SUPABASE_URL + '/rest/v1/registrations';
+            const restHeaders = {
+                'apikey': CONFIG.SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'resolution=merge-duplicates'
+            };
+            const restResult = await fetch(restUrl, {
+                method: 'POST',
+                headers: restHeaders,
+                body: JSON.stringify(payload)
+            });
+            if (!restResult.ok) {
+                // If POST fails (row might already exist), try PATCH
+                await fetch(restUrl + '?id=eq.CONFIG_COLLEGES', {
+                    method: 'PATCH',
+                    headers: restHeaders,
+                    body: JSON.stringify({ payment_screenshot: JSON.stringify(list), timestamp: payload.timestamp })
+                });
+            }
+            // Also use SDK client if available (for session-level sync)
             if (this.supabaseClient) {
-                await this.supabaseClient.from('registrations').upsert(payload);
-            } else {
-                fetch(CONFIG.SUPABASE_URL + '/rest/v1/registrations', {
-                    method: 'POST',
-                    headers: {
-                        'apikey': CONFIG.SUPABASE_ANON_KEY,
-                        'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'resolution=merge-duplicates'
-                    },
-                    body: JSON.stringify(payload)
-                }).catch(e => console.warn('Supabase college sync error:', e));
+                this.supabaseClient.from('registrations').upsert(payload).catch(e => console.warn('SDK college upsert warning:', e));
             }
         } catch(e) {
             console.warn('Failed to sync colleges to cloud:', e);
@@ -770,8 +781,27 @@ class DataStore {
                 verified: false,
                 timestamp: new Date().toISOString()
             };
+            const restUrl = CONFIG.SUPABASE_URL + '/rest/v1/registrations';
+            const restHeaders = {
+                'apikey': CONFIG.SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'resolution=merge-duplicates'
+            };
+            const restResult = await fetch(restUrl, {
+                method: 'POST',
+                headers: restHeaders,
+                body: JSON.stringify(payload)
+            });
+            if (!restResult.ok) {
+                await fetch(restUrl + '?id=eq.CONFIG_COLLEGES', {
+                    method: 'PATCH',
+                    headers: restHeaders,
+                    body: JSON.stringify({ payment_screenshot: JSON.stringify(list), timestamp: payload.timestamp })
+                });
+            }
             if (this.supabaseClient) {
-                await this.supabaseClient.from('registrations').upsert(payload);
+                this.supabaseClient.from('registrations').upsert(payload).catch(e => {});
             }
         } catch(e) {}
 
