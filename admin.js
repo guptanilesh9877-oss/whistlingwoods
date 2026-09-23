@@ -122,6 +122,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         let collegeBadgeLabel = 'Partner College';
         if (r.id && r.id.startsWith('KS')) collegeBadgeLabel = 'KES Shroff';
         else if (r.id && r.id.startsWith('KJS')) collegeBadgeLabel = 'KJ Somaiya';
+        else if (r.id && r.id.startsWith('SYD')) collegeBadgeLabel = 'Sydenham';
         else if (r.referredBy && r.referredBy.startsWith('college:')) {
             collegeBadgeLabel = r.referredBy.replace('college:', '').replace(/-/g, ' ').toUpperCase();
         } else if (r.transactionId && r.transactionId.startsWith('FREE-')) {
