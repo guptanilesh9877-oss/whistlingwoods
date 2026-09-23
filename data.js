@@ -44,6 +44,7 @@ class DataStore {
     constructor() {
         this._initCoupons();
         this.supabaseClient = null;
+        this.screenshotCache = new Map();
         this._initSupabase();
     }
 
@@ -203,64 +204,98 @@ class DataStore {
     }
 
     async syncFromSupabase() {
-        if (!this.supabaseClient) return;
-        try {
-            const { data, error } = await this.supabaseClient
-                .from('registrations')
-                .select('*')
-                .order('timestamp', { ascending: false });
-
-            if (error) {
-                console.error('Supabase fetch error:', error.message);
-                return;
-            }
-            if (data && Array.isArray(data)) {
-                // Extract any system config rows (like partner colleges)
-                const configRow = data.find(row => row.id === 'CONFIG_COLLEGES');
-                if (configRow && configRow.payment_screenshot) {
-                    try {
-                        localStorage.setItem('wwi_cc26_colleges', configRow.payment_screenshot);
-                    } catch(e) {}
+        let rows = null;
+        if (this.supabaseClient) {
+            try {
+                const { data, error } = await this.supabaseClient
+                    .from('registrations')
+                    .select('*')
+                    .order('timestamp', { ascending: false });
+                if (!error && Array.isArray(data)) {
+                    rows = data;
+                } else if (error) {
+                    console.warn('Supabase SDK fetch error, will try REST fallback:', error.message);
                 }
+            } catch (e) {
+                console.warn('Supabase SDK sync exception:', e);
+            }
+        }
 
-                const cloudRegs = data
-                    .filter(row => row.id !== 'CONFIG_COLLEGES')
-                    .map(row => this._fromDbRecord(row));
-
-                // Process genuinely pending offline submissions created on this device
-                let offlineQueue = [];
-                try {
-                    offlineQueue = JSON.parse(localStorage.getItem('cc2026_offline_submissions') || '[]');
-                } catch (e) {}
-
-                if (offlineQueue.length > 0) {
-                    const remainingQueue = [];
-                    for (const pending of offlineQueue) {
-                        try {
-                            const dbPayload = this._toDbRecord(pending);
-                            const { error: upsertErr } = await this.supabaseClient.from('registrations').upsert(dbPayload);
-                            if (upsertErr) {
-                                remainingQueue.push(pending);
-                            } else {
-                                if (!cloudRegs.some(r => r.id === pending.id)) {
-                                    cloudRegs.unshift(pending);
-                                }
-                            }
-                        } catch (e) {
-                            remainingQueue.push(pending);
+        // REST API Fallback if SDK not ready or errored
+        if (!rows) {
+            try {
+                const cfg = this.getSupabaseConfig();
+                if (cfg && cfg.url && cfg.anonKey) {
+                    const resp = await fetch(`${cfg.url}/rest/v1/registrations?select=*&order=timestamp.desc`, {
+                        headers: {
+                            'apikey': cfg.anonKey,
+                            'Authorization': `Bearer ${cfg.anonKey}`
+                        }
+                    });
+                    if (resp.ok) {
+                        const json = await resp.json();
+                        if (Array.isArray(json)) {
+                            rows = json;
                         }
                     }
-                    localStorage.setItem('cc2026_offline_submissions', JSON.stringify(remainingQueue));
                 }
-
-                this.saveRegistrations(cloudRegs);
-                console.log(`✓ Synced ${cloudRegs.length} authoritative records from Supabase Cloud`);
-
-                if (typeof refreshAdminView === 'function') refreshAdminView();
-                if (typeof renderNamesWall === 'function') renderNamesWall();
+            } catch (restErr) {
+                console.warn('Supabase REST sync fallback error:', restErr);
             }
-        } catch (e) {
-            console.warn('Supabase sync info:', e);
+        }
+
+        if (rows && Array.isArray(rows)) {
+            // 1. Populate in-memory screenshot cache for all records with screenshots
+            if (!this.screenshotCache) this.screenshotCache = new Map();
+            rows.forEach(row => {
+                if (row.id && row.payment_screenshot && row.payment_screenshot.length > 20) {
+                    this.screenshotCache.set(row.id, row.payment_screenshot);
+                }
+            });
+
+            // 2. Extract any system config rows (like partner colleges)
+            const configRow = rows.find(row => row.id === 'CONFIG_COLLEGES');
+            if (configRow && configRow.payment_screenshot) {
+                try {
+                    localStorage.setItem('wwi_cc26_colleges', configRow.payment_screenshot);
+                } catch(e) {}
+            }
+
+            const cloudRegs = rows
+                .filter(row => row.id !== 'CONFIG_COLLEGES')
+                .map(row => this._fromDbRecord(row));
+
+            // Process genuinely pending offline submissions created on this device
+            let offlineQueue = [];
+            try {
+                offlineQueue = JSON.parse(localStorage.getItem('cc2026_offline_submissions') || '[]');
+            } catch (e) {}
+
+            if (offlineQueue.length > 0 && this.supabaseClient) {
+                const remainingQueue = [];
+                for (const pending of offlineQueue) {
+                    try {
+                        const dbPayload = this._toDbRecord(pending);
+                        const { error: upsertErr } = await this.supabaseClient.from('registrations').upsert(dbPayload);
+                        if (upsertErr) {
+                            remainingQueue.push(pending);
+                        } else {
+                            if (!cloudRegs.some(r => r.id === pending.id)) {
+                                cloudRegs.unshift(pending);
+                            }
+                        }
+                    } catch (e) {
+                        remainingQueue.push(pending);
+                    }
+                }
+                localStorage.setItem('cc2026_offline_submissions', JSON.stringify(remainingQueue));
+            }
+
+            this.saveRegistrations(cloudRegs);
+            console.log(`✓ Synced ${cloudRegs.length} authoritative records from Supabase Cloud (${this.screenshotCache.size} in-memory screenshots ready)`);
+
+            if (typeof refreshAdminView === 'function') refreshAdminView();
+            if (typeof renderNamesWall === 'function') renderNamesWall();
         }
     }
 
@@ -447,7 +482,36 @@ class DataStore {
     getRegistrationById(id) {
         if (!id) return null;
         const normalized = id.trim().toUpperCase();
-        return this.getRegistrations().find(r => r.id.toUpperCase() === normalized) || null;
+        const r = this.getRegistrations().find(r => r.id.toUpperCase() === normalized) || null;
+        if (r && (!r.paymentScreenshot || r.paymentScreenshot.length < 20) && this.screenshotCache && this.screenshotCache.has(r.id)) {
+            r.paymentScreenshot = this.screenshotCache.get(r.id);
+        }
+        return r;
+    }
+
+    getScreenshot(id) {
+        if (!id) return '';
+        if (this.screenshotCache && this.screenshotCache.has(id)) {
+            return this.screenshotCache.get(id);
+        }
+        const r = this.getRegistrationById(id);
+        return (r && r.paymentScreenshot) || '';
+    }
+
+    setScreenshot(id, screenshot) {
+        if (!id || !screenshot) return;
+        if (!this.screenshotCache) this.screenshotCache = new Map();
+        this.screenshotCache.set(id, screenshot);
+    }
+
+    hasScreenshot(id) {
+        if (!id) return false;
+        if (this.screenshotCache && this.screenshotCache.has(id)) {
+            const val = this.screenshotCache.get(id);
+            if (val && val.length > 20) return true;
+        }
+        const r = this.getRegistrationById(id);
+        return Boolean(r && r.paymentScreenshot && r.paymentScreenshot.length > 20);
     }
 
     async toggleVerification(id) {

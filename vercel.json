@@ -2,12 +2,17 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/kes-shroff", "destination": "/kes-shroff.html" },
-    { "source": "/kes-shroff/", "destination": "/kes-shroff.html" },
-    { "source": "/c/:slug*", "destination": "/college.html" },
-    { "source": "/college", "destination": "/college.html" },
-    { "source": "/college/", "destination": "/college.html" },
+    { "source": "/kes-shroff", "destination": "/kes-shroff" },
+    { "source": "/c/kj-somaiya", "destination": "/college" },
+    { "source": "/c/kj-somaiya/", "destination": "/college" },
+    { "source": "/kj-somaiya", "destination": "/college" },
+    { "source": "/kj-somaiya/", "destination": "/college" },
+    { "source": "/c/:slug*", "destination": "/college" },
+    { "source": "/c/(.*)", "destination": "/college" },
+    { "source": "/c", "destination": "/college" },
+    { "source": "/c/", "destination": "/college" },
+    { "source": "/college", "destination": "/college" },
     { "source": "/principal-invitation", "destination": "/principal-invitation/index.html" },
-    { "source": "/principal-invitation/", "destination": "/principal-invitation/index.html" }
+    { "source": "/principal-invitation/(.*)", "destination": "/principal-invitation/index.html" }
   ]
 }

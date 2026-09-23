@@ -112,8 +112,21 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         const referrerName = refCode 
             ? (promoterMap[refCode] ? `${promoterMap[refCode]} (Promoter)` : (studentMap[refCode] ? `${studentMap[refCode]}` : null))
             : null;
-        // Detect KES Shroff free registration
-        const isFreeKES = (r.transactionId === 'FREE-KES-SHROFF') || (r.couponUsed === 'FREE-KES-SHROFF') || (r.id && r.id.startsWith('KS'));
+        // Detect KES Shroff or any partner college free registration
+        const isFreeKES = (r.transactionId === 'FREE-KES-SHROFF') || (r.couponUsed === 'FREE-KES-SHROFF') || (r.id && r.id.startsWith('KS')) ||
+            (r.transactionId && r.transactionId.toUpperCase().startsWith('FREE-')) ||
+            (r.couponUsed && r.couponUsed.toUpperCase().startsWith('FREE-')) ||
+            (r.referredBy && r.referredBy.startsWith('college:')) ||
+            (r.finalPrice === 0 && r.basePrice === 0 && r.transactionId);
+
+        let collegeBadgeLabel = 'Partner College';
+        if (r.id && r.id.startsWith('KS')) collegeBadgeLabel = 'KES Shroff';
+        else if (r.id && r.id.startsWith('KJS')) collegeBadgeLabel = 'KJ Somaiya';
+        else if (r.referredBy && r.referredBy.startsWith('college:')) {
+            collegeBadgeLabel = r.referredBy.replace('college:', '').replace(/-/g, ' ').toUpperCase();
+        } else if (r.transactionId && r.transactionId.startsWith('FREE-')) {
+            collegeBadgeLabel = r.transactionId.replace('FREE-', '').replace(/-/g, ' ');
+        }
 
         return `
         <tr id="row-${r.id}" class="${r.rejected ? 'row-rejected' : ''}">
@@ -123,7 +136,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             <td class="col-phone">${escapeHTML(r.phone)}</td>
             <td class="col-college" title="${escapeHTML(r.college)}">${escapeHTML(r.college)}</td>
             <td class="col-date" title="${escapeHTML(r.visitDate || 'Both Days')}"><span class="badge badge-gold-sm">${escapeHTML(r.visitDate ? (r.visitDate.includes('Both') ? 'Both Days' : (r.visitDate.includes('08th') ? 'Day 1 (8th)' : 'Day 2 (9th)')) : 'Both Days')}</span></td>
-            <td class="col-amount">${isFreeKES ? `<span style="color:#4ade80; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#4ade80; opacity:0.7; margin-top:2px;">KES Shroff</div>` : `₹${r.finalPrice}`}</td>
+            <td class="col-amount">${isFreeKES ? `<span style="color:#4ade80; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#4ade80; opacity:0.7; margin-top:2px;">${escapeHTML(collegeBadgeLabel)}</div>` : `₹${r.finalPrice}`}</td>
             <td class="col-coupon">${r.couponUsed || '—'}</td>
             <td class="col-referral">
                 ${refCode ? `
@@ -156,7 +169,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                             style="${r.rejected ? 'background:#ef4444; color:#fff; border-color:#dc2626;' : 'color:#ef4444; border:1px solid rgba(239,68,68,0.4); background:rgba(239,68,68,0.08);'}">
                         ${r.rejected ? 'Void' : 'Reject'}
                     </button>
-                    ${(r.paymentScreenshot || isFreeKES || (r.referredBy && r.referredBy.startsWith('college:')) || (r.transactionId && r.transactionId !== 'ADMIN_ENTRY' && !r.transactionId.startsWith('REJECTED') && r.finalPrice > 0)) ? `<button class="btn-small" onclick="viewScreenshot('${r.id}')" title="${isFreeKES ? 'View College ID / Fee Receipt' : 'View Payment Screenshot'}">${isFreeKES ? '🪪' : '📷'}</button>` : ''}
+                    ${((dataStore.hasScreenshot ? dataStore.hasScreenshot(r.id) : (r.paymentScreenshot && r.paymentScreenshot.length > 20)) || isFreeKES || (r.referredBy && r.referredBy.startsWith('college:')) || (r.transactionId && r.transactionId !== 'ADMIN_ENTRY' && !r.transactionId.startsWith('REJECTED') && r.finalPrice > 0)) ? `<button class="btn-small" onclick="viewScreenshot('${r.id}')" title="${isFreeKES ? 'View College ID / Fee Receipt' : 'View Payment Screenshot'}">${isFreeKES ? '🪪' : '📷'}</button>` : ''}
                     <button class="btn-delete" onclick="handleDeleteRegistration('${r.id}')" title="Delete">✕</button>
                 </div>
             </td>
@@ -561,78 +574,160 @@ async function handleDeleteRegistration(id) {
 // ──────────── VIEW SCREENSHOT / ID CARD ────────────
 async function viewScreenshot(id) {
     const reg = dataStore.getRegistrationById(id);
-    if (!reg) return;
+    if (!reg) {
+        showToast('Registration record not found', 'warning');
+        return;
+    }
     const isFreeKES = (reg.transactionId === 'FREE-KES-SHROFF') || (reg.couponUsed === 'FREE-KES-SHROFF') || (reg.id && reg.id.startsWith('KS')) ||
         (reg.transactionId && reg.transactionId.toUpperCase().startsWith('FREE-')) ||
-        (reg.couponUsed && reg.couponUsed.toUpperCase().startsWith('FREE-'));
+        (reg.couponUsed && reg.couponUsed.toUpperCase().startsWith('FREE-')) ||
+        (reg.referredBy && reg.referredBy.startsWith('college:'));
     const titleText = isFreeKES ? `College ID / Fee Receipt — ${escapeHTML(reg.name)}` : `Payment Screenshot — ${escapeHTML(reg.name)}`;
 
-    // If local paymentScreenshot is empty, try to fetch from Supabase directly
-    let screenshotData = reg.paymentScreenshot || '';
-    if (!screenshotData && dataStore.supabaseClient) {
-        try {
-            const { data, error } = await dataStore.supabaseClient
-                .from('registrations')
-                .select('payment_screenshot')
-                .eq('id', id)
-                .single();
-            if (!error && data && data.payment_screenshot) {
-                screenshotData = data.payment_screenshot;
-                // Update local cache
-                dataStore.updateRegistration(id, { paymentScreenshot: screenshotData });
-            }
-        } catch(e) {
-            console.warn('Could not fetch screenshot from Supabase:', e);
-        }
-    }
+    // Remove any existing screenshot modal
+    const existing = document.getElementById('screenshot-modal-overlay');
+    if (existing) existing.remove();
 
-    const isPdf = screenshotData && (screenshotData.startsWith('PDF:') || screenshotData.startsWith('data:application/pdf'));
-
+    // 1. Immediately display modal with loading feedback
     const overlay = document.createElement('div');
+    overlay.id = 'screenshot-modal-overlay';
     overlay.className = 'modal-overlay open';
     overlay.onclick = () => overlay.remove();
     overlay.innerHTML = `
-        <div class="modal-content glass-card" onclick="event.stopPropagation()" style="max-width: 550px; padding: 24px; border: 1px solid var(--border-glass);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-                <h3 style="font-size:1.1rem; color:var(--gold);">${titleText}</h3>
+        <div class="modal-content glass-card" onclick="event.stopPropagation()" style="max-width: 580px; padding: 24px; border: 1px solid var(--border-glass); border-radius: 16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+                <h3 style="font-size:1.05rem; color:var(--gold); margin:0; display:flex; align-items:center; gap:8px;">
+                    <span>${isFreeKES ? '🪪' : '📷'}</span>
+                    <span>${titleText}</span>
+                </h3>
                 <button class="btn-small" onclick="this.closest('.modal-overlay').remove()">Close ✕</button>
             </div>
-            ${!screenshotData ? `
-                <div style="text-align:center; padding:32px; background:rgba(255,255,255,0.04); border-radius:12px; border:1px solid rgba(245,158,11,0.25);">
-                    <div style="font-size:3rem; margin-bottom:10px;">⚠️</div>
-                    <p style="color:#f59e0b; font-weight:600;">Image Not Available Locally</p>
-                    <p style="color:var(--lavender); font-size:0.82rem; margin-top:6px; line-height:1.5;">
-                        The ${isFreeKES ? 'College ID / Fee Receipt' : 'payment screenshot'} was uploaded but is not cached on this device.<br>
-                        This can happen when local storage fills up. Try syncing from Supabase Cloud:
-                    </p>
-                    <button class="btn btn-primary" style="margin-top:14px; font-size:0.82rem;" onclick="this.closest('.modal-overlay').remove(); handleManualSyncCloud().then(() => { setTimeout(() => viewScreenshot('${id}'), 800); });">
-                        ↻ Sync &amp; Retry
-                    </button>
-                </div>
-            ` : isPdf ? `
-                <div style="text-align:center; padding:32px; background:rgba(255,255,255,0.04); border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
-                    <div style="font-size:3rem; margin-bottom:10px;">📄</div>
-                    <p style="color:var(--text); font-weight:600;">Uploaded Document (PDF)</p>
-                    <p style="color:var(--lavender); font-size:0.85rem; margin-top:6px;">${escapeHTML(screenshotData.replace(/^PDF:/, ''))}</p>
-                </div>
-            ` : `
-                <img src="${screenshotData}" alt="${isFreeKES ? 'ID Card / Fee Receipt' : 'Payment Screenshot'}" 
-                    style="max-width:100%; max-height:440px; object-fit:contain; border-radius:12px; display:block; margin:0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.5);"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
-                >
-                <div style="display:none; text-align:center; padding:24px; background:rgba(239,68,68,0.08); border-radius:12px; border:1px solid rgba(239,68,68,0.25);">
-                    <div style="font-size:2rem; margin-bottom:8px;">🖼️</div>
-                    <p style="color:#ef4444; font-size:0.85rem;">Image could not be displayed. The data may be corrupted or too large.</p>
-                </div>
-            `}
+            
+            <div id="screenshot-content-area" style="min-height: 220px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                <div class="spinner" style="font-size:2.4rem; animation:spin 1s linear infinite; margin-bottom:12px;">⏳</div>
+                <p style="color:var(--gold); font-size:0.95rem; margin:0; font-weight:600;">Loading Document…</p>
+                <p style="color:var(--lavender); font-size:0.8rem; margin:6px 0 0 0;">Fetching image from secure cloud storage…</p>
+            </div>
+
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted); border-top:1px solid rgba(255,255,255,0.08); padding-top:12px;">
                 <span>College: <strong style="color:var(--text);">${escapeHTML(reg.college || '—')}</strong></span>
-                <span>${isFreeKES ? '<strong style="color:#4ade80;">FREE REGISTRATION</strong>' : `Txn ID: <strong>${escapeHTML(reg.transactionId || 'N/A')}</strong>`}</span>
+                <span>${isFreeKES ? '<strong style="color:#4ade80;">FREE DELEGATION</strong>' : `Txn ID: <strong>${escapeHTML(reg.transactionId || 'N/A')}</strong>`}</span>
             </div>
         </div>
     `;
     document.body.appendChild(overlay);
+
+    const contentArea = overlay.querySelector('#screenshot-content-area');
+
+    // 2. Resolve image data from memory or cache first
+    let screenshotData = (reg.paymentScreenshot && reg.paymentScreenshot.length > 20) 
+        ? reg.paymentScreenshot 
+        : (dataStore.getScreenshot ? dataStore.getScreenshot(id) : '');
+
+    // 3. If missing from cache, fetch directly via Supabase REST API
+    if (!screenshotData || screenshotData.length < 20) {
+        try {
+            const url = `${CONFIG.SUPABASE_URL}/rest/v1/registrations?id=eq.${encodeURIComponent(id)}&select=id,payment_screenshot`;
+            const resp = await fetch(url, {
+                headers: {
+                    'apikey': CONFIG.SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`
+                }
+            });
+            if (resp.ok) {
+                const rows = await resp.json();
+                if (rows && rows[0] && rows[0].payment_screenshot) {
+                    screenshotData = rows[0].payment_screenshot;
+                    if (dataStore.setScreenshot) {
+                        dataStore.setScreenshot(id, screenshotData);
+                    }
+                }
+            }
+        } catch (fetchErr) {
+            console.warn('Direct REST screenshot fetch error:', fetchErr);
+        }
+    }
+
+    if (!contentArea) return;
+
+    // 4. Case: No document was ever uploaded by the student
+    if (!screenshotData || screenshotData.length < 20) {
+        contentArea.innerHTML = `
+            <div style="text-align:center; padding:32px; background:rgba(255,255,255,0.03); border-radius:12px; border:1px solid rgba(255,255,255,0.08); width:100%; box-sizing:border-box;">
+                <div style="font-size:3rem; margin-bottom:12px;">ℹ️</div>
+                <h4 style="color:var(--gold); margin:0 0 8px 0; font-size:1.05rem;">No Document Uploaded</h4>
+                <p style="color:var(--lavender); font-size:0.85rem; line-height:1.6; margin:0 0 16px 0;">
+                    This registration was submitted without attaching a ${isFreeKES ? 'College ID card / fee receipt' : 'payment screenshot'}.<br>
+                    ${reg.transactionId ? `Recorded Transaction / Ref: <code style="color:var(--gold); font-size:0.9rem;">${escapeHTML(reg.transactionId)}</code>` : 'No transaction ID was recorded.'}
+                </p>
+                <div style="display:flex; gap:10px; justify-content:center;">
+                    <button class="btn btn-secondary" style="font-size:0.8rem; padding:6px 16px;" onclick="this.closest('.modal-overlay').remove()">Close</button>
+                    <button class="btn btn-primary" style="font-size:0.8rem; padding:6px 16px;" onclick="handleManualSyncCloud().then(() => { setTimeout(() => viewScreenshot('${id}'), 600); });">⟳ Re-sync Cloud</button>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    // 5. Case: Uploaded PDF Document
+    const isPdf = screenshotData.startsWith('PDF:') || screenshotData.startsWith('data:application/pdf');
+    if (isPdf) {
+        contentArea.innerHTML = `
+            <div style="text-align:center; padding:32px; background:rgba(255,255,255,0.04); border-radius:12px; border:1px solid rgba(255,255,255,0.08); width:100%; box-sizing:border-box;">
+                <div style="font-size:3.5rem; margin-bottom:10px;">📄</div>
+                <h4 style="color:var(--text); font-weight:600; margin:0 0 6px 0;">Uploaded Document (PDF)</h4>
+                <p style="color:var(--lavender); font-size:0.85rem; margin-bottom:16px;">${escapeHTML(screenshotData.replace(/^PDF:/, ''))}</p>
+                ${screenshotData.startsWith('data:application/pdf') ? `
+                    <div style="display:flex; gap:10px; justify-content:center;">
+                        <a href="${screenshotData}" download="${reg.id}_document.pdf" class="btn btn-primary" style="font-size:0.82rem; padding:8px 16px; text-decoration:none;">⬇ Download PDF</a>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        return;
+    }
+
+    // 6. Case: Standard Image (JPEG, PNG, etc.)
+    contentArea.innerHTML = `
+        <div style="width:100%; text-align:center;">
+            <div style="max-height: 480px; overflow: hidden; border-radius: 12px; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; padding: 8px;">
+                <img src="${screenshotData}" alt="${isFreeKES ? 'College ID' : 'Payment Screenshot'}" 
+                    style="max-width:100%; max-height:460px; object-fit:contain; border-radius:8px; display:block; margin:0 auto; box-shadow: 0 4px 20px rgba(0,0,0,0.6);"
+                    onerror="this.style.display='none'; document.getElementById('screenshot-err-box').style.display='block';"
+                >
+                <div id="screenshot-err-box" style="display:none; text-align:center; padding:24px;">
+                    <div style="font-size:2.5rem; margin-bottom:8px;">🖼️</div>
+                    <p style="color:#ef4444; font-size:0.85rem;">Image could not be rendered. The data may be corrupted or unreadable.</p>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center; margin-top:14px;">
+                <a href="${screenshotData}" download="${reg.id}_${isFreeKES ? 'ID' : 'Payment'}.jpg" class="btn btn-primary" style="font-size:0.8rem; padding:7px 16px; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                    <span>⬇</span> Download Image
+                </a>
+                <button type="button" class="btn btn-secondary" style="font-size:0.8rem; padding:7px 16px; display:inline-flex; align-items:center; gap:6px;" onclick="openScreenshotInNewTab('${id}')">
+                    <span>⤢</span> Full Resolution
+                </button>
+            </div>
+        </div>
+    `;
 }
+
+function openScreenshotInNewTab(id) {
+    const data = dataStore.getScreenshot ? dataStore.getScreenshot(id) : '';
+    if (!data) return;
+    const w = window.open('');
+    if (w) {
+        w.document.write(`
+            <html>
+                <head><title>Document Preview — ${escapeHTML(id)}</title></head>
+                <body style="margin:0; background:#0f0f18; display:flex; align-items:center; justify-content:center; min-height:100vh;">
+                    <img src="${data}" style="max-width:100%; height:auto; box-shadow:0 0 30px rgba(0,0,0,0.8);">
+                </body>
+            </html>
+        `);
+    }
+}
+window.openScreenshotInNewTab = openScreenshotInNewTab;
 
 // ═══════════════════════════════════════════════
 // ATTENDANCE SCANNER SYSTEM (SMOOTH & FAST)
