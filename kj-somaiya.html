@@ -1046,6 +1046,83 @@
                 ],
                 referralCodes: ['NILESH', 'TARASHA'],
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                name: 'Mithibai College of Arts, Chauhan Institute of Science & Amrutben Jivanlal College of Commerce & Economics',
+                shortName: 'Mithibai College',
+                slug: 'mithibai',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                name: 'H.R. College of Commerce & Economics',
+                shortName: 'HR College',
+                slug: 'hr-college',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                name: 'Narsee Monjee College of Commerce & Economics',
+                shortName: 'NM College',
+                slug: 'nm-college',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                name: 'Dwarkadas J. Sanghvi College of Engineering',
+                shortName: 'DJ Sanghvi',
+                slug: 'dj-sanghvi',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['B.E. Computer', 'B.E. IT', 'B.E. Electronics', 'B.E. Mechanical', 'B.E. Civil', 'B.E. Chemical', 'M.E.', 'Other']
+            },
+            {
+                name: 'Somaiya Vidyavihar University - S.K. Somaiya College',
+                shortName: 'SK Somaiya College',
+                slug: 'sk-somaiya',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                name: 'Aurobindo college',
+                shortName: 'Aurobindo',
+                slug: 'aurobindo-college',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                name: 'SIWS',
+                shortName: 'Siws',
+                slug: 'siws',
+                pocs: [
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' },
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SATVIK', 'SAHIL'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
             }
         ];
 
@@ -1110,14 +1187,25 @@
                     if (data && data[0] && data[0].payment_screenshot) {
                         var cloudList = JSON.parse(data[0].payment_screenshot);
                         if (Array.isArray(cloudList) && cloudList.length > 0) {
+                            DEFAULT_COLLEGES.forEach(function(def) {
+                                if (!cloudList.some(function(c) { return c.slug === def.slug; })) {
+                                    cloudList.push(def);
+                                }
+                            });
                             colleges = cloudList;
-                            localStorage.setItem('wwi_cc26_colleges', JSON.stringify(cloudList));
+                            try { localStorage.setItem('wwi_cc26_colleges', JSON.stringify(cloudList)); } catch(e) {}
                         }
                     }
                 }
             } catch(e) {
                 console.warn('Could not sync colleges from Supabase:', e);
             }
+
+            DEFAULT_COLLEGES.forEach(function(def) {
+                if (!colleges.some(function(c) { return c.slug === def.slug; })) {
+                    colleges.push(def);
+                }
+            });
 
             if (colleges.length === 0) colleges = DEFAULT_COLLEGES;
             return colleges;

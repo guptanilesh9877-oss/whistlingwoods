@@ -847,6 +847,36 @@ class DataStore {
                 badge: 'COMPLIMENTARY',
                 feeWaiver: 150,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'aurobindo-college',
+                name: 'Aurobindo college',
+                shortName: 'Aurobindo',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Aurobindo College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'siws',
+                name: 'SIWS',
+                shortName: 'Siws',
+                pocs: [
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' },
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SATVIK', 'SAHIL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SIWS, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
             }
         ];
 
