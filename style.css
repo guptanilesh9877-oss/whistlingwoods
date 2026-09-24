@@ -3568,10 +3568,23 @@ select.form-input option:focus {
 }
 
 /* ───── RESPONSIVE RULES FOR LEADERBOARD ───── */
+@media (max-width: 1100px) {
+    .team-leaderboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-md);
+    }
+}
+
 @media (max-width: 900px) {
     .team-leaderboard-grid {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: var(--space-md);
+    }
+    .leaderboard-stats-bar {
+        gap: 8px;
+    }
+    .stat-pill-item {
+        min-width: calc(50% - 8px);
     }
 }
 
@@ -3610,6 +3623,31 @@ select.form-input option:focus {
     .hide-on-compact {
         display: none !important;
     }
+    .leaderboard-stats-bar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    .stat-pill-item {
+        width: 100%;
+    }
+    .team-metrics-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .team-sub-metrics {
+        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .team-name {
+        font-size: 1rem;
+    }
+    .team-metric-number {
+        font-size: 1.6rem;
+    }
 }
 
 @media (max-width: 600px) {
@@ -3629,9 +3667,38 @@ select.form-input option:focus {
     }
     .duo-split-labels {
         font-size: 0.72rem;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+    .duo-label.left, .duo-label.right {
+        flex: 1;
+        min-width: 90px;
+    }
+    .duo-split-ratio {
+        width: 100%;
+        text-align: center;
+        order: -1;
     }
     .team-card {
         padding: var(--space-md);
+    }
+    .team-codes-bar {
+        flex-wrap: wrap;
+    }
+    .leaderboard-stats-bar {
+        grid-template-columns: 1fr;
+    }
+    .referral-rank-badge {
+        min-width: 26px;
+        font-size: 0.95rem;
+    }
+    .referral-avatar-badge {
+        width: 28px;
+        height: 28px;
+        font-size: 0.78rem;
+    }
+    .referral-name {
+        font-size: 0.88rem;
     }
 }
 

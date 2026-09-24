@@ -742,6 +742,111 @@ class DataStore {
                 badge: 'COMPLIMENTARY',
                 feeWaiver: 150,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'kj-somaiya',
+                name: 'Kj Somaiya College',
+                shortName: 'KJ Somaiya College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with KJ Somaiya College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'sydenham',
+                name: 'Sydenham College of Commerce and Economics',
+                shortName: 'Sydenham College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Sydenham College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'mithibai',
+                name: 'Mithibai College of Arts, Chauhan Institute of Science & Amrutben Jivanlal College of Commerce & Economics',
+                shortName: 'Mithibai College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Mithibai College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'hr-college',
+                name: 'H.R. College of Commerce & Economics',
+                shortName: 'HR College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with HR College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'nm-college',
+                name: 'Narsee Monjee College of Commerce & Economics',
+                shortName: 'NM College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with NM College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'dj-sanghvi',
+                name: 'Dwarkadas J. Sanghvi College of Engineering',
+                shortName: 'DJ Sanghvi',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with DJ Sanghvi College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['B.E. Computer', 'B.E. IT', 'B.E. Electronics', 'B.E. Mechanical', 'B.E. Civil', 'B.E. Chemical', 'M.E.', 'Other']
+            },
+            {
+                slug: 'sk-somaiya',
+                name: 'Somaiya Vidyavihar University - S.K. Somaiya College',
+                shortName: 'SK Somaiya College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SK Somaiya College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
             }
         ];
 
@@ -753,6 +858,12 @@ class DataStore {
         try {
             const list = JSON.parse(stored);
             if (!Array.isArray(list) || list.length === 0) return defaultColleges;
+            // Ensure all default colleges are present (merge defaults into stored)
+            defaultColleges.forEach(def => {
+                if (!list.some(c => c.slug === def.slug)) {
+                    list.push(def);
+                }
+            });
             return list;
         } catch (e) {
             return defaultColleges;
@@ -931,34 +1042,63 @@ class DataStore {
         const regs = this.getRegistrations();
 
         // ── CALCULATE COLLEGE DELEGATION EQUAL SPLITS ───────────────
-        // 1. KES Shroff free registrations (divided equally between Sahil and Satvik)
-        const kesRegs = regs.filter(r => (
-            (r.couponUsed === 'FREE-KES-SHROFF') || 
-            (r.transactionId === 'FREE-KES-SHROFF') || 
-            (r.referredBy && r.referredBy.includes('kes-shroff')) ||
-            (r.id && r.id.startsWith('KS-')) ||
-            (r.college && r.college.toLowerCase().includes('shroff'))
+        // Helper: get free regs for a college slug
+        const getCollegeFreeRegs = (slug, collegeNameKeyword) => regs.filter(r => (
+            (r.couponUsed && r.couponUsed.toUpperCase() === ('FREE-' + slug.toUpperCase())) ||
+            (r.transactionId && r.transactionId.toUpperCase() === ('FREE-' + slug.toUpperCase())) ||
+            (r.referredBy && r.referredBy.toLowerCase().includes(slug.toLowerCase())) ||
+            (r.id && r.id.toUpperCase().startsWith(slug.toUpperCase().replace(/-/g, '').substring(0, 3) + '-')) ||
+            (collegeNameKeyword && r.college && r.college.toLowerCase().includes(collegeNameKeyword))
         ));
+
+        // 1. KES Shroff free registrations (Sahil + Satvik, equal split)
+        const kesRegs = getCollegeFreeRegs('kes-shroff', 'shroff');
         const kesCount = kesRegs.length;
         const kesVerified = kesRegs.filter(r => r.verified).length;
-
         const sahilKesCount = Math.ceil(kesCount / 2);
         const satvikKesCount = Math.floor(kesCount / 2);
         const sahilKesVer = Math.ceil(kesVerified / 2);
         const satvikKesVer = Math.floor(kesVerified / 2);
 
-        // 2. Any other partner college registrations split among their assigned codes
+        // 2. Nilesh + Tarasha colleges — explicit equal split (KJ-Somaiya, Sydenham, Mithibai, HR, NM, DJ Sanghvi, SK Somaiya)
+        const nileshTarashaCollegeSlugs = [
+            { slug: 'kj-somaiya', keyword: 'somaiya' },
+            { slug: 'sydenham', keyword: 'sydenham' },
+            { slug: 'mithibai', keyword: 'mithibai' },
+            { slug: 'hr-college', keyword: 'h.r. college' },
+            { slug: 'nm-college', keyword: 'narsee monjee' },
+            { slug: 'dj-sanghvi', keyword: 'sanghvi' },
+            { slug: 'sk-somaiya', keyword: 'sk somaiya' }
+        ];
+        let nileshTotal = 0, nileshVer = 0;
+        let tarashaDelegTotal = 0;
+        const seenCollegeRegIds = new Set(kesRegs.map(r => r.id)); // avoid double-counting
+        nileshTarashaCollegeSlugs.forEach(({ slug, keyword }) => {
+            const colRegs = getCollegeFreeRegs(slug, keyword).filter(r => !seenCollegeRegIds.has(r.id));
+            colRegs.forEach(r => seenCollegeRegIds.add(r.id));
+            const colCount = colRegs.length;
+            const colVer = colRegs.filter(r => r.verified).length;
+            nileshTotal += Math.ceil(colCount / 2);
+            tarashaDelegTotal += Math.floor(colCount / 2);
+            nileshVer += Math.ceil(colVer / 2);
+        });
+        const tarashaTotalFromCols = tarashaDelegTotal;
+        const tarashVerFromCols = nileshVer > 0 ? Math.floor(nileshVer * (tarashaDelegTotal / (nileshTotal || 1))) : 0;
+
+        // 3. Any remaining partner college registrations (custom added colleges not explicitly handled above)
         const partnerColleges = this.getCollegePartners();
         const otherCollegeBonus = {};
         const otherCollegeVerBonus = {};
 
         partnerColleges.forEach(col => {
-            if (col.slug === 'kes-shroff') return;
+            // Skip colleges already handled explicitly above
+            const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya'];
+            if (alreadyHandled.includes(col.slug)) return;
             const colRegs = regs.filter(r => (
-                (r.referredBy && r.referredBy.includes(col.slug)) ||
-                (r.couponUsed && r.couponUsed.toUpperCase().includes(col.slug.toUpperCase())) ||
-                (r.college && r.college.toLowerCase().includes(col.slug))
-            ));
+                (r.referredBy && r.referredBy.toLowerCase().includes(col.slug.toLowerCase())) ||
+                (r.couponUsed && r.couponUsed.toUpperCase().includes(('FREE-' + col.slug).toUpperCase())) ||
+                (r.transactionId && r.transactionId.toUpperCase().includes(('FREE-' + col.slug).toUpperCase()))
+            )).filter(r => !seenCollegeRegIds.has(r.id));
             if (colRegs.length > 0 && Array.isArray(col.referralCodes) && col.referralCodes.length > 0) {
                 const codes = col.referralCodes.map(c => c.toUpperCase());
                 const splitTotal = Math.floor(colRegs.length / codes.length);
@@ -971,6 +1111,7 @@ class DataStore {
                     otherCollegeBonus[code] = (otherCollegeBonus[code] || 0) + splitTotal + extra;
                     otherCollegeVerBonus[code] = (otherCollegeVerBonus[code] || 0) + splitVer;
                 });
+                colRegs.forEach(r => seenCollegeRegIds.add(r.id));
             }
         });
 
@@ -994,7 +1135,18 @@ class DataStore {
                     delegationCount += satvikKesCount;
                 }
 
-                // Add other college bonuses if assigned
+                // Credit Nilesh & Tarasha equally for their partner colleges
+                if (codeUpper === 'NILESH') {
+                    count += nileshTotal;
+                    verified += nileshVer;
+                    delegationCount += nileshTotal;
+                } else if (codeUpper === 'TARASHA') {
+                    count += tarashaTotalFromCols;
+                    verified += tarashVerFromCols;
+                    delegationCount += tarashaTotalFromCols;
+                }
+
+                // Add other college bonuses if assigned (custom colleges)
                 if (otherCollegeBonus[codeUpper]) {
                     count += otherCollegeBonus[codeUpper];
                     verified += (otherCollegeVerBonus[codeUpper] || 0);
@@ -1087,27 +1239,72 @@ class DataStore {
     getTopReferrers(limit = 15) {
         const regs = this.getRegistrations();
         const counts = {};
+        // Only count direct referrals (not college: prefix ones — those will be credited via delegation splits below)
         regs.forEach(r => {
-            if (r.referredBy && !r.referredBy.startsWith('SOURCE:')) {
+            if (r.referredBy && !r.referredBy.startsWith('SOURCE:') && !r.referredBy.startsWith('college:')) {
                 const code = r.referredBy.trim().toUpperCase();
                 counts[code] = (counts[code] || 0) + 1;
             }
         });
 
-        // Add college delegation equal splits
-        const kesRegs = regs.filter(r => (
-            (r.couponUsed === 'FREE-KES-SHROFF') || 
-            (r.transactionId === 'FREE-KES-SHROFF') || 
-            (r.referredBy && r.referredBy.includes('kes-shroff')) ||
-            (r.id && r.id.startsWith('KS-')) ||
-            (r.college && r.college.toLowerCase().includes('shroff'))
+        // Helper: get free regs for a college slug
+        const getCollegeFreeRegs = (slug, collegeNameKeyword) => regs.filter(r => (
+            (r.couponUsed && r.couponUsed.toUpperCase() === ('FREE-' + slug.toUpperCase())) ||
+            (r.transactionId && r.transactionId.toUpperCase() === ('FREE-' + slug.toUpperCase())) ||
+            (r.referredBy && r.referredBy.toLowerCase().includes(slug.toLowerCase())) ||
+            (r.id && r.id.toUpperCase().startsWith(slug.toUpperCase().replace(/-/g, '').substring(0, 3) + '-')) ||
+            (collegeNameKeyword && r.college && r.college.toLowerCase().includes(collegeNameKeyword))
         ));
+
+        // Add KES Shroff free reg split → Sahil + Satvik
+        const kesRegs = getCollegeFreeRegs('kes-shroff', 'shroff');
         if (kesRegs.length > 0) {
             const sahilShare = Math.ceil(kesRegs.length / 2);
             const satvikShare = Math.floor(kesRegs.length / 2);
             counts['SAHIL'] = (counts['SAHIL'] || 0) + sahilShare;
             counts['SATVIK'] = (counts['SATVIK'] || 0) + satvikShare;
         }
+
+        // Add Nilesh + Tarasha college free reg splits
+        const nileshTarashaCollegeSlugs = [
+            { slug: 'kj-somaiya', keyword: 'somaiya' },
+            { slug: 'sydenham', keyword: 'sydenham' },
+            { slug: 'mithibai', keyword: 'mithibai' },
+            { slug: 'hr-college', keyword: 'h.r. college' },
+            { slug: 'nm-college', keyword: 'narsee monjee' },
+            { slug: 'dj-sanghvi', keyword: 'sanghvi' },
+            { slug: 'sk-somaiya', keyword: 'sk somaiya' }
+        ];
+        const seenIds = new Set(kesRegs.map(r => r.id));
+        nileshTarashaCollegeSlugs.forEach(({ slug, keyword }) => {
+            const colRegs = getCollegeFreeRegs(slug, keyword).filter(r => !seenIds.has(r.id));
+            colRegs.forEach(r => seenIds.add(r.id));
+            if (colRegs.length > 0) {
+                counts['NILESH'] = (counts['NILESH'] || 0) + Math.ceil(colRegs.length / 2);
+                counts['TARASHA'] = (counts['TARASHA'] || 0) + Math.floor(colRegs.length / 2);
+            }
+        });
+
+        // Add any remaining custom partner college splits
+        const partnerColleges = this.getCollegePartners();
+        const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya'];
+        partnerColleges.forEach(col => {
+            if (alreadyHandled.includes(col.slug)) return;
+            const colRegs = regs.filter(r => (
+                (r.referredBy && r.referredBy.toLowerCase().includes(col.slug.toLowerCase())) ||
+                (r.couponUsed && r.couponUsed.toUpperCase() === ('FREE-' + col.slug.toUpperCase())) ||
+                (r.transactionId && r.transactionId.toUpperCase() === ('FREE-' + col.slug.toUpperCase()))
+            )).filter(r => !seenIds.has(r.id));
+            if (colRegs.length > 0 && Array.isArray(col.referralCodes) && col.referralCodes.length > 0) {
+                const codes = col.referralCodes.map(c => c.toUpperCase());
+                const splitTotal = Math.floor(colRegs.length / codes.length);
+                const remainder = colRegs.length % codes.length;
+                codes.forEach((code, idx) => {
+                    const extra = idx < remainder ? 1 : 0;
+                    counts[code] = (counts[code] || 0) + splitTotal + extra;
+                });
+            }
+        });
 
         const promoters = this.getPromoters();
         const promoterMap = {};
