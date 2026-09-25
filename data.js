@@ -1184,7 +1184,7 @@ class DataStore {
                 }
 
                 const pending = count - verified;
-                const revenue = mRegs.reduce((sum, r) => sum + (r.finalPrice || 0), 0);
+                const revenue = mRegs.filter(r => r.verified).reduce((sum, r) => sum + (r.finalPrice || 0), 0);
 
                 return {
                     name: m.name,
@@ -1360,9 +1360,9 @@ class DataStore {
         const regs = this.getRegistrations();
         const verified = regs.filter(r => r.verified);
         const attended = regs.filter(r => r.attended);
-        // Total revenue = sum of ALL registrations' finalPrice (verified + pending payments received)
-        const totalRevenue = regs.reduce((s, r) => s + (r.finalPrice || 0), 0);
+        // Only count verified payments towards revenue
         const verifiedRevenue = verified.reduce((s, r) => s + (r.finalPrice || 0), 0);
+        const totalRevenue = verifiedRevenue;
         const couponUsage = {};
         regs.forEach(r => {
             if (r.couponUsed) couponUsage[r.couponUsed] = (couponUsage[r.couponUsed] || 0) + 1;
@@ -1374,7 +1374,7 @@ class DataStore {
             attended: attended.length,
             totalRevenue,
             verifiedRevenue,
-            avgPrice: regs.length ? Math.round(totalRevenue / regs.length) : 0,
+            avgPrice: verified.length ? Math.round(verifiedRevenue / verified.length) : 0,
             couponUsage,
             topReferrers: this.getTopReferrers()
         };

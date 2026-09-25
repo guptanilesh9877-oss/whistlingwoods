@@ -35,7 +35,7 @@ function renderStats() {
     animateCounter(document.getElementById('stat-total'), stats.total, 800);
     animateCounter(document.getElementById('stat-verified'), stats.verified, 800);
     animateCounter(document.getElementById('stat-pending'), stats.pending, 800);
-    animateCounter(document.getElementById('stat-revenue'), stats.totalRevenue, 1000, '₹');
+    animateCounter(document.getElementById('stat-revenue'), stats.verifiedRevenue, 1000, '₹');
 
     const attendedEl = document.getElementById('stat-attended');
     if (attendedEl) {
