@@ -472,7 +472,16 @@ class DataStore {
         if (idx === -1) return null;
         regs[idx] = { ...regs[idx], ...updates };
         this.saveRegistrations(regs);
-        this.syncToSupabase(regs[idx]).then(() => {
+
+        // Restore screenshot from in-memory cache if localStorage stripped it
+        // This prevents overwriting Supabase with empty screenshot data
+        const syncRecord = { ...regs[idx] };
+        if ((!syncRecord.paymentScreenshot || syncRecord.paymentScreenshot.length < 20) &&
+            this.screenshotCache && this.screenshotCache.has(id)) {
+            syncRecord.paymentScreenshot = this.screenshotCache.get(id);
+        }
+
+        this.syncToSupabase(syncRecord).then(() => {
             if (typeof refreshAdminView === 'function') refreshAdminView();
             if (typeof renderNamesWall === 'function') renderNamesWall();
         });

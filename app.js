@@ -640,6 +640,11 @@ function handleScreenshotUpload(file) {
             // Save to current registration
             if (currentRegistration) {
                 currentRegistration.paymentScreenshot = compressedDataUrl;
+                // Also populate the in-memory screenshotCache immediately
+                // so it's safe even if localStorage strips it later due to quota
+                if (dataStore.setScreenshot) {
+                    dataStore.setScreenshot(currentRegistration.id, compressedDataUrl);
+                }
                 dataStore.updateRegistration(currentRegistration.id, {
                     paymentScreenshot: compressedDataUrl
                 });
