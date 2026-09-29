@@ -52,8 +52,14 @@ class DataStore {
     _initSupabase() {
         try {
             const savedConfig = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.SUPABASE_CONFIG) || 'null');
-            const url = savedConfig?.url || CONFIG.SUPABASE_URL;
-            const anonKey = savedConfig?.anonKey || CONFIG.SUPABASE_ANON_KEY;
+            let url = CONFIG.SUPABASE_URL;
+            let anonKey = CONFIG.SUPABASE_ANON_KEY;
+            if (savedConfig && savedConfig.url && savedConfig.anonKey && savedConfig.url.includes('supabase.co')) {
+                url = savedConfig.url;
+                anonKey = savedConfig.anonKey;
+            } else if (savedConfig) {
+                localStorage.removeItem(CONFIG.STORAGE_KEYS.SUPABASE_CONFIG);
+            }
 
             if (!url || !anonKey) return;
 
@@ -66,13 +72,15 @@ class DataStore {
                 } else if (attempts > 0) {
                     setTimeout(() => tryConnect(attempts - 1), 200);
                 } else {
-                    console.warn('Supabase SDK library not available after retries');
+                    console.warn('Supabase SDK library not available after retries, running REST sync');
+                    this.syncFromSupabase();
                 }
             };
 
             tryConnect();
         } catch (e) {
             console.warn('Supabase init warning:', e);
+            this.syncFromSupabase();
         }
     }
 
@@ -121,10 +129,11 @@ class DataStore {
     getSupabaseConfig() {
         try {
             const saved = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.SUPABASE_CONFIG) || 'null');
-            return saved || { url: CONFIG.SUPABASE_URL, anonKey: CONFIG.SUPABASE_ANON_KEY };
-        } catch {
-            return { url: CONFIG.SUPABASE_URL, anonKey: CONFIG.SUPABASE_ANON_KEY };
-        }
+            if (saved && saved.url && saved.anonKey && saved.url.includes('supabase.co')) {
+                return saved;
+            }
+        } catch {}
+        return { url: CONFIG.SUPABASE_URL, anonKey: CONFIG.SUPABASE_ANON_KEY };
     }
 
     _toDbRecord(r) {
@@ -208,11 +217,19 @@ class DataStore {
 
     async syncFromSupabase() {
         let rows = null;
+
+        // ── IMPORTANT: Exclude payment_screenshot from sync fetch ──
+        // Base64 screenshots are 300-500KB each. Fetching them for ALL
+        // registrations causes the request to time out (or exceed localStorage
+        // quota) and the dashboard silently stops updating.
+        // Screenshots are fetched individually on-demand via fetchScreenshot().
+        const SYNC_COLUMNS = 'id,name,email,phone,college,year,referral_code,referred_by,coupon_used,base_price,early_bird_discount,coupon_discount,final_price,transaction_id,verified,attended,attended_at,timestamp';
+
         if (this.supabaseClient) {
             try {
                 const { data, error } = await this.supabaseClient
                     .from('registrations')
-                    .select('*')
+                    .select(SYNC_COLUMNS)
                     .order('timestamp', { ascending: false });
                 if (!error && Array.isArray(data)) {
                     rows = data;
@@ -229,17 +246,25 @@ class DataStore {
             try {
                 const cfg = this.getSupabaseConfig();
                 if (cfg && cfg.url && cfg.anonKey) {
-                    const resp = await fetch(`${cfg.url}/rest/v1/registrations?select=*&order=timestamp.desc`, {
-                        headers: {
-                            'apikey': cfg.anonKey,
-                            'Authorization': `Bearer ${cfg.anonKey}`
+                    const resp = await fetch(
+                        `${cfg.url}/rest/v1/registrations?select=${encodeURIComponent(SYNC_COLUMNS)}&order=timestamp.desc`,
+                        {
+                            headers: {
+                                'apikey': cfg.anonKey,
+                                'Authorization': `Bearer ${cfg.anonKey}`
+                            }
                         }
-                    });
+                    );
                     if (resp.ok) {
                         const json = await resp.json();
                         if (Array.isArray(json)) {
                             rows = json;
+                        } else {
+                            console.warn('Supabase REST returned non-array:', json);
                         }
+                    } else {
+                        const errText = await resp.text();
+                        console.warn('Supabase REST error', resp.status, errText);
                     }
                 }
             } catch (restErr) {
@@ -248,39 +273,40 @@ class DataStore {
         }
 
         if (rows && Array.isArray(rows)) {
-            // 1. Populate in-memory screenshot cache for all records with screenshots
             if (!this.screenshotCache) this.screenshotCache = new Map();
-            rows.forEach(row => {
-                if (row.id && row.payment_screenshot && row.payment_screenshot.length > 20) {
-                    this.screenshotCache.set(row.id, row.payment_screenshot);
-                }
-            });
 
-            // 2. Extract any system config rows (like partner colleges)
-            const configRow = rows.find(row => row.id === 'CONFIG_COLLEGES');
-            if (configRow && configRow.payment_screenshot) {
-                try {
-                    localStorage.setItem('wwi_cc26_colleges', configRow.payment_screenshot);
-                } catch(e) {}
+            // Background fetch for CONFIG_COLLEGES partner list if needed
+            const cfg = this.getSupabaseConfig();
+            if (cfg && cfg.url && cfg.anonKey) {
+                fetch(`${cfg.url}/rest/v1/registrations?id=eq.CONFIG_COLLEGES&select=payment_screenshot`, {
+                    headers: { 'apikey': cfg.anonKey, 'Authorization': `Bearer ${cfg.anonKey}` }
+                }).then(r => r.ok ? r.json() : []).then(cRows => {
+                    if (cRows && cRows[0] && cRows[0].payment_screenshot) {
+                        try {
+                            localStorage.setItem('wwi_cc26_colleges', cRows[0].payment_screenshot);
+                        } catch (e) {}
+                    }
+                }).catch(() => {});
             }
 
             const cloudRegs = rows
                 .filter(row => row.id !== 'CONFIG_COLLEGES')
                 .map(row => this._fromDbRecord(row));
 
-            // Process genuinely pending offline submissions created on this device
+            // Process offline submissions queue
             let offlineQueue = [];
             try {
                 offlineQueue = JSON.parse(localStorage.getItem('cc2026_offline_submissions') || '[]');
-            } catch (e) {}
+            } catch (e) {
+                offlineQueue = [];
+            }
 
-            if (offlineQueue.length > 0 && this.supabaseClient) {
+            if (offlineQueue.length > 0) {
                 const remainingQueue = [];
                 for (const pending of offlineQueue) {
                     try {
-                        const dbPayload = this._toDbRecord(pending);
-                        const { error: upsertErr } = await this.supabaseClient.from('registrations').upsert(dbPayload);
-                        if (upsertErr) {
+                        const res = await this.syncToSupabase(pending);
+                        if (!res || !res.success) {
                             remainingQueue.push(pending);
                         } else {
                             if (!cloudRegs.some(r => r.id === pending.id)) {
@@ -295,48 +321,192 @@ class DataStore {
             }
 
             this.saveRegistrations(cloudRegs);
-            console.log(`✓ Synced ${cloudRegs.length} authoritative records from Supabase Cloud (${this.screenshotCache.size} in-memory screenshots ready)`);
+            console.log(`✓ Synced ${cloudRegs.length} records from Supabase (screenshots cached: ${this.screenshotCache.size})`);
 
             if (typeof refreshAdminView === 'function') refreshAdminView();
             if (typeof renderNamesWall === 'function') renderNamesWall();
+            return { success: true, count: cloudRegs.length };
+        } else {
+            console.warn('⚠ syncFromSupabase: no rows returned — dashboard NOT updated');
+            return { success: false, message: 'No rows returned from Supabase' };
         }
+    }
+
+    // Fetch a single registration's screenshot on-demand (called when admin clicks 📷)
+    async fetchScreenshot(id) {
+        if (!id) return '';
+        // Return from cache first
+        if (this.screenshotCache && this.screenshotCache.has(id)) {
+            const cached = this.screenshotCache.get(id);
+            if (cached && cached.length > 20) return cached;
+        }
+        // Fetch from Supabase
+        try {
+            const cfg = this.getSupabaseConfig();
+            if (!cfg || !cfg.url || !cfg.anonKey) return '';
+            const resp = await fetch(
+                `${cfg.url}/rest/v1/registrations?select=id,payment_screenshot&id=eq.${encodeURIComponent(id)}&limit=1`,
+                {
+                    headers: {
+                        'apikey': cfg.anonKey,
+                        'Authorization': `Bearer ${cfg.anonKey}`
+                    }
+                }
+            );
+            if (resp.ok) {
+                const json = await resp.json();
+                const screenshot = json?.[0]?.payment_screenshot || '';
+                if (screenshot && screenshot.length > 20) {
+                    if (!this.screenshotCache) this.screenshotCache = new Map();
+                    this.screenshotCache.set(id, screenshot);
+                }
+                return screenshot;
+            }
+        } catch (e) {
+            console.warn('fetchScreenshot error:', e);
+        }
+        return '';
     }
 
     async syncToSupabase(registration) {
-        if (!this.supabaseClient) return { success: false, message: 'No Supabase client' };
+        if (!registration || !registration.id) return { success: false, message: 'Invalid registration' };
+        const dbPayload = this._toDbRecord(registration);
+
+        // Safety: if payment_screenshot is empty in payload, check if we have it cached in RAM
+        if ((!dbPayload.payment_screenshot || dbPayload.payment_screenshot.length < 20) &&
+            this.screenshotCache && this.screenshotCache.has(registration.id)) {
+            dbPayload.payment_screenshot = this.screenshotCache.get(registration.id);
+        }
+
+        // If payment_screenshot is STILL empty, omit it so Postgres upsert does NOT wipe out existing screenshot
+        const payloadToSend = { ...dbPayload };
+        if (!payloadToSend.payment_screenshot || payloadToSend.payment_screenshot.length < 20) {
+            delete payloadToSend.payment_screenshot;
+        }
+
+        // Try Supabase Client
+        if (this.supabaseClient) {
+            try {
+                const { error } = await this.supabaseClient.from('registrations').upsert(payloadToSend);
+                if (!error) {
+                    console.log('⚡ Record synced to Supabase successfully:', registration.id);
+                    return { success: true };
+                }
+                console.warn('Supabase upsert warning, trying REST fallback:', error.message);
+            } catch (e) {
+                console.warn('Supabase push exception, trying REST fallback:', e);
+            }
+        }
+
+        // REST API Fallback
         try {
-            const dbPayload = this._toDbRecord(registration);
-            const { error } = await this.supabaseClient.from('registrations').upsert(dbPayload);
-            if (error) {
-                console.error('Supabase upsert error:', error.message);
-                return { success: false, message: error.message };
-            } else {
-                console.log('⚡ Record synced to Supabase successfully:', registration.id);
+            const cfg = this.getSupabaseConfig();
+            if (cfg && cfg.url && cfg.anonKey) {
+                const resp = await fetch(`${cfg.url}/rest/v1/registrations`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': cfg.anonKey,
+                        'Authorization': `Bearer ${cfg.anonKey}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify(payloadToSend)
+                });
+                if (resp.ok) {
+                    console.log('⚡ Record synced via REST to Supabase successfully:', registration.id);
+                    return { success: true };
+                } else {
+                    const errText = await resp.text();
+                    console.error('Supabase REST upsert error:', resp.status, errText);
+                    return { success: false, message: errText };
+                }
+            }
+        } catch (restErr) {
+            console.error('Supabase REST upsert exception:', restErr);
+            return { success: false, message: restErr.message };
+        }
+
+        return { success: false, message: 'Could not sync to Supabase' };
+    }
+
+    // Targeted partial update for single record fields (e.g. verified, attended)
+    // NEVER touches payment_screenshot
+    async _patchSupabaseField(id, fields) {
+        if (!id || !fields) return;
+        if (this.supabaseClient) {
+            try {
+                const { error } = await this.supabaseClient.from('registrations').update(fields).eq('id', id);
+                if (!error) return { success: true };
+            } catch (e) {}
+        }
+        try {
+            const cfg = this.getSupabaseConfig();
+            if (cfg && cfg.url && cfg.anonKey) {
+                await fetch(`${cfg.url}/rest/v1/registrations?id=eq.${encodeURIComponent(id)}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': cfg.anonKey,
+                        'Authorization': `Bearer ${cfg.anonKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(fields)
+                });
                 return { success: true };
             }
         } catch (e) {
-            console.error('Supabase push exception:', e);
-            return { success: false, message: e.message };
+            console.warn('Patch Supabase error:', e);
         }
+        return { success: false };
     }
 
     async syncLocalToSupabase() {
-        if (!this.supabaseClient) return { success: false, message: 'Supabase client not connected' };
         const localRegs = this.getRegistrations();
         if (!localRegs.length) return { success: true, message: 'No local records to sync' };
-        try {
-            const payloads = localRegs.map(r => this._toDbRecord(r));
-            const { error } = await this.supabaseClient.from('registrations').upsert(payloads);
-            if (error) {
-                console.warn('Sync local to Supabase warning:', error.message);
-                return { success: false, message: error.message };
+
+        const payloads = localRegs.map(r => {
+            const p = this._toDbRecord(r);
+            if ((!p.payment_screenshot || p.payment_screenshot.length < 20) && this.screenshotCache && this.screenshotCache.has(r.id)) {
+                p.payment_screenshot = this.screenshotCache.get(r.id);
             }
-            console.log(`⚡ Pushed ${payloads.length} local records to Supabase`);
-            return { success: true, message: `Synced ${payloads.length} records to Supabase` };
-        } catch (e) {
-            console.warn('Sync local error:', e);
-            return { success: false, message: e.message };
+            if (!p.payment_screenshot || p.payment_screenshot.length < 20) {
+                delete p.payment_screenshot;
+            }
+            return p;
+        });
+
+        if (this.supabaseClient) {
+            try {
+                const { error } = await this.supabaseClient.from('registrations').upsert(payloads);
+                if (!error) {
+                    console.log(`⚡ Pushed ${payloads.length} local records to Supabase`);
+                    return { success: true, message: `Synced ${payloads.length} records to Supabase` };
+                }
+            } catch (e) {}
         }
+
+        // REST fallback
+        try {
+            const cfg = this.getSupabaseConfig();
+            if (cfg && cfg.url && cfg.anonKey) {
+                const resp = await fetch(`${cfg.url}/rest/v1/registrations`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': cfg.anonKey,
+                        'Authorization': `Bearer ${cfg.anonKey}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'resolution=merge-duplicates'
+                    },
+                    body: JSON.stringify(payloads)
+                });
+                if (resp.ok) {
+                    return { success: true, message: `Synced ${payloads.length} records to Supabase` };
+                }
+            }
+        } catch (restErr) {
+            return { success: false, message: restErr.message };
+        }
+
+        return { success: false, message: 'Could not sync records to Supabase' };
     }
 
     // ──────────── COUPONS ────────────
@@ -410,20 +580,21 @@ class DataStore {
 
     saveRegistrations(regs) {
         const cleanRegs = (regs || []).filter(r => r.id !== 'CONFIG_COLLEGES');
-        try {
-            localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(cleanRegs));
-        } catch (e) {
-            console.warn('LocalStorage save failed, trying without heavy screenshot payloads:', e);
-            try {
-                // If quota exceeded, strip long base64 screenshots locally to preserve metadata
-                const lightweight = cleanRegs.map(r => ({
-                    ...r,
-                    paymentScreenshot: (r.paymentScreenshot && r.paymentScreenshot.length > 500) ? '' : r.paymentScreenshot
-                }));
-                localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(lightweight));
-            } catch (err2) {
-                console.error('LocalStorage critical save error:', err2);
+        if (!this.screenshotCache) this.screenshotCache = new Map();
+        // ALWAYS strip base64 images (>100 chars) from localStorage to stay far below the 5MB browser limit
+        const lightweight = cleanRegs.map(r => {
+            if (r.paymentScreenshot && r.paymentScreenshot.length > 100) {
+                if (!this.screenshotCache.has(r.id)) {
+                    this.screenshotCache.set(r.id, r.paymentScreenshot);
+                }
+                return { ...r, paymentScreenshot: '' };
             }
+            return r;
+        });
+        try {
+            localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(lightweight));
+        } catch (e) {
+            console.error('LocalStorage critical save error:', e);
         }
     }
 
@@ -541,7 +712,10 @@ class DataStore {
             reg.verified = !reg.verified;
         }
         this.saveRegistrations(regs);
-        await this.syncToSupabase(reg);
+        await this._patchSupabaseField(id, {
+            verified: reg.verified,
+            transaction_id: reg.transactionId || ''
+        });
         return reg;
     }
 
@@ -556,7 +730,11 @@ class DataStore {
         const currentTxn = String(reg.transactionId || '').replace(/^REJECTED:\s*/i, '').trim();
         reg.transactionId = `REJECTED: ${reason} [${currentTxn || 'No Txn'}]`;
         this.saveRegistrations(regs);
-        await this.syncToSupabase(reg);
+        await this._patchSupabaseField(id, {
+            verified: false,
+            attended: false,
+            transaction_id: reg.transactionId
+        });
         return reg;
     }
 
@@ -579,17 +757,28 @@ class DataStore {
                     .delete()
                     .eq('id', id);
 
-                if (error) {
-                    console.error('Supabase delete error:', error.message);
-                    return { success: false, message: error.message };
+                if (!error) {
+                    console.log('✓ Successfully deleted record from Supabase Cloud:', id);
+                    return { success: true };
                 }
-                console.log('✓ Successfully deleted record from Supabase Cloud:', id);
-                return { success: true };
             } catch (err) {
                 console.error('Supabase delete exception:', err);
-                return { success: false, message: err.message };
             }
         }
+        // REST fallback for delete
+        try {
+            const cfg = this.getSupabaseConfig();
+            if (cfg && cfg.url && cfg.anonKey) {
+                await fetch(`${cfg.url}/rest/v1/registrations?id=eq.${encodeURIComponent(id)}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'apikey': cfg.anonKey,
+                        'Authorization': `Bearer ${cfg.anonKey}`
+                    }
+                });
+                return { success: true };
+            }
+        } catch (e) {}
         return { success: true };
     }
 
@@ -666,7 +855,11 @@ class DataStore {
         }
 
         this.saveRegistrations(regs);
-        this.syncToSupabase(reg);
+        this._patchSupabaseField(reg.id, {
+            attended: true,
+            attended_at: reg.attendedAt,
+            verified: reg.verified
+        });
 
         return {
             success: true,
@@ -683,7 +876,10 @@ class DataStore {
         reg.attended = !reg.attended;
         reg.attendedAt = reg.attended ? new Date().toISOString() : null;
         this.saveRegistrations(regs);
-        await this.syncToSupabase(reg);
+        await this._patchSupabaseField(id, {
+            attended: reg.attended,
+            attended_at: reg.attendedAt
+        });
         return reg;
     }
 

@@ -1647,9 +1647,10 @@ function initSupabaseUI() {
             syncBtn.innerHTML = '↻ Syncing...';
             syncBtn.disabled = true;
             try {
-                await dataStore.syncFromSupabase();
+                const res = await dataStore.syncFromSupabase();
                 refreshAdminView();
-                showToast('Cloud database synced successfully!', 'success');
+                const count = (res && res.count) || dataStore.getRegistrations().length;
+                showToast(`Cloud database synced successfully! (${count} records)`, 'success');
             } catch (err) {
                 showToast('Sync error: ' + (err.message || 'Unknown error'), 'error');
             } finally {
@@ -1786,9 +1787,10 @@ async function handleManualSyncCloud() {
     showToast('Fetching latest records from Supabase Cloud...', 'info');
     try {
         if (window.dataStore && typeof dataStore.syncFromSupabase === 'function') {
-            await dataStore.syncFromSupabase();
+            const res = await dataStore.syncFromSupabase();
             refreshAdminView();
-            showToast('Admin dashboard synchronized with Cloud ✓', 'success');
+            const count = (res && res.count) || dataStore.getRegistrations().length;
+            showToast(`Admin dashboard synchronized with Cloud ✓ (${count} records)`, 'success');
         }
     } catch (e) {
         console.error('Manual sync error:', e);
