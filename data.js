@@ -90,7 +90,10 @@ class DataStore {
                         if (typeof refreshAdminView === 'function') refreshAdminView();
                         if (typeof renderNamesWall === 'function') renderNamesWall();
                     } else {
-                        this.syncFromSupabase();
+                        this.syncFromSupabase().then(() => {
+                            if (typeof refreshAdminView === 'function') refreshAdminView();
+                            if (typeof renderNamesWall === 'function') renderNamesWall();
+                        }).catch(() => {});
                     }
                 })
                 .subscribe();

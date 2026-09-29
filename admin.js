@@ -7,6 +7,7 @@ let isScannerRunning = false;
 let lastScannedCode = null;
 let lastScanTime = 0;
 let audioCtx = null;
+let adminAutoRefreshInterval = null; // auto-poll timer
 
 // ──────────── RENDER DASHBOARD ────────────
 function renderAdminDashboard() {
@@ -26,7 +27,28 @@ function renderAdminDashboard() {
             refreshAdminView();
         });
     }
+
+    // ── Auto-polling: refresh every 30 seconds while admin tab is open ──
+    // This ensures the dashboard stays live even if Supabase Realtime
+    // WebSocket drops (network hiccups, free-tier limits, tab sleep, etc.)
+    if (adminAutoRefreshInterval) clearInterval(adminAutoRefreshInterval);
+    adminAutoRefreshInterval = setInterval(() => {
+        if (window.dataStore && typeof dataStore.syncFromSupabase === 'function') {
+            dataStore.syncFromSupabase()
+                .then(() => refreshAdminView())
+                .catch(err => console.warn('Admin auto-refresh error:', err));
+        }
+    }, 30000); // 30 seconds
 }
+
+// Call this when navigating away from admin to stop background polling
+function stopAdminAutoRefresh() {
+    if (adminAutoRefreshInterval) {
+        clearInterval(adminAutoRefreshInterval);
+        adminAutoRefreshInterval = null;
+    }
+}
+window.stopAdminAutoRefresh = stopAdminAutoRefresh;
 
 // ──────────── STATS ────────────
 function renderStats() {

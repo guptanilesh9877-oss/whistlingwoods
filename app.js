@@ -92,6 +92,11 @@ function navigateTo(page) {
     setTimeout(() => {
         current.classList.remove('active');
 
+        // Stop admin auto-polling when leaving admin page
+        if (currentPage === 'admin' && typeof stopAdminAutoRefresh === 'function') {
+            stopAdminAutoRefresh();
+        }
+
         // Show next
         next.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'instant' });
