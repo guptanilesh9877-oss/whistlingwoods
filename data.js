@@ -102,7 +102,7 @@ class DataStore {
                         this.saveRegistrations(regs);
                         if (typeof refreshAdminView === 'function') refreshAdminView();
                         if (typeof renderNamesWall === 'function') renderNamesWall();
-                    } else if (payload.eventType === 'INSERT' && payload.new && payload.new.id && payload.new.id !== 'CONFIG_COLLEGES') {
+                    } else if (payload.eventType === 'INSERT' && payload.new && payload.new.id && !String(payload.new.id).startsWith('CONFIG_')) {
                         // Instant optimistic insert so new registration appears without waiting
                         const newRec = this._fromDbRecord(payload.new);
                         const currentRegs = this.getRegistrations();
@@ -117,6 +117,8 @@ class DataStore {
                             if (payload.new.payment_screenshot) {
                                 try { localStorage.setItem('wwi_cc26_colleges', payload.new.payment_screenshot); } catch (e) {}
                             }
+                        } else if (String(payload.new.id).startsWith('CONFIG_')) {
+                            // system config row — never treat as a registration
                         } else {
                             const updatedRec = this._fromDbRecord(payload.new);
                             const currentRegs = this.getRegistrations();
@@ -407,7 +409,7 @@ class DataStore {
                             if (Array.isArray(cloudList) && cloudList.length > 0) {
                                 const local = JSON.parse(localStorage.getItem('wwi_cc26_promoters') || '[]');
                                 cloudList.forEach(cp => {
-                                    if (cp && cp.code && !local.some(l => l.code.toUpperCase() === cp.code.toUpperCase())) {
+                                    if (cp && typeof cp.code === 'string' && cp.code && !local.some(l => l && typeof l.code === 'string' && l.code.toUpperCase() === cp.code.toUpperCase())) {
                                         local.push(cp);
                                     }
                                 });
@@ -419,7 +421,7 @@ class DataStore {
             }
 
             const cloudRegs = rows
-                .filter(row => row && row.id && row.id !== 'CONFIG_COLLEGES' && row.id !== 'CONFIG_PROMOTERS')
+                .filter(row => row && row.id && !String(row.id).startsWith('CONFIG_'))
                 .map(row => this._fromDbRecord(row));
 
             // Process offline submissions queue
@@ -700,11 +702,11 @@ class DataStore {
     // ──────────── REGISTRATIONS ────────────
     getRegistrations() {
         if (this._cachedRegistrations && Array.isArray(this._cachedRegistrations)) {
-            return this._cachedRegistrations.filter(r => r && r.id !== 'CONFIG_COLLEGES');
+            return this._cachedRegistrations.filter(r => r && r.id && !String(r.id).startsWith('CONFIG_'));
         }
         try {
             const list = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.REGISTRATIONS) || '[]');
-            const clean = (Array.isArray(list) ? list : []).filter(r => r && r.id !== 'CONFIG_COLLEGES');
+            const clean = (Array.isArray(list) ? list : []).filter(r => r && r.id && !String(r.id).startsWith('CONFIG_'));
             this._cachedRegistrations = clean;
             return clean;
         } catch {
@@ -713,7 +715,7 @@ class DataStore {
     }
 
     saveRegistrations(regs) {
-        const cleanRegs = (regs || []).filter(r => r && r.id !== 'CONFIG_COLLEGES');
+        const cleanRegs = (regs || []).filter(r => r && r.id && !String(r.id).startsWith('CONFIG_'));
         if (!this.screenshotCache) this.screenshotCache = new Map();
         // ALWAYS strip base64 images (>100 chars) from localStorage to stay far below the 5MB browser limit
         const lightweight = cleanRegs.map(r => {
@@ -1045,8 +1047,8 @@ class DataStore {
                 const parsed = JSON.parse(stored);
                 if (Array.isArray(parsed)) {
                     parsed.forEach(p => {
-                        if (p && p.code && !list.some(x => x.code.toUpperCase() === p.code.toUpperCase())) {
-                            list.push(p);
+                        if (p && p.code && !list.some(x => x.code.toUpperCase() === String(p.code).toUpperCase())) {
+                            list.push({ ...p, code: String(p.code), name: String(p.name || p.code) });
                         }
                     });
                 }
@@ -1370,8 +1372,18 @@ class DataStore {
             return defaultColleges;
         }
         try {
-            const list = JSON.parse(stored);
-            if (!Array.isArray(list) || list.length === 0) return defaultColleges;
+            const parsedList = JSON.parse(stored);
+            if (!Array.isArray(parsedList) || parsedList.length === 0) return defaultColleges;
+            // Drop malformed entries and normalize fields so downstream string ops never crash
+            const list = parsedList
+                .filter(c => c && typeof c.slug === 'string' && c.slug.trim())
+                .map(c => ({
+                    ...c,
+                    name: String(c.name || c.slug),
+                    referralCodes: Array.isArray(c.referralCodes)
+                        ? c.referralCodes.filter(x => x != null && x !== '').map(x => String(x))
+                        : (typeof c.referralCodes === 'string' ? c.referralCodes.split(',').map(s => s.trim()).filter(Boolean) : [])
+                }));
             // Ensure all default colleges are present (merge defaults into stored)
             defaultColleges.forEach(def => {
                 if (!list.some(c => c.slug === def.slug)) {
@@ -1874,7 +1886,7 @@ class DataStore {
             verifiedRevenue,
             avgPrice: verified.length ? Math.round(verifiedRevenue / verified.length) : 0,
             couponUsage,
-            topReferrers: this.getTopReferrers()
+            topReferrers: (() => { try { return this.getTopReferrers(); } catch (e) { console.error('getTopReferrers failed:', e); return []; } })()
         };
     }
 

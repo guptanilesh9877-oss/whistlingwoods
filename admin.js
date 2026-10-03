@@ -10,22 +10,26 @@ let audioCtx = null;
 let adminAutoRefreshInterval = null; // auto-poll timer
 
 // ──────────── RENDER DASHBOARD ────────────
+function _safeRender(label, fn) {
+    try { fn(); } catch (e) { console.error(`[Admin] ${label} failed:`, e); }
+}
+
 function renderAdminDashboard() {
-    renderStats();
-    renderRegistrationsTable();
-    renderCouponsGrid();
-    renderReferralLeaderboard();
-    renderRecentCheckins();
-    initAdminTabSwitching();
-    initAdminSearch();
-    initSupabaseUI();
-    initColumnVisibility();
+    _safeRender('stats', () => renderStats());
+    _safeRender('registrations', () => renderRegistrationsTable());
+    _safeRender('coupons', () => renderCouponsGrid());
+    _safeRender('leaderboard', () => renderReferralLeaderboard());
+    _safeRender('checkins', () => renderRecentCheckins());
+    _safeRender('tabs', () => initAdminTabSwitching());
+    _safeRender('search', () => initAdminSearch());
+    _safeRender('supabaseUI', () => initSupabaseUI());
+    _safeRender('columns', () => initColumnVisibility());
 
     // Auto-fetch latest cloud registrations from Supabase and refresh view
     if (window.dataStore && typeof dataStore.syncFromSupabase === 'function') {
         dataStore.syncFromSupabase().then(() => {
             refreshAdminView();
-        });
+        }).catch(err => console.warn('Admin initial sync error:', err));
     }
 
     // ── Auto-polling: refresh every 30 seconds while admin tab is open ──
@@ -1764,20 +1768,24 @@ function handleExportCSV() {
 
 // ──────────── HELPER: REFRESH ADMIN VIEW ────────────
 function refreshAdminView() {
-    renderStats();
-    const search = document.getElementById('search-registrations');
-    const filter = document.getElementById('filter-status');
-    renderRegistrationsTable(filter ? filter.value : 'all', search ? search.value : '');
-    renderReferralLeaderboard();
-    renderRecentCheckins();
+    _safeRender('stats', () => renderStats());
+    _safeRender('registrations', () => {
+        const search = document.getElementById('search-registrations');
+        const filter = document.getElementById('filter-status');
+        renderRegistrationsTable(filter ? filter.value : 'all', search ? search.value : '');
+    });
+    _safeRender('leaderboard', () => renderReferralLeaderboard());
+    _safeRender('checkins', () => renderRecentCheckins());
 
-    const activeTab = document.querySelector('#admin-tabs .tab-btn.active');
-    if (activeTab && activeTab.dataset.tab === 'colleges' && typeof renderCollegesGrid === 'function') {
-        const colleges = dataStore.getCollegePartners();
-        const regs = dataStore.getRegistrations();
-        renderCollegesStats(colleges, regs);
-        renderCollegesGrid(colleges, regs);
-    }
+    _safeRender('colleges', () => {
+        const activeTab = document.querySelector('#admin-tabs .tab-btn.active');
+        if (activeTab && activeTab.dataset.tab === 'colleges' && typeof renderCollegesGrid === 'function') {
+            const colleges = dataStore.getCollegePartners();
+            const regs = dataStore.getRegistrations();
+            renderCollegesStats(colleges, regs);
+            renderCollegesGrid(colleges, regs);
+        }
+    });
 }
 
 // ──────────── MANUAL SYNC CLOUD ────────────
