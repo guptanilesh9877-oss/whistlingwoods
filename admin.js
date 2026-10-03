@@ -1203,7 +1203,7 @@ function handlePromoterNameInput(input) {
     codeInput.value = cleanCode;
 }
 
-function handleCreatePromoter(event) {
+async function handleCreatePromoter(event) {
     event.preventDefault();
     const nameInput = document.getElementById('promoter-name');
     const codeInput = document.getElementById('promoter-code');
@@ -1215,7 +1215,7 @@ function handleCreatePromoter(event) {
         return;
     }
 
-    const res = dataStore.addPromoter(name, code);
+    const res = await dataStore.addPromoter(name, code);
     if (res.success) {
         showToast(res.message, 'success');
         const url = buildPromoterReferralURL(res.code);
@@ -2283,6 +2283,8 @@ function renderCollegesGrid(colleges, regs) {
 
         const livePath = isFlagship ? '/kes-shroff' : (['rotaract', 'rotaract-mumbai', 'vendor-partner', 'youth-network'].includes(c.slug) ? `/${c.slug}` : `/c/${c.slug}`);
         const liveUrl = `${origin}${livePath}`;
+        const leadsPath = isFlagship ? '/kes-shroff/leads' : (['rotaract', 'rotaract-mumbai', 'vendor-partner', 'youth-network'].includes(c.slug) ? `/${c.slug}/leads` : `/c/${c.slug}/leads`);
+        const leadsUrl = `${origin}${leadsPath}`;
         const poc1 = (c.pocs && c.pocs[0]) || (isOpenPartner 
             ? { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' }
             : { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' });
@@ -2377,14 +2379,34 @@ function renderCollegesGrid(colleges, regs) {
                     ` : ''}
 
                     <!-- Live URL Box -->
-                    <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:10px 12px; margin-bottom:16px;">
+                    <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:10px 12px; margin-bottom:12px;">
                         <div style="font-size:0.72rem; color:var(--lavender); margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
-                            <span>Live Registration Link:</span>
+                            <span>Student Registration Link:</span>
                             <a href="${livePath}" target="_blank" style="color:${isOpenPartner ? '#4ade80' : 'var(--gold)'}; text-decoration:none; font-size:0.72rem; font-weight:600;">Open Portal ↗</a>
                         </div>
                         <div style="display:flex; align-items:center; gap:8px;">
                             <input type="text" readonly value="${liveUrl}" style="background:transparent; border:none; color:${isOpenPartner ? '#4ade80' : 'var(--gold)'}; font-family:monospace; font-size:0.82rem; width:100%; outline:none;" onclick="this.select()">
                             <button type="button" class="btn-small" onclick="copyCollegeLink('${liveUrl}')" style="padding:4px 10px; font-size:0.72rem; white-space:nowrap;" title="Copy portal link">
+                                📋 Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- View-Only Leads Link (Safe for College / Vendor team) -->
+                    <div style="background:rgba(141,106,174,0.12); border:1px solid rgba(141,106,174,0.3); border-radius:10px; padding:9px 12px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                        <div>
+                            <div style="font-size:0.75rem; color:#d8b4fe; font-weight:700; display:flex; align-items:center; gap:5px;">
+                                <span>👁️</span> <span>View-Only Leads Portal</span>
+                            </div>
+                            <div style="font-size:0.68rem; color:var(--lavender); margin-top:1px;">
+                                Safe read-only link for college POC / vendor team
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <a href="${leadsPath}" target="_blank" class="btn-small" style="background:rgba(141,106,174,0.3); border:1px solid rgba(141,106,174,0.5); color:#fff; text-decoration:none; padding:4px 9px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px;">
+                                Open ↗
+                            </a>
+                            <button type="button" class="btn-small" onclick="copyCollegeLink('${leadsUrl}')" style="padding:4px 9px; font-size:0.72rem; white-space:nowrap;" title="Copy view-only leads link for team">
                                 📋 Copy
                             </button>
                         </div>
@@ -2528,15 +2550,15 @@ function openAddCollegeModal() {
     const typeSelect = document.getElementById('col-input-type');
     if (typeSelect) typeSelect.value = 'college';
 
-    document.getElementById('col-input-poc1-name').value = 'Satvik Satam';
-    document.getElementById('col-input-poc1-phone').value = '9136045359';
+    document.getElementById('col-input-poc1-name').value = 'Nilesh Kumar Gupta';
+    document.getElementById('col-input-poc1-phone').value = '8699260386';
     document.getElementById('col-input-poc1-role').value = 'Community & Partnership Lead';
 
-    document.getElementById('col-input-poc2-name').value = 'Sahil Mishra';
-    document.getElementById('col-input-poc2-phone').value = '6206686464';
+    document.getElementById('col-input-poc2-name').value = 'Tarasha Pahuja';
+    document.getElementById('col-input-poc2-phone').value = '9569884046';
     document.getElementById('col-input-poc2-role').value = 'Community & Partnership Lead';
 
-    document.getElementById('col-input-referrals').value = 'SATVIK, SAHIL';
+    document.getElementById('col-input-referrals').value = 'NILESH, TARASHA';
     document.getElementById('col-input-streams').value = 'BMS, B.Com, BAF, BBI, BFM, BAMMC, B.Sc IT, B.Sc CS, B.Sc Data Science, B.A, M.Com, M.Sc, Other';
 
     if (title) title.textContent = '➕ Add Partner College Portal';

@@ -396,10 +396,30 @@ class DataStore {
                         } catch (e) {}
                     }
                 }).catch(() => {});
+
+                // Background fetch for CONFIG_PROMOTERS list if needed
+                fetch(`${cfg.url}/rest/v1/registrations?id=eq.CONFIG_PROMOTERS&select=payment_screenshot`, {
+                    headers: { 'apikey': cfg.anonKey, 'Authorization': `Bearer ${cfg.anonKey}` }
+                }).then(r => r.ok ? r.json() : []).then(pRows => {
+                    if (pRows && pRows[0] && pRows[0].payment_screenshot) {
+                        try {
+                            const cloudList = JSON.parse(pRows[0].payment_screenshot);
+                            if (Array.isArray(cloudList) && cloudList.length > 0) {
+                                const local = JSON.parse(localStorage.getItem('wwi_cc26_promoters') || '[]');
+                                cloudList.forEach(cp => {
+                                    if (cp && cp.code && !local.some(l => l.code.toUpperCase() === cp.code.toUpperCase())) {
+                                        local.push(cp);
+                                    }
+                                });
+                                localStorage.setItem('wwi_cc26_promoters', JSON.stringify(local));
+                            }
+                        } catch (e) {}
+                    }
+                }).catch(() => {});
             }
 
             const cloudRegs = rows
-                .filter(row => row && row.id && row.id !== 'CONFIG_COLLEGES')
+                .filter(row => row && row.id && row.id !== 'CONFIG_COLLEGES' && row.id !== 'CONFIG_PROMOTERS')
                 .map(row => this._fromDbRecord(row));
 
             // Process offline submissions queue
@@ -1017,25 +1037,42 @@ class DataStore {
             { name: 'Golu', code: 'GOLU' },
             { name: 'Marsha', code: 'MARSHA' }
         ];
+
+        let list = defaultPromoters.map(p => ({ ...p }));
         const stored = localStorage.getItem('wwi_cc26_promoters');
-        if (!stored) {
-            localStorage.setItem('wwi_cc26_promoters', JSON.stringify(defaultPromoters));
-            return defaultPromoters;
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) {
+                    parsed.forEach(p => {
+                        if (p && p.code && !list.some(x => x.code.toUpperCase() === p.code.toUpperCase())) {
+                            list.push(p);
+                        }
+                    });
+                }
+            } catch (e) {}
         }
-        try {
-            const list = JSON.parse(stored);
-            defaultPromoters.forEach(def => {
-                if (!list.some(p => p.code.toUpperCase() === def.code)) {
-                    list.push(def);
+
+        // Dynamically auto-discover ANY promoter or referral code present in registrations
+        const regs = this.getRegistrations();
+        if (Array.isArray(regs)) {
+            regs.forEach(r => {
+                const ref = (r.referredBy || '').trim().toUpperCase();
+                if (ref && !ref.startsWith('COLLEGE:') && !list.some(x => x.code.toUpperCase() === ref)) {
+                    list.push({
+                        name: ref,
+                        code: ref,
+                        autoDiscovered: true,
+                        createdAt: r.timestamp || new Date().toISOString()
+                    });
                 }
             });
-            return list;
-        } catch (e) {
-            return defaultPromoters;
         }
+
+        return list;
     }
 
-    addPromoter(name, code) {
+    async addPromoter(name, code) {
         if (!name || !code) return { success: false, message: 'Name and Code are required' };
         const cleanCode = code.trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '');
         const cleanName = name.trim();
@@ -1043,8 +1080,47 @@ class DataStore {
         if (promoters.some(p => p.code.toUpperCase() === cleanCode)) {
             return { success: false, message: `Promoter code "${cleanCode}" already exists` };
         }
-        promoters.push({ name: cleanName, code: cleanCode, createdAt: new Date().toISOString() });
+
+        const newPromoter = { name: cleanName, code: cleanCode, createdAt: new Date().toISOString() };
+        promoters.push(newPromoter);
         localStorage.setItem('wwi_cc26_promoters', JSON.stringify(promoters));
+
+        // Sync to Supabase so it appears on all devices
+        try {
+            const payload = {
+                id: 'CONFIG_PROMOTERS',
+                name: 'SYSTEM CONFIG - PROMOTERS',
+                email: 'system@celebratecinema.com',
+                phone: '0000000000',
+                college: 'SYSTEM',
+                year: 'CONFIG',
+                payment_screenshot: JSON.stringify(promoters),
+                transaction_id: 'SYSTEM_CONFIG',
+                coupon_used: 'CONFIG',
+                base_price: 0,
+                final_price: 0,
+                verified: false,
+                timestamp: new Date().toISOString()
+            };
+            const restUrl = CONFIG.SUPABASE_URL + '/rest/v1/registrations';
+            const restHeaders = {
+                'apikey': CONFIG.SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Prefer': 'resolution=merge-duplicates'
+            };
+            const postRes = await fetch(restUrl, { method: 'POST', headers: restHeaders, body: JSON.stringify(payload) });
+            if (!postRes.ok) {
+                await fetch(restUrl + '?id=eq.CONFIG_PROMOTERS', {
+                    method: 'PATCH',
+                    headers: restHeaders,
+                    body: JSON.stringify({ payment_screenshot: JSON.stringify(promoters), timestamp: payload.timestamp })
+                });
+            }
+        } catch (e) {
+            console.warn('Cloud sync error for promoters:', e);
+        }
+
         return { success: true, message: `Promoter link created for ${cleanName}!`, code: cleanCode };
     }
 
