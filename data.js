@@ -1396,11 +1396,35 @@ class DataStore {
         }
     }
 
+    // Fetch the latest cloud college list and merge it under the local list so writes never drop portals
+    async _mergeWithCloudColleges(list, removedSlug = null) {
+        try {
+            const resp = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/registrations?id=eq.CONFIG_COLLEGES&select=payment_screenshot`, {
+                headers: { 'apikey': CONFIG.SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_ANON_KEY }
+            });
+            if (resp.ok) {
+                const rows = await resp.json();
+                const cloud = rows && rows[0] && rows[0].payment_screenshot ? JSON.parse(rows[0].payment_screenshot) : [];
+                if (Array.isArray(cloud)) {
+                    cloud.forEach(c => {
+                        if (c && typeof c.slug === 'string' && c.slug && c.slug !== removedSlug && !list.some(l => l.slug === c.slug)) {
+                            list.push(c);
+                        }
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn('Cloud college merge failed:', e);
+        }
+        return list.filter(c => c && typeof c.slug === 'string' && c.slug && c.slug !== removedSlug);
+    }
+
     async saveCollegePartner(college) {
         if (!college || !college.name || !college.slug) return { success: false, message: 'College name and slug required' };
         college.slug = college.slug.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-');
         
-        const list = this.getCollegePartners();
+        let list = this.getCollegePartners();
+        list = await this._mergeWithCloudColleges(list);
         const existingIdx = list.findIndex(c => c.slug === college.slug);
         if (existingIdx >= 0) {
             list[existingIdx] = Object.assign({}, list[existingIdx], college);
@@ -1463,7 +1487,7 @@ class DataStore {
             return { success: false, message: 'KES Shroff flagship portal cannot be deleted' };
         }
         let list = this.getCollegePartners();
-        list = list.filter(c => c.slug !== slug);
+        list = await this._mergeWithCloudColleges(list, slug);
         localStorage.setItem('wwi_cc26_colleges', JSON.stringify(list));
 
         try {
