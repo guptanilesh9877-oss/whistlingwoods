@@ -45,6 +45,10 @@ class DataStore {
         this._initCoupons();
         this.supabaseClient = null;
         this.screenshotCache = new Map();
+        this._cachedRegistrations = null;
+        this._isSyncing = false;
+        this._syncPromise = null;
+        this._realtimeDebounceTimer = null;
         this._initSupabase();
     }
 
@@ -97,17 +101,53 @@ class DataStore {
                         this.saveRegistrations(regs);
                         if (typeof refreshAdminView === 'function') refreshAdminView();
                         if (typeof renderNamesWall === 'function') renderNamesWall();
-                    } else {
-                        this.syncFromSupabase().then(() => {
+                    } else if (payload.eventType === 'INSERT' && payload.new && payload.new.id && payload.new.id !== 'CONFIG_COLLEGES') {
+                        // Instant optimistic insert so new registration appears without waiting
+                        const newRec = this._fromDbRecord(payload.new);
+                        const currentRegs = this.getRegistrations();
+                        if (!currentRegs.some(r => r.id === newRec.id)) {
+                            this.saveRegistrations([newRec, ...currentRegs]);
                             if (typeof refreshAdminView === 'function') refreshAdminView();
                             if (typeof renderNamesWall === 'function') renderNamesWall();
-                        }).catch(() => {});
+                        }
+                        this._triggerDebouncedSync();
+                    } else if (payload.eventType === 'UPDATE' && payload.new && payload.new.id) {
+                        if (payload.new.id === 'CONFIG_COLLEGES') {
+                            if (payload.new.payment_screenshot) {
+                                try { localStorage.setItem('wwi_cc26_colleges', payload.new.payment_screenshot); } catch (e) {}
+                            }
+                        } else {
+                            const updatedRec = this._fromDbRecord(payload.new);
+                            const currentRegs = this.getRegistrations();
+                            const idx = currentRegs.findIndex(r => r.id === updatedRec.id);
+                            if (idx !== -1) {
+                                if (!updatedRec.paymentScreenshot && currentRegs[idx].paymentScreenshot) {
+                                    updatedRec.paymentScreenshot = currentRegs[idx].paymentScreenshot;
+                                }
+                                currentRegs[idx] = updatedRec;
+                                this.saveRegistrations(currentRegs);
+                                if (typeof refreshAdminView === 'function') refreshAdminView();
+                            }
+                        }
+                        this._triggerDebouncedSync();
+                    } else {
+                        this._triggerDebouncedSync();
                     }
                 })
                 .subscribe();
         } catch (e) {
             console.log('Supabase realtime optional:', e);
         }
+    }
+
+    _triggerDebouncedSync() {
+        if (this._realtimeDebounceTimer) clearTimeout(this._realtimeDebounceTimer);
+        this._realtimeDebounceTimer = setTimeout(() => {
+            this.syncFromSupabase().then(() => {
+                if (typeof refreshAdminView === 'function') refreshAdminView();
+                if (typeof renderNamesWall === 'function') renderNamesWall();
+            }).catch(() => {});
+        }, 500);
     }
 
     setSupabaseConfig(url, anonKey) {
@@ -216,6 +256,18 @@ class DataStore {
     }
 
     async syncFromSupabase() {
+        if (this._isSyncing && this._syncPromise) {
+            return this._syncPromise;
+        }
+        this._isSyncing = true;
+        this._syncPromise = this._executeSyncFromSupabase().finally(() => {
+            this._isSyncing = false;
+            this._syncPromise = null;
+        });
+        return this._syncPromise;
+    }
+
+    async _executeSyncFromSupabase() {
         let rows = null;
 
         // ── IMPORTANT: Exclude payment_screenshot from sync fetch ──
@@ -224,47 +276,103 @@ class DataStore {
         // quota) and the dashboard silently stops updating.
         // Screenshots are fetched individually on-demand via fetchScreenshot().
         const SYNC_COLUMNS = 'id,name,email,phone,college,year,referral_code,referred_by,coupon_used,base_price,early_bird_discount,coupon_discount,final_price,transaction_id,verified,attended,attended_at,timestamp';
+        const PAGE_SIZE = 1000;
+        const MAX_PAGES = 100; // Safety guard: up to 100,000 records
 
+        // 1. Supabase SDK fetch with automatic multi-page pagination
         if (this.supabaseClient) {
             try {
-                const { data, error } = await this.supabaseClient
-                    .from('registrations')
-                    .select(SYNC_COLUMNS)
-                    .order('timestamp', { ascending: false });
-                if (!error && Array.isArray(data)) {
-                    rows = data;
-                } else if (error) {
-                    console.warn('Supabase SDK fetch error, will try REST fallback:', error.message);
+                let from = 0;
+                const allSdkRows = [];
+                let hasMore = true;
+                let sdkSuccess = false;
+                let pageCount = 0;
+
+                while (hasMore && pageCount < MAX_PAGES) {
+                    pageCount++;
+                    const to = from + PAGE_SIZE - 1;
+                    const { data, error } = await this.supabaseClient
+                        .from('registrations')
+                        .select(SYNC_COLUMNS)
+                        .neq('id', 'CONFIG_COLLEGES')
+                        .order('timestamp', { ascending: false })
+                        .order('id', { ascending: false })
+                        .range(from, to);
+
+                    if (error) {
+                        console.warn(`Supabase SDK fetch error at page ${pageCount} (range ${from}-${to}), will try REST fallback:`, error.message);
+                        sdkSuccess = false;
+                        break;
+                    }
+
+                    if (Array.isArray(data)) {
+                        allSdkRows.push(...data);
+                        if (data.length < PAGE_SIZE) {
+                            hasMore = false;
+                            sdkSuccess = true;
+                        } else {
+                            from += PAGE_SIZE;
+                        }
+                    } else {
+                        hasMore = false;
+                        sdkSuccess = true;
+                    }
+                }
+
+                if (sdkSuccess) {
+                    rows = allSdkRows;
+                    console.log(`⚡ Supabase SDK fetched ${allSdkRows.length} total registrations across ${pageCount} page(s)`);
                 }
             } catch (e) {
-                console.warn('Supabase SDK sync exception:', e);
+                console.warn('Supabase SDK sync exception, trying REST fallback:', e);
             }
         }
 
-        // REST API Fallback if SDK not ready or errored
+        // 2. REST API Fallback with automatic multi-page pagination if SDK not ready or errored
         if (!rows) {
             try {
                 const cfg = this.getSupabaseConfig();
                 if (cfg && cfg.url && cfg.anonKey) {
-                    const resp = await fetch(
-                        `${cfg.url}/rest/v1/registrations?select=${encodeURIComponent(SYNC_COLUMNS)}&order=timestamp.desc`,
-                        {
+                    let offset = 0;
+                    const allRestRows = [];
+                    let hasMore = true;
+                    let restSuccess = false;
+                    let pageCount = 0;
+
+                    while (hasMore && pageCount < MAX_PAGES) {
+                        pageCount++;
+                        const url = `${cfg.url}/rest/v1/registrations?id=neq.CONFIG_COLLEGES&select=${encodeURIComponent(SYNC_COLUMNS)}&order=timestamp.desc,id.desc&limit=${PAGE_SIZE}&offset=${offset}`;
+                        const resp = await fetch(url, {
                             headers: {
                                 'apikey': cfg.anonKey,
                                 'Authorization': `Bearer ${cfg.anonKey}`
                             }
-                        }
-                    );
-                    if (resp.ok) {
-                        const json = await resp.json();
-                        if (Array.isArray(json)) {
-                            rows = json;
+                        });
+
+                        if (resp.ok) {
+                            const json = await resp.json();
+                            if (Array.isArray(json)) {
+                                allRestRows.push(...json);
+                                if (json.length < PAGE_SIZE) {
+                                    hasMore = false;
+                                    restSuccess = true;
+                                } else {
+                                    offset += PAGE_SIZE;
+                                }
+                            } else {
+                                console.warn('Supabase REST returned non-array:', json);
+                                hasMore = false;
+                            }
                         } else {
-                            console.warn('Supabase REST returned non-array:', json);
+                            const errText = await resp.text();
+                            console.warn(`Supabase REST error at page ${pageCount} (offset ${offset}):`, resp.status, errText);
+                            break;
                         }
-                    } else {
-                        const errText = await resp.text();
-                        console.warn('Supabase REST error', resp.status, errText);
+                    }
+
+                    if (restSuccess) {
+                        rows = allRestRows;
+                        console.log(`⚡ Supabase REST fetched ${allRestRows.length} total registrations across ${pageCount} page(s)`);
                     }
                 }
             } catch (restErr) {
@@ -290,7 +398,7 @@ class DataStore {
             }
 
             const cloudRegs = rows
-                .filter(row => row.id !== 'CONFIG_COLLEGES')
+                .filter(row => row && row.id && row.id !== 'CONFIG_COLLEGES')
                 .map(row => this._fromDbRecord(row));
 
             // Process offline submissions queue
@@ -570,16 +678,21 @@ class DataStore {
 
     // ──────────── REGISTRATIONS ────────────
     getRegistrations() {
+        if (this._cachedRegistrations && Array.isArray(this._cachedRegistrations)) {
+            return this._cachedRegistrations.filter(r => r && r.id !== 'CONFIG_COLLEGES');
+        }
         try {
             const list = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.REGISTRATIONS) || '[]');
-            return list.filter(r => r.id !== 'CONFIG_COLLEGES');
+            const clean = (Array.isArray(list) ? list : []).filter(r => r && r.id !== 'CONFIG_COLLEGES');
+            this._cachedRegistrations = clean;
+            return clean;
         } catch {
             return [];
         }
     }
 
     saveRegistrations(regs) {
-        const cleanRegs = (regs || []).filter(r => r.id !== 'CONFIG_COLLEGES');
+        const cleanRegs = (regs || []).filter(r => r && r.id !== 'CONFIG_COLLEGES');
         if (!this.screenshotCache) this.screenshotCache = new Map();
         // ALWAYS strip base64 images (>100 chars) from localStorage to stay far below the 5MB browser limit
         const lightweight = cleanRegs.map(r => {
@@ -591,6 +704,7 @@ class DataStore {
             }
             return r;
         });
+        this._cachedRegistrations = lightweight;
         try {
             localStorage.setItem(CONFIG.STORAGE_KEYS.REGISTRATIONS, JSON.stringify(lightweight));
         } catch (e) {
