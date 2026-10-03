@@ -1126,6 +1126,19 @@
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
             },
             {
+                name: 'Rotaract Clubs Mumbai — All Colleges Delegation Pass',
+                shortName: 'Rotaract Mumbai',
+                slug: 'rotaract-mum',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
                 name: 'Rotaract Clubs — All Colleges Delegation Pass',
                 shortName: 'Rotaract Club Partner',
                 slug: 'rotaract',
@@ -1183,28 +1196,30 @@
         function getSlugFromUrl(colleges) {
             var params = new URLSearchParams(window.location.search);
             var q = params.get('c') || params.get('college') || params.get('slug');
-            if (q) return q.toLowerCase().trim();
+            if (q) return q.toLowerCase().replace(/\.html$/, '').trim();
+
+            if (window.DEFAULT_PORTAL_SLUG) return window.DEFAULT_PORTAL_SLUG;
 
             var pathParts = window.location.pathname.split('/').filter(Boolean);
             var cIdx = pathParts.indexOf('c');
             if (cIdx !== -1 && pathParts[cIdx + 1]) {
-                return pathParts[cIdx + 1].toLowerCase().trim();
+                return pathParts[cIdx + 1].toLowerCase().replace(/\.html$/, '').trim();
             }
 
             // Check if any URL segment matches a configured college slug
             if (Array.isArray(colleges) && colleges.length > 0) {
                 for (var j = 0; j < colleges.length; j++) {
                     var s = (colleges[j].slug || '').toLowerCase();
-                    if (s && pathParts.map(function(p){ return p.toLowerCase(); }).includes(s)) {
+                    if (s && pathParts.map(function(p){ return p.toLowerCase().replace(/\.html$/, ''); }).includes(s)) {
                         return s;
                     }
                 }
             }
 
-            // Check path parts from end (e.g. /kj-somaiya)
+            // Check path parts from end (e.g. /rotaract-mum)
             for (var i = pathParts.length - 1; i >= 0; i--) {
-                var p = pathParts[i].toLowerCase().trim();
-                if (p && p !== 'college' && p !== 'college.html' && p !== 'c' && p !== 'index.html' && p !== 'index') {
+                var p = pathParts[i].toLowerCase().replace(/\.html$/, '').trim();
+                if (p && p !== 'college' && p !== 'c' && p !== 'index') {
                     return p;
                 }
             }
@@ -1319,7 +1334,8 @@
         }
 
         function renderCollegePortal(col) {
-            var isOpenCollege = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug === 'rotaract' || col.slug === 'rotaract-mumbai' || col.slug === 'vendor-partner' || col.slug === 'youth-network');
+            var isOpenCollege = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug === 'rotaract' || col.slug === 'rotaract-mumbai' || col.slug === 'rotaract-mum' || col.slug === 'vendor-partner' || col.slug === 'youth-network');
+            var isRotaract = Boolean(col.type === 'rotaract' || col.slug.includes('rotaract'));
 
             // Update Page Meta
             document.title = (col.shortName || col.name) + ' | Student Registration — Celebrate Cinema 2026';
@@ -1329,6 +1345,13 @@
             // Hero section
             var hHeading = document.getElementById('hero-college-name');
             if (hHeading) hHeading.textContent = col.shortName || col.name;
+
+            if (isRotaract) {
+                var heroBadge = document.getElementById('hero-badge-text');
+                if (heroBadge) heroBadge.textContent = 'ROTARACT YOUTH DELEGATION • ALL COLLEGES';
+                var heroSub = document.getElementById('hero-subtitle');
+                if (heroSub) heroSub.textContent = 'Official Complimentary Delegation Pass for Rotaract Club members and students across all Mumbai colleges & institutes at Celebrate Cinema 2026 Academic Trek — Whistling Woods International.';
+            }
 
             // Form inputs
             var collegeInput = document.getElementById('reg-college');
@@ -1516,6 +1539,56 @@
             if (title) title.textContent = 'Click or Drag & Drop your College ID Card';
         }
 
+        // ── ROTARACT EQUAL LEAD SPLIT (NILESH & TARASHA) ──────────────
+        async function getNextRotaractAssignee() {
+            try {
+                var url = SUPABASE_URL + '/rest/v1/registrations?select=referred_by&or=(coupon_used.ilike.*rotaract*,transaction_id.ilike.*rotaract*,id.like.ROT*)';
+                var controller = new AbortController();
+                var timer = setTimeout(function() { controller.abort(); }, 3500);
+                var resp = await fetch(url, {
+                    signal: controller.signal,
+                    headers: {
+                        'apikey': SUPABASE_ANON,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON
+                    }
+                });
+                clearTimeout(timer);
+                if (resp.ok) {
+                    var data = await resp.json();
+                    if (Array.isArray(data)) {
+                        var nileshCount = data.filter(function(r) { return (r.referred_by || '').trim().toUpperCase() === 'NILESH'; }).length;
+                        var tarashaCount = data.filter(function(r) { return (r.referred_by || '').trim().toUpperCase() === 'TARASHA'; }).length;
+                        var chosen = nileshCount <= tarashaCount ? 'NILESH' : 'TARASHA';
+                        try { localStorage.setItem('wwi_rotaract_last_assigned', chosen); } catch(e) {}
+                        return chosen;
+                    }
+                }
+            } catch(e) {
+                console.warn('Realtime assignee check fallback:', e);
+            }
+
+            // Fallback to local registrations cache
+            try {
+                var local = JSON.parse(localStorage.getItem('wwi_cc26_registrations') || '[]');
+                var nLocal = local.filter(function(r) {
+                    var isRot = (r.id && r.id.startsWith('ROT-')) || (r.couponUsed && r.couponUsed.includes('ROTARACT')) || (r.transactionId && r.transactionId.includes('ROTARACT'));
+                    return isRot && (r.referredBy || '').trim().toUpperCase() === 'NILESH';
+                }).length;
+                var tLocal = local.filter(function(r) {
+                    var isRot = (r.id && r.id.startsWith('ROT-')) || (r.couponUsed && r.couponUsed.includes('ROTARACT')) || (r.transactionId && r.transactionId.includes('ROTARACT'));
+                    return isRot && (r.referredBy || '').trim().toUpperCase() === 'TARASHA';
+                }).length;
+                var localChosen = nLocal <= tLocal ? 'NILESH' : 'TARASHA';
+                try { localStorage.setItem('wwi_rotaract_last_assigned', localChosen); } catch(e) {}
+                return localChosen;
+            } catch(e) {}
+
+            var last = localStorage.getItem('wwi_rotaract_last_assigned');
+            var next = last === 'NILESH' ? 'TARASHA' : 'NILESH';
+            try { localStorage.setItem('wwi_rotaract_last_assigned', next); } catch(e) {}
+            return next;
+        }
+
         // ── FORM SUBMISSION ──────────────────────────────────────────
         async function handleCollegeSubmit(e) {
             e.preventDefault();
@@ -1538,7 +1611,8 @@
             var visitDate = document.getElementById('reg-visit-date').value;
 
             var col = _currentCollege || DEFAULT_COLLEGES[0];
-            var isOpenCollege = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug === 'rotaract' || col.slug === 'rotaract-mumbai' || col.slug === 'vendor-partner' || col.slug === 'youth-network');
+            var isOpenCollege = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug === 'rotaract' || col.slug === 'rotaract-mumbai' || col.slug === 'rotaract-mum' || col.slug === 'vendor-partner' || col.slug === 'youth-network');
+            var isRotaract = Boolean(col.type === 'rotaract' || col.slug.includes('rotaract'));
 
             var collegeName = col.name;
             if (isOpenCollege) {
@@ -1558,7 +1632,7 @@
             if (col.slug === 'kes-shroff') prefix = 'KS';
             else if (col.slug === 'kj-somaiya') prefix = 'KJS';
             else if (col.slug === 'sydenham') prefix = 'SYD';
-            else if (col.slug.includes('rotaract') || col.type === 'rotaract') prefix = 'ROT';
+            else if (isRotaract) prefix = 'ROT';
             else if (col.slug.includes('vendor') || col.type === 'vendor') prefix = 'VEN';
             else {
                 var slugClean = col.slug.replace(/[^a-z0-9]/g, '').toUpperCase();
@@ -1566,6 +1640,16 @@
             }
             var randomNum = Math.floor(100000 + Math.random() * 900000);
             var ticketId = prefix + '-' + randomNum;
+
+            // Divide Rotaract signups equally between Nilesh & Tarasha
+            var assignedReferral = 'college:' + col.slug;
+            if (isRotaract) {
+                try {
+                    assignedReferral = await getNextRotaractAssignee();
+                } catch(e) {
+                    assignedReferral = 'NILESH';
+                }
+            }
 
             var regData = {
                 id: ticketId,
@@ -1577,7 +1661,7 @@
                 paymentScreenshot: _uploadedBase64,
                 transactionId: 'FREE-' + col.slug.toUpperCase(),
                 couponUsed: 'FREE-' + col.slug.toUpperCase(),
-                referredBy: 'college:' + col.slug,
+                referredBy: assignedReferral,
                 basePrice: 0,
                 finalPrice: 0,
                 verified: false,
@@ -1619,10 +1703,11 @@
                 phone: r.phone,
                 college: r.college,
                 year: combinedYear,
-                payment_screenshot: r.paymentScreenshot,
-                transaction_id: r.transactionId,
-                coupon_used: r.couponUsed,
-                referred_by: r.referredBy,
+                referral_code: '',
+                payment_screenshot: r.paymentScreenshot || '',
+                transaction_id: r.transactionId || '',
+                coupon_used: r.couponUsed || '',
+                referred_by: r.referredBy || '',
                 base_price: 0,
                 final_price: 0,
                 verified: false,

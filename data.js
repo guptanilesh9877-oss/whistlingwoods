@@ -1278,6 +1278,23 @@ class DataStore {
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
             },
             {
+                slug: 'rotaract-mum',
+                name: 'Rotaract Clubs Mumbai — All Colleges Delegation Pass',
+                shortName: 'Rotaract Mumbai',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract Youth Delegation Privilege',
+                privilegeDesc: 'Complimentary admission for Rotaract Club members, youth leaders, and student delegates from ANY college or institution. Enter your college and upload your College ID Card, Fee Receipt, or Rotaract Membership ID to receive your verified academic delegate pass.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
                 slug: 'rotaract',
                 name: 'Rotaract Clubs — All Colleges Delegation Pass',
                 shortName: 'Rotaract Club Partner',
@@ -1557,7 +1574,7 @@ class DataStore {
         const sahilKesVer = Math.ceil(kesVerified / 2);
         const satvikKesVer = Math.floor(kesVerified / 2);
 
-        // 2. Nilesh + Tarasha colleges — explicit equal split (KJ-Somaiya, Sydenham, Mithibai, HR, NM, DJ Sanghvi, SK Somaiya)
+        // 2. Nilesh + Tarasha colleges — explicit equal split (KJ-Somaiya, Sydenham, Mithibai, HR, NM, DJ Sanghvi, SK Somaiya, Rotaract)
         const nileshTarashaCollegeSlugs = [
             { slug: 'kj-somaiya', keyword: 'somaiya' },
             { slug: 'sydenham', keyword: 'sydenham' },
@@ -1565,13 +1582,20 @@ class DataStore {
             { slug: 'hr-college', keyword: 'h.r. college' },
             { slug: 'nm-college', keyword: 'narsee monjee' },
             { slug: 'dj-sanghvi', keyword: 'sanghvi' },
-            { slug: 'sk-somaiya', keyword: 'sk somaiya' }
+            { slug: 'sk-somaiya', keyword: 'sk somaiya' },
+            { slug: 'rotaract-mum', keyword: 'rotaract' },
+            { slug: 'rotaract-mumbai', keyword: 'rotaract' },
+            { slug: 'rotaract', keyword: 'rotaract' }
         ];
         let nileshTotal = 0, nileshVer = 0;
         let tarashaDelegTotal = 0;
         const seenCollegeRegIds = new Set(kesRegs.map(r => r.id)); // avoid double-counting
         nileshTarashaCollegeSlugs.forEach(({ slug, keyword }) => {
-            const colRegs = getCollegeFreeRegs(slug, keyword).filter(r => !seenCollegeRegIds.has(r.id));
+            const colRegs = getCollegeFreeRegs(slug, keyword).filter(r => (
+                !seenCollegeRegIds.has(r.id) &&
+                (r.referredBy || '').trim().toUpperCase() !== 'NILESH' &&
+                (r.referredBy || '').trim().toUpperCase() !== 'TARASHA'
+            ));
             colRegs.forEach(r => seenCollegeRegIds.add(r.id));
             const colCount = colRegs.length;
             const colVer = colRegs.filter(r => r.verified).length;
@@ -1589,7 +1613,7 @@ class DataStore {
 
         partnerColleges.forEach(col => {
             // Skip colleges already handled explicitly above
-            const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya'];
+            const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract'];
             if (alreadyHandled.includes(col.slug)) return;
             const colRegs = regs.filter(r => (
                 (r.referredBy && r.referredBy.toLowerCase().includes(col.slug.toLowerCase())) ||
@@ -1770,11 +1794,18 @@ class DataStore {
             { slug: 'hr-college', keyword: 'h.r. college' },
             { slug: 'nm-college', keyword: 'narsee monjee' },
             { slug: 'dj-sanghvi', keyword: 'sanghvi' },
-            { slug: 'sk-somaiya', keyword: 'sk somaiya' }
+            { slug: 'sk-somaiya', keyword: 'sk somaiya' },
+            { slug: 'rotaract-mum', keyword: 'rotaract' },
+            { slug: 'rotaract-mumbai', keyword: 'rotaract' },
+            { slug: 'rotaract', keyword: 'rotaract' }
         ];
         const seenIds = new Set(kesRegs.map(r => r.id));
         nileshTarashaCollegeSlugs.forEach(({ slug, keyword }) => {
-            const colRegs = getCollegeFreeRegs(slug, keyword).filter(r => !seenIds.has(r.id));
+            const colRegs = getCollegeFreeRegs(slug, keyword).filter(r => (
+                !seenIds.has(r.id) &&
+                (r.referredBy || '').trim().toUpperCase() !== 'NILESH' &&
+                (r.referredBy || '').trim().toUpperCase() !== 'TARASHA'
+            ));
             colRegs.forEach(r => seenIds.add(r.id));
             if (colRegs.length > 0) {
                 counts['NILESH'] = (counts['NILESH'] || 0) + Math.ceil(colRegs.length / 2);
@@ -1784,7 +1815,7 @@ class DataStore {
 
         // Add any remaining custom partner college splits
         const partnerColleges = this.getCollegePartners();
-        const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya'];
+        const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract'];
         partnerColleges.forEach(col => {
             if (alreadyHandled.includes(col.slug)) return;
             const colRegs = regs.filter(r => (

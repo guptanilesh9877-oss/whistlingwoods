@@ -543,6 +543,7 @@
                 <span class="info-pill">📅 Event Dates: <strong>08th &amp; 09th October 2026</strong></span>
                 <span class="info-pill">🎟️ Pass Type: <strong id="hero-pass-type">100% Free Delegation Pass</strong></span>
                 <span class="info-pill" id="hero-leads-pill">👥 Leads: <strong>Nilesh Gupta &amp; Tarasha Pahuja</strong></span>
+                <span class="info-pill" id="hero-split-pill" style="display:none; background:rgba(141,106,174,0.22); border-color:rgba(247,231,197,0.4); color:var(--gold);">⚖️ Equal Split: <strong id="split-text" style="color:#ffffff;">Nilesh: 0 | Tarasha: 0</strong></span>
             </div>
         </section>
 
@@ -579,6 +580,12 @@
                 <input type="text" id="filter-search" class="search-input" placeholder="🔍 Search by student name, email, phone, college, stream..." oninput="handleFilterChange()">
             </div>
             <div class="filters-group">
+                <select id="filter-lead" class="select-filter" onchange="handleFilterChange()" style="display:none; border-color:rgba(247,231,197,0.4); background:rgba(141,106,174,0.18); color:var(--gold); font-weight:700;">
+                    <option value="all">👥 All Assigned Leads (100%)</option>
+                    <option value="NILESH">👤 Nilesh Gupta's Half</option>
+                    <option value="TARASHA">👤 Tarasha Pahuja's Half</option>
+                </select>
+
                 <select id="filter-status" class="select-filter" onchange="handleFilterChange()">
                     <option value="all">All Verification Statuses</option>
                     <option value="verified">Verified Only (✓)</option>
@@ -660,8 +667,9 @@
             { slug: 'nm-college', name: 'Narsee Monjee College of Commerce and Economics', shortName: 'NM College' },
             { slug: 'dj-sanghvi', name: 'Dwarkadas J. Sanghvi College of Engineering', shortName: 'DJ Sanghvi' },
             { slug: 'sk-somaiya', name: 'S.K. Somaiya College of Arts, Science and Commerce', shortName: 'SK Somaiya College' },
-            { slug: 'rotaract', name: 'Rotaract Clubs — All Colleges Delegation Pass', shortName: 'Rotaract Clubs', openCollege: true, type: 'rotaract' },
-            { slug: 'rotaract-mumbai', name: 'Rotaract District 3141 & 3142 — All Colleges Youth Delegation', shortName: 'Rotaract Mumbai', openCollege: true, type: 'rotaract' },
+            { slug: 'rotaract-mum', name: 'Rotaract Clubs Mumbai — All Colleges Delegation Pass', shortName: 'Rotaract Mumbai', openCollege: true, type: 'rotaract', pocs: [{ name: 'Nilesh Kumar Gupta', phone: '8699260386' }, { name: 'Tarasha Pahuja', phone: '9569884046' }] },
+            { slug: 'rotaract', name: 'Rotaract Clubs — All Colleges Delegation Pass', shortName: 'Rotaract Clubs', openCollege: true, type: 'rotaract', pocs: [{ name: 'Nilesh Kumar Gupta', phone: '8699260386' }, { name: 'Tarasha Pahuja', phone: '9569884046' }] },
+            { slug: 'rotaract-mumbai', name: 'Rotaract District 3141 & 3142 — All Colleges Youth Delegation', shortName: 'Rotaract Mumbai', openCollege: true, type: 'rotaract', pocs: [{ name: 'Nilesh Kumar Gupta', phone: '8699260386' }, { name: 'Tarasha Pahuja', phone: '9569884046' }] },
             { slug: 'vendor-partner', name: 'Campus Vendor & Youth Outreach Partner Network', shortName: 'Vendor Partner', openCollege: true, type: 'vendor' },
             { slug: 'youth-network', name: 'Youth Creator & Student Community Network (All Colleges)', shortName: 'Youth Network', openCollege: true, type: 'vendor' }
         ];
@@ -675,16 +683,18 @@
         function getSlugFromUrl() {
             const params = new URLSearchParams(window.location.search);
             const q = params.get('c') || params.get('college') || params.get('slug');
-            if (q) return q.toLowerCase().trim();
+            if (q) return q.toLowerCase().replace(/\.html$/, '').trim();
+
+            if (window.DEFAULT_PORTAL_SLUG) return window.DEFAULT_PORTAL_SLUG;
 
             const pathParts = window.location.pathname.split('/').filter(Boolean);
             const cIdx = pathParts.indexOf('c');
             if (cIdx !== -1 && pathParts[cIdx + 1] && pathParts[cIdx + 1] !== 'leads') {
-                return pathParts[cIdx + 1].toLowerCase().trim();
+                return pathParts[cIdx + 1].toLowerCase().replace(/\.html$/, '').trim();
             }
             if (pathParts.length > 0) {
-                const first = pathParts[0].toLowerCase().trim();
-                if (first !== 'leads' && first !== 'leads.html') return first;
+                const first = pathParts[0].toLowerCase().replace(/\.html$/, '').trim();
+                if (first !== 'leads') return first;
             }
             return null;
         }
@@ -853,7 +863,12 @@
 
                 if (isOpen) {
                     if (ref.includes(slug) || coup.includes(slug) || txn.includes(slug)) return true;
-                    if (slug.includes('rotaract') && rId.startsWith('ROT-')) return true;
+                    if (slug.includes('rotaract') && (
+                        rId.startsWith('ROT-') ||
+                        coup.includes('rotaract') ||
+                        txn.includes('rotaract') ||
+                        ref.includes('rotaract')
+                    )) return true;
                     if (slug.includes('vendor') && rId.startsWith('VEN-')) return true;
                     return false;
                 }
@@ -893,6 +908,31 @@
             document.getElementById('kpi-both').textContent = bothCount;
             document.getElementById('kpi-day1').textContent = day1Count;
             document.getElementById('kpi-day2').textContent = day2Count;
+
+            // Rotaract Equal Lead Split Tracker
+            const col = _currentCollege;
+            const isRotaract = col && (col.type === 'rotaract' || (col.slug || '').includes('rotaract'));
+            const splitPill = document.getElementById('hero-split-pill');
+            const splitText = document.getElementById('split-text');
+            const leadSelect = document.getElementById('filter-lead');
+
+            if (isRotaract) {
+                const nileshCount = list.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase() === 'NILESH').length;
+                const tarashaCount = list.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase() === 'TARASHA').length;
+                if (splitPill && splitText) {
+                    splitPill.style.display = 'inline-flex';
+                    splitText.textContent = `Nilesh: ${nileshCount} | Tarasha: ${tarashaCount} (50/50 Split)`;
+                }
+                if (leadSelect) {
+                    leadSelect.style.display = 'inline-block';
+                    leadSelect.options[0].text = `👥 All Assigned Leads (${total})`;
+                    leadSelect.options[1].text = `👤 Nilesh Gupta's Half (${nileshCount})`;
+                    leadSelect.options[2].text = `👤 Tarasha Pahuja's Half (${tarashaCount})`;
+                }
+            } else {
+                if (splitPill) splitPill.style.display = 'none';
+                if (leadSelect) leadSelect.style.display = 'none';
+            }
         }
 
         function handleFilterChange() {
@@ -903,8 +943,13 @@
             const search = (document.getElementById('filter-search')?.value || '').trim().toLowerCase();
             const statusFilter = document.getElementById('filter-status')?.value || 'all';
             const dateFilter = document.getElementById('filter-date')?.value || 'all';
+            const leadFilter = (document.getElementById('filter-lead')?.value || 'all').trim().toUpperCase();
 
             let result = _filteredRegistrations;
+
+            if (leadFilter && leadFilter !== 'ALL') {
+                result = result.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase() === leadFilter);
+            }
 
             if (statusFilter === 'verified') result = result.filter(r => r.verified && !r.rejected);
             else if (statusFilter === 'pending') result = result.filter(r => !r.verified && !r.rejected);
@@ -967,6 +1012,14 @@
                 if (r.rejected) statusBadge = '<span class="badge badge-rejected">Rejected ✕</span>';
                 else if (r.verified) statusBadge = '<span class="badge badge-verified">Verified ✓</span>';
 
+                let leadBadgeHtml = '';
+                const refUpper = (r.referred_by || r.referredBy || '').trim().toUpperCase();
+                if (refUpper === 'NILESH') {
+                    leadBadgeHtml = '<div style="display:inline-block; font-size:0.72rem; color:#86efac; font-weight:700; margin-top:3px; background:rgba(34,197,94,0.12); padding:1px 6px; border-radius:4px; border:1px solid rgba(34,197,94,0.3);">👤 Lead: Nilesh Gupta</div>';
+                } else if (refUpper === 'TARASHA') {
+                    leadBadgeHtml = '<div style="display:inline-block; font-size:0.72rem; color:#f472b6; font-weight:700; margin-top:3px; background:rgba(244,114,182,0.12); padding:1px 6px; border-radius:4px; border:1px solid rgba(244,114,182,0.3);">👤 Lead: Tarasha Pahuja</div>';
+                }
+
                 const formattedDate = r.timestamp ? new Date(r.timestamp).toLocaleString('en-IN', {
                     day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
                 }) : '—';
@@ -977,6 +1030,7 @@
                         <td class="ticket-id">${escapeHtml(r.id)}</td>
                         <td>
                             <div class="student-name">${escapeHtml(r.name)}</div>
+                            ${leadBadgeHtml}
                         </td>
                         <td>
                             <div><a href="mailto:${escapeHtml(r.email)}" style="color:var(--primary-light); text-decoration:none;">${escapeHtml(r.email)}</a></div>
@@ -1056,7 +1110,7 @@
             }
 
             const colName = (_currentCollege && (_currentCollege.shortName || _currentCollege.name)) || 'Delegation';
-            const headers = ['#', 'Ticket ID', 'Student Name', 'Email', 'Phone', 'College', 'Stream & Year', 'Visit Date', 'Status', 'Registered At'];
+            const headers = ['#', 'Ticket ID', 'Student Name', 'Assigned Lead', 'Email', 'Phone', 'College', 'Stream & Year', 'Visit Date', 'Status', 'Registered At'];
             
             const rows = _filteredRegistrations.map((r, i) => {
                 let visitDate = 'Both Days';
@@ -1067,11 +1121,14 @@
 
                 const status = r.rejected ? 'Rejected' : (r.verified ? 'Verified' : 'In Review');
                 const cleanYear = (r.year || '').split('__vd__')[0];
+                const refUpper = (r.referred_by || r.referredBy || '').trim().toUpperCase();
+                const assignedLead = refUpper === 'NILESH' ? 'Nilesh Gupta' : (refUpper === 'TARASHA' ? 'Tarasha Pahuja' : 'Nilesh / Tarasha (Split)');
 
                 return [
                     i + 1,
                     `"${r.id || ''}"`,
                     `"${(r.name || '').replace(/"/g, '""')}"`,
+                    `"${assignedLead}"`,
                     `"${(r.email || '').replace(/"/g, '""')}"`,
                     `"${r.phone || ''}"`,
                     `"${(r.college || '').replace(/"/g, '""')}"`,

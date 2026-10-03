@@ -146,7 +146,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         if (r.id && r.id.startsWith('KS')) collegeBadgeLabel = 'KES Shroff';
         else if (r.id && r.id.startsWith('KJS')) collegeBadgeLabel = 'KJ Somaiya';
         else if (r.id && r.id.startsWith('SYD')) collegeBadgeLabel = 'Sydenham';
-        else if (r.id && (r.id.startsWith('ROT') || (r.referredBy && r.referredBy.includes('rotaract')))) collegeBadgeLabel = 'Rotaract Club';
+        else if (r.id && (r.id.startsWith('ROT') || (r.referredBy && r.referredBy.includes('rotaract')) || (r.couponUsed && r.couponUsed.includes('ROTARACT')) || (r.transactionId && r.transactionId.includes('ROTARACT')))) collegeBadgeLabel = 'Rotaract Club';
         else if (r.id && (r.id.startsWith('VEN') || (r.referredBy && r.referredBy.includes('vendor')))) collegeBadgeLabel = 'Vendor Partner';
         else if (r.referredBy && r.referredBy.startsWith('college:')) {
             collegeBadgeLabel = r.referredBy.replace('college:', '').replace(/-/g, ' ').toUpperCase();
@@ -2266,7 +2266,11 @@ function renderCollegesGrid(colleges, regs) {
                 (r.referredBy && r.referredBy.toLowerCase().includes(c.slug.toLowerCase())) ||
                 (r.couponUsed && r.couponUsed.toLowerCase().includes(c.slug.toLowerCase())) ||
                 (r.transactionId && r.transactionId.toLowerCase().includes(c.slug.toLowerCase())) ||
-                (isRotaract && r.id && r.id.startsWith('ROT-')) ||
+                (isRotaract && (
+                    (r.id && r.id.startsWith('ROT-')) ||
+                    (r.couponUsed && r.couponUsed.toUpperCase().includes('ROTARACT')) ||
+                    (r.transactionId && r.transactionId.toUpperCase().includes('ROTARACT'))
+                )) ||
                 (isVendor && r.id && r.id.startsWith('VEN-'))
             ));
         } else {
@@ -2281,9 +2285,9 @@ function renderCollegesGrid(colleges, regs) {
         const verified = colRegs.filter(r => r.verified).length;
         const pending = total - verified;
 
-        const livePath = isFlagship ? '/kes-shroff' : (['rotaract', 'rotaract-mumbai', 'vendor-partner', 'youth-network'].includes(c.slug) ? `/${c.slug}` : `/c/${c.slug}`);
+        const livePath = isFlagship ? '/kes-shroff' : (['rotaract', 'rotaract-mum', 'rotaract-mumbai', 'vendor-partner', 'youth-network'].includes(c.slug) ? `/${c.slug}` : `/c/${c.slug}`);
         const liveUrl = `${origin}${livePath}`;
-        const leadsPath = isFlagship ? '/kes-shroff/leads' : (['rotaract', 'rotaract-mumbai', 'vendor-partner', 'youth-network'].includes(c.slug) ? `/${c.slug}/leads` : `/c/${c.slug}/leads`);
+        const leadsPath = isFlagship ? '/kes-shroff/leads' : (['rotaract', 'rotaract-mum', 'rotaract-mumbai', 'vendor-partner', 'youth-network'].includes(c.slug) ? `/${c.slug}/leads` : `/c/${c.slug}/leads`);
         const leadsUrl = `${origin}${leadsPath}`;
         const poc1 = (c.pocs && c.pocs[0]) || (isOpenPartner 
             ? { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' }
