@@ -807,17 +807,18 @@
                 </div>
 
                 <!-- College Locked with Responsive Label Badge -->
-                <div class="form-group">
+                <div class="form-group" id="group-college-field">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; flex-wrap:wrap; gap:8px;">
-                        <label class="form-label" for="reg-college" style="margin-bottom:0;">College / Institution</label>
-                        <span class="ks-verified-badge" style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; color:var(--gold); font-weight:700; background:rgba(212,168,67,0.15); padding:3px 10px; border-radius:12px; border:1px solid rgba(247,231,197,0.3); white-space:nowrap;">
+                        <label class="form-label" for="reg-college" id="lbl-college-field" style="margin-bottom:0;">College / Institution</label>
+                        <span class="ks-verified-badge" id="badge-college-field" style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; color:var(--gold); font-weight:700; background:rgba(212,168,67,0.15); padding:3px 10px; border-radius:12px; border:1px solid rgba(247,231,197,0.3); white-space:nowrap;">
                             <span>Verified Partner</span> <span>🔒</span>
                         </span>
                     </div>
                     <div style="position:relative;">
                         <input type="text" id="reg-college" class="form-input" value="Partner College" readonly style="background:rgba(255,255,255,0.03); color:var(--gold); cursor:not-allowed; padding-left:38px; width:100%;">
-                        <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:1.05rem; opacity:0.85;">🏛️</span>
+                        <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:1.05rem; opacity:0.85;" id="icon-college-field">🏛️</span>
                     </div>
+                    <small id="sub-college-open" style="display:none; color:#4ade80; font-size:0.75rem; margin-top:4px;">✨ Rotaract &amp; Partner Pass: Students from ANY college are eligible! Enter your college name above.</small>
                 </div>
 
                 <!-- Visiting Option -->
@@ -1123,6 +1124,58 @@
                 ],
                 referralCodes: ['SATVIK', 'SAHIL'],
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                name: 'Rotaract Clubs — All Colleges Delegation Pass',
+                shortName: 'Rotaract Club Partner',
+                slug: 'rotaract',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                name: 'Rotaract District 3141 & 3142 — All Colleges Youth Delegation',
+                shortName: 'Rotaract Mumbai',
+                slug: 'rotaract-mumbai',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                name: 'Campus Vendor & Youth Outreach Partner Network',
+                shortName: 'Vendor Partner',
+                slug: 'vendor-partner',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                name: 'Youth Creator & Student Community Network (All Colleges)',
+                shortName: 'Youth Network',
+                slug: 'youth-network',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
             }
         ];
 
@@ -1266,6 +1319,8 @@
         }
 
         function renderCollegePortal(col) {
+            var isOpenCollege = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug === 'rotaract' || col.slug === 'rotaract-mumbai' || col.slug === 'vendor-partner' || col.slug === 'youth-network');
+
             // Update Page Meta
             document.title = (col.shortName || col.name) + ' | Student Registration — Celebrate Cinema 2026';
             var desc = document.getElementById('page-desc');
@@ -1277,13 +1332,56 @@
 
             // Form inputs
             var collegeInput = document.getElementById('reg-college');
-            if (collegeInput) collegeInput.value = col.name;
+            var collegeBadge = document.getElementById('badge-college-field');
+            var collegeLabel = document.getElementById('lbl-college-field');
+            var collegeSub = document.getElementById('sub-college-open');
+
+            if (collegeInput) {
+                if (isOpenCollege) {
+                    collegeInput.removeAttribute('readonly');
+                    collegeInput.style.cursor = 'text';
+                    collegeInput.style.background = 'rgba(255,255,255,0.06)';
+                    collegeInput.value = '';
+                    collegeInput.placeholder = 'Type your College / University Name *';
+                    collegeInput.required = true;
+                    if (collegeLabel) collegeLabel.textContent = 'Your College / Institution Name *';
+                    if (collegeBadge) {
+                        collegeBadge.innerHTML = '<span>Any College Eligible</span> <span>✨</span>';
+                        collegeBadge.style.color = '#4ade80';
+                        collegeBadge.style.borderColor = 'rgba(74,222,128,0.4)';
+                        collegeBadge.style.background = 'rgba(74,222,128,0.12)';
+                    }
+                    if (collegeSub) collegeSub.style.display = 'block';
+                } else {
+                    collegeInput.setAttribute('readonly', 'true');
+                    collegeInput.style.cursor = 'not-allowed';
+                    collegeInput.style.background = 'rgba(255,255,255,0.03)';
+                    collegeInput.value = col.name;
+                    if (collegeLabel) collegeLabel.textContent = 'College / Institution';
+                    if (collegeBadge) {
+                        collegeBadge.innerHTML = '<span>Verified Partner</span> <span>🔒</span>';
+                        collegeBadge.style.color = 'var(--gold)';
+                        collegeBadge.style.borderColor = 'rgba(247,231,197,0.3)';
+                        collegeBadge.style.background = 'rgba(212,168,67,0.15)';
+                    }
+                    if (collegeSub) collegeSub.style.display = 'none';
+                }
+            }
 
             var feeLabel = document.getElementById('fee-partner-label');
-            if (feeLabel) feeLabel.textContent = (col.shortName || col.name) + ' Institutional Collaboration';
+            if (feeLabel) feeLabel.textContent = (col.shortName || col.name) + ' Collaboration Pass';
 
             var agreeLabel = document.getElementById('reg-agree-label');
-            if (agreeLabel) agreeLabel.textContent = 'I confirm that I am a bonafide student / delegate of ' + (col.shortName || col.name) + ' and will present my college identification upon arrival at Whistling Woods International, Film City.';
+            if (agreeLabel) {
+                agreeLabel.textContent = isOpenCollege 
+                    ? 'I confirm that I will present my Student College ID, Fee Receipt, or Rotaract Membership ID upon arrival at Whistling Woods International, Film City.'
+                    : 'I confirm that I am a bonafide student / delegate of ' + (col.shortName || col.name) + ' and will present my college identification upon arrival at Whistling Woods International, Film City.';
+            }
+
+            var uploadTitle = document.getElementById('upload-title');
+            if (uploadTitle && isOpenCollege) {
+                uploadTitle.textContent = 'Click or Drag & Drop your College ID Card, Fee Receipt, or Rotaract ID';
+            }
 
             // Streams dropdown
             var streamSelect = document.getElementById('reg-stream');
@@ -1440,12 +1538,28 @@
             var visitDate = document.getElementById('reg-visit-date').value;
 
             var col = _currentCollege || DEFAULT_COLLEGES[0];
+            var isOpenCollege = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug === 'rotaract' || col.slug === 'rotaract-mumbai' || col.slug === 'vendor-partner' || col.slug === 'youth-network');
+
+            var collegeName = col.name;
+            if (isOpenCollege) {
+                var enteredCol = document.getElementById('reg-college') ? document.getElementById('reg-college').value.trim() : '';
+                if (!enteredCol) {
+                    alert('Please enter your College or Institution name.');
+                    if (document.getElementById('reg-college')) document.getElementById('reg-college').focus();
+                    btn.disabled = false;
+                    btn.innerHTML = '<span id="btn-text">Confirm Registration &amp; Generate Boarding Pass →</span>';
+                    return;
+                }
+                collegeName = enteredCol;
+            }
 
             // Generate Ticket ID prefix
             var prefix = 'COL';
             if (col.slug === 'kes-shroff') prefix = 'KS';
             else if (col.slug === 'kj-somaiya') prefix = 'KJS';
             else if (col.slug === 'sydenham') prefix = 'SYD';
+            else if (col.slug.includes('rotaract') || col.type === 'rotaract') prefix = 'ROT';
+            else if (col.slug.includes('vendor') || col.type === 'vendor') prefix = 'VEN';
             else {
                 var slugClean = col.slug.replace(/[^a-z0-9]/g, '').toUpperCase();
                 prefix = slugClean.length >= 2 ? slugClean.substring(0, 3) : 'COL';
@@ -1458,7 +1572,7 @@
                 name: name,
                 email: email,
                 phone: phone,
-                college: col.name,
+                college: collegeName,
                 year: year + ' (' + stream + ')',
                 paymentScreenshot: _uploadedBase64,
                 transactionId: 'FREE-' + col.slug.toUpperCase(),

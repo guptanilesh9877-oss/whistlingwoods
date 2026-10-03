@@ -99,7 +99,8 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                 (r.visitDate && r.visitDate.toLowerCase().includes(q)) ||
                 (r.couponUsed && r.couponUsed.toLowerCase().includes(q)) ||
                 (r.referredBy && r.referredBy.toLowerCase().includes(q)) ||
-                (r.referralCode && r.referralCode.toLowerCase().includes(q))
+                (r.referralCode && r.referralCode.toLowerCase().includes(q)) ||
+                (r.transactionId && r.transactionId.toLowerCase().includes(q))
             );
         }
     }
@@ -145,6 +146,8 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         if (r.id && r.id.startsWith('KS')) collegeBadgeLabel = 'KES Shroff';
         else if (r.id && r.id.startsWith('KJS')) collegeBadgeLabel = 'KJ Somaiya';
         else if (r.id && r.id.startsWith('SYD')) collegeBadgeLabel = 'Sydenham';
+        else if (r.id && (r.id.startsWith('ROT') || (r.referredBy && r.referredBy.includes('rotaract')))) collegeBadgeLabel = 'Rotaract Club';
+        else if (r.id && (r.id.startsWith('VEN') || (r.referredBy && r.referredBy.includes('vendor')))) collegeBadgeLabel = 'Vendor Partner';
         else if (r.referredBy && r.referredBy.startsWith('college:')) {
             collegeBadgeLabel = r.referredBy.replace('college:', '').replace(/-/g, ' ').toUpperCase();
         } else if (r.transactionId && r.transactionId.startsWith('FREE-')) {
@@ -2244,8 +2247,11 @@ function renderCollegesGrid(colleges, regs) {
 
     grid.innerHTML = colleges.map(c => {
         const isFlagship = c.slug === 'kes-shroff';
+        const isOpenPartner = Boolean(c.openCollege || c.type === 'rotaract' || c.type === 'vendor' || c.slug.includes('rotaract') || c.slug.includes('vendor'));
+        const isRotaract = Boolean(c.type === 'rotaract' || c.slug.includes('rotaract'));
+        const isVendor = Boolean(c.type === 'vendor' || c.slug.includes('vendor'));
         
-        // Find matching registrations for this college
+        // Find matching registrations for this college/partner
         let colRegs = [];
         if (isFlagship) {
             colRegs = regs.filter(r => (
@@ -2254,6 +2260,14 @@ function renderCollegesGrid(colleges, regs) {
                 (r.referredBy && r.referredBy.includes('kes-shroff')) ||
                 (r.id && r.id.startsWith('KS-')) ||
                 (r.college && r.college.toLowerCase().includes('shroff'))
+            ));
+        } else if (isOpenPartner) {
+            colRegs = regs.filter(r => (
+                (r.referredBy && r.referredBy.toLowerCase().includes(c.slug.toLowerCase())) ||
+                (r.couponUsed && r.couponUsed.toLowerCase().includes(c.slug.toLowerCase())) ||
+                (r.transactionId && r.transactionId.toLowerCase().includes(c.slug.toLowerCase())) ||
+                (isRotaract && r.id && r.id.startsWith('ROT-')) ||
+                (isVendor && r.id && r.id.startsWith('VEN-'))
             ));
         } else {
             colRegs = regs.filter(r => (
@@ -2267,50 +2281,109 @@ function renderCollegesGrid(colleges, regs) {
         const verified = colRegs.filter(r => r.verified).length;
         const pending = total - verified;
 
-        const livePath = isFlagship ? '/kes-shroff' : `/c/${c.slug}`;
+        const livePath = isFlagship ? '/kes-shroff' : (['rotaract', 'rotaract-mumbai', 'vendor-partner', 'youth-network'].includes(c.slug) ? `/${c.slug}` : `/c/${c.slug}`);
         const liveUrl = `${origin}${livePath}`;
-        const poc1 = (c.pocs && c.pocs[0]) || { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' };
-        const poc2 = (c.pocs && c.pocs[1]) || { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' };
-        const splitCodes = Array.isArray(c.referralCodes) && c.referralCodes.length > 0 ? c.referralCodes.join(', ') : 'SATVIK, SAHIL';
+        const poc1 = (c.pocs && c.pocs[0]) || (isOpenPartner 
+            ? { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' }
+            : { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' });
+        const poc2 = (c.pocs && c.pocs[1]) || (isOpenPartner
+            ? { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+            : { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' });
+        const splitCodes = Array.isArray(c.referralCodes) && c.referralCodes.length > 0 
+            ? c.referralCodes.join(', ') 
+            : (isOpenPartner ? 'NILESH, TARASHA' : 'SATVIK, SAHIL');
+
+        // Badge markup
+        let badgeHtml = '';
+        if (isFlagship) {
+            badgeHtml = `
+                <span style="background:rgba(212,168,67,0.18); border:1px solid rgba(212,168,67,0.4); color:var(--gold); font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px;">
+                    ★ Flagship Partner
+                </span>
+            `;
+        } else if (isRotaract) {
+            badgeHtml = `
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="background:rgba(74,222,128,0.16); border:1px solid rgba(74,222,128,0.4); color:#4ade80; font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+                        <span>🤝</span> Rotaract Club
+                    </span>
+                    <span style="background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.25); color:#86efac; font-size:0.65rem; font-weight:600; padding:2px 7px; border-radius:10px;">
+                        🔒 Nilesh2202
+                    </span>
+                </div>
+            `;
+        } else if (isVendor) {
+            badgeHtml = `
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="background:rgba(56,189,248,0.16); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+                        <span>🤝</span> Vendor Outreach
+                    </span>
+                    <span style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25); color:#7dd3fc; font-size:0.65rem; font-weight:600; padding:2px 7px; border-radius:10px;">
+                        🔒 Nilesh2202
+                    </span>
+                </div>
+            `;
+        } else if (isOpenPartner) {
+            badgeHtml = `
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="background:rgba(74,222,128,0.16); border:1px solid rgba(74,222,128,0.4); color:#4ade80; font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+                        <span>🌐</span> Universal Pass
+                    </span>
+                    <span style="background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.25); color:#86efac; font-size:0.65rem; font-weight:600; padding:2px 7px; border-radius:10px;">
+                        🔒 Nilesh2202
+                    </span>
+                </div>
+            `;
+        } else {
+            badgeHtml = `
+                <span style="background:rgba(141,106,174,0.18); border:1px solid rgba(141,106,174,0.4); color:var(--primary-light); font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px;">
+                    Active Link
+                </span>
+            `;
+        }
+
+        const borderGradient = isOpenPartner 
+            ? 'linear-gradient(90deg, #10b981, #06b6d4)' 
+            : 'linear-gradient(90deg, var(--primary), var(--gold-accent))';
 
         return `
-            <div class="glass-card" style="padding:22px; border-radius:16px; border:1px solid var(--border-subtle); display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; background:rgba(26,22,40,0.85);">
+            <div class="glass-card" style="padding:22px; border-radius:16px; border:1px solid ${isOpenPartner ? 'rgba(74,222,128,0.25)' : 'var(--border-subtle)'}; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; background:rgba(26,22,40,0.85);">
                 <!-- Ambient glow accent -->
-                <div style="position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--primary), var(--gold-accent));"></div>
+                <div style="position:absolute; top:0; left:0; right:0; height:3px; background:${borderGradient};"></div>
 
                 <div>
                     <!-- Header Badges -->
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <span style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--gold); display:inline-flex; align-items:center; gap:5px;">
-                            <span>🏛️</span> <span>College Portal</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:6px;">
+                        <span style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:${isOpenPartner ? '#4ade80' : 'var(--gold)'}; display:inline-flex; align-items:center; gap:5px;">
+                            <span>${isOpenPartner ? '🤝' : '🏛️'}</span> 
+                            <span>${isOpenPartner ? 'Open Partner Portal' : 'College Portal'}</span>
                         </span>
-                        ${isFlagship ? `
-                            <span style="background:rgba(212,168,67,0.18); border:1px solid rgba(212,168,67,0.4); color:var(--gold); font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px;">
-                                ★ Flagship Partner
-                            </span>
-                        ` : `
-                            <span style="background:rgba(141,106,174,0.18); border:1px solid rgba(141,106,174,0.4); color:var(--primary-light); font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px;">
-                                Active Link
-                            </span>
-                        `}
+                        ${badgeHtml}
                     </div>
 
-                    <!-- College Title -->
+                    <!-- Title -->
                     <h4 style="font-family:'Playfair Display', Georgia, serif; font-size:1.15rem; color:#ffffff; margin:0 0 4px 0; line-height:1.35;">
                         ${_escHtml(c.name)}
                     </h4>
-                    <div style="font-size:0.82rem; color:var(--gold); margin-bottom:14px;">
+                    <div style="font-size:0.82rem; color:${isOpenPartner ? '#86efac' : 'var(--gold)'}; margin-bottom:12px;">
                         ${_escHtml(c.shortName || c.name)}
                     </div>
+
+                    <!-- Universal Eligibility Notice if Open Partner -->
+                    ${isOpenPartner ? `
+                        <div style="background:rgba(74,222,128,0.08); border:1px solid rgba(74,222,128,0.22); border-radius:8px; padding:7px 10px; margin-bottom:14px; font-size:0.75rem; color:#4ade80; display:flex; align-items:center; gap:6px; line-height:1.35;">
+                            <span>✨</span> <span><strong>Universal Pass:</strong> Students from <strong>ANY College</strong> can register for free!</span>
+                        </div>
+                    ` : ''}
 
                     <!-- Live URL Box -->
                     <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:10px 12px; margin-bottom:16px;">
                         <div style="font-size:0.72rem; color:var(--lavender); margin-bottom:4px; display:flex; justify-content:space-between; align-items:center;">
                             <span>Live Registration Link:</span>
-                            <a href="${livePath}" target="_blank" style="color:var(--gold); text-decoration:none; font-size:0.72rem; font-weight:600;">Open Portal ↗</a>
+                            <a href="${livePath}" target="_blank" style="color:${isOpenPartner ? '#4ade80' : 'var(--gold)'}; text-decoration:none; font-size:0.72rem; font-weight:600;">Open Portal ↗</a>
                         </div>
                         <div style="display:flex; align-items:center; gap:8px;">
-                            <input type="text" readonly value="${liveUrl}" style="background:transparent; border:none; color:var(--gold); font-family:monospace; font-size:0.82rem; width:100%; outline:none;" onclick="this.select()">
+                            <input type="text" readonly value="${liveUrl}" style="background:transparent; border:none; color:${isOpenPartner ? '#4ade80' : 'var(--gold)'}; font-family:monospace; font-size:0.82rem; width:100%; outline:none;" onclick="this.select()">
                             <button type="button" class="btn-small" onclick="copyCollegeLink('${liveUrl}')" style="padding:4px 10px; font-size:0.72rem; white-space:nowrap;" title="Copy portal link">
                                 📋 Copy
                             </button>
@@ -2321,7 +2394,7 @@ function renderCollegesGrid(colleges, regs) {
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px;">
                         <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:8px 10px; text-align:center;">
                             <div style="font-size:0.68rem; color:var(--lavender);">Signups</div>
-                            <div style="font-size:1.25rem; font-weight:800; color:var(--gold);">${total}</div>
+                            <div style="font-size:1.25rem; font-weight:800; color:${isOpenPartner ? '#4ade80' : 'var(--gold)'};">${total}</div>
                         </div>
                         <div style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.25); border-radius:8px; padding:8px 10px; text-align:center;">
                             <div style="font-size:0.68rem; color:#10b981;">Verified</div>
@@ -2335,16 +2408,16 @@ function renderCollegesGrid(colleges, regs) {
 
                     <!-- Assigned Leads -->
                     <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); border-radius:10px; padding:10px 12px; margin-bottom:16px;">
-                        <div style="font-size:0.72rem; color:var(--gold); font-weight:700; margin-bottom:6px;">
-                            👥 Community &amp; Partnership Leads
+                        <div style="font-size:0.72rem; color:${isOpenPartner ? '#86efac' : 'var(--gold)'}; font-weight:700; margin-bottom:6px;">
+                            👥 Partnership &amp; Outreach Leads
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; margin-bottom:4px;">
                             <span>${_escHtml(poc1.name)}</span>
-                            <a href="tel:${poc1.phone}" style="color:var(--gold); text-decoration:none; font-family:monospace; font-size:0.75rem;">${poc1.phone}</a>
+                            <a href="tel:${poc1.phone}" style="color:${isOpenPartner ? '#86efac' : 'var(--gold)'}; text-decoration:none; font-family:monospace; font-size:0.75rem;">${poc1.phone}</a>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem;">
                             <span>${_escHtml(poc2.name)}</span>
-                            <a href="tel:${poc2.phone}" style="color:var(--gold); text-decoration:none; font-family:monospace; font-size:0.75rem;">${poc2.phone}</a>
+                            <a href="tel:${poc2.phone}" style="color:${isOpenPartner ? '#86efac' : 'var(--gold)'}; text-decoration:none; font-family:monospace; font-size:0.75rem;">${poc2.phone}</a>
                         </div>
                     </div>
 
@@ -2357,7 +2430,7 @@ function renderCollegesGrid(colleges, regs) {
                 <!-- Footer Action Buttons -->
                 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px; margin-top:8px;">
                     <div style="display:flex; gap:6px;">
-                        <button type="button" class="btn btn-secondary btn-small" onclick="filterRegistrationsByCollege('${c.slug}', '${_escHtml(c.name).replace(/'/g, "\\'")}')" title="View all student leads from this college">
+                        <button type="button" class="btn btn-secondary btn-small" onclick="filterRegistrationsByCollege('${c.slug}', '${_escHtml(c.name).replace(/'/g, "\\'")}')" title="View all student leads from this portal">
                             🔍 Filter Leads (${total})
                         </button>
                         <button type="button" class="btn-small" onclick="editCollegeModal('${c.slug}')" style="background:rgba(255,255,255,0.06); border:1px solid var(--border-subtle); color:var(--gold);">
@@ -2375,6 +2448,69 @@ function renderCollegesGrid(colleges, regs) {
     }).join('');
 }
 
+// ── PASSCODE AUTH FOR ROTARACT & VENDOR PARTNER MANAGEMENT ─────
+let _partnerAuthSessionVerified = false;
+
+function checkPartnerPassword(customPrompt) {
+    if (_partnerAuthSessionVerified) return true;
+    const target = (typeof CONFIG !== 'undefined' && CONFIG.PARTNER_LOCK_PASSWORD) 
+        ? CONFIG.PARTNER_LOCK_PASSWORD 
+        : 'Nilesh2202';
+
+    const entered = prompt(customPrompt || '🔒 Authorization Required:\nEnter Nilesh Partner Management Passcode:');
+    if (!entered) return false;
+
+    if (entered.trim() === target.trim()) {
+        _partnerAuthSessionVerified = true;
+        showToast('✓ Nilesh partner passcode verified', 'success');
+        return true;
+    }
+
+    alert('❌ Incorrect passcode. Access denied to Open Partner settings.');
+    showToast('❌ Incorrect passcode. Access denied.', 'error');
+    return false;
+}
+
+// Open Dedicated Modal to Add Open Partner (Rotaract / Vendor) — Password Protected
+function openAddOpenPartnerModal() {
+    if (!checkPartnerPassword('🔒 Nilesh2202 Passcode Required:\nEnter passcode to add an Open Partner portal (Rotaract / Campus Vendor):')) {
+        return;
+    }
+
+    _editingCollegeSlug = null;
+    const modal = document.getElementById('modal-college-portal');
+    const title = document.getElementById('college-modal-title');
+    const form = document.getElementById('form-college-portal');
+    if (!modal || !form) return;
+
+    form.reset();
+    const slugInput = document.getElementById('col-input-slug');
+    if (slugInput) slugInput.removeAttribute('readonly');
+
+    const openCheck = document.getElementById('col-input-opencollege');
+    if (openCheck) openCheck.checked = true;
+
+    const typeSelect = document.getElementById('col-input-type');
+    if (typeSelect) typeSelect.value = 'rotaract';
+
+    const nameInput = document.getElementById('col-input-name');
+    if (nameInput) nameInput.placeholder = 'e.g. Rotaract Club of Mumbai Central / Youth Creator Partner';
+
+    document.getElementById('col-input-poc1-name').value = 'Nilesh Kumar Gupta';
+    document.getElementById('col-input-poc1-phone').value = '8699260386';
+    document.getElementById('col-input-poc1-role').value = 'Community & Partnership Lead';
+
+    document.getElementById('col-input-poc2-name').value = 'Tarasha Pahuja';
+    document.getElementById('col-input-poc2-phone').value = '9569884046';
+    document.getElementById('col-input-poc2-role').value = 'Community & Partnership Lead';
+
+    document.getElementById('col-input-referrals').value = 'NILESH, TARASHA';
+    document.getElementById('col-input-streams').value = 'BMS, B.Com, BAF, BBI, BFM, BAMMC, B.Sc IT, B.Sc CS, B.Sc Data Science, B.A, Engineering, Media, Other';
+
+    if (title) title.innerHTML = '🤝 Add Open Partner Portal (Rotaract / Vendor) <span style="font-size:0.75rem; color:#4ade80; font-weight:normal; margin-left:8px;">🔒 Nilesh2202 Verified</span>';
+    modal.style.display = 'flex';
+}
+
 function openAddCollegeModal() {
     _editingCollegeSlug = null;
     const modal = document.getElementById('modal-college-portal');
@@ -2385,6 +2521,12 @@ function openAddCollegeModal() {
     form.reset();
     const slugInput = document.getElementById('col-input-slug');
     if (slugInput) slugInput.removeAttribute('readonly');
+
+    const openCheck = document.getElementById('col-input-opencollege');
+    if (openCheck) openCheck.checked = false;
+
+    const typeSelect = document.getElementById('col-input-type');
+    if (typeSelect) typeSelect.value = 'college';
 
     document.getElementById('col-input-poc1-name').value = 'Satvik Satam';
     document.getElementById('col-input-poc1-phone').value = '9136045359';
@@ -2403,13 +2545,20 @@ function openAddCollegeModal() {
 
 function editCollegeModal(slug) {
     if (!slug) return;
-    _editingCollegeSlug = slug;
 
     const col = (typeof dataStore !== 'undefined' && dataStore.getCollegePartnerBySlug)
         ? dataStore.getCollegePartnerBySlug(slug)
         : null;
     if (!col) return;
 
+    const isOpenPartner = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || slug.includes('rotaract') || slug.includes('vendor'));
+    if (isOpenPartner) {
+        if (!checkPartnerPassword('🔒 Nilesh2202 Passcode Required:\nEnter passcode to edit this Open Partner portal:')) {
+            return;
+        }
+    }
+
+    _editingCollegeSlug = slug;
     const modal = document.getElementById('modal-college-portal');
     const title = document.getElementById('college-modal-title');
     if (!modal) return;
@@ -2424,6 +2573,12 @@ function editCollegeModal(slug) {
         slugInput.removeAttribute('readonly');
     }
 
+    const openCheck = document.getElementById('col-input-opencollege');
+    if (openCheck) openCheck.checked = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor');
+
+    const typeSelect = document.getElementById('col-input-type');
+    if (typeSelect) typeSelect.value = col.type || (col.openCollege ? 'rotaract' : 'college');
+
     const poc1 = (col.pocs && col.pocs[0]) || {};
     const poc2 = (col.pocs && col.pocs[1]) || {};
     document.getElementById('col-input-poc1-name').value = poc1.name || '';
@@ -2434,10 +2589,16 @@ function editCollegeModal(slug) {
     document.getElementById('col-input-poc2-phone').value = poc2.phone || '';
     document.getElementById('col-input-poc2-role').value = poc2.role || 'Community & Partnership Lead';
 
-    document.getElementById('col-input-referrals').value = Array.isArray(col.referralCodes) ? col.referralCodes.join(', ') : 'SATVIK, SAHIL';
+    document.getElementById('col-input-referrals').value = Array.isArray(col.referralCodes) 
+        ? col.referralCodes.join(', ') 
+        : (isOpenPartner ? 'NILESH, TARASHA' : 'SATVIK, SAHIL');
     document.getElementById('col-input-streams').value = Array.isArray(col.streams) ? col.streams.join(', ') : '';
 
-    if (title) title.textContent = `✏️ Edit Portal: ${col.shortName || col.name}`;
+    if (title) {
+        title.innerHTML = isOpenPartner 
+            ? `✏️ Edit Open Partner: ${col.shortName || col.name} <span style="font-size:0.75rem; color:#4ade80; font-weight:normal; margin-left:8px;">🔒 Nilesh2202 Verified</span>`
+            : `✏️ Edit Portal: ${col.shortName || col.name}`;
+    }
     modal.style.display = 'flex';
 }
 
@@ -2447,7 +2608,6 @@ function closeCollegeModal() {
 }
 
 function autoGenerateSlug(val) {
-    // Only auto-generate if adding a new college
     if (_editingCollegeSlug) return;
     const slugInput = document.getElementById('col-input-slug');
     if (!slugInput) return;
@@ -2464,6 +2624,17 @@ async function saveCollegeModalForm(e) {
     if (btn) { btn.disabled = true; btn.textContent = 'Saving Portal…'; }
 
     try {
+        const isOpenCollege = Boolean(document.getElementById('col-input-opencollege')?.checked);
+        const partnerType = document.getElementById('col-input-type')?.value || 'college';
+
+        // Check password if creating/updating an open partner or setting open pass
+        if (isOpenCollege || partnerType === 'rotaract' || partnerType === 'vendor') {
+            if (!checkPartnerPassword('🔒 Nilesh2202 Passcode Required:\nEnter passcode to save this Open Partner portal:')) {
+                if (btn) { btn.disabled = false; btn.textContent = 'Save & Activate Portal ✓'; }
+                return;
+            }
+        }
+
         const name = document.getElementById('col-input-name').value.trim();
         const shortName = document.getElementById('col-input-shortname').value.trim();
         let slug = document.getElementById('col-input-slug').value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '-');
@@ -2483,16 +2654,28 @@ async function saveCollegeModalForm(e) {
         const streamsRaw = document.getElementById('col-input-streams').value;
         const streams = streamsRaw.split(',').map(s => s.trim()).filter(Boolean);
 
+        const isUniversal = Boolean(isOpenCollege || partnerType === 'rotaract' || partnerType === 'vendor');
+
         const college = {
             name,
             shortName,
             slug,
+            openCollege: isUniversal,
+            type: partnerType,
+            badge: partnerType === 'rotaract' ? 'ROTARACT FREE PASS' : (partnerType === 'vendor' ? 'VENDOR PARTNER FREE' : (isUniversal ? 'UNIVERSAL FREE PASS' : 'COLLEGE PASS')),
+            privilegeTitle: partnerType === 'rotaract' 
+                ? 'Rotaract Club Delegation Privilege' 
+                : (partnerType === 'vendor' ? 'Campus Vendor Outreach Privilege' : (isUniversal ? 'Universal Student Delegation Privilege' : 'Institutional Collaboration Privilege')),
+            privilegeDesc: isUniversal
+                ? 'Complimentary admission for youth, student delegates, and campus community members from any college across India. Please present your student ID or delegation ID upon arrival.'
+                : 'Complimentary pass for students and delegates of this institution.',
+            feeWaiver: 150,
             pocs: [
                 { name: poc1Name, phone: poc1Phone, role: poc1Role },
                 { name: poc2Name, phone: poc2Phone, role: poc2Role }
             ],
-            referralCodes: referralCodes.length > 0 ? referralCodes : ['SATVIK', 'SAHIL'],
-            streams: streams.length > 0 ? streams : ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'Other'],
+            referralCodes: referralCodes.length > 0 ? referralCodes : (isUniversal ? ['NILESH', 'TARASHA'] : ['SATVIK', 'SAHIL']),
+            streams: streams.length > 0 ? streams : ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other'],
             theme: { primaryColor: '#8d6aae', accentColor: '#f7e7c5' },
             createdAt: new Date().toISOString()
         };
@@ -2512,6 +2695,14 @@ async function saveCollegeModalForm(e) {
 async function handleDeleteCollege(slug) {
     const col = dataStore.getCollegePartnerBySlug(slug);
     if (!col) return;
+
+    const isOpenPartner = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || slug.includes('rotaract') || slug.includes('vendor'));
+    if (isOpenPartner) {
+        if (!checkPartnerPassword('🔒 Nilesh2202 Passcode Required:\nEnter passcode to delete this Open Partner portal:')) {
+            return;
+        }
+    }
+
     if (!confirm(`Are you sure you want to delete the portal for "${col.name}"?\n(Live URL: /c/${col.slug})`)) return;
 
     const res = await dataStore.deleteCollegePartner(slug);
@@ -2538,7 +2729,12 @@ function filterRegistrationsByCollege(slug, collegeName) {
 
     const searchInput = document.getElementById('search-registrations');
     const filterSelect = document.getElementById('filter-status');
-    const query = slug === 'kes-shroff' ? 'shroff' : slug;
+
+    let query = slug;
+    if (slug === 'kes-shroff') query = 'shroff';
+    else if (slug.includes('rotaract')) query = 'ROT';
+    else if (slug.includes('vendor')) query = 'VEN';
+
     if (searchInput) {
         searchInput.value = query;
         if (filterSelect) filterSelect.value = 'all';
@@ -2552,6 +2748,8 @@ window.loadCollegesTab = loadCollegesTab;
 window.renderCollegesStats = renderCollegesStats;
 window.renderCollegesGrid = renderCollegesGrid;
 window.openAddCollegeModal = openAddCollegeModal;
+window.openAddOpenPartnerModal = openAddOpenPartnerModal;
+window.checkPartnerPassword = checkPartnerPassword;
 window.editCollegeModal = editCollegeModal;
 window.closeCollegeModal = closeCollegeModal;
 window.autoGenerateSlug = autoGenerateSlug;

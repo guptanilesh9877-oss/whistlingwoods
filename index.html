@@ -1674,6 +1674,9 @@
                     </div>
                     <div style="display:flex; gap:10px; flex-wrap:wrap;">
                         <button class="btn btn-secondary" onclick="loadCollegesTab()" id="sync-colleges-btn">⟳ Refresh</button>
+                        <button class="btn btn-secondary" onclick="openAddOpenPartnerModal()" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; border-color:rgba(74,222,128,0.5); color:#4ade80; background:rgba(74,222,128,0.1);">
+                            <span>🤝 Add Open Partner (Rotaract / Vendor) 🔒</span>
+                        </button>
                         <button class="btn btn-primary" onclick="openAddCollegeModal()" style="display:inline-flex; align-items:center; gap:6px; font-weight:700;">
                             <span>➕ Add College Portal</span>
                         </button>
@@ -1702,10 +1705,29 @@
         </div>
 
         <form id="form-college-portal" onsubmit="saveCollegeModalForm(event)">
+            <!-- Open Partner & Multi-College Option -->
+            <div style="background:rgba(74,222,128,0.07); border:1px solid rgba(74,222,128,0.28); border-radius:12px; padding:12px 14px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                    <label style="color:#4ade80; font-size:0.84rem; font-weight:700; display:flex; align-items:center; gap:8px; cursor:pointer; margin:0;">
+                        <input type="checkbox" id="col-input-opencollege" style="accent-color:#10b981; width:17px; height:17px;">
+                        <span>Open Pass (Students from ANY College Eligible)</span>
+                    </label>
+                    <select id="col-input-type" class="form-input" style="width:auto; padding:4px 10px; font-size:0.78rem; background:rgba(0,0,0,0.5); border-color:rgba(74,222,128,0.3); color:#4ade80;">
+                        <option value="college">Institution / College</option>
+                        <option value="rotaract">Rotaract Club Partner</option>
+                        <option value="vendor">Campus Vendor Partner</option>
+                        <option value="open">Open Creator Network</option>
+                    </select>
+                </div>
+                <small style="color:var(--lavender); font-size:0.75rem; margin-top:5px; display:block; line-height:1.4;">
+                    Check this for Rotaract clubs &amp; vendors so students can enter ANY college name and receive 100% complimentary entry.
+                </small>
+            </div>
+
             <!-- College Name -->
             <div class="form-group" style="margin-bottom:14px;">
-                <label class="form-label">College / Institution Full Name *</label>
-                <input type="text" id="col-input-name" class="form-input" required placeholder="e.g. Mithibai College of Arts, Chauhan Institute of Science" oninput="autoGenerateSlug(this.value)">
+                <label class="form-label" id="col-lbl-name">Partner / College / Club Name *</label>
+                <input type="text" id="col-input-name" class="form-input" required placeholder="e.g. Rotaract Club of Mumbai / Mithibai College" oninput="autoGenerateSlug(this.value)">
             </div>
 
             <!-- Short Name & Slug -->
@@ -1824,10 +1846,10 @@
 
 <!-- ═══ SCRIPTS ═══ -->
 <script src="assets/html2canvas.min.js"></script>
-<script src="data.js?v=6.3"></script>
-<script src="animations.js?v=6.3"></script>
-<script src="app.js?v=6.3"></script>
-<script src="admin.js?v=6.3"></script>
+<script src="data.js?v=6.4"></script>
+<script src="animations.js?v=6.4"></script>
+<script src="app.js?v=6.4"></script>
+<script src="admin.js?v=6.4"></script>
 
 </body>
 </html>

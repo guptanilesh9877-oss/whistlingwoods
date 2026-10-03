@@ -7,6 +7,7 @@ const CONFIG = {
     EARLY_BIRD_DISCOUNT: 0,
     MIN_PRICE: 0,
     ADMIN_PASSWORD: 'Admin@vigor',
+    PARTNER_LOCK_PASSWORD: 'Nilesh2202',
     EVENT_NAME: 'Celebrate Cinema 2026 — Academic Trek',
     EVENT_TAGLINE: 'Big Screen',
     EVENT_DATE: new Date('2026-10-08T09:00:00+05:30'),
@@ -1199,6 +1200,74 @@ class DataStore {
                 badge: 'COMPLIMENTARY',
                 feeWaiver: 150,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'rotaract',
+                name: 'Rotaract Clubs — All Colleges Delegation Pass',
+                shortName: 'Rotaract Club Partner',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract Youth Delegation Privilege',
+                privilegeDesc: 'Complimentary admission for Rotaract Club members and student delegates from ANY college or institution. Enter your college and upload your College ID Card, Fee Receipt, or Rotaract Membership ID to receive your verified academic delegate pass.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rotaract-mumbai',
+                name: 'Rotaract District 3141 & 3142 — All Colleges Youth Delegation',
+                shortName: 'Rotaract Mumbai',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract District Delegation Privilege',
+                privilegeDesc: 'Complimentary pass for students and Rotaractors across all Mumbai colleges and institutes. Please upload your student ID or Rotaract ID for verification.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'vendor-partner',
+                name: 'Campus Vendor & Youth Outreach Partner Network',
+                shortName: 'Vendor Partner',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Vendor Partner Outreach Privilege',
+                privilegeDesc: 'Complimentary admission for youth, student delegates, and campus community members from any college. Enter your institution and upload ID for verification.',
+                badge: 'VENDOR PARTNER FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'youth-network',
+                name: 'Youth Creator & Student Community Network (All Colleges)',
+                shortName: 'Youth Network',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Youth Network Privilege',
+                privilegeDesc: 'Complimentary access for young filmmakers, creators, and students from all colleges across India.',
+                badge: 'YOUTH NETWORK FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
             }
         ];
 
