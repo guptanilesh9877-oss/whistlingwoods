@@ -1367,10 +1367,14 @@
                 <input type="text" id="search-registrations" class="form-input" placeholder="Search by name, email, phone, referral code, or ID...">
                 <div class="filter-group">
                     <select id="filter-status" class="form-input">
-                        <option value="all">All Status</option>
-                        <option value="verified">Verified</option>
-                        <option value="pending">Pending</option>
-                        <option value="attended">Checked In</option>
+                        <option value="all">All Registrations</option>
+                        <option value="verified">Verified Only</option>
+                        <option value="pending">Pending Only</option>
+                        <option value="attended">Checked In (Attended)</option>
+                        <option value="colleges">🏛️ College Passes Only</option>
+                        <option value="rotaract">🤝 Rotaract Passes Only</option>
+                        <option value="vendor">🛍️ Vendor Passes Only</option>
+                        <option value="direct">🎟️ Paid / Direct Passes</option>
                     </select>
                     <div style="position:relative; display:inline-block;">
                         <button class="btn btn-secondary" id="btn-col-visibility" onclick="toggleColumnMenu(event)" title="Show or Hide Table Columns (like Google Sheets)">
@@ -1846,10 +1850,10 @@
 
 <!-- ═══ SCRIPTS ═══ -->
 <script src="assets/html2canvas.min.js"></script>
-<script src="data.js?v=6.6"></script>
-<script src="animations.js?v=6.6"></script>
-<script src="app.js?v=6.6"></script>
-<script src="admin.js?v=6.6"></script>
+<script src="data.js?v=6.7"></script>
+<script src="animations.js?v=6.7"></script>
+<script src="app.js?v=6.7"></script>
+<script src="admin.js?v=6.7"></script>
 
 </body>
 </html>

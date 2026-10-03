@@ -80,6 +80,34 @@ function renderRegistrationsTable(filter = 'all', search = '') {
     if (filter === 'verified') regs = regs.filter(r => r.verified);
     if (filter === 'pending') regs = regs.filter(r => !r.verified);
     if (filter === 'attended') regs = regs.filter(r => r.attended);
+    if (filter === 'colleges') regs = regs.filter(r => {
+        const ref = (r.referredBy || '').toLowerCase();
+        const coup = (r.couponUsed || '').toLowerCase();
+        const id = (r.id || '').toUpperCase();
+        const isRot = ref.includes('rotaract') || coup.includes('rotaract') || id.startsWith('ROT-');
+        const isVen = ref.includes('vendor') || ref.includes('youth') || coup.includes('vendor') || coup.includes('youth') || id.startsWith('VEN-');
+        if (isRot || isVen) return false;
+        return ref.startsWith('college:') || id.startsWith('KS-') || id.startsWith('GUR-') || id.startsWith('KJS-') || id.startsWith('SYD-') || id.startsWith('SKS-') || (coup.startsWith('free-'));
+    });
+    if (filter === 'rotaract') regs = regs.filter(r => {
+        const ref = (r.referredBy || '').toLowerCase();
+        const coup = (r.couponUsed || '').toLowerCase();
+        const txn = (r.transactionId || '').toLowerCase();
+        const id = (r.id || '').toUpperCase();
+        return ref.includes('rotaract') || coup.includes('rotaract') || txn.includes('rotaract') || id.startsWith('ROT-');
+    });
+    if (filter === 'vendor') regs = regs.filter(r => {
+        const ref = (r.referredBy || '').toLowerCase();
+        const coup = (r.couponUsed || '').toLowerCase();
+        const txn = (r.transactionId || '').toLowerCase();
+        const id = (r.id || '').toUpperCase();
+        return ref.includes('vendor') || ref.includes('youth') || coup.includes('vendor') || coup.includes('youth') || txn.includes('vendor') || txn.includes('youth') || id.startsWith('VEN-');
+    });
+    if (filter === 'direct') regs = regs.filter(r => {
+        const ref = (r.referredBy || '').toLowerCase();
+        const id = (r.id || '').toUpperCase();
+        return !ref.startsWith('college:') && !id.startsWith('KS-') && !id.startsWith('ROT-') && !id.startsWith('VEN-') && !id.startsWith('GUR-') && !id.startsWith('KJS-') && !id.startsWith('SYD-') && !id.startsWith('SKS-');
+    });
 
     // Apply search
     if (search) {
@@ -139,23 +167,42 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         const referrerName = refCode 
             ? (promoterMap[refCode] ? `${promoterMap[refCode]} (Promoter)` : (studentMap[refCode] ? `${studentMap[refCode]}` : null))
             : null;
-        // Detect KES Shroff or any partner college free registration
-        const isFreeKES = (r.transactionId === 'FREE-KES-SHROFF') || (r.couponUsed === 'FREE-KES-SHROFF') || (r.id && r.id.startsWith('KS')) ||
-            (r.transactionId && r.transactionId.toUpperCase().startsWith('FREE-')) ||
-            (r.couponUsed && r.couponUsed.toUpperCase().startsWith('FREE-')) ||
-            (r.referredBy && r.referredBy.startsWith('college:')) ||
+        // Check exact channel: Rotaract, Vendor, or Academic College
+        const refUpper = (r.referredBy || '').trim().toUpperCase();
+        const idUpper = (r.id || '').toUpperCase();
+        const coupUpper = (r.couponUsed || '').toUpperCase();
+        const txnUpper = (r.transactionId || '').toUpperCase();
+
+        const isRotaractReg = Boolean(
+            idUpper.startsWith('ROT-') ||
+            refUpper.includes('ROTARACT') ||
+            coupUpper.includes('ROTARACT') ||
+            txnUpper.includes('ROTARACT')
+        );
+
+        const isVendorReg = Boolean(
+            idUpper.startsWith('VEN-') ||
+            refUpper.includes('VENDOR') || refUpper.includes('YOUTH') ||
+            coupUpper.includes('VENDOR') || coupUpper.includes('YOUTH') ||
+            txnUpper.includes('VENDOR') || txnUpper.includes('YOUTH')
+        );
+
+        const isFreeKES = isRotaractReg || isVendorReg ||
+            (txnUpper === 'FREE-KES-SHROFF') || (coupUpper === 'FREE-KES-SHROFF') || idUpper.startsWith('KS') ||
+            txnUpper.startsWith('FREE-') || coupUpper.startsWith('FREE-') ||
+            refUpper.startsWith('COLLEGE:') ||
             (r.finalPrice === 0 && r.basePrice === 0 && r.transactionId);
 
         let collegeBadgeLabel = 'Partner College';
-        if (r.id && r.id.startsWith('KS')) collegeBadgeLabel = 'KES Shroff';
-        else if (r.id && r.id.startsWith('KJS')) collegeBadgeLabel = 'KJ Somaiya';
-        else if (r.id && r.id.startsWith('SYD')) collegeBadgeLabel = 'Sydenham';
-        else if (r.id && (r.id.startsWith('ROT') || (r.referredBy && r.referredBy.includes('rotaract')) || (r.couponUsed && r.couponUsed.includes('ROTARACT')) || (r.transactionId && r.transactionId.includes('ROTARACT')))) collegeBadgeLabel = 'Rotaract Club';
-        else if (r.id && (r.id.startsWith('VEN') || (r.referredBy && r.referredBy.includes('vendor')))) collegeBadgeLabel = 'Vendor Partner';
-        else if (r.referredBy && r.referredBy.startsWith('college:')) {
-            collegeBadgeLabel = r.referredBy.replace('college:', '').replace(/-/g, ' ').toUpperCase();
-        } else if (r.transactionId && r.transactionId.startsWith('FREE-')) {
-            collegeBadgeLabel = r.transactionId.replace('FREE-', '').replace(/-/g, ' ');
+        if (idUpper.startsWith('KS') || refUpper.includes('KES-SHROFF') || coupUpper.includes('KES-SHROFF')) collegeBadgeLabel = 'KES Shroff';
+        else if (idUpper.startsWith('GUR') || refUpper.includes('GURU-NANAK') || coupUpper.includes('GURU-NANAK')) collegeBadgeLabel = 'Guru Nanak Khalsa';
+        else if (idUpper.startsWith('KJS') || refUpper.includes('KJ-SOMAIYA') || coupUpper.includes('KJ-SOMAIYA')) collegeBadgeLabel = 'KJ Somaiya';
+        else if (idUpper.startsWith('SYD') || refUpper.includes('SYDENHAM') || coupUpper.includes('SYDENHAM')) collegeBadgeLabel = 'Sydenham';
+        else if (idUpper.startsWith('SKS') || refUpper.includes('SK-SOMAIYA') || coupUpper.includes('SK-SOMAIYA')) collegeBadgeLabel = 'SK Somaiya';
+        else if (refUpper.startsWith('COLLEGE:')) {
+            collegeBadgeLabel = refUpper.replace('COLLEGE:', '').replace(/-/g, ' ');
+        } else if (txnUpper.startsWith('FREE-')) {
+            collegeBadgeLabel = txnUpper.replace('FREE-', '').replace(/-/g, ' ');
         }
 
         return `
@@ -166,7 +213,12 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             <td class="col-phone">${escapeHTML(r.phone)}</td>
             <td class="col-college" title="${escapeHTML(r.college)}">${escapeHTML(r.college)}</td>
             <td class="col-date" title="${escapeHTML(r.visitDate || 'Both Days')}"><span class="badge badge-gold-sm">${escapeHTML(r.visitDate ? (r.visitDate.includes('Both') ? 'Both Days' : (r.visitDate.includes('08th') ? 'Day 1 (8th)' : 'Day 2 (9th)')) : 'Both Days')}</span></td>
-            <td class="col-amount">${isFreeKES ? `<span style="color:#4ade80; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#4ade80; opacity:0.7; margin-top:2px;">${escapeHTML(collegeBadgeLabel)}</div>` : `₹${r.finalPrice}`}</td>
+            <td class="col-amount">${
+                isRotaractReg ? `<span style="color:#4ade80; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#4ade80; font-weight:700; margin-top:2px;">🤝 ROTARACT</div>` :
+                isVendorReg ? `<span style="color:#38bdf8; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ VENDOR</div>` :
+                isFreeKES ? `<span style="color:#eab308; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:var(--gold); font-weight:600; margin-top:2px;">🏛️ ${escapeHTML(collegeBadgeLabel)}</div>` :
+                `₹${r.finalPrice}`
+            }</td>
             <td class="col-coupon">${r.couponUsed || '—'}</td>
             <td class="col-referral">
                 ${refCode ? `
@@ -2197,43 +2249,88 @@ function renderCollegesStats(colleges, regs) {
     let totalDelegationRegs = 0;
     let totalDelegationVerified = 0;
 
+let _currentPortalTab = 'all';
+
+function setPortalCategoryFilter(cat) {
+    _currentPortalTab = cat;
+    const colleges = dataStore.getCollegePartners();
+    const regs = dataStore.getRegistrations();
+    renderCollegesStats(colleges, regs);
+    renderCollegesGrid(colleges, regs);
+}
+window.setPortalCategoryFilter = setPortalCategoryFilter;
+
+function renderCollegesStats(colleges, regs) {
+    const statsEl = document.getElementById('colleges-stats-row');
+    if (!statsEl) return;
+
+    const collegeList = colleges.filter(c => !c.openCollege && c.type !== 'rotaract' && c.type !== 'vendor' && !c.slug.includes('rotaract') && !c.slug.includes('vendor'));
+    const rotaractList = colleges.filter(c => c.type === 'rotaract' || c.slug.includes('rotaract'));
+    const vendorList = colleges.filter(c => c.type === 'vendor' || c.slug.includes('vendor') || c.slug.includes('youth'));
+
+    let totalDelegationRegs = 0;
+    let totalDelegationVerified = 0;
+    let collegeSignups = 0, rotaractSignups = 0, vendorSignups = 0;
+
     regs.forEach(r => {
-        const colLower = (r.college || '').toLowerCase();
         const refLower = (r.referredBy || '').toLowerCase();
         const coupLower = (r.couponUsed || '').toLowerCase();
         const idLower = (r.id || '').toLowerCase();
+        const colLower = (r.college || '').toLowerCase();
 
-        const isDelegation = (
+        const isRot = refLower.includes('rotaract') || coupLower.includes('rotaract') || idLower.startsWith('rot-');
+        const isVen = refLower.includes('vendor') || refLower.includes('youth') || coupLower.includes('vendor') || coupLower.includes('youth') || idLower.startsWith('ven-');
+        const isCol = !isRot && !isVen && (
             colLower.includes('shroff') || 
-            coupLower.includes('free-kes') ||
+            coupLower.includes('free-') ||
             idLower.startsWith('ks-') ||
-            collegeSlugs.some(slug => refLower.includes(slug) || coupLower.includes(slug) || colLower.includes(slug))
+            idLower.startsWith('gur-') ||
+            refLower.startsWith('college:')
         );
 
-        if (isDelegation) {
-            totalDelegationRegs++;
-            if (r.verified) totalDelegationVerified++;
-        }
+        if (isRot) { rotaractSignups++; totalDelegationRegs++; if (r.verified) totalDelegationVerified++; }
+        else if (isVen) { vendorSignups++; totalDelegationRegs++; if (r.verified) totalDelegationVerified++; }
+        else if (isCol) { collegeSignups++; totalDelegationRegs++; if (r.verified) totalDelegationVerified++; }
     });
 
     const pending = totalDelegationRegs - totalDelegationVerified;
 
     statsEl.innerHTML = `
-        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto;">
-            <div class="stat-label" style="font-size:0.72rem;">Partner Portals</div>
-            <div class="stat-value" style="font-size:1.4rem; color:var(--gold);">${colleges.length} Active</div>
+        <div class="stat-card" style="padding:10px 14px; min-width:unset; flex:1 1 130px;">
+            <div class="stat-label" style="font-size:0.7rem;">🏛️ College Portals</div>
+            <div class="stat-value" style="font-size:1.3rem; color:var(--gold);">${collegeList.length} <span style="font-size:0.75rem; font-weight:400; color:var(--lavender);">(${collegeSignups})</span></div>
         </div>
-        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto;">
-            <div class="stat-label" style="font-size:0.72rem;">Delegation Signups</div>
-            <div class="stat-value" style="font-size:1.4rem; color:var(--gold);">${totalDelegationRegs}</div>
+        <div class="stat-card" style="padding:10px 14px; min-width:unset; flex:1 1 130px; border-color:rgba(74,222,128,0.35);">
+            <div class="stat-label" style="font-size:0.7rem;">🤝 Rotaract Clubs</div>
+            <div class="stat-value" style="font-size:1.3rem; color:#4ade80;">${rotaractList.length} <span style="font-size:0.75rem; font-weight:400; color:#86efac;">(${rotaractSignups})</span></div>
         </div>
-        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto; border-color:rgba(16,185,129,0.35);">
-            <div class="stat-label" style="font-size:0.72rem;">✓ Verified (ID Card)</div>
-            <div class="stat-value" style="font-size:1.4rem; color:#10b981;">${totalDelegationVerified}</div>
+        <div class="stat-card" style="padding:10px 14px; min-width:unset; flex:1 1 130px; border-color:rgba(56,189,248,0.35);">
+            <div class="stat-label" style="font-size:0.7rem;">🛍️ Vendor Outreach</div>
+            <div class="stat-value" style="font-size:1.3rem; color:#38bdf8;">${vendorList.length} <span style="font-size:0.75rem; font-weight:400; color:#7dd3fc;">(${vendorSignups})</span></div>
         </div>
-        <div class="stat-card" style="padding:10px 18px; min-width:unset; flex:0 0 auto; border-color:rgba(245,158,11,0.35);">
-            <div class="stat-label" style="font-size:0.72rem;">⏳ Pending Verification</div>
-            <div class="stat-value" style="font-size:1.4rem; color:#f59e0b;">${pending}</div>
+        <div class="stat-card" style="padding:10px 14px; min-width:unset; flex:1 1 130px; border-color:rgba(16,185,129,0.35);">
+            <div class="stat-label" style="font-size:0.7rem;">✓ Verified (ID Card)</div>
+            <div class="stat-value" style="font-size:1.3rem; color:#10b981;">${totalDelegationVerified}</div>
+        </div>
+        <div class="stat-card" style="padding:10px 14px; min-width:unset; flex:1 1 130px; border-color:rgba(245,158,11,0.35);">
+            <div class="stat-label" style="font-size:0.7rem;">⏳ Pending Verification</div>
+            <div class="stat-value" style="font-size:1.3rem; color:#f59e0b;">${pending}</div>
+        </div>
+
+        <!-- Category Filter Tabs: Keep Colleges, Rotaract, and Vendor separate -->
+        <div style="width:100%; display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.06); padding-top:10px;">
+            <button type="button" class="btn-small ${_currentPortalTab === 'all' ? 'btn-primary' : 'btn-secondary'}" onclick="setPortalCategoryFilter('all')" style="border-radius:20px; padding:6px 14px; font-weight:600; cursor:pointer;">
+                All Portals (${colleges.length})
+            </button>
+            <button type="button" class="btn-small ${_currentPortalTab === 'college' ? 'btn-primary' : 'btn-secondary'}" onclick="setPortalCategoryFilter('college')" style="border-radius:20px; padding:6px 14px; font-weight:600; cursor:pointer;">
+                🏛️ Institutional Colleges (${collegeList.length})
+            </button>
+            <button type="button" class="btn-small ${_currentPortalTab === 'rotaract' ? 'btn-primary' : 'btn-secondary'}" onclick="setPortalCategoryFilter('rotaract')" style="border-radius:20px; padding:6px 14px; font-weight:600; cursor:pointer; ${_currentPortalTab === 'rotaract' ? 'background:#10b981; border-color:#10b981; color:#fff;' : 'border-color:rgba(74,222,128,0.4); color:#4ade80;'}">
+                🤝 Rotaract Clubs (${rotaractList.length})
+            </button>
+            <button type="button" class="btn-small ${_currentPortalTab === 'vendor' ? 'btn-primary' : 'btn-secondary'}" onclick="setPortalCategoryFilter('vendor')" style="border-radius:20px; padding:6px 14px; font-weight:600; cursor:pointer; ${_currentPortalTab === 'vendor' ? 'background:#0284c7; border-color:#0284c7; color:#fff;' : 'border-color:rgba(56,189,248,0.4); color:#38bdf8;'}">
+                🛍️ Vendor Partners (${vendorList.length})
+            </button>
         </div>
     `;
 }
@@ -2249,45 +2346,55 @@ function renderCollegesGrid(colleges, regs) {
         return;
     }
 
+    let displayList = colleges;
+    if (_currentPortalTab === 'college') {
+        displayList = colleges.filter(c => !c.openCollege && c.type !== 'rotaract' && c.type !== 'vendor' && !c.slug.includes('rotaract') && !c.slug.includes('vendor'));
+    } else if (_currentPortalTab === 'rotaract') {
+        displayList = colleges.filter(c => c.type === 'rotaract' || c.slug.includes('rotaract'));
+    } else if (_currentPortalTab === 'vendor') {
+        displayList = colleges.filter(c => c.type === 'vendor' || c.slug.includes('vendor') || c.slug.includes('youth'));
+    }
+
+    if (displayList.length === 0) {
+        grid.innerHTML = '<div style="grid-column:1/-1; padding:30px; text-align:center; color:var(--lavender);">No portals found in this category.</div>';
+        if (noColleges) noColleges.style.display = 'none';
+        return;
+    }
+
     if (noColleges) noColleges.style.display = 'none';
 
     const origin = window.location.origin || 'https://whistlingwoods.careerbeam.in';
 
-    grid.innerHTML = colleges.map(c => {
+    grid.innerHTML = displayList.map(c => {
         const isFlagship = c.slug === 'kes-shroff';
-        const isOpenPartner = Boolean(c.openCollege || c.type === 'rotaract' || c.type === 'vendor' || c.slug.includes('rotaract') || c.slug.includes('vendor'));
         const isRotaract = Boolean(c.type === 'rotaract' || c.slug.includes('rotaract'));
-        const isVendor = Boolean(c.type === 'vendor' || c.slug.includes('vendor'));
+        const isVendor = Boolean(c.type === 'vendor' || c.slug.includes('vendor') || c.slug.includes('youth'));
+        const isOpenPartner = Boolean(c.openCollege || isRotaract || isVendor);
         
-        // Find matching registrations for this college/partner
-        let colRegs = [];
-        if (isFlagship) {
-            colRegs = regs.filter(r => (
-                (r.couponUsed === 'FREE-KES-SHROFF') || 
-                (r.transactionId === 'FREE-KES-SHROFF') || 
-                (r.referredBy && r.referredBy.includes('kes-shroff')) ||
-                (r.id && r.id.startsWith('KS-')) ||
-                (r.college && r.college.toLowerCase().includes('shroff'))
-            ));
-        } else if (isOpenPartner) {
-            colRegs = regs.filter(r => (
-                (r.referredBy && r.referredBy.toLowerCase().includes(c.slug.toLowerCase())) ||
-                (r.couponUsed && r.couponUsed.toLowerCase().includes(c.slug.toLowerCase())) ||
-                (r.transactionId && r.transactionId.toLowerCase().includes(c.slug.toLowerCase())) ||
-                (isRotaract && (
-                    (r.id && r.id.startsWith('ROT-')) ||
-                    (r.couponUsed && r.couponUsed.toUpperCase().includes('ROTARACT')) ||
-                    (r.transactionId && r.transactionId.toUpperCase().includes('ROTARACT'))
-                )) ||
-                (isVendor && r.id && r.id.startsWith('VEN-'))
-            ));
-        } else {
-            colRegs = regs.filter(r => (
-                (r.referredBy && r.referredBy.includes(c.slug)) ||
-                (r.couponUsed && r.couponUsed.toLowerCase().includes(c.slug)) ||
-                (r.college && r.college.toLowerCase().includes(c.slug))
-            ));
-        }
+        // Find matching registrations strictly for this specific portal
+        const colSlugLower = (c.slug || '').toLowerCase();
+        const colRegs = regs.filter(r => {
+            const ref = (r.referredBy || '').toLowerCase();
+            const coup = (r.couponUsed || '').toLowerCase();
+            const txn = (r.transactionId || '').toLowerCase();
+            const id = (r.id || '').toLowerCase();
+            const colName = (r.college || '').toLowerCase();
+
+            if (isRotaract) {
+                return id.startsWith('rot-') || ref.includes('rotaract') || coup.includes('rotaract') || txn.includes('rotaract');
+            }
+            if (isVendor) {
+                return id.startsWith('ven-') || ref.includes('vendor') || ref.includes('youth') || coup.includes('vendor') || coup.includes('youth');
+            }
+            // Strict institutional college matching
+            if (isFlagship) {
+                return (id.startsWith('ks-') || coup.includes('kes-shroff') || txn.includes('kes-shroff') || ref.includes('kes-shroff') || colName.includes('shroff'));
+            }
+            return ref.includes('college:' + colSlugLower) ||
+                   coup === ('free-' + colSlugLower) ||
+                   txn === ('free-' + colSlugLower) ||
+                   (colSlugLower === 'guru-nanak-khalsa-college' && (id.startsWith('gur-') || ref.includes('guru-nanak')));
+        });
 
         const total = colRegs.length;
         const verified = colRegs.filter(r => r.verified).length;
@@ -2765,14 +2872,28 @@ function filterRegistrationsByCollege(slug, collegeName) {
     const filterSelect = document.getElementById('filter-status');
 
     let query = slug;
-    if (slug === 'kes-shroff') query = 'shroff';
-    else if (slug.includes('rotaract')) query = 'ROT';
-    else if (slug.includes('vendor')) query = 'VEN';
+    let selectVal = 'all';
+
+    if (slug === 'kes-shroff') {
+        query = 'shroff';
+        selectVal = 'colleges';
+    } else if (slug === 'guru-nanak-khalsa-college') {
+        query = 'guru-nanak';
+        selectVal = 'colleges';
+    } else if (slug.includes('rotaract')) {
+        query = 'rotaract';
+        selectVal = 'rotaract';
+    } else if (slug.includes('vendor') || slug.includes('youth')) {
+        query = 'vendor';
+        selectVal = 'vendor';
+    } else {
+        selectVal = 'colleges';
+    }
 
     if (searchInput) {
         searchInput.value = query;
-        if (filterSelect) filterSelect.value = 'all';
-        renderRegistrationsTable('all', query);
+        if (filterSelect) filterSelect.value = selectVal;
+        renderRegistrationsTable(selectVal, query);
         showToast(`Filtered registrations for: ${collegeName}`, 'info');
     }
 }

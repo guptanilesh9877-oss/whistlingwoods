@@ -1363,6 +1363,216 @@ class DataStore {
                 badge: 'YOUTH NETWORK FREE',
                 feeWaiver: 150,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            {
+                slug: 'bhartiya-vidyapeeth',
+                name: 'Bhartiya Vidyapeeth',
+                shortName: 'Bhartiya Vidyapeeth',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Rahul', phone: '9136033847', role: 'Community & Partnership Lead' },
+                    { name: 'Rahul', phone: '9136033847', role: 'Campus Outreach Lead' }
+                ],
+                referralCodes: ['RAHUL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Bhartiya Vidyapeeth, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'sies-nerul',
+                name: 'SIES Nerul',
+                shortName: 'SIES Nerul',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Rahul', phone: '9136033847', role: 'Community & Partnership Lead' },
+                    { name: 'Rahul', phone: '9136033847', role: 'Campus Outreach Lead' }
+                ],
+                referralCodes: ['RAHUL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SIES Nerul, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'guru-nanak-khalsa-college',
+                name: 'Guru Nanak Khalsa College',
+                shortName: 'Guru Nanak Khalsa',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Guru Nanak Khalsa College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rgit',
+                name: 'RGIT',
+                shortName: 'RGIT',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['Engineering', 'B.E.', 'B.Tech', 'B.Sc IT', 'B.Sc CS', 'Other']
+            },
+            {
+                slug: 'kirti-college',
+                name: 'Kirti College',
+                shortName: 'Kirti College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'bk-birla-college',
+                name: 'BK BIRLA COLLEGE',
+                shortName: 'BK Birla College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'bhavans-college',
+                name: "Bhavan's College",
+                shortName: "Bhavan's College",
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'ves',
+                name: 'Vivekanand Education Society',
+                shortName: 'VES College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Engineering', 'Other']
+            },
+            {
+                slug: 'vjti',
+                name: 'VJTI',
+                shortName: 'VJTI Mumbai',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['B.Tech', 'Engineering', 'M.Tech', 'MCA', 'Other']
+            },
+            {
+                slug: 'bedekar-college',
+                name: 'Bedekar College',
+                shortName: 'Bedekar College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'valia-college',
+                name: 'Valia College',
+                shortName: 'Valia College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'jai-hind-college',
+                name: 'Jai Hind College',
+                shortName: 'Jai Hind College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'ra-podar-college',
+                name: 'RA Podar College',
+                shortName: 'RA Podar College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
             }
         ];
 
