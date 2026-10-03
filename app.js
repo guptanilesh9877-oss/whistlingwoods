@@ -121,7 +121,10 @@ function handleHashRoute() {
         return;
     }
     const validPages = ['landing', 'register', 'payment', 'confirmation', 'admin-login', 'admin', 'names', 'find-pass'];
-    const page = validPages.includes(cleanHash) ? cleanHash : 'landing';
+    let page = validPages.includes(cleanHash) ? cleanHash : 'landing';
+    if (page === 'admin' && typeof dataStore !== 'undefined' && !dataStore.isAdminAuthenticated()) {
+        page = 'admin-login';
+    }
 
     // Also check referral in case query parameters are in hash
     readReferralFromURL();

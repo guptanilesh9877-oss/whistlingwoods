@@ -2241,14 +2241,6 @@ async function loadCollegesTab() {
     if (syncBtn) { syncBtn.disabled = false; syncBtn.textContent = '⟳ Refresh'; }
 }
 
-function renderCollegesStats(colleges, regs) {
-    const statsEl = document.getElementById('colleges-stats-row');
-    if (!statsEl) return;
-
-    const collegeSlugs = colleges.map(c => c.slug.toLowerCase());
-    let totalDelegationRegs = 0;
-    let totalDelegationVerified = 0;
-
 let _currentPortalTab = 'all';
 
 function setPortalCategoryFilter(cat) {

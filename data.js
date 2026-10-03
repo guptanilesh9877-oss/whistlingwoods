@@ -1363,6 +1363,7 @@ class DataStore {
                 badge: 'YOUTH NETWORK FREE',
                 feeWaiver: 150,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
             {
                 slug: 'bhartiya-vidyapeeth',
                 name: 'Bhartiya Vidyapeeth',
