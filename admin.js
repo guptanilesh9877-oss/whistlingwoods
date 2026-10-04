@@ -95,6 +95,38 @@ function getRotaractAssignee(r, allRegs) {
 }
 window.getRotaractAssignee = getRotaractAssignee;
 
+// ──────────── MD COLLEGE 4-WAY ASSIGNEE HELPER ────────────
+function isMDCollegeRegistration(r) {
+    if (!r) return false;
+    const idU = (r.id || '').toUpperCase();
+    const refU = (r.referredBy || '').toUpperCase();
+    const coupU = (r.couponUsed || '').toUpperCase();
+    const txnU = (r.transactionId || '').toUpperCase();
+    const colU = (r.college || '').toUpperCase();
+    return idU.startsWith('MDC-') ||
+        refU.includes('MD-COLLEGE') || refU.includes('MDCOLLEGE') ||
+        coupU.includes('MD-COLLEGE') || coupU.includes('MDCOLLEGE') ||
+        txnU.includes('MD-COLLEGE') || txnU.includes('MDCOLLEGE') ||
+        colU.includes('DAYANAND') || colU.includes('MD COLLEGE');
+}
+window.isMDCollegeRegistration = isMDCollegeRegistration;
+
+function getMDCollegeAssignee(r, allRegs) {
+    if (!r) return 'SAHIL';
+    const ref = (r.referredBy || '').toUpperCase();
+    if (ref === 'SAHIL' || ref.includes('SAHIL')) return 'SAHIL';
+    if (ref === 'TARASHA' || ref.includes('TARASHA')) return 'TARASHA';
+    if (ref === 'NILESH' || ref.includes('NILESH')) return 'NILESH';
+    if (ref === 'SATVIK' || ref.includes('SATVIK')) return 'SATVIK';
+    // If untagged, sort all MD registrations by timestamp/id and rotate 4-way
+    const list = (allRegs || []).filter(item => isMDCollegeRegistration(item))
+        .sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0) || (a.id || '').localeCompare(b.id || ''));
+    const idx = list.findIndex(item => item.id === r.id);
+    const order = ['SAHIL', 'TARASHA', 'NILESH', 'SATVIK'];
+    return (idx >= 0) ? order[idx % 4] : 'SAHIL';
+}
+window.getMDCollegeAssignee = getMDCollegeAssignee;
+
 // ──────────── REGISTRATIONS TABLE ────────────
 function renderRegistrationsTable(filter = 'all', search = '') {
     const tbody = document.getElementById('registrations-tbody');
@@ -214,15 +246,31 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         } else if (sTrim === 'NILESH') {
             regs = regs.filter(r => {
                 if (isRotaractRegistration(r)) return getRotaractAssignee(r, allStoreRegs) === 'NILESH';
+                if (isMDCollegeRegistration(r)) return getMDCollegeAssignee(r, allStoreRegs) === 'NILESH';
                 const refU = (r.referredBy || '').toUpperCase();
                 return refU === 'NILESH' || refU.includes('NILESH');
             });
         } else if (sTrim === 'TARASHA') {
             regs = regs.filter(r => {
                 if (isRotaractRegistration(r)) return getRotaractAssignee(r, allStoreRegs) === 'TARASHA';
+                if (isMDCollegeRegistration(r)) return getMDCollegeAssignee(r, allStoreRegs) === 'TARASHA';
                 const refU = (r.referredBy || '').toUpperCase();
                 return refU === 'TARASHA' || refU.includes('TARASHA');
             });
+        } else if (sTrim === 'SAHIL') {
+            regs = regs.filter(r => {
+                if (isMDCollegeRegistration(r)) return getMDCollegeAssignee(r, allStoreRegs) === 'SAHIL';
+                const refU = (r.referredBy || '').toUpperCase();
+                return refU === 'SAHIL' || refU.includes('SAHIL');
+            });
+        } else if (sTrim === 'SATVIK') {
+            regs = regs.filter(r => {
+                if (isMDCollegeRegistration(r)) return getMDCollegeAssignee(r, allStoreRegs) === 'SATVIK';
+                const refU = (r.referredBy || '').toUpperCase();
+                return refU === 'SATVIK' || refU.includes('SATVIK');
+            });
+        } else if (sTrim === 'MD-COLLEGE' || sTrim === 'MD COLLEGE' || sTrim === 'MD' || sTrim === 'MDC') {
+            regs = regs.filter(r => isMDCollegeRegistration(r));
         } else if (search.includes('|') || search.includes(',')) {
             const tokens = search.split(/[|,]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
             regs = regs.filter(r => {
@@ -316,7 +364,9 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             txnUpper.includes('VENDOR') || txnUpper.includes('YOUTH')
         );
 
-        const isFreeKES = !isHMVendorReg && (isRotaractReg || isGamingReg || isVendorReg ||
+        const isMDReg = isMDCollegeRegistration(r);
+
+        const isFreeKES = !isHMVendorReg && (isRotaractReg || isGamingReg || isVendorReg || isMDReg ||
             (txnUpper === 'FREE-KES-SHROFF') || (coupUpper === 'FREE-KES-SHROFF') || idUpper.startsWith('KS') ||
             txnUpper.startsWith('FREE-') || coupUpper.startsWith('FREE-') ||
             refUpper.startsWith('COLLEGE:') ||
@@ -324,6 +374,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
 
         let collegeBadgeLabel = 'Partner College';
         if (idUpper.startsWith('KS') || refUpper.includes('KES-SHROFF') || coupUpper.includes('KES-SHROFF')) collegeBadgeLabel = 'KES Shroff';
+        else if (isMDReg) collegeBadgeLabel = 'MD College';
         else if (idUpper.startsWith('GUR') || refUpper.includes('GURU-NANAK') || coupUpper.includes('GURU-NANAK')) collegeBadgeLabel = 'Guru Nanak Khalsa';
         else if (idUpper.startsWith('KJS') || refUpper.includes('KJ-SOMAIYA') || coupUpper.includes('KJ-SOMAIYA')) collegeBadgeLabel = 'KJ Somaiya';
         else if (idUpper.startsWith('SYD') || refUpper.includes('SYDENHAM') || coupUpper.includes('SYDENHAM')) collegeBadgeLabel = 'Sydenham';
@@ -369,6 +420,11 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                         HM-031026
                     </span>
                     <div style="font-size:0.7rem; color:#7dd3fc; margin-top:2px;">🛍️ Vendor Partner</div>
+                ` : isMDReg ? `
+                    <span class="badge badge-purple" style="font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('${escapeHTML(getMDCollegeAssignee(r, (typeof allStoreRegs !== 'undefined' ? allStoreRegs : regs)))}')" title="MD College — assigned to ${escapeHTML(getMDCollegeAssignee(r, (typeof allStoreRegs !== 'undefined' ? allStoreRegs : regs)))}">
+                        ${escapeHTML(getMDCollegeAssignee(r, (typeof allStoreRegs !== 'undefined' ? allStoreRegs : regs)))}
+                    </span>
+                    <div style="font-size:0.7rem; color:var(--gold); margin-top:2px;" title="MD College 4-way delegation split">🏛️ MD College (25%)</div>
                 ` : refCode ? `
                     <span class="badge badge-purple" style="font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('${escapeHTML(refCode)}')" title="Click to filter by referral code ${escapeHTML(refCode)}">
                         ${escapeHTML(refCode)}

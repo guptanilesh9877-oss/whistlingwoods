@@ -1607,6 +1607,23 @@ class DataStore {
                 badge: 'COMPLIMENTARY',
                 feeWaiver: 150,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'md-college',
+                name: 'Maharshi Dayanand College of Arts, Science and Commerce',
+                shortName: 'MD College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'TARASHA', 'NILESH', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Maharshi Dayanand College of Arts, Science and Commerce (MD College), admission is granted on a complimentary basis for all enrolled students. Kindly attach your Student ID Card or recent College Fee Receipt to receive your verified academic delegate pass.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
             }
         ];
 
@@ -1894,14 +1911,34 @@ class DataStore {
         const tarashaTotalFromCols = tarashaDelegTotal;
         const tarashVerFromCols = tarashaVer;
 
-        // 3. Any remaining partner college registrations (custom added colleges not explicitly handled above)
+        // 3. MD College of Arts, Commerce & Science — 4-way split across Sahil, Tarasha, Nilesh, Satvik
+        const mdRegs = getCollegeFreeRegs('md-college', 'dayanand').concat(
+            regs.filter(r => (r.college && r.college.toLowerCase().includes('md college')) || (r.id && r.id.startsWith('MDC-')))
+        ).filter(r => (
+            !seenCollegeRegIds.has(r.id) &&
+            !['SAHIL', 'TARASHA', 'NILESH', 'SATVIK'].includes((r.referredBy || '').trim().toUpperCase())
+        ));
+        mdRegs.forEach(r => seenCollegeRegIds.add(r.id));
+        const mdCount = mdRegs.length;
+        const mdVer = mdRegs.filter(r => r.verified).length;
+        const sahilMD = Math.floor(mdCount / 4) + (mdCount % 4 > 0 ? 1 : 0);
+        const tarashaMD = Math.floor(mdCount / 4) + (mdCount % 4 > 1 ? 1 : 0);
+        const nileshMD = Math.floor(mdCount / 4) + (mdCount % 4 > 2 ? 1 : 0);
+        const satvikMD = Math.floor(mdCount / 4);
+
+        const sahilMDVer = Math.floor(mdVer / 4) + (mdVer % 4 > 0 ? 1 : 0);
+        const tarashaMDVer = Math.floor(mdVer / 4) + (mdVer % 4 > 1 ? 1 : 0);
+        const nileshMDVer = Math.floor(mdVer / 4) + (mdVer % 4 > 2 ? 1 : 0);
+        const satvikMDVer = Math.floor(mdVer / 4);
+
+        // 4. Any remaining partner college registrations (custom added colleges not explicitly handled above)
         const partnerColleges = this.getCollegePartners();
         const otherCollegeBonus = {};
         const otherCollegeVerBonus = {};
 
         partnerColleges.forEach(col => {
             // Skip colleges already handled explicitly above
-            const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026'];
+            const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026', 'md-college', 'mdcollege'];
             if (alreadyHandled.includes(col.slug)) return;
             const colCodes = (col.referralCodes || []).map(c => c.toUpperCase());
             const colRegs = regs.filter(r => (
@@ -1934,26 +1971,26 @@ class DataStore {
                 let verified = mRegs.filter(r => r.verified).length;
                 let delegationCount = 0;
 
-                // Credit Sahil & Satvik equally for KES Shroff
+                // Credit Sahil & Satvik equally for KES Shroff + MD College share
                 if (codeUpper === 'SAHIL') {
-                    count += sahilKesCount;
-                    verified += sahilKesVer;
-                    delegationCount += sahilKesCount;
+                    count += sahilKesCount + sahilMD;
+                    verified += sahilKesVer + sahilMDVer;
+                    delegationCount += sahilKesCount + sahilMD;
                 } else if (codeUpper === 'SATVIK') {
-                    count += satvikKesCount;
-                    verified += satvikKesVer;
-                    delegationCount += satvikKesCount;
+                    count += satvikKesCount + satvikMD;
+                    verified += satvikKesVer + satvikMDVer;
+                    delegationCount += satvikKesCount + satvikMD;
                 }
 
-                // Credit Nilesh & Tarasha equally for their partner colleges
+                // Credit Nilesh & Tarasha equally for their partner colleges + MD College share
                 if (codeUpper === 'NILESH') {
-                    count += nileshTotal;
-                    verified += nileshVer;
-                    delegationCount += nileshTotal;
+                    count += nileshTotal + nileshMD;
+                    verified += nileshVer + nileshMDVer;
+                    delegationCount += nileshTotal + nileshMD;
                 } else if (codeUpper === 'TARASHA') {
-                    count += tarashaTotalFromCols;
-                    verified += tarashVerFromCols;
-                    delegationCount += tarashaTotalFromCols;
+                    count += tarashaTotalFromCols + tarashaMD;
+                    verified += tarashVerFromCols + tarashaMDVer;
+                    delegationCount += tarashaTotalFromCols + tarashaMD;
                 }
 
                 // Add other college bonuses if assigned (custom colleges)
@@ -2102,9 +2139,25 @@ class DataStore {
             }
         });
 
+        // Add MD College free reg 4-way split → Sahil, Tarasha, Nilesh, Satvik
+        const mdRegsTop = getCollegeFreeRegs('md-college', 'dayanand').concat(
+            regs.filter(r => (r.college && r.college.toLowerCase().includes('md college')) || (r.id && r.id.startsWith('MDC-')))
+        ).filter(r => (
+            !seenIds.has(r.id) &&
+            !['SAHIL', 'TARASHA', 'NILESH', 'SATVIK'].includes((r.referredBy || '').trim().toUpperCase())
+        ));
+        mdRegsTop.forEach(r => seenIds.add(r.id));
+        if (mdRegsTop.length > 0) {
+            const mCount = mdRegsTop.length;
+            counts['SAHIL'] = (counts['SAHIL'] || 0) + Math.floor(mCount / 4) + (mCount % 4 > 0 ? 1 : 0);
+            counts['TARASHA'] = (counts['TARASHA'] || 0) + Math.floor(mCount / 4) + (mCount % 4 > 1 ? 1 : 0);
+            counts['NILESH'] = (counts['NILESH'] || 0) + Math.floor(mCount / 4) + (mCount % 4 > 2 ? 1 : 0);
+            counts['SATVIK'] = (counts['SATVIK'] || 0) + Math.floor(mCount / 4);
+        }
+
         // Add any remaining custom partner college splits
         const partnerColleges = this.getCollegePartners();
-        const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026'];
+        const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026', 'md-college', 'mdcollege'];
         partnerColleges.forEach(col => {
             if (alreadyHandled.includes(col.slug)) return;
             const colCodes = (col.referralCodes || []).map(c => c.toUpperCase());
