@@ -1365,6 +1365,38 @@ class DataStore {
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
             },
             {
+                slug: 'gaming-community',
+                name: 'Gaming & Esports Community (All Colleges)',
+                shortName: 'Gaming Community',
+                openCollege: true,
+                type: 'gaming',
+                pocs: [
+                    { name: 'Rahul', phone: '9136033847', role: 'Gaming & Campus Lead' }
+                ],
+                referralCodes: ['RAHUL'],
+                privilegeTitle: 'Gaming & Esports Delegation Privilege',
+                privilegeDesc: 'Complimentary VIP admission for gaming enthusiasts, esports creators, streamers, and student delegates from ANY college across India. Enter your college and upload your Student ID or Gamer Profile ID for instant pass generation.',
+                badge: 'GAMING COMMUNITY FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'hm-031026',
+                name: 'Campus Vendor Partner HM-031026',
+                shortName: 'Vendor HM-031026',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Vendor Coordinator', phone: '8699260386', role: 'Vendor Partner Lead' }
+                ],
+                referralCodes: ['HM-031026'],
+                privilegeTitle: 'Vendor Partner Outreach Privilege (HM-031026)',
+                privilegeDesc: 'Complimentary admission pass for vendor partner delegates, guests, and campus community members from any institution. Enter your college/institution and upload your ID for verification.',
+                badge: 'VENDOR HM-031026 FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
                 slug: 'bhartiya-vidyapeeth',
                 name: 'Bhartiya Vidyapeeth',
                 shortName: 'Bhartiya Vidyapeeth',
@@ -1747,6 +1779,8 @@ class DataStore {
     getCollegePartnerBySlug(slug) {
         if (!slug) return null;
         const s = slug.toLowerCase().trim();
+        if (s === 'gaming' || s === 'esports') return this.getCollegePartners().find(c => c.slug === 'gaming-community') || null;
+        if (s === 'vendor-hm-031026' || s === 'hm031026' || s === 'hm') return this.getCollegePartners().find(c => c.slug === 'hm-031026') || null;
         return this.getCollegePartners().find(c => c.slug === s) || null;
     }
 
@@ -1866,13 +1900,14 @@ class DataStore {
 
         partnerColleges.forEach(col => {
             // Skip colleges already handled explicitly above
-            const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract'];
+            const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026'];
             if (alreadyHandled.includes(col.slug)) return;
+            const colCodes = (col.referralCodes || []).map(c => c.toUpperCase());
             const colRegs = regs.filter(r => (
                 (r.referredBy && r.referredBy.toLowerCase().includes(col.slug.toLowerCase())) ||
                 (r.couponUsed && r.couponUsed.toUpperCase().includes(('FREE-' + col.slug).toUpperCase())) ||
                 (r.transactionId && r.transactionId.toUpperCase().includes(('FREE-' + col.slug).toUpperCase()))
-            )).filter(r => !seenCollegeRegIds.has(r.id));
+            )).filter(r => !seenCollegeRegIds.has(r.id) && !colCodes.includes((r.referredBy || '').trim().toUpperCase()));
             if (colRegs.length > 0 && Array.isArray(col.referralCodes) && col.referralCodes.length > 0) {
                 const codes = col.referralCodes.map(c => c.toUpperCase());
                 const splitTotal = Math.floor(colRegs.length / codes.length);
@@ -2016,7 +2051,7 @@ class DataStore {
         // Only count direct referrals (not college:, ROTARACT, or vendor ones — those will be credited via delegation splits below)
         regs.forEach(r => {
             const ref = (r.referredBy || '').trim().toUpperCase();
-            if (ref && !ref.startsWith('SOURCE:') && !ref.startsWith('COLLEGE:') && !ref.startsWith('ROTARACT') && !ref.startsWith('VENDOR') && !ref.startsWith('FREE-')) {
+            if (ref && !ref.startsWith('SOURCE:') && !ref.startsWith('COLLEGE:') && !ref.startsWith('ROTARACT') && !ref.startsWith('VENDOR') && !ref.startsWith('FREE-') && !ref.startsWith('HM-')) {
                 counts[ref] = (counts[ref] || 0) + 1;
             }
         });
@@ -2068,14 +2103,15 @@ class DataStore {
 
         // Add any remaining custom partner college splits
         const partnerColleges = this.getCollegePartners();
-        const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract'];
+        const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026'];
         partnerColleges.forEach(col => {
             if (alreadyHandled.includes(col.slug)) return;
+            const colCodes = (col.referralCodes || []).map(c => c.toUpperCase());
             const colRegs = regs.filter(r => (
                 (r.referredBy && r.referredBy.toLowerCase().includes(col.slug.toLowerCase())) ||
                 (r.couponUsed && r.couponUsed.toUpperCase() === ('FREE-' + col.slug.toUpperCase())) ||
                 (r.transactionId && r.transactionId.toUpperCase() === ('FREE-' + col.slug.toUpperCase()))
-            )).filter(r => !seenIds.has(r.id));
+            )).filter(r => !seenIds.has(r.id) && !colCodes.includes((r.referredBy || '').trim().toUpperCase()));
             if (colRegs.length > 0 && Array.isArray(col.referralCodes) && col.referralCodes.length > 0) {
                 const codes = col.referralCodes.map(c => c.toUpperCase());
                 const splitTotal = Math.floor(colRegs.length / codes.length);

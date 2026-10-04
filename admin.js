@@ -113,8 +113,9 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         const id = (r.id || '').toUpperCase();
         const col = (r.college || '').toLowerCase();
         const isRot = ref.includes('rotaract') || coup.includes('rotaract') || txn.includes('rotaract') || id.startsWith('ROT-');
-        const isVen = ref.includes('vendor') || ref.includes('youth') || coup.includes('vendor') || coup.includes('youth') || txn.includes('vendor') || txn.includes('youth') || id.startsWith('VEN-');
-        if (isRot || isVen) return false;
+        const isGam = ref.includes('gaming') || coup.includes('gaming') || txn.includes('gaming') || id.startsWith('GAM-');
+        const isVen = ref.includes('vendor') || ref.includes('youth') || ref.includes('hm-') || coup.includes('vendor') || coup.includes('youth') || coup.includes('hm-') || txn.includes('vendor') || txn.includes('youth') || txn.includes('hm-') || id.startsWith('VEN-') || id.startsWith('HM-');
+        if (isRot || isGam || isVen) return false;
         return ref.startsWith('college:') ||
                coup.startsWith('free-') ||
                txn.startsWith('free-') ||
@@ -155,7 +156,10 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         const coup = (r.couponUsed || '').toLowerCase();
         const txn = (r.transactionId || '').toLowerCase();
         const id = (r.id || '').toUpperCase();
-        return ref.includes('vendor') || ref.includes('youth') || coup.includes('vendor') || coup.includes('youth') || txn.includes('vendor') || txn.includes('youth') || id.startsWith('VEN-');
+        return ref.includes('vendor') || ref.includes('youth') || ref.includes('hm-') || ref.includes('gaming') ||
+               coup.includes('vendor') || coup.includes('youth') || coup.includes('hm-') || coup.includes('gaming') ||
+               txn.includes('vendor') || txn.includes('youth') || txn.includes('hm-') || txn.includes('gaming') ||
+               id.startsWith('VEN-') || id.startsWith('HM-') || id.startsWith('GAM-');
     });
     if (filter === 'direct') regs = regs.filter(r => {
         const ref = (r.referredBy || '').toLowerCase();
@@ -180,6 +184,33 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         const allStoreRegs = dataStore.getRegistrations();
         if (sTrim === 'ROTARACT') {
             regs = regs.filter(r => isRotaractRegistration(r));
+        } else if (sTrim === 'GAMING' || sTrim === 'ESPORTS') {
+            regs = regs.filter(r => {
+                const idU = (r.id || '').toUpperCase();
+                const refU = (r.referredBy || '').toUpperCase();
+                const coupU = (r.couponUsed || '').toUpperCase();
+                const txnU = (r.transactionId || '').toUpperCase();
+                const codeU = (r.referralCode || '').toUpperCase();
+                const colU = (r.college || '').toUpperCase();
+                return idU.startsWith('GAM-') || refU.includes('GAMING') || coupU.includes('GAMING') || txnU.includes('GAMING') || codeU === 'GAMING' || colU.includes('GAMING');
+            });
+        } else if (sTrim === 'HM-031026' || sTrim === 'HM' || sTrim === 'HM031026') {
+            regs = regs.filter(r => {
+                const idU = (r.id || '').toUpperCase();
+                const refU = (r.referredBy || '').toUpperCase();
+                const coupU = (r.couponUsed || '').toUpperCase();
+                const txnU = (r.transactionId || '').toUpperCase();
+                const codeU = (r.referralCode || '').toUpperCase();
+                return idU.startsWith('HM-') || refU.includes('HM-031026') || coupU.includes('HM-031026') || txnU.includes('HM-031026') || codeU === 'HM-031026';
+            });
+        } else if (sTrim === 'RAHUL') {
+            regs = regs.filter(r => {
+                const refU = (r.referredBy || '').toUpperCase();
+                const coupU = (r.couponUsed || '').toUpperCase();
+                const txnU = (r.transactionId || '').toUpperCase();
+                const idU = (r.id || '').toUpperCase();
+                return refU === 'RAHUL' || refU.includes('RAHUL') || idU.startsWith('GAM-') || coupU.includes('GAMING') || txnU.includes('GAMING') || coupU.includes('BHARTIYA') || coupU.includes('SIES');
+            });
         } else if (sTrim === 'NILESH') {
             regs = regs.filter(r => {
                 if (isRotaractRegistration(r)) return getRotaractAssignee(r, allStoreRegs) === 'NILESH';
@@ -260,14 +291,31 @@ function renderRegistrationsTable(filter = 'all', search = '') {
 
         const isRotaractReg = isRotaractRegistration(r);
 
-        const isVendorReg = Boolean(
+        const isGamingReg = Boolean(
+            idUpper.startsWith('GAM-') ||
+            refUpper.includes('GAMING') ||
+            coupUpper.includes('GAMING') ||
+            txnUpper.includes('GAMING') ||
+            ((r.referralCode || '').toUpperCase() === 'GAMING') ||
+            ((r.college || '').toUpperCase().includes('GAMING'))
+        );
+
+        const isHMVendorReg = Boolean(
+            idUpper.startsWith('HM-') ||
+            refUpper.includes('HM-031026') ||
+            coupUpper.includes('HM-031026') ||
+            txnUpper.includes('HM-031026') ||
+            ((r.referralCode || '').toUpperCase() === 'HM-031026')
+        );
+
+        const isVendorReg = isHMVendorReg || Boolean(
             idUpper.startsWith('VEN-') ||
             refUpper.includes('VENDOR') || refUpper.includes('YOUTH') ||
             coupUpper.includes('VENDOR') || coupUpper.includes('YOUTH') ||
             txnUpper.includes('VENDOR') || txnUpper.includes('YOUTH')
         );
 
-        const isFreeKES = isRotaractReg || isVendorReg ||
+        const isFreeKES = isRotaractReg || isGamingReg || isVendorReg ||
             (txnUpper === 'FREE-KES-SHROFF') || (coupUpper === 'FREE-KES-SHROFF') || idUpper.startsWith('KS') ||
             txnUpper.startsWith('FREE-') || coupUpper.startsWith('FREE-') ||
             refUpper.startsWith('COLLEGE:') ||
@@ -295,6 +343,8 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             <td class="col-date" title="${escapeHTML(r.visitDate || 'Both Days')}"><span class="badge badge-gold-sm">${escapeHTML(r.visitDate ? (r.visitDate.includes('Both') ? 'Both Days' : (r.visitDate.includes('08th') ? 'Day 1 (8th)' : 'Day 2 (9th)')) : 'Both Days')}</span></td>
             <td class="col-amount">${
                 isRotaractReg ? `<span style="color:#4ade80; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#4ade80; font-weight:700; margin-top:2px;">🤝 ROTARACT</div>` :
+                isGamingReg ? `<span style="color:#c084fc; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#c084fc; font-weight:700; margin-top:2px;">🎮 GAMING COMMUNITY</div>` :
+                isHMVendorReg ? `<span style="color:#38bdf8; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ VENDOR HM-031026</div>` :
                 isVendorReg ? `<span style="color:#38bdf8; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ VENDOR</div>` :
                 isFreeKES ? `<span style="color:#eab308; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:var(--gold); font-weight:600; margin-top:2px;">🏛️ ${escapeHTML(collegeBadgeLabel)}</div>` :
                 `₹${r.finalPrice}`
@@ -308,13 +358,23 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                     <div style="font-size:0.7rem; color:var(--lavender); margin-top:2px;" title="Assigned 50/50 split between Nilesh & Tarasha">
                         👤 ${getRotaractAssignee(r, (typeof allStoreRegs !== 'undefined' ? allStoreRegs : regs)) === 'TARASHA' ? 'Tarasha Pahuja' : 'Nilesh Gupta'} (50%)
                     </div>
+                ` : isGamingReg ? `
+                    <span class="badge" style="background:rgba(192,132,252,0.16); border:1px solid rgba(192,132,252,0.4); color:#c084fc; font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('RAHUL')" title="Gaming Community (Credited to Rahul)">
+                        RAHUL
+                    </span>
+                    <div style="font-size:0.7rem; color:#c084fc; margin-top:2px;" title="Gaming Community Lead">🎮 Rahul (Gaming Lead)</div>
+                ` : isHMVendorReg ? `
+                    <span class="badge" style="background:rgba(56,189,248,0.16); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('HM-031026')" title="Vendor Partner HM-031026">
+                        HM-031026
+                    </span>
+                    <div style="font-size:0.7rem; color:#7dd3fc; margin-top:2px;">🛍️ Vendor Partner</div>
                 ` : refCode ? `
                     <span class="badge badge-purple" style="font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('${escapeHTML(refCode)}')" title="Click to filter by referral code ${escapeHTML(refCode)}">
                         ${escapeHTML(refCode)}
                     </span>
                     ${referrerName ? `<div style="font-size:0.72rem; color:var(--lavender); margin-top:2px; font-weight:500;" title="Referred by: ${escapeHTML(referrerName)}">👤 ${escapeHTML(referrerName)}</div>` : ''}
                 ` : `<span style="color:var(--text-muted); font-size:0.75rem; opacity:0.6;">Direct / —</span>`}
-                ${r.referralCode && !isRotaractReg ? `<div style="font-size:0.68rem; color:var(--text-muted); opacity:0.6; margin-top:2px;" title="Registrant's own referral code">Own: ${escapeHTML(r.referralCode)}</div>` : ''}
+                ${r.referralCode && !isRotaractReg && !isGamingReg && !isHMVendorReg ? `<div style="font-size:0.68rem; color:var(--text-muted); opacity:0.6; margin-top:2px;" title="Registrant's own referral code">Own: ${escapeHTML(r.referralCode)}</div>` : ''}
             </td>
             <td class="col-txnId" title="${r.transactionId || '—'}">${r.transactionId ? r.transactionId.substring(0, 16) : '—'}</td>
             <td class="col-payment">
@@ -2488,7 +2548,7 @@ function renderCollegesStats(colleges, regs) {
 
     const collegeList = colleges.filter(c => !c.openCollege && c.type !== 'rotaract' && c.type !== 'vendor' && !c.slug.includes('rotaract') && !c.slug.includes('vendor'));
     const rotaractList = colleges.filter(c => c.type === 'rotaract' || c.slug.includes('rotaract'));
-    const vendorList = colleges.filter(c => c.type === 'vendor' || c.slug.includes('vendor') || c.slug.includes('youth'));
+    const vendorList = colleges.filter(c => c.type === 'vendor' || c.type === 'gaming' || c.slug.includes('vendor') || c.slug.includes('youth') || c.slug.includes('gaming') || c.slug.includes('hm-'));
 
     let totalDelegationRegs = 0;
     let totalDelegationVerified = 0;
@@ -2625,6 +2685,12 @@ function renderCollegesGrid(colleges, regs) {
             const id = (r.id || '').toLowerCase();
             const colName = (r.college || '').toLowerCase();
 
+            if (colSlugLower === 'gaming-community') {
+                return ref.includes('gaming') || coup.includes('gaming') || txn.includes('gaming') || id.startsWith('gam-') || (ref === 'rahul' && (coup.includes('gaming') || colName.includes('gaming')));
+            }
+            if (colSlugLower === 'hm-031026') {
+                return ref.includes('hm-031026') || coup.includes('hm-031026') || txn.includes('hm-031026') || id.startsWith('hm-');
+            }
             if (colSlugLower === 'youth-network') {
                 return ref.includes('youth') || coup.includes('youth') || txn.includes('youth') ||
                        (id.startsWith('ven-') && (ref.includes('youth') || coup.includes('youth') || colName.includes('youth')));
@@ -2666,9 +2732,9 @@ function renderCollegesGrid(colleges, regs) {
         const verified = colRegs.filter(r => r.verified).length;
         const pending = total - verified;
 
-        const livePath = isFlagship ? '/kes-shroff' : (['rotaract', 'rotaract-mum', 'rotaract-mumbai', 'vendor-partner', 'youth-network'].includes(c.slug) ? `/${c.slug}` : `/c/${c.slug}`);
+        const livePath = isFlagship ? '/kes-shroff' : (['rotaract', 'rotaract-mum', 'rotaract-mumbai', 'vendor-partner', 'youth-network', 'gaming-community', 'hm-031026'].includes(c.slug) ? `/${c.slug}` : `/c/${c.slug}`);
         const liveUrl = `${origin}${livePath}`;
-        const leadsPath = isFlagship ? '/kes-shroff/leads' : (['rotaract', 'rotaract-mum', 'rotaract-mumbai', 'vendor-partner', 'youth-network'].includes(c.slug) ? `/${c.slug}/leads` : `/c/${c.slug}/leads`);
+        const leadsPath = isFlagship ? '/kes-shroff/leads' : (['rotaract', 'rotaract-mum', 'rotaract-mumbai', 'vendor-partner', 'youth-network', 'gaming-community', 'hm-031026'].includes(c.slug) ? `/${c.slug}/leads` : `/c/${c.slug}/leads`);
         const leadsUrl = `${origin}${leadsPath}`;
         const poc1 = (c.pocs && c.pocs[0]) || (isOpenPartner 
             ? { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' }
@@ -2696,6 +2762,25 @@ function renderCollegesGrid(colleges, regs) {
                     </span>
                     <span style="background:rgba(74,222,128,0.1); border:1px solid rgba(74,222,128,0.25); color:#86efac; font-size:0.65rem; font-weight:600; padding:2px 7px; border-radius:10px;">
                         🔒 Nilesh2202
+                    </span>
+                </div>
+            `;
+        } else if (c.slug === 'gaming-community' || c.type === 'gaming') {
+            badgeHtml = `
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="background:rgba(192,132,252,0.16); border:1px solid rgba(192,132,252,0.4); color:#c084fc; font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+                        <span>🎮</span> Gaming Community
+                    </span>
+                    <span style="background:rgba(192,132,252,0.1); border:1px solid rgba(192,132,252,0.25); color:#d8b4fe; font-size:0.65rem; font-weight:600; padding:2px 7px; border-radius:10px;">
+                        👤 Rahul
+                    </span>
+                </div>
+            `;
+        } else if (c.slug === 'hm-031026') {
+            badgeHtml = `
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="background:rgba(56,189,248,0.16); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-size:0.68rem; font-weight:700; padding:3px 9px; border-radius:12px; display:inline-flex; align-items:center; gap:4px;">
+                        <span>🛍️</span> Vendor HM-031026
                     </span>
                 </div>
             `;

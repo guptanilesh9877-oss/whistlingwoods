@@ -187,6 +187,38 @@
       "destination": "/college"
     },
     {
+      "source": "/gaming-community",
+      "destination": "/college"
+    },
+    {
+      "source": "/gaming-community/",
+      "destination": "/college"
+    },
+    {
+      "source": "/gaming",
+      "destination": "/college"
+    },
+    {
+      "source": "/gaming/",
+      "destination": "/college"
+    },
+    {
+      "source": "/hm-031026",
+      "destination": "/college"
+    },
+    {
+      "source": "/hm-031026/",
+      "destination": "/college"
+    },
+    {
+      "source": "/vendor-hm-031026",
+      "destination": "/college"
+    },
+    {
+      "source": "/vendor-hm-031026/",
+      "destination": "/college"
+    },
+    {
       "source": "/c/:slug*",
       "destination": "/college"
     },
