@@ -697,7 +697,6 @@
             margin: 0 auto;
         }
     </style>
-<script>window.DEFAULT_PORTAL_SLUG = 'rotaract-mumbai';</script>
 </head>
 <body>
 
@@ -1920,12 +1919,14 @@
 
             // Divide Rotaract signups equally between Nilesh & Tarasha
             var assignedReferral = 'college:' + col.slug;
+            var assignedLead = 'NILESH';
             if (isRotaract) {
                 try {
-                    assignedReferral = await getNextRotaractAssignee();
+                    assignedLead = await getNextRotaractAssignee();
                 } catch(e) {
-                    assignedReferral = 'NILESH';
+                    assignedLead = 'NILESH';
                 }
+                assignedReferral = 'ROTARACT:' + assignedLead;
             }
 
             var regData = {
@@ -1939,6 +1940,7 @@
                 transactionId: 'FREE-' + col.slug.toUpperCase(),
                 couponUsed: 'FREE-' + col.slug.toUpperCase(),
                 referredBy: assignedReferral,
+                referralCode: isRotaract ? 'ROTARACT' : '',
                 basePrice: 0,
                 finalPrice: 0,
                 verified: false,
@@ -1980,7 +1982,7 @@
                 phone: r.phone,
                 college: r.college,
                 year: combinedYear,
-                referral_code: '',
+                referral_code: r.referralCode || ((r.id && r.id.startsWith('ROT-')) ? 'ROTARACT' : ''),
                 payment_screenshot: r.paymentScreenshot || '',
                 transaction_id: r.transactionId || '',
                 coupon_used: r.couponUsed || '',

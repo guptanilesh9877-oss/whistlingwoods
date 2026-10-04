@@ -1403,8 +1403,8 @@
             const leadSelect = document.getElementById('filter-lead');
 
             if (isRotaract) {
-                const nileshCount = list.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase() === 'NILESH').length;
-                const tarashaCount = list.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase() === 'TARASHA').length;
+                const nileshCount = list.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase().includes('NILESH')).length;
+                const tarashaCount = list.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase().includes('TARASHA')).length;
                 if (splitPill && splitText) {
                     splitPill.style.display = 'inline-flex';
                     splitText.textContent = `Nilesh: ${nileshCount} | Tarasha: ${tarashaCount} (50/50 Split)`;
@@ -1500,9 +1500,9 @@
 
                 let leadBadgeHtml = '';
                 const refUpper = (r.referred_by || r.referredBy || '').trim().toUpperCase();
-                if (refUpper === 'NILESH') {
+                if (refUpper.includes('NILESH')) {
                     leadBadgeHtml = '<div style="display:inline-block; font-size:0.72rem; color:#86efac; font-weight:700; margin-top:3px; background:rgba(34,197,94,0.12); padding:1px 6px; border-radius:4px; border:1px solid rgba(34,197,94,0.3);">👤 Lead: Nilesh Gupta</div>';
-                } else if (refUpper === 'TARASHA') {
+                } else if (refUpper.includes('TARASHA')) {
                     leadBadgeHtml = '<div style="display:inline-block; font-size:0.72rem; color:#f472b6; font-weight:700; margin-top:3px; background:rgba(244,114,182,0.12); padding:1px 6px; border-radius:4px; border:1px solid rgba(244,114,182,0.3);">👤 Lead: Tarasha Pahuja</div>';
                 }
 

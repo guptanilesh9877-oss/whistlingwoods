@@ -1753,6 +1753,11 @@ class DataStore {
     getReferralCount(referralCode) {
         if (!referralCode) return 0;
         const target = referralCode.trim().toUpperCase();
+        try {
+            const top = this.getTopReferrers(100);
+            const match = top.find(p => p.code === target);
+            if (match) return match.count;
+        } catch(e) {}
         return this.getRegistrations().filter(r => (r.referredBy || '').trim().toUpperCase() === target).length;
     }
 
@@ -1835,7 +1840,7 @@ class DataStore {
             { slug: 'rotaract', keyword: 'rotaract' }
         ];
         let nileshTotal = 0, nileshVer = 0;
-        let tarashaDelegTotal = 0;
+        let tarashaDelegTotal = 0, tarashaVer = 0;
         const seenCollegeRegIds = new Set(kesRegs.map(r => r.id)); // avoid double-counting
         nileshTarashaCollegeSlugs.forEach(({ slug, keyword }) => {
             const colRegs = getCollegeFreeRegs(slug, keyword).filter(r => (
@@ -1849,9 +1854,10 @@ class DataStore {
             nileshTotal += Math.ceil(colCount / 2);
             tarashaDelegTotal += Math.floor(colCount / 2);
             nileshVer += Math.ceil(colVer / 2);
+            tarashaVer += Math.floor(colVer / 2);
         });
         const tarashaTotalFromCols = tarashaDelegTotal;
-        const tarashVerFromCols = nileshVer > 0 ? Math.floor(nileshVer * (tarashaDelegTotal / (nileshTotal || 1))) : 0;
+        const tarashVerFromCols = tarashaVer;
 
         // 3. Any remaining partner college registrations (custom added colleges not explicitly handled above)
         const partnerColleges = this.getCollegePartners();
@@ -2007,11 +2013,11 @@ class DataStore {
     getTopReferrers(limit = 15) {
         const regs = this.getRegistrations();
         const counts = {};
-        // Only count direct referrals (not college: prefix ones — those will be credited via delegation splits below)
+        // Only count direct referrals (not college:, ROTARACT, or vendor ones — those will be credited via delegation splits below)
         regs.forEach(r => {
-            if (r.referredBy && !r.referredBy.startsWith('SOURCE:') && !r.referredBy.startsWith('college:')) {
-                const code = r.referredBy.trim().toUpperCase();
-                counts[code] = (counts[code] || 0) + 1;
+            const ref = (r.referredBy || '').trim().toUpperCase();
+            if (ref && !ref.startsWith('SOURCE:') && !ref.startsWith('COLLEGE:') && !ref.startsWith('ROTARACT') && !ref.startsWith('VENDOR') && !ref.startsWith('FREE-')) {
+                counts[ref] = (counts[ref] || 0) + 1;
             }
         });
 
@@ -2171,17 +2177,29 @@ class DataStore {
             'Referral Code', 'Verified', 'Attended', 'Check-in Time', 'Date'
         ];
         const escape = v => `"${String(v).replace(/"/g, '""')}"`;
-        const rows = regs.map(r => [
-            r.id, escape(r.name), escape(r.email), escape(r.phone),
-            escape(r.college), r.year, escape(r.visitDate || 'Both Days (08th & 09th Oct)'),
-            r.basePrice, r.earlyBirdDiscount,
-            r.couponUsed || '—', r.couponDiscount || 0, r.finalPrice,
-            r.transactionId || '—', r.referredBy || '—', r.referralCode,
-            r.verified ? 'Yes' : 'No',
-            r.attended ? 'Yes' : 'No',
-            r.attendedAt ? new Date(r.attendedAt).toLocaleString('en-IN') : '—',
-            new Date(r.timestamp).toLocaleString('en-IN')
-        ]);
+        const rows = regs.map(r => {
+            const idUpper = (r.id || '').toUpperCase();
+            const refUpper = (r.referredBy || '').toUpperCase();
+            const coupUpper = (r.couponUsed || '').toUpperCase();
+            const txnUpper = (r.transactionId || '').toUpperCase();
+            const codeUpper = (r.referralCode || '').toUpperCase();
+            const colUpper = (r.college || '').toUpperCase();
+            const isRot = idUpper.startsWith('ROT-') || refUpper.includes('ROTARACT') || coupUpper.includes('ROTARACT') || txnUpper.includes('ROTARACT') || codeUpper === 'ROTARACT' || colUpper.includes('ROTARACT');
+            const displayReferral = isRot ? 'ROTARACT' : (r.referralCode || '—');
+            const displayReferredBy = isRot ? 'ROTARACT' : (r.referredBy || '—');
+
+            return [
+                r.id, escape(r.name), escape(r.email), escape(r.phone),
+                escape(r.college), r.year, escape(r.visitDate || 'Both Days (08th & 09th Oct)'),
+                r.basePrice, r.earlyBirdDiscount,
+                r.couponUsed || '—', r.couponDiscount || 0, r.finalPrice,
+                r.transactionId || '—', displayReferredBy, displayReferral,
+                r.verified ? 'Yes' : 'No',
+                r.attended ? 'Yes' : 'No',
+                r.attendedAt ? new Date(r.attendedAt).toLocaleString('en-IN') : '—',
+                new Date(r.timestamp).toLocaleString('en-IN')
+            ];
+        });
         return [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     }
 

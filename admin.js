@@ -69,6 +69,32 @@ function renderStats() {
     }
 }
 
+// ──────────── ROTARACT EQUAL LEAD ASSIGNEE HELPER ────────────
+function isRotaractRegistration(r) {
+    if (!r) return false;
+    const idU = (r.id || '').toUpperCase();
+    const refU = (r.referredBy || '').toUpperCase();
+    const coupU = (r.couponUsed || '').toUpperCase();
+    const txnU = (r.transactionId || '').toUpperCase();
+    const codeU = (r.referralCode || '').toUpperCase();
+    const colU = (r.college || '').toUpperCase();
+    return idU.startsWith('ROT-') || refU.includes('ROTARACT') || coupU.includes('ROTARACT') || txnU.includes('ROTARACT') || codeU === 'ROTARACT' || colU.includes('ROTARACT');
+}
+window.isRotaractRegistration = isRotaractRegistration;
+
+function getRotaractAssignee(r, allRegs) {
+    if (!r) return 'NILESH';
+    const ref = (r.referredBy || '').toUpperCase();
+    if (ref.includes('TARASHA')) return 'TARASHA';
+    if (ref.includes('NILESH')) return 'NILESH';
+    // If untagged, sort all Rotaract registrations by timestamp/id and alternate 50/50
+    const list = (allRegs || []).filter(item => isRotaractRegistration(item))
+        .sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0) || (a.id || '').localeCompare(b.id || ''));
+    const idx = list.findIndex(item => item.id === r.id);
+    return (idx % 2 === 1) ? 'TARASHA' : 'NILESH';
+}
+window.getRotaractAssignee = getRotaractAssignee;
+
 // ──────────── REGISTRATIONS TABLE ────────────
 function renderRegistrationsTable(filter = 'all', search = '') {
     const tbody = document.getElementById('registrations-tbody');
@@ -150,13 +176,33 @@ function renderRegistrationsTable(filter = 'all', search = '') {
 
     // Apply search
     if (search) {
-        if (search.includes('|') || search.includes(',')) {
+        const sTrim = search.trim().toUpperCase();
+        const allStoreRegs = dataStore.getRegistrations();
+        if (sTrim === 'ROTARACT') {
+            regs = regs.filter(r => isRotaractRegistration(r));
+        } else if (sTrim === 'NILESH') {
+            regs = regs.filter(r => {
+                if (isRotaractRegistration(r)) return getRotaractAssignee(r, allStoreRegs) === 'NILESH';
+                const refU = (r.referredBy || '').toUpperCase();
+                return refU === 'NILESH' || refU.includes('NILESH');
+            });
+        } else if (sTrim === 'TARASHA') {
+            regs = regs.filter(r => {
+                if (isRotaractRegistration(r)) return getRotaractAssignee(r, allStoreRegs) === 'TARASHA';
+                const refU = (r.referredBy || '').toUpperCase();
+                return refU === 'TARASHA' || refU.includes('TARASHA');
+            });
+        } else if (search.includes('|') || search.includes(',')) {
             const tokens = search.split(/[|,]+/).map(t => t.trim().toLowerCase()).filter(Boolean);
             regs = regs.filter(r => {
                 const referred = (r.referredBy || '').toLowerCase();
                 const code = (r.referralCode || '').toLowerCase();
                 const name = (r.name || '').toLowerCase();
                 const college = (r.college || '').toLowerCase();
+                const id = (r.id || '').toLowerCase();
+                const coup = (r.couponUsed || '').toLowerCase();
+                const isRot = id.startsWith('rot-') || referred.includes('rotaract') || coup.includes('rotaract');
+                if (tokens.includes('rotaract') && isRot) return true;
                 return tokens.some(tok => referred === tok || code === tok || referred.includes(tok) || name.includes(tok) || college.includes(tok));
             });
         } else {
@@ -212,12 +258,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         const coupUpper = (r.couponUsed || '').toUpperCase();
         const txnUpper = (r.transactionId || '').toUpperCase();
 
-        const isRotaractReg = Boolean(
-            idUpper.startsWith('ROT-') ||
-            refUpper.includes('ROTARACT') ||
-            coupUpper.includes('ROTARACT') ||
-            txnUpper.includes('ROTARACT')
-        );
+        const isRotaractReg = isRotaractRegistration(r);
 
         const isVendorReg = Boolean(
             idUpper.startsWith('VEN-') ||
@@ -260,13 +301,20 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             }</td>
             <td class="col-coupon">${r.couponUsed || '—'}</td>
             <td class="col-referral">
-                ${refCode ? `
+                ${isRotaractReg ? `
+                    <span class="badge" style="background:rgba(74,222,128,0.16); border:1px solid rgba(74,222,128,0.4); color:#4ade80; font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('ROTARACT')" title="Rotaract Club Youth Delegation (Click to filter)">
+                        ROTARACT
+                    </span>
+                    <div style="font-size:0.7rem; color:var(--lavender); margin-top:2px;" title="Assigned 50/50 split between Nilesh & Tarasha">
+                        👤 ${getRotaractAssignee(r, (typeof allStoreRegs !== 'undefined' ? allStoreRegs : regs)) === 'TARASHA' ? 'Tarasha Pahuja' : 'Nilesh Gupta'} (50%)
+                    </div>
+                ` : refCode ? `
                     <span class="badge badge-purple" style="font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('${escapeHTML(refCode)}')" title="Click to filter by referral code ${escapeHTML(refCode)}">
                         ${escapeHTML(refCode)}
                     </span>
                     ${referrerName ? `<div style="font-size:0.72rem; color:var(--lavender); margin-top:2px; font-weight:500;" title="Referred by: ${escapeHTML(referrerName)}">👤 ${escapeHTML(referrerName)}</div>` : ''}
                 ` : `<span style="color:var(--text-muted); font-size:0.75rem; opacity:0.6;">Direct / —</span>`}
-                ${r.referralCode ? `<div style="font-size:0.68rem; color:var(--text-muted); opacity:0.6; margin-top:2px;" title="Registrant's own referral code">Own: ${escapeHTML(r.referralCode)}</div>` : ''}
+                ${r.referralCode && !isRotaractReg ? `<div style="font-size:0.68rem; color:var(--text-muted); opacity:0.6; margin-top:2px;" title="Registrant's own referral code">Own: ${escapeHTML(r.referralCode)}</div>` : ''}
             </td>
             <td class="col-txnId" title="${r.transactionId || '—'}">${r.transactionId ? r.transactionId.substring(0, 16) : '—'}</td>
             <td class="col-payment">
@@ -350,6 +398,9 @@ function filterRegistrationsByTeam(teamName, codes) {
     if (teamName.toLowerCase().includes('sahil') || teamName.toLowerCase().includes('satvik')) {
         if (!codeList.includes('shroff')) codeList.push('shroff');
     }
+    if (teamName.toLowerCase().includes('nilesh') || teamName.toLowerCase().includes('tarasha')) {
+        if (!codeList.includes('rotaract')) codeList.push('rotaract');
+    }
     const query = codeList.join(' | ');
     if (searchInput) {
         searchInput.value = query;
@@ -370,6 +421,9 @@ function filterRegistrationsByTeamPending(teamName, codes) {
     let codeList = Array.isArray(codes) ? [...codes] : [codes];
     if (teamName.toLowerCase().includes('sahil') || teamName.toLowerCase().includes('satvik')) {
         if (!codeList.includes('shroff')) codeList.push('shroff');
+    }
+    if (teamName.toLowerCase().includes('nilesh') || teamName.toLowerCase().includes('tarasha')) {
+        if (!codeList.includes('rotaract')) codeList.push('rotaract');
     }
     const query = codeList.join(' | ');
     if (searchInput) {
