@@ -780,11 +780,9 @@ function generateTicketQR(reg, containerId) {
     if (!container) return;
     container.innerHTML = '';
 
-    const qrData = (reg.id || '').trim();
-    if (!qrData) return;
-
-    const isRejected = Boolean(reg.rejected) || 
-        (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
+    const qrData = (reg && (reg.id || reg.ticketId || '')).trim() || 'WWI-CC26-PASS';
+    const isRejected = Boolean(reg && reg.rejected) || 
+        (typeof (reg && reg.transactionId) === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
 
     const wrapper = document.createElement('div');
     wrapper.style.position = 'relative';
@@ -792,13 +790,19 @@ function generateTicketQR(reg, containerId) {
     wrapper.style.lineHeight = '0';
     container.appendChild(wrapper);
 
-    function onQrSuccess(qrNode) {
+    function displayQrImage(dataUrl) {
         wrapper.innerHTML = '';
-        qrNode.style.display = 'block';
-        qrNode.style.width = '170px';
-        qrNode.style.height = '170px';
-        qrNode.style.borderRadius = '6px';
-        wrapper.appendChild(qrNode);
+        const img = document.createElement('img');
+        img.src = dataUrl;
+        img.alt = `Pass QR ${qrData}`;
+        img.style.display = 'block';
+        img.style.width = '170px';
+        img.style.height = '170px';
+        img.style.borderRadius = '6px';
+        wrapper.appendChild(img);
+
+        container.dataset.qrDataUrl = dataUrl;
+        if (reg) reg._qrDataUrl = dataUrl;
 
         // If rejected, overlay VOID shield directly over the QR code
         if (isRejected) {
@@ -809,63 +813,54 @@ function generateTicketQR(reg, containerId) {
         }
     }
 
-    // Engine 1: QRCode constructor from cdnjs (qrcodejs)
+    // Engine 1: QRCode constructor (synchronous canvas rendering)
     if (window.QRCode && typeof window.QRCode === 'function') {
         try {
             const tempDiv = document.createElement('div');
             new window.QRCode(tempDiv, {
                 text: qrData,
-                width: 170,
-                height: 170,
+                width: 250,
+                height: 250,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
-                correctLevel: (window.QRCode && window.QRCode.CorrectLevel) ? window.QRCode.CorrectLevel.M : 0
+                correctLevel: (window.QRCode && window.QRCode.CorrectLevel && window.QRCode.CorrectLevel.M) || 0
             });
 
-            // qrcodejs renders canvas and img asynchronously in a tick
-            setTimeout(() => {
-                const img = tempDiv.querySelector('img');
-                const canvas = tempDiv.querySelector('canvas');
-                let targetEl = null;
-                if (img && img.src && img.src.length > 50) {
-                    targetEl = img;
-                } else if (canvas) {
-                    targetEl = canvas;
-                }
-                if (targetEl) {
-                    onQrSuccess(targetEl);
-                } else {
-                    engineFallback();
-                }
-            }, 60);
-            return;
+            const canvas = tempDiv.querySelector('canvas');
+            if (canvas) {
+                const dataUrl = canvas.toDataURL('image/png');
+                displayQrImage(dataUrl);
+                return;
+            }
+            const img = tempDiv.querySelector('img');
+            if (img && img.src && img.src.length > 50) {
+                displayQrImage(img.src);
+                return;
+            }
         } catch (e) {
-            console.warn('QRCode constructor fallback:', e);
-            engineFallback();
-            return;
+            console.warn('QRCode sync render fallback:', e);
         }
     }
 
-    engineFallback();
-
-    function engineFallback() {
-        // Engine 2: High-resolution QR API Rasterizer (Guaranteed 100% Real QR Code)
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.alt = `Ticket QR Pass ${qrData}`;
-        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&format=png&margin=4&data=${encodeURIComponent(qrData)}`;
-        img.onload = () => {
+    // Engine 2: High-resolution QR API Rasterizer Fallback
+    const fallbackUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&format=png&margin=4&data=${encodeURIComponent(qrData)}`;
+    const remoteImg = new Image();
+    remoteImg.crossOrigin = 'anonymous';
+    remoteImg.onload = () => {
+        try {
             const c = document.createElement('canvas');
-            c.width = 170;
-            c.height = 170;
+            c.width = 250; c.height = 250;
             const cx = c.getContext('2d');
-            cx.drawImage(img, 0, 0, 170, 170);
-            onQrSuccess(c);
-        };
-        img.onerror = () => {
-            onQrSuccess(img);
-        };
-    }
+            cx.drawImage(remoteImg, 0, 0);
+            displayQrImage(c.toDataURL('image/png'));
+        } catch (err) {
+            displayQrImage(fallbackUrl);
+        }
+    };
+    remoteImg.onerror = () => {
+        displayQrImage(fallbackUrl);
+    };
+    remoteImg.src = fallbackUrl;
 }
 
 
@@ -1475,6 +1470,22 @@ async function savePassAsImage(source) {
                 backgroundColor: null,      // Preserves neat rounded border
                 logging: false,
                 onclone: (clonedDoc) => {
+                    // Copy all original canvas pixels into cloned DOM to prevent blank QR code
+                    const origCanvases = passElement.querySelectorAll('canvas');
+                    const clonedCanvases = clonedDoc.querySelectorAll(`#${cardId} canvas`);
+                    for (let i = 0; i < origCanvases.length; i++) {
+                        const orig = origCanvases[i];
+                        const target = clonedCanvases[i];
+                        if (orig && target) {
+                            try {
+                                target.width = orig.width;
+                                target.height = orig.height;
+                                const targetCtx = target.getContext('2d');
+                                targetCtx.drawImage(orig, 0, 0);
+                            } catch (e) {}
+                        }
+                    }
+
                     // Force pristine horizontal boarding pass layout on any device / screen width
                     const style = clonedDoc.createElement('style');
                     style.innerHTML = `
@@ -1674,8 +1685,45 @@ function downloadHorizontalPassCanvas(reg, cardId, isRejected) {
     ctx.fillStyle = '#ffffff';
     roundRectFill(ctx, qrX - 16, qrY - 16, qrSize + 32, qrSize + 32, 20, 20);
 
-    if (qrElement) {
-        ctx.drawImage(qrElement, qrX, qrY, qrSize, qrSize);
+    let qrDrawn = false;
+    if (qrElement && (qrElement.complete || qrElement.tagName === 'CANVAS')) {
+        try {
+            ctx.drawImage(qrElement, qrX, qrY, qrSize, qrSize);
+            qrDrawn = true;
+        } catch (e) {}
+    }
+    // Fallback 1: Check cached base64 dataUrl
+    if (!qrDrawn) {
+        const cachedUrl = reg._qrDataUrl || (document.getElementById(qrContainerId) && document.getElementById(qrContainerId).dataset.qrDataUrl);
+        if (cachedUrl) {
+            const tempImg = new Image();
+            tempImg.src = cachedUrl;
+            if (tempImg.complete || tempImg.naturalWidth > 0) {
+                try {
+                    ctx.drawImage(tempImg, qrX, qrY, qrSize, qrSize);
+                    qrDrawn = true;
+                } catch (e) {}
+            }
+        }
+    }
+    // Fallback 2: Generate directly on the fly with QRCode constructor
+    if (!qrDrawn && window.QRCode) {
+        try {
+            const tempDiv = document.createElement('div');
+            new window.QRCode(tempDiv, {
+                text: (reg.id || '').trim(),
+                width: qrSize,
+                height: qrSize,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: (window.QRCode && window.QRCode.CorrectLevel && window.QRCode.CorrectLevel.M) || 0
+            });
+            const c = tempDiv.querySelector('canvas');
+            if (c) {
+                ctx.drawImage(c, qrX, qrY, qrSize, qrSize);
+                qrDrawn = true;
+            }
+        } catch (e) {}
     }
 
     // PNR Text & Barcode Graphic

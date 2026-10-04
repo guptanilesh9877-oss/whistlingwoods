@@ -246,7 +246,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
 
         return `
         <tr id="row-${r.id}" class="${r.rejected ? 'row-rejected' : ''}">
-            <td class="col-ticketId" title="${r.id}"><strong>${r.id}</strong></td>
+            <td class="col-ticketId" title="Click to preview QR entry pass for ${r.id}"><strong style="cursor:pointer; color:var(--gold); text-decoration:underline;" onclick="viewTicketModal('${r.id}')" title="Click to preview student ticket and QR code">${r.id}</strong></td>
             <td class="col-name" title="${escapeHTML(r.name)}">${escapeHTML(r.name)}</td>
             <td class="col-email" title="${escapeHTML(r.email)}">${escapeHTML(r.email)}</td>
             <td class="col-phone">${escapeHTML(r.phone)}</td>
@@ -290,6 +290,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                             style="${r.rejected ? 'background:#ef4444; color:#fff; border-color:#dc2626;' : 'color:#ef4444; border:1px solid rgba(239,68,68,0.4); background:rgba(239,68,68,0.08);'}">
                         ${r.rejected ? 'Void' : 'Reject'}
                     </button>
+                    <button class="btn-small" onclick="viewTicketModal('${r.id}')" title="Preview Student Ticket & QR Pass">🎟️</button>
                     ${((dataStore.hasScreenshot ? dataStore.hasScreenshot(r.id) : (r.paymentScreenshot && r.paymentScreenshot.length > 20)) || isFreeKES || (r.referredBy && r.referredBy.startsWith('college:')) || (r.transactionId && r.transactionId !== 'ADMIN_ENTRY' && !r.transactionId.startsWith('REJECTED') && r.finalPrice > 0)) ? `<button class="btn-small" onclick="viewScreenshot('${r.id}')" title="${isFreeKES ? 'View College ID / Fee Receipt' : 'View Payment Screenshot'}">${isFreeKES ? '🪪' : '📷'}</button>` : ''}
                     <button class="btn-delete" onclick="handleDeleteRegistration('${r.id}')" title="Delete">✕</button>
                 </div>
@@ -853,6 +854,138 @@ function openScreenshotInNewTab(id) {
     }
 }
 window.openScreenshotInNewTab = openScreenshotInNewTab;
+
+// ──────────── VIEW STUDENT TICKET / QR PASS MODAL ────────────
+function viewTicketModal(id) {
+    const reg = (typeof dataStore !== 'undefined' && dataStore.getRegistrationById) ? dataStore.getRegistrationById(id) : null;
+    if (!reg) {
+        showToast('Registration record not found', 'warning');
+        return;
+    }
+
+    const existing = document.getElementById('ticket-modal-overlay');
+    if (existing) existing.remove();
+
+    const isRejected = Boolean(reg.rejected) || 
+        (typeof reg.transactionId === 'string' && reg.transactionId.toUpperCase().startsWith('REJECTED'));
+    const qrData = (reg.id || '').trim();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'ticket-modal-overlay';
+    overlay.className = 'modal-overlay open';
+    overlay.onclick = () => overlay.remove();
+    overlay.innerHTML = `
+        <div class="modal-content glass-card" onclick="event.stopPropagation()" style="max-width: 440px; padding: 24px; border: 1px solid var(--border-glass); border-radius: 16px; text-align:center;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
+                <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--gold); font-weight:700;">
+                    🎟️ Student Entry Pass
+                </span>
+                <button class="btn-small" onclick="this.closest('.modal-overlay').remove()">✕</button>
+            </div>
+
+            <h3 style="font-family:'Playfair Display', Georgia, serif; font-size:1.35rem; color:#fff; margin:0 0 4px 0;">
+                ${escapeHTML(reg.name)}
+            </h3>
+            <div style="font-size:0.85rem; color:var(--gold); margin-bottom:12px;">
+                ${escapeHTML(reg.college || 'Degree College')}
+            </div>
+
+            <!-- QR Code Card Box -->
+            <div style="background:#ffffff; border-radius:12px; padding:16px; display:inline-block; margin:6px auto 14px auto; box-shadow:0 8px 30px rgba(0,0,0,0.5); position:relative;">
+                <div id="modal-pass-qr-box" style="width:160px; height:160px; display:flex; align-items:center; justify-content:center;">
+                    <div style="font-size:1.8rem; animation:spin 1s linear infinite;">⏳</div>
+                </div>
+                ${isRejected ? `
+                    <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(239,68,68,0.92); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:12px; font-weight:800; font-size:1.05rem;">
+                        <span style="font-size:1.8rem;">⛔</span>
+                        <span>VOID</span>
+                        <span style="font-size:0.65rem; font-weight:600;">PAYMENT REJECTED</span>
+                    </div>
+                ` : ''}
+            </div>
+
+            <div style="font-family:monospace; font-size:1.2rem; font-weight:800; color:var(--gold); margin-bottom:12px;">
+                ${escapeHTML(reg.id)}
+            </div>
+
+            <!-- Metadata Pills -->
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:12px; font-size:0.8rem; text-align:left; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <span style="color:var(--lavender);">Phone:</span>
+                    <strong style="color:#fff;">${escapeHTML(reg.phone || '—')}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <span style="color:var(--lavender);">Visiting Date:</span>
+                    <strong style="color:var(--gold);">${escapeHTML(reg.visitDate || 'Both Days')}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <span style="color:var(--lavender);">Stream / Year:</span>
+                    <strong style="color:#fff;">${escapeHTML(reg.year || '—')}</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--lavender);">Verification:</span>
+                    <strong style="color:${isRejected ? '#ef4444' : (reg.verified ? '#10b981' : '#f59e0b')};">
+                        ${isRejected ? 'REJECTED' : (reg.verified ? 'VERIFIED ✓' : 'PENDING')}
+                    </strong>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+                <button type="button" class="btn btn-secondary btn-small" onclick="this.closest('.modal-overlay').remove()">
+                    Close
+                </button>
+                <button type="button" class="btn btn-primary btn-small" onclick="handleToggleVerify('${reg.id}').then(() => { setTimeout(() => viewTicketModal('${reg.id}'), 300); })">
+                    ${reg.verified ? 'Mark Pending' : 'Verify Pass ✓'}
+                </button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const qrBox = overlay.querySelector('#modal-pass-qr-box');
+    if (!qrBox) return;
+
+    // Render QR Code immediately
+    let qrRendered = false;
+    if (typeof QRCode === 'function') {
+        try {
+            const tempDiv = document.createElement('div');
+            new QRCode(tempDiv, {
+                text: qrData,
+                width: 200,
+                height: 200,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: (QRCode.CorrectLevel && QRCode.CorrectLevel.M) || 0
+            });
+            const c = tempDiv.querySelector('canvas');
+            if (c) {
+                const img = document.createElement('img');
+                img.src = c.toDataURL('image/png');
+                img.style.width = '160px';
+                img.style.height = '160px';
+                img.style.display = 'block';
+                img.style.borderRadius = '4px';
+                qrBox.innerHTML = '';
+                qrBox.appendChild(img);
+                qrRendered = true;
+            }
+        } catch (e) {
+            console.warn('QR modal error:', e);
+        }
+    }
+    if (!qrRendered) {
+        const img = document.createElement('img');
+        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&format=png&margin=4&data=${encodeURIComponent(qrData)}`;
+        img.style.width = '160px';
+        img.style.height = '160px';
+        img.style.display = 'block';
+        img.style.borderRadius = '4px';
+        qrBox.innerHTML = '';
+        qrBox.appendChild(img);
+    }
+}
+window.viewTicketModal = viewTicketModal;
 
 // ═══════════════════════════════════════════════
 // ATTENDANCE SCANNER SYSTEM (SMOOTH & FAST)

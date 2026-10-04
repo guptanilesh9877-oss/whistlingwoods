@@ -18,7 +18,8 @@
 
     <!-- Supabase & QR Code & html2canvas -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+    <script src="/assets/qrcode.min.js"></script>
+    <script>if(typeof QRCode==='undefined'){document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>');}</script>
     <script src="/assets/html2canvas.min.js"></script>
 
     <style>
@@ -696,6 +697,7 @@
             margin: 0 auto;
         }
     </style>
+<script>window.DEFAULT_PORTAL_SLUG = 'rotaract';</script>
 </head>
 <body>
 
@@ -993,7 +995,6 @@
     </div>
 
     <!-- Embedded Client Logic -->
-    <script>window.DEFAULT_PORTAL_SLUG = 'rotaract';</script>
     <script>
         // ── SUPABASE CONFIG ──────────────────────────────────────────
         var SUPABASE_URL = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
@@ -2019,18 +2020,54 @@
             document.getElementById('pass-stream').textContent = r.year;
             document.getElementById('pass-visit-date').textContent = r.visitDate;
 
-            // Generate QR Code
+            // Generate QR Code safely and reliably (100% overflow-proof & base64 image backed)
             var qrContainer = document.getElementById('qrcode-container');
             if (qrContainer) {
                 qrContainer.innerHTML = '';
-                new QRCode(qrContainer, {
-                    text: 'WWI-CC26:' + r.id + ':' + r.phone + ':' + r.name,
-                    width: 150,
-                    height: 150,
-                    colorDark: '#12121e',
-                    colorLight: '#ffffff',
-                    correctLevel: QRCode.CorrectLevel.H
-                });
+                var qrText = 'WWI-CC26:' + (r.id || '').trim();
+                var qrRendered = false;
+
+                if (typeof QRCode === 'function') {
+                    try {
+                        var tempDiv = document.createElement('div');
+                        new QRCode(tempDiv, {
+                            text: qrText,
+                            width: 200,
+                            height: 200,
+                            colorDark: '#12121e',
+                            colorLight: '#ffffff',
+                            correctLevel: (QRCode.CorrectLevel && QRCode.CorrectLevel.M) || 0
+                        });
+                        var c = tempDiv.querySelector('canvas');
+                        if (c) {
+                            var img = document.createElement('img');
+                            img.src = c.toDataURL('image/png');
+                            img.alt = 'Entry Pass QR ' + r.id;
+                            img.style.display = 'block';
+                            img.style.width = '150px';
+                            img.style.height = '150px';
+                            img.style.margin = '0 auto';
+                            img.style.borderRadius = '8px';
+                            qrContainer.appendChild(img);
+                            qrContainer.dataset.qrDataUrl = img.src;
+                            qrRendered = true;
+                        }
+                    } catch (qrErr) {
+                        console.warn('QRCode generation fallback:', qrErr);
+                    }
+                }
+
+                if (!qrRendered) {
+                    var fallbackImg = document.createElement('img');
+                    fallbackImg.alt = 'Entry Pass QR ' + r.id;
+                    fallbackImg.style.display = 'block';
+                    fallbackImg.style.width = '150px';
+                    fallbackImg.style.height = '150px';
+                    fallbackImg.style.margin = '0 auto';
+                    fallbackImg.style.borderRadius = '8px';
+                    fallbackImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&format=png&margin=4&data=' + encodeURIComponent(qrText);
+                    qrContainer.appendChild(fallbackImg);
+                }
             }
 
             modal.style.display = 'flex';
@@ -2047,7 +2084,24 @@
             html2canvas(passEl, {
                 scale: 2,
                 backgroundColor: '#151124',
-                useCORS: true
+                useCORS: true,
+                onclone: function(clonedDoc) {
+                    // Guarantee canvas contents are copied to cloned DOM
+                    var origCanvases = passEl.querySelectorAll('canvas');
+                    var clonedCanvases = clonedDoc.querySelectorAll('#entry-pass-card canvas');
+                    for (var i = 0; i < origCanvases.length; i++) {
+                        var orig = origCanvases[i];
+                        var target = clonedCanvases[i];
+                        if (orig && target) {
+                            try {
+                                target.width = orig.width;
+                                target.height = orig.height;
+                                var ctx = target.getContext('2d');
+                                ctx.drawImage(orig, 0, 0);
+                            } catch (e) {}
+                        }
+                    }
+                }
             }).then(function(canvas) {
                 var a = document.createElement('a');
                 a.download = (_currentReg ? _currentReg.id : 'WWI-Pass') + '.png';

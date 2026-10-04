@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="style.css?v=6.0">
     <link rel="icon" type="image/png" href="assets/cc26-logo.png">
     <!-- QR Code Generation (qrcodejs via cdnjs) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+    <script src="assets/qrcode.min.js"></script>
+    <script>if(typeof QRCode==='undefined'){document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\\/script>');}</script>
     <!-- QR Code Scanner (html5-qrcode via jsDelivr, more reliable than unpkg) -->
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js" crossorigin="anonymous"></script>
     <!-- Supabase Cloud Client -->
