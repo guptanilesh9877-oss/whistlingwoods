@@ -492,7 +492,7 @@
             .search-group { max-width: 100%; }
         }
     </style>
-<script>window.DEFAULT_PORTAL_SLUG = 'rgit';</script>
+<script>window.DEFAULT_PORTAL_SLUG = "rgit";</script>
 </head>
 <body>
 
@@ -659,7 +659,8 @@
         const SUPABASE_URL = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
         const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
 
-        const defaultColleges = [
+        const DEFAULT_COLLEGES = [
+        
             {
                 slug: 'kes-shroff',
                 name: 'KES Shroff College of Arts & Commerce',
@@ -1108,6 +1109,7 @@
             }
         ];;
 
+        const defaultColleges = DEFAULT_COLLEGES;
         let _allColleges = DEFAULT_COLLEGES;
         let _currentCollege = null;
         let _allRegistrations = [];
