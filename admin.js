@@ -83,11 +83,39 @@ function renderRegistrationsTable(filter = 'all', search = '') {
     if (filter === 'colleges') regs = regs.filter(r => {
         const ref = (r.referredBy || '').toLowerCase();
         const coup = (r.couponUsed || '').toLowerCase();
+        const txn = (r.transactionId || '').toLowerCase();
         const id = (r.id || '').toUpperCase();
-        const isRot = ref.includes('rotaract') || coup.includes('rotaract') || id.startsWith('ROT-');
-        const isVen = ref.includes('vendor') || ref.includes('youth') || coup.includes('vendor') || coup.includes('youth') || id.startsWith('VEN-');
+        const col = (r.college || '').toLowerCase();
+        const isRot = ref.includes('rotaract') || coup.includes('rotaract') || txn.includes('rotaract') || id.startsWith('ROT-');
+        const isVen = ref.includes('vendor') || ref.includes('youth') || coup.includes('vendor') || coup.includes('youth') || txn.includes('vendor') || txn.includes('youth') || id.startsWith('VEN-');
         if (isRot || isVen) return false;
-        return ref.startsWith('college:') || id.startsWith('KS-') || id.startsWith('GUR-') || id.startsWith('KJS-') || id.startsWith('SYD-') || id.startsWith('SKS-') || (coup.startsWith('free-'));
+        return ref.startsWith('college:') ||
+               coup.startsWith('free-') ||
+               txn.startsWith('free-') ||
+               col.includes('shroff') ||
+               id.startsWith('KS-') ||
+               id.startsWith('KJS-') ||
+               id.startsWith('SYD-') ||
+               id.startsWith('GUR-') ||
+               id.startsWith('MIT-') ||
+               id.startsWith('HRC-') ||
+               id.startsWith('NMC-') ||
+               id.startsWith('DJS-') ||
+               id.startsWith('SKS-') ||
+               id.startsWith('AUR-') ||
+               id.startsWith('SIW-') ||
+               id.startsWith('BHA-') ||
+               id.startsWith('SIE-') ||
+               id.startsWith('RGI-') ||
+               id.startsWith('KIR-') ||
+               id.startsWith('BKB-') ||
+               id.startsWith('VES-') ||
+               id.startsWith('VJT-') ||
+               id.startsWith('BED-') ||
+               id.startsWith('VAL-') ||
+               id.startsWith('JAI-') ||
+               id.startsWith('RAP-') ||
+               id.startsWith('COL-');
     });
     if (filter === 'rotaract') regs = regs.filter(r => {
         const ref = (r.referredBy || '').toLowerCase();
@@ -105,8 +133,19 @@ function renderRegistrationsTable(filter = 'all', search = '') {
     });
     if (filter === 'direct') regs = regs.filter(r => {
         const ref = (r.referredBy || '').toLowerCase();
+        const coup = (r.couponUsed || '').toLowerCase();
+        const txn = (r.transactionId || '').toLowerCase();
         const id = (r.id || '').toUpperCase();
-        return !ref.startsWith('college:') && !id.startsWith('KS-') && !id.startsWith('ROT-') && !id.startsWith('VEN-') && !id.startsWith('GUR-') && !id.startsWith('KJS-') && !id.startsWith('SYD-') && !id.startsWith('SKS-');
+        const col = (r.college || '').toLowerCase();
+        const isRot = ref.includes('rotaract') || coup.includes('rotaract') || txn.includes('rotaract') || id.startsWith('ROT-');
+        const isVen = ref.includes('vendor') || ref.includes('youth') || coup.includes('vendor') || coup.includes('youth') || txn.includes('vendor') || txn.includes('youth') || id.startsWith('VEN-');
+        const isCol = ref.startsWith('college:') || coup.startsWith('free-') || txn.startsWith('free-') || col.includes('shroff') ||
+               id.startsWith('KS-') || id.startsWith('KJS-') || id.startsWith('SYD-') || id.startsWith('GUR-') || id.startsWith('MIT-') ||
+               id.startsWith('HRC-') || id.startsWith('NMC-') || id.startsWith('DJS-') || id.startsWith('SKS-') || id.startsWith('AUR-') ||
+               id.startsWith('SIW-') || id.startsWith('BHA-') || id.startsWith('SIE-') || id.startsWith('RGI-') || id.startsWith('KIR-') ||
+               id.startsWith('BKB-') || id.startsWith('VES-') || id.startsWith('VJT-') || id.startsWith('BED-') || id.startsWith('VAL-') ||
+               id.startsWith('JAI-') || id.startsWith('RAP-') || id.startsWith('COL-');
+        return !isRot && !isVen && !isCol;
     });
 
     // Apply search
@@ -2267,17 +2306,40 @@ function renderCollegesStats(colleges, regs) {
     regs.forEach(r => {
         const refLower = (r.referredBy || '').toLowerCase();
         const coupLower = (r.couponUsed || '').toLowerCase();
+        const txnLower = (r.transactionId || '').toLowerCase();
         const idLower = (r.id || '').toLowerCase();
         const colLower = (r.college || '').toLowerCase();
 
-        const isRot = refLower.includes('rotaract') || coupLower.includes('rotaract') || idLower.startsWith('rot-');
-        const isVen = refLower.includes('vendor') || refLower.includes('youth') || coupLower.includes('vendor') || coupLower.includes('youth') || idLower.startsWith('ven-');
+        const isRot = refLower.includes('rotaract') || coupLower.includes('rotaract') || txnLower.includes('rotaract') || idLower.startsWith('rot-');
+        const isVen = refLower.includes('vendor') || refLower.includes('youth') || coupLower.includes('vendor') || coupLower.includes('youth') || txnLower.includes('vendor') || txnLower.includes('youth') || idLower.startsWith('ven-');
         const isCol = !isRot && !isVen && (
-            colLower.includes('shroff') || 
-            coupLower.includes('free-') ||
+            refLower.startsWith('college:') ||
+            coupLower.startsWith('free-') ||
+            txnLower.startsWith('free-') ||
+            colLower.includes('shroff') ||
             idLower.startsWith('ks-') ||
+            idLower.startsWith('kjs-') ||
+            idLower.startsWith('syd-') ||
             idLower.startsWith('gur-') ||
-            refLower.startsWith('college:')
+            idLower.startsWith('mit-') ||
+            idLower.startsWith('hrc-') ||
+            idLower.startsWith('nmc-') ||
+            idLower.startsWith('djs-') ||
+            idLower.startsWith('sks-') ||
+            idLower.startsWith('aur-') ||
+            idLower.startsWith('siw-') ||
+            idLower.startsWith('bha-') ||
+            idLower.startsWith('sie-') ||
+            idLower.startsWith('rgi-') ||
+            idLower.startsWith('kir-') ||
+            idLower.startsWith('bkb-') ||
+            idLower.startsWith('ves-') ||
+            idLower.startsWith('vjt-') ||
+            idLower.startsWith('bed-') ||
+            idLower.startsWith('val-') ||
+            idLower.startsWith('jai-') ||
+            idLower.startsWith('rap-') ||
+            idLower.startsWith('col-')
         );
 
         if (isRot) { rotaractSignups++; totalDelegationRegs++; if (r.verified) totalDelegationVerified++; }
@@ -2372,20 +2434,41 @@ function renderCollegesGrid(colleges, regs) {
             const id = (r.id || '').toLowerCase();
             const colName = (r.college || '').toLowerCase();
 
-            if (isRotaract) {
-                return id.startsWith('rot-') || ref.includes('rotaract') || coup.includes('rotaract') || txn.includes('rotaract');
+            if (colSlugLower === 'youth-network') {
+                return ref.includes('youth') || coup.includes('youth') || txn.includes('youth') ||
+                       (id.startsWith('ven-') && (ref.includes('youth') || coup.includes('youth') || colName.includes('youth')));
             }
-            if (isVendor) {
-                return id.startsWith('ven-') || ref.includes('vendor') || ref.includes('youth') || coup.includes('vendor') || coup.includes('youth');
+            if (colSlugLower === 'vendor-partner') {
+                return (ref.includes('vendor') || coup.includes('vendor') || txn.includes('vendor')) &&
+                       !ref.includes('youth') && !coup.includes('youth');
+            }
+            if (colSlugLower === 'rotaract-mum') {
+                return ref.includes('rotaract-mum') || coup.includes('rotaract-mum') || txn.includes('rotaract-mum');
+            }
+            if (colSlugLower === 'rotaract-mumbai') {
+                return ref.includes('rotaract-mumbai') || coup.includes('rotaract-mumbai') || txn.includes('rotaract-mumbai');
+            }
+            if (colSlugLower === 'rotaract') {
+                return (id.startsWith('rot-') || ref.includes('rotaract') || coup.includes('rotaract') || txn.includes('rotaract')) &&
+                       !ref.includes('mum') && !coup.includes('mum') && !txn.includes('mum');
             }
             // Strict institutional college matching
             if (isFlagship) {
                 return (id.startsWith('ks-') || coup.includes('kes-shroff') || txn.includes('kes-shroff') || ref.includes('kes-shroff') || colName.includes('shroff'));
             }
             return ref.includes('college:' + colSlugLower) ||
-                   coup === ('free-' + colSlugLower) ||
-                   txn === ('free-' + colSlugLower) ||
-                   (colSlugLower === 'guru-nanak-khalsa-college' && (id.startsWith('gur-') || ref.includes('guru-nanak')));
+                   coup === ('free-' + colSlugLower) || coup.includes(colSlugLower) ||
+                   txn === ('free-' + colSlugLower) || txn.includes(colSlugLower) ||
+                   (colSlugLower === 'guru-nanak-khalsa-college' && (id.startsWith('gur-') || ref.includes('guru-nanak') || colName.includes('guru nanak'))) ||
+                   (colSlugLower === 'kj-somaiya' && (id.startsWith('kjs-') || ref.includes('kj-somaiya') || colName.includes('somaiya'))) ||
+                   (colSlugLower === 'sydenham' && (id.startsWith('syd-') || ref.includes('sydenham') || colName.includes('sydenham'))) ||
+                   (colSlugLower === 'sk-somaiya' && (id.startsWith('sks-') || ref.includes('sk-somaiya'))) ||
+                   (colSlugLower === 'mithibai' && (id.startsWith('mit-') || ref.includes('mithibai'))) ||
+                   (colSlugLower === 'hr-college' && (id.startsWith('hrc-') || ref.includes('hr-college'))) ||
+                   (colSlugLower === 'nm-college' && (id.startsWith('nmc-') || ref.includes('nm-college'))) ||
+                   (colSlugLower === 'dj-sanghvi' && (id.startsWith('djs-') || ref.includes('dj-sanghvi') || ref.includes('sanghvi'))) ||
+                   (colSlugLower === 'bhartiya-vidyapeeth' && (id.startsWith('bha-') || ref.includes('bhartiya') || colName.includes('bhartiya'))) ||
+                   (colSlugLower === 'sies-nerul' && (id.startsWith('sie-') || ref.includes('sies') || colName.includes('sies')));
         });
 
         const total = colRegs.length;
@@ -2872,13 +2955,26 @@ function filterRegistrationsByCollege(slug, collegeName) {
     } else if (slug === 'guru-nanak-khalsa-college') {
         query = 'guru-nanak';
         selectVal = 'colleges';
+    } else if (slug === 'youth-network') {
+        query = 'youth';
+        selectVal = 'vendor';
+    } else if (slug === 'vendor-partner') {
+        query = 'vendor';
+        selectVal = 'vendor';
+    } else if (slug === 'rotaract-mum') {
+        query = 'rotaract-mum';
+        selectVal = 'rotaract';
+    } else if (slug === 'rotaract-mumbai') {
+        query = 'rotaract-mumbai';
+        selectVal = 'rotaract';
     } else if (slug.includes('rotaract')) {
         query = 'rotaract';
         selectVal = 'rotaract';
-    } else if (slug.includes('vendor') || slug.includes('youth')) {
+    } else if (slug.includes('vendor')) {
         query = 'vendor';
         selectVal = 'vendor';
     } else {
+        query = slug;
         selectVal = 'colleges';
     }
 

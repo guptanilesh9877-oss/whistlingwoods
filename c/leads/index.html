@@ -658,21 +658,454 @@
         const SUPABASE_URL = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
         const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
 
-        const DEFAULT_COLLEGES = [
-            { slug: 'kes-shroff', name: 'KES Shroff College of Arts & Commerce', shortName: 'KES Shroff' },
-            { slug: 'kj-somaiya', name: 'Kj Somaiya College', shortName: 'KJ Somaiya College' },
-            { slug: 'sydenham', name: 'Sydenham College of Commerce and Economics', shortName: 'Sydenham College' },
-            { slug: 'mithibai', name: 'Mithibai College of Arts, Chauhan Institute of Science', shortName: 'Mithibai College' },
-            { slug: 'hr-college', name: 'H.R. College of Commerce & Economics', shortName: 'HR College' },
-            { slug: 'nm-college', name: 'Narsee Monjee College of Commerce and Economics', shortName: 'NM College' },
-            { slug: 'dj-sanghvi', name: 'Dwarkadas J. Sanghvi College of Engineering', shortName: 'DJ Sanghvi' },
-            { slug: 'sk-somaiya', name: 'S.K. Somaiya College of Arts, Science and Commerce', shortName: 'SK Somaiya College' },
-            { slug: 'rotaract-mum', name: 'Rotaract Clubs Mumbai — All Colleges Delegation Pass', shortName: 'Rotaract Mumbai', openCollege: true, type: 'rotaract', pocs: [{ name: 'Nilesh Kumar Gupta', phone: '8699260386' }, { name: 'Tarasha Pahuja', phone: '9569884046' }] },
-            { slug: 'rotaract', name: 'Rotaract Clubs — All Colleges Delegation Pass', shortName: 'Rotaract Clubs', openCollege: true, type: 'rotaract', pocs: [{ name: 'Nilesh Kumar Gupta', phone: '8699260386' }, { name: 'Tarasha Pahuja', phone: '9569884046' }] },
-            { slug: 'rotaract-mumbai', name: 'Rotaract District 3141 & 3142 — All Colleges Youth Delegation', shortName: 'Rotaract Mumbai', openCollege: true, type: 'rotaract', pocs: [{ name: 'Nilesh Kumar Gupta', phone: '8699260386' }, { name: 'Tarasha Pahuja', phone: '9569884046' }] },
-            { slug: 'vendor-partner', name: 'Campus Vendor & Youth Outreach Partner Network', shortName: 'Vendor Partner', openCollege: true, type: 'vendor' },
-            { slug: 'youth-network', name: 'Youth Creator & Student Community Network (All Colleges)', shortName: 'Youth Network', openCollege: true, type: 'vendor' }
-        ];
+        const defaultColleges = [
+            {
+                slug: 'kes-shroff',
+                name: 'KES Shroff College of Arts & Commerce',
+                shortName: 'KES Shroff',
+                pocs: [
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' },
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SATVIK', 'SAHIL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with KES Shroff College, admission is granted on a complimentary basis for all enrolled students. Kindly attach your Student ID Card or recent College Fee Receipt to receive your verified academic delegate pass.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'kj-somaiya',
+                name: 'Kj Somaiya College',
+                shortName: 'KJ Somaiya College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with KJ Somaiya College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'sydenham',
+                name: 'Sydenham College of Commerce and Economics',
+                shortName: 'Sydenham College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Sydenham College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'mithibai',
+                name: 'Mithibai College of Arts, Chauhan Institute of Science & Amrutben Jivanlal College of Commerce & Economics',
+                shortName: 'Mithibai College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Mithibai College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'hr-college',
+                name: 'H.R. College of Commerce & Economics',
+                shortName: 'HR College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with HR College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'nm-college',
+                name: 'Narsee Monjee College of Commerce & Economics',
+                shortName: 'NM College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with NM College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'dj-sanghvi',
+                name: 'Dwarkadas J. Sanghvi College of Engineering',
+                shortName: 'DJ Sanghvi',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with DJ Sanghvi College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['B.E. Computer', 'B.E. IT', 'B.E. Electronics', 'B.E. Mechanical', 'B.E. Civil', 'B.E. Chemical', 'M.E.', 'Other']
+            },
+            {
+                slug: 'sk-somaiya',
+                name: 'Somaiya Vidyavihar University - S.K. Somaiya College',
+                shortName: 'SK Somaiya College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SK Somaiya College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'aurobindo-college',
+                name: 'Aurobindo college',
+                shortName: 'Aurobindo',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Aurobindo College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'siws',
+                name: 'SIWS',
+                shortName: 'Siws',
+                pocs: [
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' },
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SATVIK', 'SAHIL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SIWS, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'rotaract-mum',
+                name: 'Rotaract Clubs Mumbai — All Colleges Delegation Pass',
+                shortName: 'Rotaract Mumbai',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract Youth Delegation Privilege',
+                privilegeDesc: 'Complimentary admission for Rotaract Club members, youth leaders, and student delegates from ANY college or institution. Enter your college and upload your College ID Card, Fee Receipt, or Rotaract Membership ID to receive your verified academic delegate pass.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rotaract',
+                name: 'Rotaract Clubs — All Colleges Delegation Pass',
+                shortName: 'Rotaract Club Partner',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract Youth Delegation Privilege',
+                privilegeDesc: 'Complimentary admission for Rotaract Club members and student delegates from ANY college or institution. Enter your college and upload your College ID Card, Fee Receipt, or Rotaract Membership ID to receive your verified academic delegate pass.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rotaract-mumbai',
+                name: 'Rotaract District 3141 & 3142 — All Colleges Youth Delegation',
+                shortName: 'Rotaract Mumbai',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract District Delegation Privilege',
+                privilegeDesc: 'Complimentary pass for students and Rotaractors across all Mumbai colleges and institutes. Please upload your student ID or Rotaract ID for verification.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'vendor-partner',
+                name: 'Campus Vendor & Youth Outreach Partner Network',
+                shortName: 'Vendor Partner',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Vendor Partner Outreach Privilege',
+                privilegeDesc: 'Complimentary admission for youth, student delegates, and campus community members from any college. Enter your institution and upload ID for verification.',
+                badge: 'VENDOR PARTNER FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'youth-network',
+                name: 'Youth Creator & Student Community Network (All Colleges)',
+                shortName: 'Youth Network',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Youth Network Privilege',
+                privilegeDesc: 'Complimentary access for young filmmakers, creators, and students from all colleges across India.',
+                badge: 'YOUTH NETWORK FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'bhartiya-vidyapeeth',
+                name: 'Bhartiya Vidyapeeth',
+                shortName: 'Bhartiya Vidyapeeth',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Rahul', phone: '9136033847', role: 'Community & Partnership Lead' },
+                    { name: 'Rahul', phone: '9136033847', role: 'Campus Outreach Lead' }
+                ],
+                referralCodes: ['RAHUL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Bhartiya Vidyapeeth, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'sies-nerul',
+                name: 'SIES Nerul',
+                shortName: 'SIES Nerul',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Rahul', phone: '9136033847', role: 'Community & Partnership Lead' },
+                    { name: 'Rahul', phone: '9136033847', role: 'Campus Outreach Lead' }
+                ],
+                referralCodes: ['RAHUL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SIES Nerul, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'guru-nanak-khalsa-college',
+                name: 'Guru Nanak Khalsa College',
+                shortName: 'Guru Nanak Khalsa',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Guru Nanak Khalsa College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rgit',
+                name: 'RGIT',
+                shortName: 'RGIT',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['Engineering', 'B.E.', 'B.Tech', 'B.Sc IT', 'B.Sc CS', 'Other']
+            },
+            {
+                slug: 'kirti-college',
+                name: 'Kirti College',
+                shortName: 'Kirti College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'bk-birla-college',
+                name: 'BK BIRLA COLLEGE',
+                shortName: 'BK Birla College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'bhavans-college',
+                name: "Bhavan's College",
+                shortName: "Bhavan's College",
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'ves',
+                name: 'Vivekanand Education Society',
+                shortName: 'VES College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Engineering', 'Other']
+            },
+            {
+                slug: 'vjti',
+                name: 'VJTI',
+                shortName: 'VJTI Mumbai',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['B.Tech', 'Engineering', 'M.Tech', 'MCA', 'Other']
+            },
+            {
+                slug: 'bedekar-college',
+                name: 'Bedekar College',
+                shortName: 'Bedekar College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'valia-college',
+                name: 'Valia College',
+                shortName: 'Valia College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'jai-hind-college',
+                name: 'Jai Hind College',
+                shortName: 'Jai Hind College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'ra-podar-college',
+                name: 'RA Podar College',
+                shortName: 'RA Podar College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            }
+        ];;
 
         let _allColleges = DEFAULT_COLLEGES;
         let _currentCollege = null;
@@ -683,19 +1116,42 @@
         function getSlugFromUrl() {
             const params = new URLSearchParams(window.location.search);
             const q = params.get('c') || params.get('college') || params.get('slug');
-            if (q) return q.toLowerCase().replace(/\.html$/, '').trim();
+            if (q) {
+                const cleanQ = q.toLowerCase().replace(/\.html$/, '').trim();
+                if (cleanQ && cleanQ !== 'c' && cleanQ !== 'leads' && cleanQ !== 'college' && cleanQ !== 'index') return cleanQ;
+            }
 
             if (window.DEFAULT_PORTAL_SLUG) return window.DEFAULT_PORTAL_SLUG;
 
-            const pathParts = window.location.pathname.split('/').filter(Boolean);
-            const cIdx = pathParts.indexOf('c');
-            if (cIdx !== -1 && pathParts[cIdx + 1] && pathParts[cIdx + 1] !== 'leads') {
-                return pathParts[cIdx + 1].toLowerCase().replace(/\.html$/, '').trim();
+            // Normalize pathname parts (ignore Windows drive letters like 'c:' and generic terms)
+            const ignored = new Set(['c', 'c:', 'college', 'leads', 'index', 'index.html', 'leads.html', 'college.html']);
+            const pathParts = window.location.pathname.split('/').map(p => p.toLowerCase().replace(/\.html$/, '').trim()).filter(Boolean);
+
+            // If any segment matches a known college slug, return it
+            if (Array.isArray(_allColleges) && _allColleges.length > 0) {
+                for (const part of pathParts) {
+                    if (_allColleges.some(c => c && c.slug && c.slug.toLowerCase() === part)) {
+                        return part;
+                    }
+                }
             }
-            if (pathParts.length > 0) {
-                const first = pathParts[0].toLowerCase().replace(/\.html$/, '').trim();
-                if (first !== 'leads') return first;
+
+            // Check /c/:slug/leads pattern
+            const cIdx = pathParts.findIndex(p => p === 'c');
+            if (cIdx !== -1 && pathParts[cIdx + 1] && !ignored.has(pathParts[cIdx + 1])) {
+                return pathParts[cIdx + 1];
             }
+
+            // Check from end of path only against known colleges
+            for (let i = pathParts.length - 1; i >= 0; i--) {
+                const p = pathParts[i];
+                if (p && !ignored.has(p) && !p.endsWith(':')) {
+                    if (Array.isArray(_allColleges) && _allColleges.some(c => c && c.slug && c.slug.toLowerCase() === p)) {
+                        return p;
+                    }
+                }
+            }
+
             return null;
         }
 
@@ -842,7 +1298,9 @@
             const col = _currentCollege;
             const slug = (col.slug || '').toLowerCase();
             const isFlagship = slug === 'kes-shroff';
-            const isOpen = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || slug.includes('rotaract') || slug.includes('vendor'));
+            const isRotaract = Boolean(col.type === 'rotaract' || slug.includes('rotaract'));
+            const isYouthNetwork = slug === 'youth-network' || (col.type === 'vendor' && slug.includes('youth'));
+            const isVendorPartner = slug === 'vendor-partner';
 
             _filteredRegistrations = _allRegistrations.filter(r => {
                 const rId = (r.id || '').toUpperCase();
@@ -861,24 +1319,44 @@
                     );
                 }
 
-                if (isOpen) {
-                    if (ref.includes(slug) || coup.includes(slug) || txn.includes(slug)) return true;
-                    if (slug.includes('rotaract') && (
-                        rId.startsWith('ROT-') ||
-                        coup.includes('rotaract') ||
-                        txn.includes('rotaract') ||
-                        ref.includes('rotaract')
-                    )) return true;
-                    if (slug.includes('vendor') && rId.startsWith('VEN-')) return true;
-                    return false;
+                if (isYouthNetwork) {
+                    return ref.includes('youth') || coup.includes('youth') || txn.includes('youth') ||
+                           (rId.startsWith('VEN-') && (ref.includes('youth') || coup.includes('youth') || colName.includes('youth')));
                 }
 
+                if (isVendorPartner) {
+                    return (ref.includes('vendor') || coup.includes('vendor') || txn.includes('vendor')) &&
+                           !ref.includes('youth') && !coup.includes('youth');
+                }
+
+                if (isRotaract) {
+                    if (slug === 'rotaract-mum') {
+                        return ref.includes('rotaract-mum') || coup.includes('rotaract-mum') || txn.includes('rotaract-mum');
+                    }
+                    if (slug === 'rotaract-mumbai') {
+                        return ref.includes('rotaract-mumbai') || coup.includes('rotaract-mumbai') || txn.includes('rotaract-mumbai');
+                    }
+                    // Generic rotaract
+                    return (ref.includes('rotaract') || coup.includes('rotaract') || txn.includes('rotaract') || rId.startsWith('ROT-')) &&
+                           !ref.includes('mum') && !coup.includes('mum');
+                }
+
+                // Institutional College
                 return (
+                    ref.includes('college:' + slug) ||
                     ref.includes(slug) ||
                     coup.includes(slug) ||
                     txn.includes(slug) ||
-                    colName.includes(slug) ||
-                    (col.shortName && colName.includes(col.shortName.toLowerCase()))
+                    (slug === 'guru-nanak-khalsa-college' && (rId.startsWith('GUR-') || ref.includes('guru-nanak') || colName.includes('guru nanak'))) ||
+                    (slug === 'kj-somaiya' && (rId.startsWith('KJS-') || ref.includes('kj-somaiya') || colName.includes('somaiya'))) ||
+                    (slug === 'sydenham' && (rId.startsWith('SYD-') || ref.includes('sydenham') || colName.includes('sydenham'))) ||
+                    (slug === 'sk-somaiya' && (rId.startsWith('SKS-') || ref.includes('sk-somaiya'))) ||
+                    (slug === 'mithibai' && (rId.startsWith('MIT-') || ref.includes('mithibai'))) ||
+                    (slug === 'hr-college' && (rId.startsWith('HRC-') || ref.includes('hr-college'))) ||
+                    (slug === 'nm-college' && (rId.startsWith('NMC-') || ref.includes('nm-college'))) ||
+                    (slug === 'dj-sanghvi' && (rId.startsWith('DJS-') || ref.includes('dj-sanghvi') || ref.includes('sanghvi'))) ||
+                    (slug === 'bhartiya-vidyapeeth' && (rId.startsWith('BHA-') || ref.includes('bhartiya') || colName.includes('bhartiya'))) ||
+                    (slug === 'sies-nerul' && (rId.startsWith('SIE-') || ref.includes('sies') || colName.includes('sies')))
                 );
             });
 

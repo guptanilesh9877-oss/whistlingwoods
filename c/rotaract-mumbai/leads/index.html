@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Student Registrations Portal — Celebrate Cinema 2026</title>
+    <link rel="icon" type="image/png" href="/assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #0d0a14;
+            --bg-card: rgba(22, 18, 34, 0.85);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --gold: #d4a843;
+            --gold-light: #f7e7c5;
+            --primary: #8d6aae;
+            --primary-light: #c4a8e2;
+            --text-main: #f3f0f7;
+            --text-muted: #a69bb5;
+            --green: #4ade80;
+            --amber: #f59e0b;
+            --red: #f87171;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Plus Jakarta Sans', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(ellipse at 20% 0%, rgba(141, 106, 174, 0.18) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 100%, rgba(212, 168, 67, 0.12) 0%, transparent 60%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* Ambient top strip */
+        .top-strip {
+            height: 4px;
+            background: linear-gradient(90deg, #8d6aae, #d4a843, #10b981);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Top Bar */
+        .top-nav {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-glass);
+            background: rgba(13, 10, 20, 0.7);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .brand-lockup {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-logo {
+            height: 34px;
+            width: auto;
+            border-radius: 6px;
+        }
+
+        .brand-text h1 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: var(--gold);
+        }
+
+        .brand-text p {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        .read-only-pill {
+            background: rgba(74, 222, 128, 0.12);
+            border: 1px solid rgba(74, 222, 128, 0.35);
+            color: var(--green);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* Hero Header */
+        .portal-hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        }
+
+        .portal-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #d4a843, #8d6aae);
+        }
+
+        .portal-meta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .portal-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+            line-height: 1.25;
+        }
+
+        .portal-desc {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            max-width: 800px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .portal-info-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .info-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-pill strong {
+            color: var(--gold-light);
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .kpi-sub {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+
+        /* Action and Filter Bar */
+        .controls-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .search-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+            max-width: 500px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px rgba(212, 168, 67, 0.2);
+        }
+
+        .filters-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .select-filter {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            padding: 9px 12px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--gold);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold) 0%, #b38426 100%);
+            color: #121018;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        /* Table Card */
+        .table-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--gold-light);
+            font-weight: 700;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-glass);
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.6px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .ticket-id {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .student-name {
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 0.88rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .badge-verified {
+            background: rgba(74, 222, 128, 0.15);
+            color: var(--green);
+            border: 1px solid rgba(74, 222, 128, 0.4);
+        }
+
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--amber);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+
+        .badge-rejected {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--red);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .badge-date {
+            background: rgba(141, 106, 174, 0.18);
+            border: 1px solid rgba(141, 106, 174, 0.4);
+            color: var(--primary-light);
+        }
+
+        .btn-view-id {
+            background: rgba(212, 168, 67, 0.12);
+            border: 1px solid rgba(212, 168, 67, 0.35);
+            color: var(--gold);
+            padding: 4px 9px;
+            border-radius: 6px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-view-id:hover {
+            background: var(--gold);
+            color: #121018;
+        }
+
+        /* Modal for ID Card */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #171324;
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            max-width: 550px;
+            width: 100%;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 12px;
+        }
+
+        .modal-body img {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: #000;
+        }
+
+        /* Loading / Empty States */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(212, 168, 67, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--gold);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .portal-title { font-size: 1.5rem; }
+            .kpi-grid { grid-template-columns: 1fr 1fr; }
+            .controls-card { flex-direction: column; align-items: stretch; }
+            .search-group { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-strip"></div>
+
+    <!-- Navigation Header -->
+    <header class="top-nav">
+        <a href="/" class="brand-lockup">
+            <img src="/assets/cc26-logo.png" alt="Celebrate Cinema" class="brand-logo">
+            <div class="brand-text">
+                <h1>WHISTLING WOODS INTERNATIONAL</h1>
+                <p>Celebrate Cinema 2026 • Academic Trek</p>
+            </div>
+        </a>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <span class="read-only-pill">
+                <span>👁️</span> <span>Official Partner Read-Only View</span>
+            </span>
+            <button class="btn btn-secondary" onclick="fetchAndRenderRegistrations()" id="btn-refresh" title="Refresh Live Signups">
+                <span>⟳ Refresh</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- College Selector Dropdown if no slug provided in URL -->
+        <div id="selector-box" style="display:none; background:var(--bg-card); border:1px solid var(--border-glass); border-radius:14px; padding:18px 20px; margin-bottom:20px;">
+            <div style="font-size:0.85rem; color:var(--gold); font-weight:700; margin-bottom:8px;">
+                🏛️ Select Partner College / Organization to View Leads:
+            </div>
+            <select id="partner-select-dropdown" class="select-filter" style="width:100%; max-width:400px;" onchange="switchCollege(this.value)">
+                <!-- Populated dynamically -->
+            </select>
+        </div>
+
+        <!-- Hero Header -->
+        <section class="portal-hero" id="portal-hero">
+            <div class="portal-meta-badge" id="hero-badge">
+                <span>🏛️</span> <span>OFFICIAL INSTITUTIONAL DELEGATION TRACKER</span>
+            </div>
+            <h2 class="portal-title" id="hero-title">Partner College Delegation Leads</h2>
+            <p class="portal-desc" id="hero-desc">
+                Live delegate registration and attendance portal for Whistling Woods International Celebrate Cinema 2026 Academic Trek.
+            </p>
+
+            <div class="portal-info-strip">
+                <span class="info-pill">📍 Venue: <strong>Film City, Goregaon (East), Mumbai</strong></span>
+                <span class="info-pill">📅 Event Dates: <strong>08th &amp; 09th October 2026</strong></span>
+                <span class="info-pill">🎟️ Pass Type: <strong id="hero-pass-type">100% Free Delegation Pass</strong></span>
+                <span class="info-pill" id="hero-leads-pill">👥 Leads: <strong>Nilesh Gupta &amp; Tarasha Pahuja</strong></span>
+                <span class="info-pill" id="hero-split-pill" style="display:none; background:rgba(141,106,174,0.22); border-color:rgba(247,231,197,0.4); color:var(--gold);">⚖️ Equal Split: <strong id="split-text" style="color:#ffffff;">Nilesh: 0 | Tarasha: 0</strong></span>
+            </div>
+        </section>
+
+        <!-- KPI Cards -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Total Signups</div>
+                <div class="kpi-value" id="kpi-total" style="color:var(--gold);">0</div>
+                <div class="kpi-sub">Student delegate registrations</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Verified by Desk</div>
+                <div class="kpi-value" id="kpi-verified" style="color:var(--green);">0</div>
+                <div class="kpi-sub">Confirmed entry credentials</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">In Verification</div>
+                <div class="kpi-value" id="kpi-pending" style="color:var(--amber);">0</div>
+                <div class="kpi-sub">ID review in progress</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Date Preference</div>
+                <div style="font-size:0.85rem; color:#ffffff; font-weight:700; line-height:1.6;" id="kpi-dates">
+                    <div>Both Days: <span id="kpi-both" style="color:var(--primary-light);">0</span></div>
+                    <div style="font-size:0.75rem; color:var(--text-muted);">Day 1: <span id="kpi-day1">0</span> • Day 2: <span id="kpi-day2">0</span></div>
+                </div>
+                <div class="kpi-sub" style="margin-top:4px;">Academic Trek Masterclasses</div>
+            </div>
+        </section>
+
+        <!-- Controls: Search, Filters & Export -->
+        <section class="controls-card">
+            <div class="search-group">
+                <input type="text" id="filter-search" class="search-input" placeholder="🔍 Search by student name, email, phone, college, stream..." oninput="handleFilterChange()">
+            </div>
+            <div class="filters-group">
+                <select id="filter-lead" class="select-filter" onchange="handleFilterChange()" style="display:none; border-color:rgba(247,231,197,0.4); background:rgba(141,106,174,0.18); color:var(--gold); font-weight:700;">
+                    <option value="all">👥 All Assigned Leads (100%)</option>
+                    <option value="NILESH">👤 Nilesh Gupta's Half</option>
+                    <option value="TARASHA">👤 Tarasha Pahuja's Half</option>
+                </select>
+
+                <select id="filter-status" class="select-filter" onchange="handleFilterChange()">
+                    <option value="all">All Verification Statuses</option>
+                    <option value="verified">Verified Only (✓)</option>
+                    <option value="pending">In Review Only (⏳)</option>
+                </select>
+
+                <select id="filter-date" class="select-filter" onchange="handleFilterChange()">
+                    <option value="all">All Visit Dates</option>
+                    <option value="both">Both Days</option>
+                    <option value="day1">Day 1 (08th Oct)</option>
+                    <option value="day2">Day 2 (09th Oct)</option>
+                </select>
+
+                <button class="btn btn-primary" onclick="exportRegistrationsCSV()">
+                    <span>📥 Export to Excel (CSV)</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Registrations Table -->
+        <section class="table-card">
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Ticket ID</th>
+                            <th>Student Name</th>
+                            <th>Contact</th>
+                            <th id="th-college">College / Institute</th>
+                            <th>Year &amp; Stream</th>
+                            <th>Visiting Date</th>
+                            <th>Status</th>
+                            <th>ID Card Proof</th>
+                            <th>Registered At</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrations-tbody">
+                        <tr>
+                            <td colspan="10" class="empty-state">
+                                <div class="spinner"></div>
+                                <div style="margin-top:12px; font-weight:600;">Loading registrations from Whistling Woods database…</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal for ID Card Image Proof -->
+    <div class="modal-overlay" id="modal-id" style="display:none;" onclick="if(event.target===this) closeIdModal()">
+        <div class="modal-content">
+            <div class="modal-head">
+                <div>
+                    <h3 style="font-size:1.1rem; color:var(--gold);" id="modal-student-name">Student ID Proof</h3>
+                    <div style="font-size:0.75rem; color:var(--text-muted);" id="modal-ticket-id">Ticket ID: -</div>
+                </div>
+                <button class="btn btn-secondary" onclick="closeIdModal()" style="padding:4px 10px; font-size:0.8rem;">Close ✕</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div class="spinner" style="margin:40px auto; display:block;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script Layer -->
+    <script>window.DEFAULT_PORTAL_SLUG = 'rotaract-mumbai';</script>
+    <script>
+        const SUPABASE_URL = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
+        const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
+
+        const defaultColleges = [
+            {
+                slug: 'kes-shroff',
+                name: 'KES Shroff College of Arts & Commerce',
+                shortName: 'KES Shroff',
+                pocs: [
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' },
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SATVIK', 'SAHIL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with KES Shroff College, admission is granted on a complimentary basis for all enrolled students. Kindly attach your Student ID Card or recent College Fee Receipt to receive your verified academic delegate pass.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'kj-somaiya',
+                name: 'Kj Somaiya College',
+                shortName: 'KJ Somaiya College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with KJ Somaiya College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'sydenham',
+                name: 'Sydenham College of Commerce and Economics',
+                shortName: 'Sydenham College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Sydenham College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'mithibai',
+                name: 'Mithibai College of Arts, Chauhan Institute of Science & Amrutben Jivanlal College of Commerce & Economics',
+                shortName: 'Mithibai College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Mithibai College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'hr-college',
+                name: 'H.R. College of Commerce & Economics',
+                shortName: 'HR College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with HR College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'nm-college',
+                name: 'Narsee Monjee College of Commerce & Economics',
+                shortName: 'NM College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with NM College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'dj-sanghvi',
+                name: 'Dwarkadas J. Sanghvi College of Engineering',
+                shortName: 'DJ Sanghvi',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with DJ Sanghvi College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['B.E. Computer', 'B.E. IT', 'B.E. Electronics', 'B.E. Mechanical', 'B.E. Civil', 'B.E. Chemical', 'M.E.', 'Other']
+            },
+            {
+                slug: 'sk-somaiya',
+                name: 'Somaiya Vidyavihar University - S.K. Somaiya College',
+                shortName: 'SK Somaiya College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SK Somaiya College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'aurobindo-college',
+                name: 'Aurobindo college',
+                shortName: 'Aurobindo',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Aurobindo College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'siws',
+                name: 'SIWS',
+                shortName: 'Siws',
+                pocs: [
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' },
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SATVIK', 'SAHIL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SIWS, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'rotaract-mum',
+                name: 'Rotaract Clubs Mumbai — All Colleges Delegation Pass',
+                shortName: 'Rotaract Mumbai',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract Youth Delegation Privilege',
+                privilegeDesc: 'Complimentary admission for Rotaract Club members, youth leaders, and student delegates from ANY college or institution. Enter your college and upload your College ID Card, Fee Receipt, or Rotaract Membership ID to receive your verified academic delegate pass.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rotaract',
+                name: 'Rotaract Clubs — All Colleges Delegation Pass',
+                shortName: 'Rotaract Club Partner',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract Youth Delegation Privilege',
+                privilegeDesc: 'Complimentary admission for Rotaract Club members and student delegates from ANY college or institution. Enter your college and upload your College ID Card, Fee Receipt, or Rotaract Membership ID to receive your verified academic delegate pass.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rotaract-mumbai',
+                name: 'Rotaract District 3141 & 3142 — All Colleges Youth Delegation',
+                shortName: 'Rotaract Mumbai',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract District Delegation Privilege',
+                privilegeDesc: 'Complimentary pass for students and Rotaractors across all Mumbai colleges and institutes. Please upload your student ID or Rotaract ID for verification.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'vendor-partner',
+                name: 'Campus Vendor & Youth Outreach Partner Network',
+                shortName: 'Vendor Partner',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Vendor Partner Outreach Privilege',
+                privilegeDesc: 'Complimentary admission for youth, student delegates, and campus community members from any college. Enter your institution and upload ID for verification.',
+                badge: 'VENDOR PARTNER FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'youth-network',
+                name: 'Youth Creator & Student Community Network (All Colleges)',
+                shortName: 'Youth Network',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Youth Network Privilege',
+                privilegeDesc: 'Complimentary access for young filmmakers, creators, and students from all colleges across India.',
+                badge: 'YOUTH NETWORK FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'bhartiya-vidyapeeth',
+                name: 'Bhartiya Vidyapeeth',
+                shortName: 'Bhartiya Vidyapeeth',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Rahul', phone: '9136033847', role: 'Community & Partnership Lead' },
+                    { name: 'Rahul', phone: '9136033847', role: 'Campus Outreach Lead' }
+                ],
+                referralCodes: ['RAHUL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Bhartiya Vidyapeeth, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'sies-nerul',
+                name: 'SIES Nerul',
+                shortName: 'SIES Nerul',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Rahul', phone: '9136033847', role: 'Community & Partnership Lead' },
+                    { name: 'Rahul', phone: '9136033847', role: 'Campus Outreach Lead' }
+                ],
+                referralCodes: ['RAHUL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SIES Nerul, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'guru-nanak-khalsa-college',
+                name: 'Guru Nanak Khalsa College',
+                shortName: 'Guru Nanak Khalsa',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Guru Nanak Khalsa College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rgit',
+                name: 'RGIT',
+                shortName: 'RGIT',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['Engineering', 'B.E.', 'B.Tech', 'B.Sc IT', 'B.Sc CS', 'Other']
+            },
+            {
+                slug: 'kirti-college',
+                name: 'Kirti College',
+                shortName: 'Kirti College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'bk-birla-college',
+                name: 'BK BIRLA COLLEGE',
+                shortName: 'BK Birla College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'bhavans-college',
+                name: "Bhavan's College",
+                shortName: "Bhavan's College",
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'ves',
+                name: 'Vivekanand Education Society',
+                shortName: 'VES College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Engineering', 'Other']
+            },
+            {
+                slug: 'vjti',
+                name: 'VJTI',
+                shortName: 'VJTI Mumbai',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['B.Tech', 'Engineering', 'M.Tech', 'MCA', 'Other']
+            },
+            {
+                slug: 'bedekar-college',
+                name: 'Bedekar College',
+                shortName: 'Bedekar College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'valia-college',
+                name: 'Valia College',
+                shortName: 'Valia College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'jai-hind-college',
+                name: 'Jai Hind College',
+                shortName: 'Jai Hind College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'ra-podar-college',
+                name: 'RA Podar College',
+                shortName: 'RA Podar College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            }
+        ];;
+
+        let _allColleges = DEFAULT_COLLEGES;
+        let _currentCollege = null;
+        let _allRegistrations = [];
+        let _filteredRegistrations = [];
+
+        // ── GET SLUG FROM URL ─────────────────────────────────────────
+        function getSlugFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('c') || params.get('college') || params.get('slug');
+            if (q) {
+                const cleanQ = q.toLowerCase().replace(/\.html$/, '').trim();
+                if (cleanQ && cleanQ !== 'c' && cleanQ !== 'leads' && cleanQ !== 'college' && cleanQ !== 'index') return cleanQ;
+            }
+
+            if (window.DEFAULT_PORTAL_SLUG) return window.DEFAULT_PORTAL_SLUG;
+
+            // Normalize pathname parts (ignore Windows drive letters like 'c:' and generic terms)
+            const ignored = new Set(['c', 'c:', 'college', 'leads', 'index', 'index.html', 'leads.html', 'college.html']);
+            const pathParts = window.location.pathname.split('/').map(p => p.toLowerCase().replace(/\.html$/, '').trim()).filter(Boolean);
+
+            // If any segment matches a known college slug, return it
+            if (Array.isArray(_allColleges) && _allColleges.length > 0) {
+                for (const part of pathParts) {
+                    if (_allColleges.some(c => c && c.slug && c.slug.toLowerCase() === part)) {
+                        return part;
+                    }
+                }
+            }
+
+            // Check /c/:slug/leads pattern
+            const cIdx = pathParts.findIndex(p => p === 'c');
+            if (cIdx !== -1 && pathParts[cIdx + 1] && !ignored.has(pathParts[cIdx + 1])) {
+                return pathParts[cIdx + 1];
+            }
+
+            // Check from end of path only against known colleges
+            for (let i = pathParts.length - 1; i >= 0; i--) {
+                const p = pathParts[i];
+                if (p && !ignored.has(p) && !p.endsWith(':')) {
+                    if (Array.isArray(_allColleges) && _allColleges.some(c => c && c.slug && c.slug.toLowerCase() === p)) {
+                        return p;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // ── INIT ──────────────────────────────────────────────────────
+        async function initPage() {
+            await fetchColleges();
+            const slug = getSlugFromUrl();
+            if (slug) {
+                _currentCollege = _allColleges.find(c => c.slug.toLowerCase() === slug.toLowerCase()) || { slug: slug, name: slug.toUpperCase(), shortName: slug.toUpperCase() };
+            } else {
+                _currentCollege = _allColleges[0];
+                document.getElementById('selector-box').style.display = 'block';
+            }
+
+            renderCollegeHeader(_currentCollege);
+            populateSelectorDropdown();
+            await fetchAndRenderRegistrations();
+        }
+
+        async function fetchColleges() {
+            try {
+                const url = `${SUPABASE_URL}/rest/v1/registrations?id=eq.CONFIG_COLLEGES&select=payment_screenshot`;
+                const resp = await fetch(url, { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } });
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data && data[0] && data[0].payment_screenshot) {
+                        const parsed = JSON.parse(data[0].payment_screenshot);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            DEFAULT_COLLEGES.forEach(def => {
+                                if (!parsed.some(c => c.slug === def.slug)) parsed.push(def);
+                            });
+                            _allColleges = parsed;
+                            return;
+                        }
+                    }
+                }
+            } catch(e) {}
+            _allColleges = DEFAULT_COLLEGES;
+        }
+
+        function populateSelectorDropdown() {
+            const select = document.getElementById('partner-select-dropdown');
+            if (!select) return;
+            select.innerHTML = _allColleges.map(c => `
+                <option value="${c.slug}" ${_currentCollege && _currentCollege.slug === c.slug ? 'selected' : ''}>
+                    ${c.name} (${c.slug})
+                </option>
+            `).join('');
+        }
+
+        function switchCollege(slug) {
+            _currentCollege = _allColleges.find(c => c.slug === slug) || { slug, name: slug, shortName: slug };
+            renderCollegeHeader(_currentCollege);
+            const newUrl = `${window.location.pathname}?c=${slug}`;
+            window.history.replaceState({}, '', newUrl);
+            filterRegistrationsForCurrentCollege();
+        }
+
+        function renderCollegeHeader(col) {
+            document.title = `${col.shortName || col.name} — Student Registrations (View-Only)`;
+            const titleEl = document.getElementById('hero-title');
+            const badgeEl = document.getElementById('hero-badge');
+            const descEl = document.getElementById('hero-desc');
+            const isOpen = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug.includes('rotaract') || col.slug.includes('vendor'));
+
+            if (titleEl) titleEl.textContent = `${col.shortName || col.name} Delegation Leads`;
+            if (badgeEl) {
+                if (col.type === 'rotaract' || col.slug.includes('rotaract')) {
+                    badgeEl.innerHTML = '<span>🤝</span> <span>ROTARACT CLUB PARTNER • ALL COLLEGES DELEGATION</span>';
+                    badgeEl.style.color = '#4ade80';
+                } else if (col.type === 'vendor' || col.slug.includes('vendor')) {
+                    badgeEl.innerHTML = '<span>🤝</span> <span>CAMPUS VENDOR &amp; YOUTH OUTREACH DELEGATION</span>';
+                    badgeEl.style.color = '#38bdf8';
+                } else if (isOpen) {
+                    badgeEl.innerHTML = '<span>🌐</span> <span>UNIVERSAL PASS • STUDENTS FROM ANY COLLEGE ELIGIBLE</span>';
+                    badgeEl.style.color = '#4ade80';
+                } else {
+                    badgeEl.innerHTML = '<span>🏛️</span> <span>OFFICIAL INSTITUTIONAL COLLABORATION PORTAL</span>';
+                    badgeEl.style.color = 'var(--gold)';
+                }
+            }
+            if (descEl) {
+                descEl.textContent = isOpen 
+                    ? `Live delegate registrations for students, youth creators, and attendees registering through the ${col.shortName || col.name} delegation pass.`
+                    : `Live delegate registrations and verification status for students from ${col.name} attending Celebrate Cinema 2026.`;
+            }
+
+            const poc1 = (col.pocs && col.pocs[0]) || { name: 'Nilesh Kumar Gupta', phone: '8699260386' };
+            const poc2 = (col.pocs && col.pocs[1]) || { name: 'Tarasha Pahuja', phone: '9569884046' };
+            const leadsPill = document.getElementById('hero-leads-pill');
+            if (leadsPill) {
+                leadsPill.innerHTML = `👥 Partnership Leads: <strong>${poc1.name} (<a href="tel:${poc1.phone}" style="color:inherit; text-decoration:none;">${poc1.phone}</a>) &amp; ${poc2.name}</strong>`;
+            }
+        }
+
+        // ── FETCH REGISTRATIONS FROM SUPABASE ─────────────────────────
+        async function fetchAndRenderRegistrations() {
+            const btn = document.getElementById('btn-refresh');
+            if (btn) btn.innerHTML = '<span>⏳ Syncing…</span>';
+
+            const SYNC_COLUMNS = 'id,name,email,phone,college,year,referral_code,referred_by,coupon_used,final_price,transaction_id,verified,rejected,attended,timestamp';
+            const PAGE_SIZE = 1000;
+            let offset = 0;
+            const allRows = [];
+            let hasMore = true;
+
+            try {
+                while (hasMore && allRows.length < 10000) {
+                    const url = `${SUPABASE_URL}/rest/v1/registrations?id=neq.CONFIG_COLLEGES&id=neq.CONFIG_PROMOTERS&select=${encodeURIComponent(SYNC_COLUMNS)}&order=timestamp.desc&limit=${PAGE_SIZE}&offset=${offset}`;
+                    const resp = await fetch(url, {
+                        headers: {
+                            'apikey': SUPABASE_ANON,
+                            'Authorization': `Bearer ${SUPABASE_ANON}`
+                        }
+                    });
+
+                    if (resp.ok) {
+                        const json = await resp.json();
+                        if (Array.isArray(json)) {
+                            allRows.push(...json);
+                            if (json.length < PAGE_SIZE) hasMore = false;
+                            else offset += PAGE_SIZE;
+                        } else {
+                            hasMore = false;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+
+                _allRegistrations = allRows;
+                filterRegistrationsForCurrentCollege();
+            } catch (err) {
+                console.error('Fetch error:', err);
+                alert('Could not load registrations. Please check your internet connection.');
+            } finally {
+                if (btn) btn.innerHTML = '<span>⟳ Refresh</span>';
+            }
+        }
+
+        // ── FILTER REGISTRATIONS FOR COLLEGE ──────────────────────────
+        function filterRegistrationsForCurrentCollege() {
+            if (!_currentCollege) return;
+            const col = _currentCollege;
+            const slug = (col.slug || '').toLowerCase();
+            const isFlagship = slug === 'kes-shroff';
+            const isRotaract = Boolean(col.type === 'rotaract' || slug.includes('rotaract'));
+            const isYouthNetwork = slug === 'youth-network' || (col.type === 'vendor' && slug.includes('youth'));
+            const isVendorPartner = slug === 'vendor-partner';
+
+            _filteredRegistrations = _allRegistrations.filter(r => {
+                const rId = (r.id || '').toUpperCase();
+                const ref = (r.referred_by || r.referredBy || '').toLowerCase();
+                const coup = (r.coupon_used || r.couponUsed || '').toLowerCase();
+                const txn = (r.transaction_id || r.transactionId || '').toLowerCase();
+                const colName = (r.college || '').toLowerCase();
+
+                if (isFlagship) {
+                    return (
+                        coup === 'free-kes-shroff' ||
+                        txn === 'free-kes-shroff' ||
+                        ref.includes('kes-shroff') ||
+                        rId.startsWith('KS-') ||
+                        colName.includes('shroff')
+                    );
+                }
+
+                if (isYouthNetwork) {
+                    return ref.includes('youth') || coup.includes('youth') || txn.includes('youth') ||
+                           (rId.startsWith('VEN-') && (ref.includes('youth') || coup.includes('youth') || colName.includes('youth')));
+                }
+
+                if (isVendorPartner) {
+                    return (ref.includes('vendor') || coup.includes('vendor') || txn.includes('vendor')) &&
+                           !ref.includes('youth') && !coup.includes('youth');
+                }
+
+                if (isRotaract) {
+                    if (slug === 'rotaract-mum') {
+                        return ref.includes('rotaract-mum') || coup.includes('rotaract-mum') || txn.includes('rotaract-mum');
+                    }
+                    if (slug === 'rotaract-mumbai') {
+                        return ref.includes('rotaract-mumbai') || coup.includes('rotaract-mumbai') || txn.includes('rotaract-mumbai');
+                    }
+                    // Generic rotaract
+                    return (ref.includes('rotaract') || coup.includes('rotaract') || txn.includes('rotaract') || rId.startsWith('ROT-')) &&
+                           !ref.includes('mum') && !coup.includes('mum');
+                }
+
+                // Institutional College
+                return (
+                    ref.includes('college:' + slug) ||
+                    ref.includes(slug) ||
+                    coup.includes(slug) ||
+                    txn.includes(slug) ||
+                    (slug === 'guru-nanak-khalsa-college' && (rId.startsWith('GUR-') || ref.includes('guru-nanak') || colName.includes('guru nanak'))) ||
+                    (slug === 'kj-somaiya' && (rId.startsWith('KJS-') || ref.includes('kj-somaiya') || colName.includes('somaiya'))) ||
+                    (slug === 'sydenham' && (rId.startsWith('SYD-') || ref.includes('sydenham') || colName.includes('sydenham'))) ||
+                    (slug === 'sk-somaiya' && (rId.startsWith('SKS-') || ref.includes('sk-somaiya'))) ||
+                    (slug === 'mithibai' && (rId.startsWith('MIT-') || ref.includes('mithibai'))) ||
+                    (slug === 'hr-college' && (rId.startsWith('HRC-') || ref.includes('hr-college'))) ||
+                    (slug === 'nm-college' && (rId.startsWith('NMC-') || ref.includes('nm-college'))) ||
+                    (slug === 'dj-sanghvi' && (rId.startsWith('DJS-') || ref.includes('dj-sanghvi') || ref.includes('sanghvi'))) ||
+                    (slug === 'bhartiya-vidyapeeth' && (rId.startsWith('BHA-') || ref.includes('bhartiya') || colName.includes('bhartiya'))) ||
+                    (slug === 'sies-nerul' && (rId.startsWith('SIE-') || ref.includes('sies') || colName.includes('sies')))
+                );
+            });
+
+            renderKPIs(_filteredRegistrations);
+            applyTableFilters();
+        }
+
+        function renderKPIs(list) {
+            const total = list.length;
+            const verified = list.filter(r => r.verified && !r.rejected).length;
+            const pending = list.filter(r => !r.verified && !r.rejected).length;
+
+            let bothCount = 0;
+            let day1Count = 0;
+            let day2Count = 0;
+
+            list.forEach(r => {
+                const yr = (r.year || '').toLowerCase();
+                if (yr.includes('both') || (!yr.includes('08th') && !yr.includes('09th'))) bothCount++;
+                else if (yr.includes('08th') || yr.includes('day 1')) day1Count++;
+                else if (yr.includes('09th') || yr.includes('day 2')) day2Count++;
+            });
+
+            document.getElementById('kpi-total').textContent = total;
+            document.getElementById('kpi-verified').textContent = verified;
+            document.getElementById('kpi-pending').textContent = pending;
+            document.getElementById('kpi-both').textContent = bothCount;
+            document.getElementById('kpi-day1').textContent = day1Count;
+            document.getElementById('kpi-day2').textContent = day2Count;
+
+            // Rotaract Equal Lead Split Tracker
+            const col = _currentCollege;
+            const isRotaract = col && (col.type === 'rotaract' || (col.slug || '').includes('rotaract'));
+            const splitPill = document.getElementById('hero-split-pill');
+            const splitText = document.getElementById('split-text');
+            const leadSelect = document.getElementById('filter-lead');
+
+            if (isRotaract) {
+                const nileshCount = list.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase() === 'NILESH').length;
+                const tarashaCount = list.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase() === 'TARASHA').length;
+                if (splitPill && splitText) {
+                    splitPill.style.display = 'inline-flex';
+                    splitText.textContent = `Nilesh: ${nileshCount} | Tarasha: ${tarashaCount} (50/50 Split)`;
+                }
+                if (leadSelect) {
+                    leadSelect.style.display = 'inline-block';
+                    leadSelect.options[0].text = `👥 All Assigned Leads (${total})`;
+                    leadSelect.options[1].text = `👤 Nilesh Gupta's Half (${nileshCount})`;
+                    leadSelect.options[2].text = `👤 Tarasha Pahuja's Half (${tarashaCount})`;
+                }
+            } else {
+                if (splitPill) splitPill.style.display = 'none';
+                if (leadSelect) leadSelect.style.display = 'none';
+            }
+        }
+
+        function handleFilterChange() {
+            applyTableFilters();
+        }
+
+        function applyTableFilters() {
+            const search = (document.getElementById('filter-search')?.value || '').trim().toLowerCase();
+            const statusFilter = document.getElementById('filter-status')?.value || 'all';
+            const dateFilter = document.getElementById('filter-date')?.value || 'all';
+            const leadFilter = (document.getElementById('filter-lead')?.value || 'all').trim().toUpperCase();
+
+            let result = _filteredRegistrations;
+
+            if (leadFilter && leadFilter !== 'ALL') {
+                result = result.filter(r => (r.referred_by || r.referredBy || '').trim().toUpperCase() === leadFilter);
+            }
+
+            if (statusFilter === 'verified') result = result.filter(r => r.verified && !r.rejected);
+            else if (statusFilter === 'pending') result = result.filter(r => !r.verified && !r.rejected);
+
+            if (dateFilter === 'both') {
+                result = result.filter(r => {
+                    const yr = (r.year || '').toLowerCase();
+                    return yr.includes('both') || (!yr.includes('08th') && !yr.includes('09th'));
+                });
+            } else if (dateFilter === 'day1') {
+                result = result.filter(r => (r.year || '').toLowerCase().includes('08th') || (r.year || '').toLowerCase().includes('day 1'));
+            } else if (dateFilter === 'day2') {
+                result = result.filter(r => (r.year || '').toLowerCase().includes('09th') || (r.year || '').toLowerCase().includes('day 2'));
+            }
+
+            if (search) {
+                result = result.filter(r => 
+                    (r.name && r.name.toLowerCase().includes(search)) ||
+                    (r.email && r.email.toLowerCase().includes(search)) ||
+                    (r.phone && r.phone.includes(search)) ||
+                    (r.id && r.id.toLowerCase().includes(search)) ||
+                    (r.college && r.college.toLowerCase().includes(search)) ||
+                    (r.year && r.year.toLowerCase().includes(search))
+                );
+            }
+
+            renderTable(result);
+        }
+
+        function renderTable(list) {
+            const tbody = document.getElementById('registrations-tbody');
+            if (!tbody) return;
+
+            if (list.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="empty-state">
+                            <div style="font-size:1.1rem; color:var(--text-muted); margin-bottom:6px;">No registrations match your search filter.</div>
+                            <div style="font-size:0.8rem; color:rgba(255,255,255,0.4);">Try clearing the search box or selecting another date filter.</div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = list.map((r, index) => {
+                let visitDateText = 'Both Days';
+                const yLower = (r.year || '').toLowerCase();
+                if (yLower.includes('__vd__')) {
+                    visitDateText = r.year.split('__vd__')[1];
+                } else if (yLower.includes('08th') || yLower.includes('day 1')) {
+                    visitDateText = 'Day 1 (08th Oct)';
+                } else if (yLower.includes('09th') || yLower.includes('day 2')) {
+                    visitDateText = 'Day 2 (09th Oct)';
+                }
+
+                const cleanYear = (r.year || '').split('__vd__')[0];
+
+                let statusBadge = '<span class="badge badge-pending">In Review ⏳</span>';
+                if (r.rejected) statusBadge = '<span class="badge badge-rejected">Rejected ✕</span>';
+                else if (r.verified) statusBadge = '<span class="badge badge-verified">Verified ✓</span>';
+
+                let leadBadgeHtml = '';
+                const refUpper = (r.referred_by || r.referredBy || '').trim().toUpperCase();
+                if (refUpper === 'NILESH') {
+                    leadBadgeHtml = '<div style="display:inline-block; font-size:0.72rem; color:#86efac; font-weight:700; margin-top:3px; background:rgba(34,197,94,0.12); padding:1px 6px; border-radius:4px; border:1px solid rgba(34,197,94,0.3);">👤 Lead: Nilesh Gupta</div>';
+                } else if (refUpper === 'TARASHA') {
+                    leadBadgeHtml = '<div style="display:inline-block; font-size:0.72rem; color:#f472b6; font-weight:700; margin-top:3px; background:rgba(244,114,182,0.12); padding:1px 6px; border-radius:4px; border:1px solid rgba(244,114,182,0.3);">👤 Lead: Tarasha Pahuja</div>';
+                }
+
+                const formattedDate = r.timestamp ? new Date(r.timestamp).toLocaleString('en-IN', {
+                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                }) : '—';
+
+                return `
+                    <tr>
+                        <td style="color:var(--text-muted);">${index + 1}</td>
+                        <td class="ticket-id">${escapeHtml(r.id)}</td>
+                        <td>
+                            <div class="student-name">${escapeHtml(r.name)}</div>
+                            ${leadBadgeHtml}
+                        </td>
+                        <td>
+                            <div><a href="mailto:${escapeHtml(r.email)}" style="color:var(--primary-light); text-decoration:none;">${escapeHtml(r.email)}</a></div>
+                            <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--gold); margin-top:2px;">
+                                <a href="tel:${escapeHtml(r.phone)}" style="color:inherit; text-decoration:none;">${escapeHtml(r.phone)}</a>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-weight:600; color:#ffffff;">${escapeHtml(r.college || '—')}</span>
+                        </td>
+                        <td>
+                            <span style="color:var(--text-muted);">${escapeHtml(cleanYear)}</span>
+                        </td>
+                        <td>
+                            <span class="badge badge-date">${escapeHtml(visitDateText)}</span>
+                        </td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <button class="btn-view-id" onclick="viewIdModal('${r.id}', '${escapeHtml(r.name).replace(/'/g, "\\'")}')">
+                                👁️ View ID
+                            </button>
+                        </td>
+                        <td style="font-size:0.75rem; color:var(--text-muted); white-space:nowrap;">
+                            ${formattedDate}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ── ID CARD PROOF MODAL ──────────────────────────────────────
+        async function viewIdModal(ticketId, name) {
+            const modal = document.getElementById('modal-id');
+            const modalName = document.getElementById('modal-student-name');
+            const modalTicket = document.getElementById('modal-ticket-id');
+            const modalBody = document.getElementById('modal-body');
+
+            if (!modal) return;
+            modalName.textContent = `${name}'s Student ID Proof`;
+            modalTicket.textContent = `Ticket ID: ${ticketId}`;
+            modalBody.innerHTML = '<div class="spinner" style="margin:40px auto; display:block;"></div><p style="text-align:center; color:var(--text-muted); font-size:0.8rem;">Fetching high-resolution ID card…</p>';
+            modal.style.display = 'flex';
+
+            try {
+                const url = `${SUPABASE_URL}/rest/v1/registrations?id=eq.${encodeURIComponent(ticketId)}&select=payment_screenshot`;
+                const resp = await fetch(url, { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } });
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data && data[0] && data[0].payment_screenshot) {
+                        modalBody.innerHTML = `
+                            <img src="${data[0].payment_screenshot}" alt="ID Card Proof">
+                            <div style="margin-top:12px; text-align:center;">
+                                <a href="${data[0].payment_screenshot}" download="${ticketId}-id-proof.png" class="btn btn-secondary" style="font-size:0.75rem;">
+                                    ⬇️ Download Full Resolution Image
+                                </a>
+                            </div>
+                        `;
+                        return;
+                    }
+                }
+                modalBody.innerHTML = '<p style="color:var(--amber); text-align:center; padding:20px;">No ID Card proof image uploaded for this registration.</p>';
+            } catch (e) {
+                modalBody.innerHTML = '<p style="color:var(--red); text-align:center; padding:20px;">Could not load image.</p>';
+            }
+        }
+
+        function closeIdModal() {
+            const modal = document.getElementById('modal-id');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // ── EXPORT CSV ────────────────────────────────────────────────
+        function exportRegistrationsCSV() {
+            if (!_filteredRegistrations || _filteredRegistrations.length === 0) {
+                alert('No registrations available to export.');
+                return;
+            }
+
+            const colName = (_currentCollege && (_currentCollege.shortName || _currentCollege.name)) || 'Delegation';
+            const headers = ['#', 'Ticket ID', 'Student Name', 'Assigned Lead', 'Email', 'Phone', 'College', 'Stream & Year', 'Visit Date', 'Status', 'Registered At'];
+            
+            const rows = _filteredRegistrations.map((r, i) => {
+                let visitDate = 'Both Days';
+                const yLower = (r.year || '').toLowerCase();
+                if (yLower.includes('__vd__')) visitDate = r.year.split('__vd__')[1];
+                else if (yLower.includes('08th')) visitDate = 'Day 1 (08th Oct)';
+                else if (yLower.includes('09th')) visitDate = 'Day 2 (09th Oct)';
+
+                const status = r.rejected ? 'Rejected' : (r.verified ? 'Verified' : 'In Review');
+                const cleanYear = (r.year || '').split('__vd__')[0];
+                const refUpper = (r.referred_by || r.referredBy || '').trim().toUpperCase();
+                const assignedLead = refUpper === 'NILESH' ? 'Nilesh Gupta' : (refUpper === 'TARASHA' ? 'Tarasha Pahuja' : 'Nilesh / Tarasha (Split)');
+
+                return [
+                    i + 1,
+                    `"${r.id || ''}"`,
+                    `"${(r.name || '').replace(/"/g, '""')}"`,
+                    `"${assignedLead}"`,
+                    `"${(r.email || '').replace(/"/g, '""')}"`,
+                    `"${r.phone || ''}"`,
+                    `"${(r.college || '').replace(/"/g, '""')}"`,
+                    `"${cleanYear.replace(/"/g, '""')}"`,
+                    `"${visitDate}"`,
+                    `"${status}"`,
+                    `"${r.timestamp || ''}"`
+                ];
+            });
+
+            const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            const safeName = colName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            link.setAttribute('download', `${safeName}-registrations-celebrate-cinema-2026.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>"']/g, function(m) {
+                return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+            });
+        }
+
+        // Auto-run on load
+        window.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>

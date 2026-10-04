@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#8d6aae">
-    <title>KES Shroff College | Student Registration — Celebrate Cinema 2026</title>
-    <meta name="description" content="Official Registration for KES Shroff College students at Celebrate Cinema 2026 Academic Trek — Whistling Woods International, Film City Mumbai.">
+    <title id="page-title">Partner College Delegation | Student Registration — Celebrate Cinema 2026</title>
+    <meta name="description" id="page-desc" content="Official Registration for Partner College Delegation students at Celebrate Cinema 2026 Academic Trek — Whistling Woods International, Film City Mumbai.">
     <link rel="icon" type="image/png" href="/assets/cc26-logo.png">
 
     <!-- Fonts -->
@@ -159,134 +159,97 @@
             padding: 105px 20px 80px;
         }
 
-        /* Hero Header */
+        /* College Hero Header */
         .ks-hero {
             text-align: center;
             margin-bottom: 34px;
+            position: relative;
         }
 
-        .ks-pill {
+        .ks-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(212, 168, 67, 0.12);
+            background: rgba(141, 106, 174, 0.16);
             border: 1px solid rgba(247, 231, 197, 0.35);
             color: var(--gold);
             padding: 7px 18px;
             border-radius: 30px;
-            font-size: 0.76rem;
+            font-size: 0.82rem;
             font-weight: 700;
             letter-spacing: 1.5px;
             text-transform: uppercase;
             margin-bottom: 16px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 20px rgba(141, 106, 174, 0.25);
         }
 
         .ks-hero h1 {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: clamp(2.1rem, 5.5vw, 3rem);
-            font-weight: 800;
-            margin: 0 0 10px 0;
-            background: linear-gradient(135deg, #ffffff 15%, var(--gold) 65%, var(--gold-accent) 100%);
+            font-size: 2.35rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.25;
+            margin: 0 0 12px 0;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .ks-hero h1 span.gold-txt {
+            background: linear-gradient(135deg, #ffffff 0%, var(--gold) 60%, var(--gold-accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            line-height: 1.2;
         }
 
         .ks-hero-sub {
-            font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+            font-size: 1.05rem;
             color: var(--lavender);
-            max-width: 660px;
+            max-width: 680px;
             margin: 0 auto 20px;
-            line-height: 1.6;
+            line-height: 1.55;
         }
 
-        .ks-meta-tags {
+        /* Trust Badges Bar */
+        .ks-trust-bar {
             display: flex;
+            justify-content: center;
+            align-items: center;
             flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
+            gap: 12px;
+            margin-top: 14px;
         }
 
-        .ks-meta-tag {
+        .ks-trust-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
             background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-glass);
-            color: var(--gold);
-            font-size: 0.82rem;
-            padding: 6px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 20px;
-            backdrop-filter: blur(8px);
-        }
-
-        /* Privilege Banner (Gold & Royal Purple Luxury) */
-        .ks-privilege-card {
-            background: linear-gradient(135deg, rgba(30, 22, 50, 0.90) 0%, rgba(18, 14, 30, 0.95) 100%);
-            border: 1px solid var(--border-glass);
-            border-radius: 16px;
-            padding: 22px 24px;
-            margin-bottom: 30px;
-            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(141, 106, 174, 0.12);
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .ks-privilege-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            background: rgba(212, 168, 67, 0.15);
-            border: 1.5px solid var(--gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
+            padding: 5px 14px;
+            font-size: 0.78rem;
             color: var(--gold);
-            flex-shrink: 0;
         }
 
-        .ks-privilege-info h3 {
-            font-size: 1.1rem;
-            color: var(--gold);
-            margin: 0 0 4px 0;
-            font-weight: 700;
-        }
-
-        .ks-privilege-info p {
-            font-size: 0.85rem;
-            color: var(--lavender);
-            margin: 0;
-            line-height: 1.5;
-        }
-
-        .ks-privilege-price {
-            margin-left: auto;
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        .ks-privilege-old {
-            font-size: 0.8rem;
-            color: var(--lavender);
-            text-decoration: line-through;
-            display: block;
-        }
-
-        .ks-privilege-waived {
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--gold);
-            letter-spacing: 0.5px;
-        }
-
-        /* Form Card */
-        .ks-form-card {
+        /* Main Registration Card */
+        .ks-card {
             background: var(--bg-card);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border-glass);
-            border-radius: 18px;
-            padding: clamp(22px, 4vw, 36px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 38px;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65), 0 0 40px rgba(141, 106, 174, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ks-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--gold-accent), transparent);
         }
 
         .ks-form-header {
@@ -335,6 +298,7 @@
             color: #ffffff;
             font-family: inherit;
             transition: all 0.2s ease;
+            box-sizing: border-box;
         }
 
         .form-input:focus {
@@ -368,12 +332,11 @@
                 align-items: flex-start;
                 gap: 10px;
             }
-            .ks-privilege-card {
-                flex-direction: column;
-                text-align: center;
+            .ks-card {
+                padding: 24px 18px;
             }
-            .ks-privilege-price {
-                margin-left: 0;
+            .ks-hero h1 {
+                font-size: 1.8rem;
             }
         }
 
@@ -518,25 +481,24 @@
         /* Submit Button */
         .btn-submit-ks {
             width: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: var(--gold);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
             padding: 16px 28px;
-            border: 1px solid rgba(247, 231, 197, 0.35);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, #4a2e68 100%);
+            border: 1px solid var(--border-glass);
             border-radius: 12px;
+            color: var(--gold-light);
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
             cursor: pointer;
-            box-shadow: 0 6px 25px var(--primary-glow);
-            transition: all 0.25s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
 
-        .btn-submit-ks:hover {
+        .btn-submit-ks:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 35px var(--primary-glow);
             border-color: var(--gold);
@@ -583,269 +545,257 @@
 
         .contact-card-header p {
             color: var(--lavender);
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             margin: 0;
         }
 
-        .contact-coordinators-grid {
+        .coordinators-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
         }
 
-        .coord-box {
-            background: rgba(18, 14, 30, 0.75);
+        @media (max-width: 640px) {
+            .coordinators-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .coordinator-item {
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-subtle);
             border-radius: 14px;
             padding: 20px;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
             transition: all 0.25s ease;
         }
 
-        .coord-box:hover {
+        .coordinator-item:hover {
+            background: rgba(255, 255, 255, 0.06);
             border-color: var(--gold);
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
-        .coord-profile-row {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 16px;
-        }
-
-        .coord-avatar {
-            width: 48px;
-            height: 48px;
+        .coordinator-avatar {
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            background: rgba(212, 168, 67, 0.12);
-            border: 1.5px solid var(--gold);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: 2px solid var(--gold);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1.3rem;
-            color: var(--gold);
+            font-weight: 800;
+            color: var(--gold-light);
             flex-shrink: 0;
         }
 
-        .coord-details h4 {
+        .coordinator-info {
+            flex-grow: 1;
+        }
+
+        .coordinator-name {
             font-size: 1.05rem;
             font-weight: 700;
             color: #ffffff;
             margin: 0 0 3px 0;
         }
 
-        .coord-role {
+        .coordinator-role {
             font-size: 0.76rem;
             color: var(--gold);
+            letter-spacing: 0.5px;
+            margin: 0 0 8px 0;
             font-weight: 600;
         }
 
-        .coord-college {
-            font-size: 0.72rem;
-            color: var(--lavender);
-        }
-
-        .coord-phone-text {
-            font-size: 0.86rem;
-            color: var(--lavender);
-            margin-bottom: 14px;
-        }
-
-        .coord-phone-text strong {
-            color: #ffffff;
-        }
-
-        .coord-btn-row {
+        .coordinator-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .coord-action-btn {
-            flex: 1;
+        .btn-coord-call, .btn-coord-wa {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 9px 12px;
-            border-radius: 8px;
-            font-size: 0.82rem;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
             font-weight: 700;
             text-decoration: none;
             transition: all 0.2s ease;
         }
 
-        .coord-btn-call {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border-glass);
-            color: var(--gold);
-        }
-
-        .coord-btn-call:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: var(--gold);
-            color: #ffffff;
-        }
-
-        .coord-btn-wa {
-            background: rgba(141, 106, 174, 0.18);
+        .btn-coord-call {
+            background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border-subtle);
             color: var(--gold);
         }
 
-        .coord-btn-wa:hover {
-            background: var(--primary);
+        .btn-coord-call:hover {
+            background: var(--gold);
+            color: #12121e;
+        }
+
+        .btn-coord-wa {
+            background: rgba(37, 211, 102, 0.15);
+            border: 1px solid rgba(37, 211, 102, 0.35);
+            color: #4ade80;
+        }
+
+        .btn-coord-wa:hover {
+            background: #25d366;
             color: #ffffff;
-            box-shadow: 0 4px 18px var(--primary-glow);
         }
 
-        /* ───── STEP SWITCHER ───── */
-        .step-view {
-            display: none;
-        }
-
-        .step-view.active {
-            display: block;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Toast */
-        .toast-box {
+        /* Success Pass Card Modal */
+        .ks-modal-overlay {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 8, 18, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .ks-pass-wrapper {
+            max-width: 480px;
+            width: 100%;
+            background: linear-gradient(145deg, #1d182e 0%, #151124 100%);
+            border: 2px solid var(--gold);
+            border-radius: 20px;
+            padding: 32px 28px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 50px var(--primary-glow);
+            text-align: center;
+            position: relative;
+        }
+
+        .ks-pass-qr {
+            background: #ffffff;
+            padding: 14px;
+            border-radius: 12px;
+            display: inline-block;
+            margin: 18px 0;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .ks-pass-qr img, .ks-pass-qr canvas {
+            display: block;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
 
-<div class="film-strip-top"></div>
-<canvas id="particles-canvas"></canvas>
+    <div class="film-strip-top"></div>
+    <canvas id="particles-canvas"></canvas>
 
-<!-- Top Navigation -->
-<header class="ks-nav">
-    <div class="ks-nav-inner">
-        <a href="/" class="ks-brand-lockup" title="Back to Celebrate Cinema 2026">
-            <img src="/assets/wwi-logo.png" alt="Whistling Woods" style="height:22px;">
-            <div style="width:1px; height:18px; background:rgba(247,231,197,0.35);"></div>
-            <img src="/assets/cc26-logo.png" alt="Celebrate Cinema 2026" style="height:28px;">
-            <div style="width:1px; height:18px; background:rgba(247,231,197,0.35);"></div>
-            <img src="/careerbeam_logo.png" alt="CareerBeam" style="height:20px; background:#fff; padding:2px 6px; border-radius:4px;">
-        </a>
-        <a href="/" class="ks-btn-back">
-            <span>← Main Website</span>
-        </a>
-    </div>
-</header>
+    <!-- Top Navigation -->
+    <header class="ks-nav">
+        <div class="ks-nav-inner">
+            <a href="/" class="ks-brand-lockup">
+                <img src="/assets/cc26-logo.png" alt="Celebrate Cinema 2026" style="height:32px; width:auto; border-radius:4px;">
+                <span style="font-weight:800; font-size:0.95rem; letter-spacing:0.5px; color:var(--gold);">WHISTLING WOODS</span>
+            </a>
+            <a href="/" class="ks-btn-back">
+                <span>← Main Website</span>
+            </a>
+        </div>
+    </header>
 
-<main class="ks-container">
+    <!-- Page Container -->
+    <main class="ks-container">
 
-    <!-- ═══════════════════════════════════════════════
-         STEP 1: REGISTRATION FORM
-         ═══════════════════════════════════════════════ -->
-    <div id="step-form" class="step-view active">
-        
         <!-- Hero Header -->
-        <div class="ks-hero">
-            <div class="ks-pill">
-                🎓 KES SHROFF COLLEGE OF ARTS &amp; COMMERCE
+        <section class="ks-hero">
+            <div class="ks-badge">
+                <span>🎓</span>
+                <span id="hero-badge-text">EXCLUSIVE COLLEGE DELEGATION PORTAL</span>
             </div>
-            <h1>Celebrate Cinema 2026</h1>
-            <p class="ks-hero-sub">
-                Official Student Registration Portal for Celebrate Cinema 2026 Academic Trek at Whistling Woods International, Film City, Mumbai.
+            <h1 id="hero-heading">
+                <span id="hero-college-name" class="gold-txt">Partner College</span><br>
+                Student Delegation Pass
+            </h1>
+            <p class="ks-hero-sub" id="hero-subtitle">
+                Official Student Registration for Celebrate Cinema 2026 Academic Trek at Whistling Woods International, Film City Mumbai. 
+                Full 2-Day immersive cinema & media masterclasses, workshops, studio tours & celebrity sessions.
             </p>
-            <div class="ks-meta-tags">
-                <span class="ks-meta-tag">📅 08th &amp; 09th October 2026</span>
-                <span class="ks-meta-tag">📍 Film City, Goregaon East</span>
-                <span class="ks-meta-tag">🎬 Film Sets &amp; Masterclasses</span>
-                <span class="ks-meta-tag">🎓 Complimentary Academic Pass</span>
+            <div class="ks-trust-bar">
+                <span class="ks-trust-pill">📍 Film City, Goregaon (E), Mumbai</span>
+                <span class="ks-trust-pill">📅 08th &amp; 09th October 2026</span>
+                <span class="ks-trust-pill">🎟️ 100% Academic Partner Sponsorship</span>
             </div>
-        </div>
-
-        <!-- Privilege Waived Fee Card (Subtle Gold & Purple) -->
-        <div class="ks-privilege-card">
-            <div class="ks-privilege-icon">🎖️</div>
-            <div class="ks-privilege-info">
-                <h3>Official Institutional Delegation Privilege</h3>
-                <p>Under our special academic collaboration with KES Shroff College, admission is granted on a complimentary basis for all enrolled students. Kindly attach your Student ID Card or recent College Fee Receipt to receive your verified academic delegate pass.</p>
-            </div>
-            <div class="ks-privilege-price">
-                <span class="ks-privilege-old">Standard ₹150</span>
-                <span class="ks-privilege-waived">COMPLIMENTARY</span>
-            </div>
-        </div>
+        </section>
 
         <!-- Registration Form Card -->
-        <div class="ks-form-card">
+        <section class="ks-card" id="reg-card">
             <div class="ks-form-header">
                 <div>
-                    <h2>Student Registration Details</h2>
-                    <p>Enter your details accurately for your personalized gate boarding pass</p>
+                    <h2>Student Delegation Entry Form</h2>
+                    <p>Enter your details and upload your Student ID Card or fee receipt for verification.</p>
                 </div>
-                <span style="font-size:0.75rem; color:var(--gold); background:rgba(212,168,67,0.14); border:1px solid rgba(247,231,197,0.35); padding:4px 12px; border-radius:20px; font-weight:700;">
-                    KES Shroff Partner ✓
-                </span>
+                <div style="text-align:right;">
+                    <span class="ks-free-badge">Delegation Pass: FREE</span>
+                </div>
             </div>
 
-            <form id="kes-form" novalidate>
+            <form id="form-college-reg" onsubmit="handleCollegeSubmit(event)">
+
                 <!-- Full Name -->
                 <div class="form-group">
-                    <label class="form-label" for="reg-name">Full Name *</label>
-                    <input type="text" id="reg-name" class="form-input" required placeholder="Enter full name as per college records" autocomplete="name">
+                    <label class="form-label" for="reg-name">Full Name (As per College ID) *</label>
+                    <input type="text" id="reg-name" class="form-input" required placeholder="e.g. Rahul Sharma" autocomplete="name">
                 </div>
 
                 <!-- Email & Phone -->
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="reg-email">Email Address *</label>
-                        <input type="email" id="reg-email" class="form-input" required placeholder="your.name@example.com" autocomplete="email">
+                        <input type="email" id="reg-email" class="form-input" required placeholder="name@example.com" autocomplete="email">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="reg-phone">Phone Number (WhatsApp) *</label>
-                        <input type="tel" id="reg-phone" class="form-input" required placeholder="10-digit mobile number" maxlength="10" autocomplete="tel">
+                        <label class="form-label" for="reg-phone">WhatsApp Mobile Number *</label>
+                        <input type="tel" id="reg-phone" class="form-input" required placeholder="10-digit mobile" maxlength="10" pattern="[0-9]{10}" autocomplete="tel">
                     </div>
                 </div>
 
-                <!-- Department & Year of Study -->
+                <!-- Course Stream & Academic Year -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label class="form-label" for="reg-dept">Course / Stream *</label>
-                        <select id="reg-dept" class="form-input" required>
-                            <option value="" disabled selected>Select Course</option>
-                            <option value="B.Com">B.Com</option>
-                            <option value="BMS">BMS</option>
-                            <option value="BAF">BAF</option>
-                            <option value="BBI">BBI</option>
-                            <option value="BFM">BFM</option>
-                            <option value="BAMMC">BAMMC / BMM</option>
-                            <option value="B.Sc IT">B.Sc IT</option>
-                            <option value="B.Sc CS">B.Sc Computer Science</option>
+                        <label class="form-label" for="reg-stream">Course / Department Stream *</label>
+                        <select id="reg-stream" class="form-input" required>
+                            <!-- Dynamically loaded from college config -->
+                            <option value="BMS" selected>BMS (Management Studies)</option>
+                            <option value="B.Com">B.Com (General)</option>
+                            <option value="BAF">BAF (Accounting &amp; Finance)</option>
+                            <option value="BBI">BBI (Banking &amp; Insurance)</option>
+                            <option value="BFM">BFM (Financial Markets)</option>
+                            <option value="BAMMC">BAMMC (Mass Media / Communication)</option>
+                            <option value="B.Sc IT">B.Sc IT (Information Technology)</option>
+                            <option value="B.Sc CS">B.Sc CS (Computer Science)</option>
                             <option value="B.Sc Data Science">B.Sc Data Science</option>
-                            <option value="B.Voc">B.Voc</option>
-                            <option value="B.A.">B.A.</option>
-                            <option value="M.Com">M.Com</option>
-                            <option value="Post Graduate">Post Graduate / Other Masters</option>
-                            <option value="Faculty/Staff">Faculty / Staff Member</option>
-                            <option value="Other">Other Stream</option>
+                            <option value="B.A">B.A (Arts &amp; Humanities)</option>
+                            <option value="M.Com">M.Com (Post Graduate)</option>
+                            <option value="M.Sc">M.Sc (Post Graduate)</option>
+                            <option value="Other">Other Degree Program</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="reg-year">Year of Study *</label>
+                        <label class="form-label" for="reg-year">Current Academic Year *</label>
                         <select id="reg-year" class="form-input" required>
-                            <option value="" disabled selected>Select Year</option>
-                            <option value="1st Year (FY)">1st Year (FY)</option>
+                            <option value="1st Year (FY)" selected>1st Year (FY)</option>
                             <option value="2nd Year (SY)">2nd Year (SY)</option>
                             <option value="3rd Year (TY)">3rd Year (TY)</option>
                             <option value="4th Year">4th Year (Honor)</option>
@@ -856,18 +806,19 @@
                     </div>
                 </div>
 
-                <!-- College Locked -->
-                <div class="form-group">
+                <!-- College Locked with Responsive Label Badge -->
+                <div class="form-group" id="group-college-field">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; flex-wrap:wrap; gap:8px;">
-                        <label class="form-label" for="reg-college" style="margin-bottom:0;">College / Institution</label>
-                        <span class="ks-verified-badge" style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; color:var(--gold); font-weight:700; background:rgba(212,168,67,0.15); padding:3px 10px; border-radius:12px; border:1px solid rgba(247,231,197,0.3); white-space:nowrap;">
+                        <label class="form-label" for="reg-college" id="lbl-college-field" style="margin-bottom:0;">College / Institution</label>
+                        <span class="ks-verified-badge" id="badge-college-field" style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; color:var(--gold); font-weight:700; background:rgba(212,168,67,0.15); padding:3px 10px; border-radius:12px; border:1px solid rgba(247,231,197,0.3); white-space:nowrap;">
                             <span>Verified Partner</span> <span>🔒</span>
                         </span>
                     </div>
                     <div style="position:relative;">
-                        <input type="text" id="reg-college" class="form-input" value="KES Shroff College of Arts & Commerce" readonly style="background:rgba(255,255,255,0.03); color:var(--gold); cursor:not-allowed; padding-left:38px; width:100%;">
-                        <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:1.05rem; opacity:0.85;">🏛️</span>
+                        <input type="text" id="reg-college" class="form-input" value="Partner College" readonly style="background:rgba(255,255,255,0.03); color:var(--gold); cursor:not-allowed; padding-left:38px; width:100%;">
+                        <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:1.05rem; opacity:0.85;" id="icon-college-field">🏛️</span>
                     </div>
+                    <small id="sub-college-open" style="display:none; color:#4ade80; font-size:0.75rem; margin-top:4px;">✨ Rotaract &amp; Partner Pass: Students from ANY college are eligible! Enter your college name above.</small>
                 </div>
 
                 <!-- Visiting Option -->
@@ -880,38 +831,29 @@
                     </select>
                 </div>
 
-                <!-- ID Card / Fee Receipt Upload (Replaces Payment Screenshot) -->
+                <!-- ID Card / Fee Receipt Upload Zone -->
                 <div class="form-group" style="margin-top:24px;">
-                    <label class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span>Upload Student ID Card or Fee Receipt *</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; flex-wrap:wrap; gap:8px;">
+                        <label class="form-label" style="margin-bottom:0;">Upload Student ID Card or Fee Receipt *</label>
                         <span style="color:var(--gold); font-size:0.75rem; font-weight:600;">Verification Required</span>
-                    </label>
+                    </div>
                     
                     <div class="ks-upload-box" id="upload-zone" onclick="document.getElementById('id-card-input').click()">
-                        <input type="file" id="id-card-input" accept="image/*,.pdf" style="display:none;">
-                        
-                        <div id="upload-prompt">
-                            <span class="ks-upload-icon">🪪</span>
-                            <div class="ks-upload-title">Tap to Upload ID Card or Fee Receipt</div>
-                            <p class="ks-upload-sub">
-                                If you don't have your ID card, please upload your college fee receipt or student portal screenshot.
-                            </p>
-                            <span class="ks-upload-btn">
-                                📁 Select Document (JPG, PNG, PDF)
-                            </span>
+                        <input type="file" id="id-card-input" accept="image/*,application/pdf" style="display:none;" onchange="handleFileSelect(event)">
+                        <span class="ks-upload-icon">🪪</span>
+                        <div class="ks-upload-title" id="upload-title">Click or Drag &amp; Drop your College ID Card</div>
+                        <div class="ks-upload-sub">
+                            Please upload a photo of your valid College ID Card or current semester fee receipt so our team can verify your academic delegation access.
                         </div>
+                        <span class="ks-upload-btn">📁 Choose Photo or File</span>
+                    </div>
 
-                        <!-- Preview Box -->
-                        <div class="ks-preview-box" id="upload-preview-box">
-                            <img id="upload-preview-img" class="ks-preview-img" alt="Uploaded Document">
-                            <div id="upload-preview-pdf" style="display:none; padding:15px; text-align:center;">
-                                <span style="font-size:2.5rem;">📄</span>
-                                <div id="pdf-filename" style="color:var(--gold); font-weight:600; margin-top:6px;"></div>
-                            </div>
-                            <div class="ks-preview-meta">
-                                <span>✓ Document attached for pass verification</span>
-                                <button type="button" class="ks-btn-remove" onclick="removeUploadedFile(event)">Remove &amp; Change</button>
-                            </div>
+                    <!-- Image Preview Container -->
+                    <div class="ks-preview-box" id="preview-box">
+                        <img id="preview-img" class="ks-preview-img" src="" alt="ID Card Preview">
+                        <div class="ks-preview-meta">
+                            <span id="preview-filename">id_card.jpg</span>
+                            <button type="button" class="ks-btn-remove" onclick="removeSelectedFile()">Remove ✕</button>
                         </div>
                     </div>
                 </div>
@@ -923,7 +865,7 @@
                         <span style="text-decoration:line-through;">₹150</span>
                     </div>
                     <div class="ks-fee-line">
-                        <span>KES Shroff College Institutional Collaboration</span>
+                        <span id="fee-partner-label">Institutional Collaboration</span>
                         <span style="color:var(--gold);">- ₹150 (Academic Waiver)</span>
                     </div>
                     <div class="ks-fee-divider"></div>
@@ -939,742 +881,1244 @@
                 <!-- Declaration -->
                 <div style="display:flex; align-items:flex-start; gap:10px; margin-bottom:24px;">
                     <input type="checkbox" id="reg-agree" required checked style="margin-top:4px; accent-color:var(--primary); width:18px; height:18px; cursor:pointer;">
-                    <label for="reg-agree" style="font-size:0.82rem; color:var(--lavender); line-height:1.45; cursor:pointer;">
-                        I confirm that I am a bonafide student / delegate of KES Shroff College and will present my college identification upon arrival at Whistling Woods International, Film City.
+                    <label for="reg-agree" id="reg-agree-label" style="font-size:0.82rem; color:var(--lavender); line-height:1.45; cursor:pointer;">
+                        I confirm that I am a bonafide student / delegate of this college and will present my college identification upon arrival at Whistling Woods International, Film City.
                     </label>
                 </div>
 
                 <!-- Submit Button -->
                 <button type="submit" class="btn-submit-ks" id="btn-submit">
                     <span id="btn-text">Confirm Registration &amp; Generate Boarding Pass →</span>
-                    <span id="btn-spinner" style="display:none;">Generating Pass...</span>
                 </button>
+                <p style="text-align:center; font-size:0.75rem; color:var(--lavender); margin-top:12px;">
+                    🔒 Instant QR Code Entry Pass will be generated upon submission. Present pass at WWI campus security gate.
+                </p>
+
             </form>
-        </div>
+        </section>
 
-        <!-- ═══════════════════════════════════════════════
-             EXECUTIVE STUDENT COORDINATORS CARD
-             ═══════════════════════════════════════════════ -->
-        <div class="executive-contact-card">
+        <!-- Executive Coordinators Contact Card -->
+        <section class="executive-contact-card">
             <div class="contact-card-header">
-                <span class="contact-badge">KES SHROFF COLLEGE COORDINATION</span>
+                <span class="contact-badge">DIRECT CAMPUS ASSISTANCE</span>
                 <h3>Community &amp; Partnership Leads</h3>
-                <p>Have any questions regarding registration, group schedules, or travel coordination? Contact directly:</p>
+                <p>Have any questions regarding college transport, schedules, or delegation verification? Connect directly with our leads:</p>
             </div>
-            
-            <div class="contact-coordinators-grid">
-                <!-- Coordinator 1: Satvik Satam -->
-                <div class="coord-box">
-                    <div>
-                        <div class="coord-profile-row">
-                            <div class="coord-avatar">👤</div>
-                            <div class="coord-details">
-                                <h4>Satvik Satam</h4>
-                                <div class="coord-role">Community &amp; Partnership Lead</div>
-                                <div class="coord-college">KES Shroff College • Celebrate Cinema 2026</div>
-                            </div>
+
+            <div class="coordinators-grid" id="leads-grid">
+                <!-- Lead 1 -->
+                <div class="coordinator-item" id="lead-1-card">
+                    <div class="coordinator-avatar" id="lead-1-avatar">S</div>
+                    <div class="coordinator-info">
+                        <h4 class="coordinator-name" id="lead-1-name">Satvik Satam</h4>
+                        <p class="coordinator-role" id="lead-1-role">Community &amp; Partnership Lead</p>
+                        <div class="coordinator-actions">
+                            <a href="tel:9136045359" id="lead-1-call" class="btn-coord-call">📞 Call 9136045359</a>
+                            <a href="https://wa.me/919136045359?text=Hi%20Satvik,%20I%20have%20a%20question%20regarding%20Celebrate%20Cinema%202026%20College%20Delegation." id="lead-1-wa" target="_blank" class="btn-coord-wa">💬 WhatsApp</a>
                         </div>
-                        <div class="coord-phone-text">
-                            Phone: <strong>+91 91360 45359</strong>
-                        </div>
-                    </div>
-                    <div class="coord-btn-row">
-                        <a href="tel:+919136045359" class="coord-action-btn coord-btn-call">
-                            📞 Call Now
-                        </a>
-                        <a href="https://wa.me/919136045359?text=Hi%20Satvik%2C%20I%20am%20from%20KES%20Shroff%20College%20and%20have%20a%20query%20about%20Celebrate%20Cinema%202026" target="_blank" class="coord-action-btn coord-btn-wa">
-                            💬 WhatsApp
-                        </a>
                     </div>
                 </div>
 
-                <!-- Coordinator 2: Sahil Mishra -->
-                <div class="coord-box">
-                    <div>
-                        <div class="coord-profile-row">
-                            <div class="coord-avatar">👤</div>
-                            <div class="coord-details">
-                                <h4>Sahil Mishra</h4>
-                                <div class="coord-role">Community &amp; Partnership Lead</div>
-                                <div class="coord-college">KES Shroff College • Celebrate Cinema 2026</div>
-                            </div>
+                <!-- Lead 2 -->
+                <div class="coordinator-item" id="lead-2-card">
+                    <div class="coordinator-avatar" id="lead-2-avatar">S</div>
+                    <div class="coordinator-info">
+                        <h4 class="coordinator-name" id="lead-2-name">Sahil Mishra</h4>
+                        <p class="coordinator-role" id="lead-2-role">Community &amp; Partnership Lead</p>
+                        <div class="coordinator-actions">
+                            <a href="tel:6206686464" id="lead-2-call" class="btn-coord-call">📞 Call 6206686464</a>
+                            <a href="https://wa.me/916206686464?text=Hi%20Sahil,%20I%20have%20a%20question%20regarding%20Celebrate%20Cinema%202026%20College%20Delegation." id="lead-2-wa" target="_blank" class="btn-coord-wa">💬 WhatsApp</a>
                         </div>
-                        <div class="coord-phone-text">
-                            Phone: <strong>+91 62066 86464</strong>
-                        </div>
-                    </div>
-                    <div class="coord-btn-row">
-                        <a href="tel:+916206686464" class="coord-action-btn coord-btn-call">
-                            📞 Call Now
-                        </a>
-                        <a href="https://wa.me/916206686464?text=Hi%20Sahil%2C%20I%20am%20from%20KES%20Shroff%20College%20and%20have%20a%20query%20about%20Celebrate%20Cinema%202026" target="_blank" class="coord-action-btn coord-btn-wa">
-                            💬 WhatsApp
-                        </a>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-    </div>
+    </main>
 
-    <!-- ═══════════════════════════════════════════════
-         STEP 2: OFFICIAL BOARDING PASS
-         ═══════════════════════════════════════════════ -->
-    <div id="step-ticket" class="step-view">
-        <div style="text-align:center; margin-bottom: 24px;">
-            <div style="font-size:2.8rem; margin-bottom:8px;">🎟️</div>
-            <div class="ks-pill">REGISTRATION CONFIRMED</div>
-            <h1 style="font-family:'Playfair Display',serif; font-size:clamp(1.8rem, 4.5vw, 2.5rem); margin:0 0 6px 0; color:var(--gold);">
-                Your Official Boarding Pass is Ready
-            </h1>
-            <p style="color:var(--lavender); font-size:0.92rem; max-width:580px; margin:0 auto;">
-                Present this official gate pass along with your college ID at the Whistling Woods International registration desk at Film City.
+    <!-- Success Modal & VIP Entry Pass -->
+    <div class="ks-modal-overlay" id="modal-pass">
+        <div class="ks-pass-wrapper" id="entry-pass-card">
+            <span style="display:inline-block; font-size:0.72rem; font-weight:800; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:8px;">
+                ★ CELEBRATE CINEMA 2026 ★
+            </span>
+            <h2 style="font-family:'Playfair Display', Georgia, serif; font-size:1.6rem; color:#ffffff; margin:0 0 6px 0;">
+                VIP Student Delegation Pass
+            </h2>
+            <div style="font-size:0.86rem; color:var(--gold); margin-bottom:14px;" id="pass-college-name">
+                Partner College
+            </div>
+
+            <!-- QR Code Box -->
+            <div class="ks-pass-qr" id="qrcode-container"></div>
+
+            <!-- Ticket ID -->
+            <div style="font-family:monospace; font-size:1.2rem; font-weight:800; color:var(--gold); margin-bottom:14px;" id="pass-ticket-id">
+                COL-000000
+            </div>
+
+            <!-- Student Metadata -->
+            <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:14px; text-align:left; font-size:0.82rem; margin-bottom:18px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="color:var(--lavender);">Delegate Name:</span>
+                    <strong style="color:#ffffff;" id="pass-student-name">—</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="color:var(--lavender);">Academic Stream:</span>
+                    <strong style="color:#ffffff;" id="pass-stream">—</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="color:var(--lavender);">Valid Dates:</span>
+                    <strong style="color:var(--gold);" id="pass-visit-date">08th &amp; 09th October 2026</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--lavender);">Status:</span>
+                    <strong style="color:#10b981;">✓ Free Partner Delegation</strong>
+                </div>
+            </div>
+
+            <!-- Pass Actions -->
+            <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                <button type="button" class="btn btn-primary" onclick="downloadPass()" style="font-weight:700;">
+                    📥 Download Entry Pass
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="sharePassWhatsApp()">
+                    💬 Share Pass
+                </button>
+            </div>
+            <p style="font-size:0.72rem; color:var(--lavender); margin-top:14px; margin-bottom:0;">
+                Screenshot or save this pass. Present this QR code at Whistling Woods Main Gate along with your College ID Card.
             </p>
         </div>
-
-        <!-- Official Boarding Pass Card Matching Main Website -->
-        <div class="boarding-pass" id="ticket-card">
-            <!-- Main Section -->
-            <div class="bp-main">
-                <!-- Header Ribbon -->
-                <div class="bp-header">
-                    <div class="bp-logos">
-                        <img src="/assets/wwi-logo.png" alt="WWI Logo" class="bp-logo-wwi">
-                        <div class="bp-brand-divider"></div>
-                        <img src="/assets/cc26-logo.png" alt="CC26 Logo" class="bp-logo-cc26">
-                        <div class="bp-brand-divider"></div>
-                        <img src="/careerbeam_logo.png" alt="CareerBeam" class="bp-logo-cb">
-                    </div>
-                    <div class="bp-header-badge">
-                        <span class="bp-badge-text">KES SHROFF • DELEGATE PASS</span>
-                    </div>
-                </div>
-
-                <!-- Meta Strip -->
-                <div class="bp-meta-strip">
-                    <div class="bp-meta-item">
-                        <span class="bp-meta-label">FLIGHT / EVENT</span>
-                        <span class="bp-meta-val">CC-2026</span>
-                    </div>
-                    <div class="bp-meta-item">
-                        <span class="bp-meta-label">GATE</span>
-                        <span class="bp-meta-val">01 FILM CITY</span>
-                    </div>
-                    <div class="bp-meta-item">
-                        <span class="bp-meta-label">CLASS / ACCESS</span>
-                        <span class="bp-meta-val" style="color:var(--gold);">ACADEMIC DELEGATE</span>
-                    </div>
-                    <div class="bp-meta-item">
-                        <span class="bp-meta-label">STATUS</span>
-                        <span class="bp-meta-val" style="color:var(--gold);">VERIFIED ✓</span>
-                    </div>
-                </div>
-
-                <!-- Passenger Details -->
-                <div class="bp-body-grid">
-                    <div class="bp-field bp-field-wide">
-                        <span class="bp-label">PASSENGER / ATTENDEE NAME</span>
-                        <span class="bp-value bp-name-val" id="t-name">—</span>
-                    </div>
-                    <div class="bp-field">
-                        <span class="bp-label">REGISTRATION / PNR</span>
-                        <span class="bp-value bp-pnr-val" id="t-id">—</span>
-                    </div>
-                    <div class="bp-field">
-                        <span class="bp-label">EVENT DATES</span>
-                        <span class="bp-value" style="color:var(--gold);">08 &amp; 09 OCT 2026</span>
-                    </div>
-                    <div class="bp-field">
-                        <span class="bp-label">VISITING PASS</span>
-                        <span class="bp-value" id="t-visit-date" style="color:var(--gold);">Both Days</span>
-                    </div>
-                    <div class="bp-field">
-                        <span class="bp-label">COLLEGE / INSTITUTION</span>
-                        <span class="bp-value" id="t-college">KES Shroff College of Arts &amp; Commerce</span>
-                    </div>
-                    <div class="bp-field">
-                        <span class="bp-label">STREAM / YEAR</span>
-                        <span class="bp-value" id="t-dept-year">—</span>
-                    </div>
-                    <div class="bp-field">
-                        <span class="bp-label">ACCESS PRIVILEGE</span>
-                        <span class="bp-value" style="color:var(--gold); font-weight:700;">COMPLIMENTARY (ACADEMIC DELEGATE)</span>
-                    </div>
-                </div>
-
-                <!-- Footer Strip -->
-                <div class="bp-footer-strip">
-                    Official Institutional Delegate Pass. Please carry your original College ID Card or Fee Receipt along with this pass for entry at the gate.
-                </div>
-            </div>
-
-            <!-- Perforation Divider -->
-            <div class="bp-perforation">
-                <div class="bp-notch bp-notch-top"></div>
-                <div class="bp-perforation-line"></div>
-                <div class="bp-notch bp-notch-bottom"></div>
-            </div>
-
-            <!-- Stub (Right) -->
-            <div class="bp-stub">
-                <div class="bp-stub-header">
-                    <span class="bp-stub-title">GATE PASS</span>
-                    <span class="bp-stub-sub">SCAN FOR ENTRY</span>
-                </div>
-                <div class="bp-qr-wrapper">
-                    <div class="ticket-qr-container" id="t-qr-container"></div>
-                </div>
-                <div class="bp-stub-meta">
-                    <div class="bp-stub-id" id="t-stub-id">—</div>
-                    <div style="font-size:0.7rem; color:var(--gold); font-weight:700; margin-top:2px;">KES SHROFF ACCESS</div>
-                    <div style="font-size:0.62rem; color:var(--lavender); margin-top:4px;">Whistling Woods Intl.</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:26px;">
-            <button type="button" class="btn-submit-ks" onclick="downloadPass()" style="width:auto; padding:12px 24px;">
-                📥 Download Boarding Pass
-            </button>
-            <button type="button" onclick="window.print()" style="background:rgba(255,255,255,0.08); border:1px solid var(--border-glass); color:var(--gold); padding:12px 22px; border-radius:12px; font-weight:700; cursor:pointer;">
-                🖨️ Print Pass
-            </button>
-            <button type="button" onclick="resetFormForNew()" style="background:transparent; border:1px solid var(--border-subtle); color:var(--lavender); padding:12px 20px; border-radius:12px; font-weight:600; cursor:pointer;">
-                ➕ Register Another Student
-            </button>
-        </div>
-
-        <!-- Coordinator Support Block on Confirmation Page -->
-        <div class="executive-contact-card" style="margin-top:36px;">
-            <div class="contact-card-header">
-                <span class="contact-badge">COMMUNITY &amp; PARTNERSHIP LEADS</span>
-                <h3 style="font-size:1.25rem;">Need Assistance with Entry or Travel?</h3>
-                <p>Reach out to your Community &amp; Partnership Leads anytime:</p>
-            </div>
-            <div class="contact-coordinators-grid">
-                <div class="coord-box">
-                    <div class="coord-profile-row">
-                        <div class="coord-avatar">👤</div>
-                        <div class="coord-details">
-                            <h4>Satvik Satam</h4>
-                            <div class="coord-role">+91 91360 45359</div>
-                        </div>
-                    </div>
-                    <div class="coord-btn-row">
-                        <a href="tel:+919136045359" class="coord-action-btn coord-btn-call">📞 Call</a>
-                        <a href="https://wa.me/919136045359" target="_blank" class="coord-action-btn coord-btn-wa">💬 WhatsApp</a>
-                    </div>
-                </div>
-                <div class="coord-box">
-                    <div class="coord-profile-row">
-                        <div class="coord-avatar">👤</div>
-                        <div class="coord-details">
-                            <h4>Sahil Mishra</h4>
-                            <div class="coord-role">+91 62066 86464</div>
-                        </div>
-                    </div>
-                    <div class="coord-btn-row">
-                        <a href="tel:+916206686464" class="coord-action-btn coord-btn-call">📞 Call</a>
-                        <a href="https://wa.me/916206686464" target="_blank" class="coord-action-btn coord-btn-wa">💬 WhatsApp</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-</main>
+    <!-- Embedded Client Logic -->
+    <script>window.DEFAULT_PORTAL_SLUG = 'kes-shroff';</script>
+    <script>
+        // ── SUPABASE CONFIG ──────────────────────────────────────────
+        var SUPABASE_URL = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
+        var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
 
-<!-- Footer -->
-<footer class="footer" style="margin-top:60px;">
-    <div class="footer-branding-row">
-        <img src="/assets/wwi-logo.png" alt="Whistling Woods International" class="footer-wwi-logo">
-        <span class="footer-divider-dot">•</span>
-        <img src="/assets/cc26-logo.png" alt="Celebrate Cinema 2026" class="footer-cc26-logo">
-        <span class="footer-divider-dot">•</span>
-        <img src="/careerbeam_logo.png" alt="CareerBeam" class="footer-cb-logo">
-    </div>
-    <p class="footer-title">Celebrate Cinema 2026 — The Academic Trek</p>
-    <p class="footer-sub">Whistling Woods International, Film City, Goregaon East, Mumbai</p>
-    <p class="footer-credits">
-        Promoted &amp; Managed by <strong>CareerBeam – Vigor</strong> • Special Delegation Partner: <strong>KES Shroff College</strong>
-    </p>
-</footer>
-
-<div class="toast-box" id="toast-container"></div>
-
-<!-- ═══ SCRIPTS ═══ -->
-<script>
-// ── STRICT CLEAN URL (NEVER SHOW INDEX.HTML) ─────────────────
-(function cleanUrl() {
-    try {
-        var p = window.location.pathname;
-        if (p.includes('index.html') || p.includes('index') || p.endsWith('/kes-shroff/')) {
-            window.history.replaceState({}, document.title, '/kes-shroff' + window.location.search + window.location.hash);
-        }
-    } catch(e) {}
-})();
-
-// ── SUPABASE CONFIG ──────────────────────────────────────────
-var SUPABASE_URL = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
-var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
-var LOCAL_STORAGE_KEY = 'cc2026_registrations';
-
-var sbClient = null;
-function getSbClient() {
-    if (sbClient) return sbClient;
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
+        var sbClient = null;
         try {
-            sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-            return sbClient;
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+            }
         } catch(e) {
             console.warn('Supabase client init error:', e);
         }
-    }
-    return null;
-}
-getSbClient();
 
-// ── PARTICLES BACKGROUND ──────────────────────────────────────
-(function initParticles() {
-    var canvas = document.getElementById('particles-canvas');
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var w = canvas.width = window.innerWidth;
-    var h = canvas.height = window.innerHeight;
+        // Global State
+        var _currentCollege = null;
+        var _uploadedBase64 = null;
+        var _uploadedFileName = null;
+        var _currentReg = null;
 
-    window.addEventListener('resize', function() {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-    });
-
-    var particles = [];
-    var count = Math.min(40, Math.floor(window.innerWidth / 30));
-    for (var i = 0; i < count; i++) {
-        particles.push({
-            x: Math.random() * w,
-            y: Math.random() * h,
-            vx: (Math.random() - 0.5) * 0.35,
-            vy: (Math.random() - 0.5) * 0.35,
-            r: Math.random() * 1.6 + 0.6,
-            alpha: Math.random() * 0.4 + 0.15
-        });
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, w, h);
-        for (var i = 0; i < particles.length; i++) {
-            var p = particles[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            if (p.x < 0) p.x = w;
-            if (p.x > w) p.x = 0;
-            if (p.y < 0) p.y = h;
-            if (p.y > h) p.y = 0;
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(247, 231, 197, ' + p.alpha + ')';
-            ctx.fill();
-        }
-        requestAnimationFrame(animate);
-    }
-    animate();
-})();
-
-// ── GLOBAL FORM STATE ─────────────────────────────────────────
-var currentFileBase64 = '';
-var currentRegistration = null;
-
-// ── TOAST ─────────────────────────────────────────────────────
-function showToast(msg, type) {
-    var container = document.getElementById('toast-container');
-    if (!container) return;
-    var toast = document.createElement('div');
-    var bg = (type === 'error') ? 'rgba(239,68,68,0.92)' : 'rgba(26,22,40,0.95)';
-    toast.style.cssText = 'background:' + bg + '; border:1px solid var(--border-glass); color:#f7e7c5; padding:12px 20px; border-radius:10px; font-size:0.88rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.6); backdrop-filter:blur(10px); animation:fadeIn 0.3s ease;';
-    toast.textContent = msg;
-    container.appendChild(toast);
-    setTimeout(function() {
-        toast.style.opacity = '0';
-        toast.style.transition = 'opacity 0.4s';
-        setTimeout(function(){ toast.remove(); }, 400);
-    }, 4000);
-}
-
-// ── FILE UPLOAD (ID CARD / FEE RECEIPT) ────────────────────────
-var fileInput = document.getElementById('id-card-input');
-var uploadZone = document.getElementById('upload-zone');
-var uploadPrompt = document.getElementById('upload-prompt');
-var previewBox = document.getElementById('upload-preview-box');
-var previewImg = document.getElementById('upload-preview-img');
-var previewPdf = document.getElementById('upload-preview-pdf');
-var pdfFilename = document.getElementById('pdf-filename');
-
-fileInput.addEventListener('change', function(e) {
-    var file = e.target.files[0];
-    if (file) handleSelectedFile(file);
-});
-
-uploadZone.addEventListener('dragover', function(e) {
-    e.preventDefault();
-    uploadZone.style.borderColor = 'var(--gold)';
-});
-uploadZone.addEventListener('dragleave', function(e) {
-    e.preventDefault();
-    uploadZone.style.borderColor = '';
-});
-uploadZone.addEventListener('drop', function(e) {
-    e.preventDefault();
-    uploadZone.style.borderColor = '';
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        handleSelectedFile(e.dataTransfer.files[0]);
-    }
-});
-
-function handleSelectedFile(file) {
-    if (file.size > 10 * 1024 * 1024) {
-        showToast('File size must be under 10MB', 'error');
-        return;
-    }
-
-    if (file.type.startsWith('image/')) {
-        var reader = new FileReader();
-        reader.onload = function(evt) {
-            var img = new Image();
-            img.onload = function() {
-                var canvas = document.createElement('canvas');
-                var MAX_DIM = 800;
-                var width = img.width;
-                var height = img.height;
-                if (width > MAX_DIM) {
-                    height = Math.round(height * (MAX_DIM / width));
-                    width = MAX_DIM;
-                }
-                if (height > MAX_DIM) {
-                    width = Math.round(width * (MAX_DIM / height));
-                    height = MAX_DIM;
-                }
-                canvas.width = width;
-                canvas.height = height;
-                var ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                currentFileBase64 = canvas.toDataURL('image/jpeg', 0.75);
-
-                previewImg.src = currentFileBase64;
-                previewImg.style.display = 'block';
-                previewPdf.style.display = 'none';
-                uploadPrompt.style.display = 'none';
-                previewBox.style.display = 'block';
-                uploadZone.classList.add('has-file');
-                showToast('ID Card / Fee Receipt attached ✓', 'info');
-            };
-            img.src = evt.target.result;
-        };
-        reader.readAsDataURL(file);
-    } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
-        previewImg.style.display = 'none';
-        previewPdf.style.display = 'block';
-        pdfFilename.textContent = file.name;
-        uploadPrompt.style.display = 'none';
-        previewBox.style.display = 'block';
-        uploadZone.classList.add('has-file');
-
-        if (file.size <= 3 * 1024 * 1024) {
-            var pdfReader = new FileReader();
-            pdfReader.onload = function(evt) {
-                currentFileBase64 = evt.target.result;
-                showToast('PDF Document attached ✓', 'info');
-            };
-            pdfReader.readAsDataURL(file);
-        } else {
-            currentFileBase64 = 'PDF:' + file.name;
-            showToast('PDF Document attached ✓', 'info');
-        }
-    } else {
-        showToast('Please upload an image (JPG, PNG) or PDF.', 'error');
-    }
-}
-
-function removeUploadedFile(e) {
-    if (e) e.stopPropagation();
-    currentFileBase64 = '';
-    fileInput.value = '';
-    previewBox.style.display = 'none';
-    uploadPrompt.style.display = 'block';
-    uploadZone.classList.remove('has-file');
-}
-
-// ── FORM SUBMISSION ───────────────────────────────────────────
-document.getElementById('kes-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    var name = document.getElementById('reg-name').value.trim();
-    var email = document.getElementById('reg-email').value.trim();
-    var phone = document.getElementById('reg-phone').value.trim().replace(/\D/g, '');
-    var dept = document.getElementById('reg-dept').value;
-    var year = document.getElementById('reg-year').value;
-    var college = document.getElementById('reg-college').value.trim() || 'KES Shroff College of Arts & Commerce';
-    var visitDate = document.getElementById('reg-visit-date').value;
-
-    if (!name || name.length < 2) {
-        showToast('Please enter your full name', 'error');
-        document.getElementById('reg-name').focus();
-        return;
-    }
-    if (!email || !email.includes('@')) {
-        showToast('Please enter a valid email address', 'error');
-        document.getElementById('reg-email').focus();
-        return;
-    }
-    if (!phone || phone.length !== 10) {
-        showToast('Please enter a valid 10-digit mobile number', 'error');
-        document.getElementById('reg-phone').focus();
-        return;
-    }
-    if (!dept) {
-        showToast('Please select your Course / Stream', 'error');
-        document.getElementById('reg-dept').focus();
-        return;
-    }
-    if (!year) {
-        showToast('Please select your Year of Study', 'error');
-        document.getElementById('reg-year').focus();
-        return;
-    }
-    if (!currentFileBase64) {
-        showToast('Please upload your Student ID Card or Fee Receipt', 'error');
-        uploadZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        uploadZone.style.borderColor = 'var(--gold)';
-        return;
-    }
-
-    var btn = document.getElementById('btn-submit');
-    var btnText = document.getElementById('btn-text');
-    var btnSpinner = document.getElementById('btn-spinner');
-    btn.disabled = true;
-    btnText.style.display = 'none';
-    btnSpinner.style.display = 'inline-block';
-
-    var randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
-    var regId = 'KS-' + randomSuffix;
-    var combinedYearDept = year + ' (' + dept + ')__VD__' + visitDate;
-
-    var regData = {
-        id: regId,
-        name: name,
-        email: email,
-        phone: phone,
-        college: college,
-        year: combinedYearDept,
-        department: dept,
-        visitDate: visitDate,
-        referralCode: '',
-        referredBy: 'SOURCE:kes-shroff',
-        couponUsed: 'FREE-KES-SHROFF',
-        basePrice: 0,
-        earlyBirdDiscount: 0,
-        couponDiscount: 0,
-        finalPrice: 0,
-        transactionId: 'FREE-KES-SHROFF',
-        paymentScreenshot: currentFileBase64,
-        verified: true,
-        attended: false,
-        attendedAt: null,
-        timestamp: new Date().toISOString()
-    };
-
-    currentRegistration = regData;
-
-    try {
-        saveLocal(regData);
-        await saveSupabase(regData);
-        renderTicket(regData);
-        switchStep('step-ticket');
-        showToast('Registration Confirmed! Your boarding pass is ready.', 'info');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(err) {
-        console.error('Registration failed to sync to database:', err);
-        showToast('Could not save registration to database: ' + (err.message || 'Please check your connection') + '. Please try again.', 'error');
-        btn.disabled = false;
-        btnText.style.display = 'inline-block';
-        btnSpinner.style.display = 'none';
-        return;
-    } finally {
-        btn.disabled = false;
-        btnText.style.display = 'inline-block';
-        btnSpinner.style.display = 'none';
-    }
-});
-
-function saveLocal(r) {
-    try {
-        var existing = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || '[]');
-        if (!existing.some(function(x){ return x.id === r.id; })) {
-            existing.push(r);
-            try {
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(existing));
-            } catch(e) {
-                var lite = existing.map(function(item) {
-                    return Object.assign({}, item, { paymentScreenshot: '' });
-                });
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(lite));
-            }
-        }
-        var offlineQueue = JSON.parse(localStorage.getItem('cc2026_offline_submissions') || '[]');
-        if (!offlineQueue.some(function(x){ return x.id === r.id; })) {
-            offlineQueue.push(r);
-            try {
-                localStorage.setItem('cc2026_offline_submissions', JSON.stringify(offlineQueue));
-            } catch(e) {}
-        }
-    } catch(e) {}
-}
-
-async function saveSupabase(r) {
-    var row = {
-        id: r.id,
-        name: r.name,
-        email: r.email,
-        phone: r.phone,
-        college: r.college,
-        year: r.year,
-        referral_code: '',
-        referred_by: 'SOURCE:kes-shroff',
-        coupon_used: 'FREE-KES-SHROFF',
-        base_price: 0,
-        early_bird_discount: 0,
-        coupon_discount: 0,
-        final_price: 0,
-        transaction_id: 'FREE-KES-SHROFF',
-        payment_screenshot: r.paymentScreenshot || '',
-        verified: true,
-        attended: false,
-        attended_at: null,
-        timestamp: r.timestamp
-    };
-
-    var saved = false;
-    var lastError = null;
-
-    // Strategy 1: Direct native fetch to Supabase REST API (instant, resilient, zero CDN dependency)
-    try {
-        var restRes = await fetch(SUPABASE_URL + '/rest/v1/registrations', {
-            method: 'POST',
-            headers: {
-                'apikey': SUPABASE_ANON,
-                'Authorization': 'Bearer ' + SUPABASE_ANON,
-                'Content-Type': 'application/json',
-                'Prefer': 'resolution=merge-duplicates'
+        // ── DEFAULT FALLBACK COLLEGES ────────────────────────────────
+        var DEFAULT_COLLEGES = [
+            {
+                slug: 'kes-shroff',
+                name: 'KES Shroff College of Arts & Commerce',
+                shortName: 'KES Shroff',
+                pocs: [
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' },
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SATVIK', 'SAHIL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with KES Shroff College, admission is granted on a complimentary basis for all enrolled students. Kindly attach your Student ID Card or recent College Fee Receipt to receive your verified academic delegate pass.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
             },
-            body: JSON.stringify(row)
-        });
+            {
+                slug: 'kj-somaiya',
+                name: 'Kj Somaiya College',
+                shortName: 'KJ Somaiya College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with KJ Somaiya College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'sydenham',
+                name: 'Sydenham College of Commerce and Economics',
+                shortName: 'Sydenham College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Sydenham College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'mithibai',
+                name: 'Mithibai College of Arts, Chauhan Institute of Science & Amrutben Jivanlal College of Commerce & Economics',
+                shortName: 'Mithibai College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Mithibai College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'hr-college',
+                name: 'H.R. College of Commerce & Economics',
+                shortName: 'HR College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with HR College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'nm-college',
+                name: 'Narsee Monjee College of Commerce & Economics',
+                shortName: 'NM College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with NM College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'dj-sanghvi',
+                name: 'Dwarkadas J. Sanghvi College of Engineering',
+                shortName: 'DJ Sanghvi',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with DJ Sanghvi College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['B.E. Computer', 'B.E. IT', 'B.E. Electronics', 'B.E. Mechanical', 'B.E. Civil', 'B.E. Chemical', 'M.E.', 'Other']
+            },
+            {
+                slug: 'sk-somaiya',
+                name: 'Somaiya Vidyavihar University - S.K. Somaiya College',
+                shortName: 'SK Somaiya College',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SK Somaiya College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'aurobindo-college',
+                name: 'Aurobindo college',
+                shortName: 'Aurobindo',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Aurobindo College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'siws',
+                name: 'SIWS',
+                shortName: 'Siws',
+                pocs: [
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' },
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SATVIK', 'SAHIL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SIWS, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
+            },
+            {
+                slug: 'rotaract-mum',
+                name: 'Rotaract Clubs Mumbai — All Colleges Delegation Pass',
+                shortName: 'Rotaract Mumbai',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract Youth Delegation Privilege',
+                privilegeDesc: 'Complimentary admission for Rotaract Club members, youth leaders, and student delegates from ANY college or institution. Enter your college and upload your College ID Card, Fee Receipt, or Rotaract Membership ID to receive your verified academic delegate pass.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rotaract',
+                name: 'Rotaract Clubs — All Colleges Delegation Pass',
+                shortName: 'Rotaract Club Partner',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract Youth Delegation Privilege',
+                privilegeDesc: 'Complimentary admission for Rotaract Club members and student delegates from ANY college or institution. Enter your college and upload your College ID Card, Fee Receipt, or Rotaract Membership ID to receive your verified academic delegate pass.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rotaract-mumbai',
+                name: 'Rotaract District 3141 & 3142 — All Colleges Youth Delegation',
+                shortName: 'Rotaract Mumbai',
+                openCollege: true,
+                type: 'rotaract',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Rotaract District Delegation Privilege',
+                privilegeDesc: 'Complimentary pass for students and Rotaractors across all Mumbai colleges and institutes. Please upload your student ID or Rotaract ID for verification.',
+                badge: 'ROTARACT FREE PASS',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'vendor-partner',
+                name: 'Campus Vendor & Youth Outreach Partner Network',
+                shortName: 'Vendor Partner',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Vendor Partner Outreach Privilege',
+                privilegeDesc: 'Complimentary admission for youth, student delegates, and campus community members from any college. Enter your institution and upload ID for verification.',
+                badge: 'VENDOR PARTNER FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'youth-network',
+                name: 'Youth Creator & Student Community Network (All Colleges)',
+                shortName: 'Youth Network',
+                openCollege: true,
+                type: 'vendor',
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Youth Network Privilege',
+                privilegeDesc: 'Complimentary access for young filmmakers, creators, and students from all colleges across India.',
+                badge: 'YOUTH NETWORK FREE',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'bhartiya-vidyapeeth',
+                name: 'Bhartiya Vidyapeeth',
+                shortName: 'Bhartiya Vidyapeeth',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Rahul', phone: '9136033847', role: 'Community & Partnership Lead' },
+                    { name: 'Rahul', phone: '9136033847', role: 'Campus Outreach Lead' }
+                ],
+                referralCodes: ['RAHUL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Bhartiya Vidyapeeth, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'sies-nerul',
+                name: 'SIES Nerul',
+                shortName: 'SIES Nerul',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Rahul', phone: '9136033847', role: 'Community & Partnership Lead' },
+                    { name: 'Rahul', phone: '9136033847', role: 'Campus Outreach Lead' }
+                ],
+                referralCodes: ['RAHUL'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with SIES Nerul, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'guru-nanak-khalsa-college',
+                name: 'Guru Nanak Khalsa College',
+                shortName: 'Guru Nanak Khalsa',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Guru Nanak Khalsa College, admission is granted on a complimentary basis for all enrolled students.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
+            },
+            {
+                slug: 'rgit',
+                name: 'RGIT',
+                shortName: 'RGIT',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['Engineering', 'B.E.', 'B.Tech', 'B.Sc IT', 'B.Sc CS', 'Other']
+            },
+            {
+                slug: 'kirti-college',
+                name: 'Kirti College',
+                shortName: 'Kirti College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'bk-birla-college',
+                name: 'BK BIRLA COLLEGE',
+                shortName: 'BK Birla College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'bhavans-college',
+                name: "Bhavan's College",
+                shortName: "Bhavan's College",
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Other']
+            },
+            {
+                slug: 'ves',
+                name: 'Vivekanand Education Society',
+                shortName: 'VES College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.A', 'Engineering', 'Other']
+            },
+            {
+                slug: 'vjti',
+                name: 'VJTI',
+                shortName: 'VJTI Mumbai',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['B.Tech', 'Engineering', 'M.Tech', 'MCA', 'Other']
+            },
+            {
+                slug: 'bedekar-college',
+                name: 'Bedekar College',
+                shortName: 'Bedekar College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'valia-college',
+                name: 'Valia College',
+                shortName: 'Valia College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'jai-hind-college',
+                name: 'Jai Hind College',
+                shortName: 'Jai Hind College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'ra-podar-college',
+                name: 'RA Podar College',
+                shortName: 'RA Podar College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['NILESH', 'TARASHA'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            }
+        ];;
 
-        if (restRes.ok || restRes.status === 201 || restRes.status === 204 || restRes.status === 200) {
-            console.log('⚡ Record persisted to Supabase via Direct REST API:', r.id);
-            saved = true;
-            return true;
-        } else {
-            var errText = await restRes.text();
-            console.warn('Direct REST API non-ok status:', restRes.status, errText);
-            lastError = new Error('Database error ' + restRes.status + ': ' + errText);
-        }
-    } catch(fetchErr) {
-        console.warn('Direct REST API fetch exception:', fetchErr);
-        lastError = fetchErr;
-    }
+        function getSlugFromUrl(colleges) {
+            var params = new URLSearchParams(window.location.search);
+            var q = params.get('c') || params.get('college') || params.get('slug');
+            if (q) {
+                var cleanQ = q.toLowerCase().replace(/\.html$/, '').trim();
+                if (cleanQ && cleanQ !== 'c' && cleanQ !== 'college' && cleanQ !== 'index') return cleanQ;
+            }
 
-    // Strategy 2: Supabase JS SDK client fallback
-    if (!saved) {
-        try {
-            var client = getSbClient();
-            if (client) {
-                var res = await client.from('registrations').upsert([row]);
-                if (!res.error) {
-                    console.log('⚡ Record persisted to Supabase via SDK client:', r.id);
-                    saved = true;
-                    return true;
-                } else {
-                    console.warn('SDK client error:', res.error);
-                    lastError = new Error(res.error.message || 'Supabase SDK error');
+            if (window.DEFAULT_PORTAL_SLUG) return window.DEFAULT_PORTAL_SLUG;
+
+            var ignored = { 'c': true, 'c:': true, 'college': true, 'index': true, 'index.html': true, 'college.html': true };
+            var pathParts = window.location.pathname.split('/').map(function(p) {
+                return p.toLowerCase().replace(/\.html$/, '').trim();
+            }).filter(Boolean);
+
+            // 1. Check if any URL segment matches a configured college slug
+            if (Array.isArray(colleges) && colleges.length > 0) {
+                for (var j = 0; j < colleges.length; j++) {
+                    var s = (colleges[j].slug || '').toLowerCase();
+                    if (s && pathParts.includes(s)) {
+                        return s;
+                    }
                 }
             }
-        } catch(sdkErr) {
-            console.warn('Supabase SDK exception:', sdkErr);
-            lastError = sdkErr;
+
+            // 2. Check /c/:slug pattern
+            var cIdx = pathParts.indexOf('c');
+            if (cIdx !== -1 && pathParts[cIdx + 1] && !ignored[pathParts[cIdx + 1]]) {
+                return pathParts[cIdx + 1];
+            }
+
+            // 3. Check path parts from end (e.g. /rotaract-mum, /vendor-partner)
+            for (var i = pathParts.length - 1; i >= 0; i--) {
+                var p = pathParts[i];
+                if (p && !ignored[p] && !p.endsWith(':')) {
+                    return p;
+                }
+            }
+
+            return 'kes-shroff';
         }
-    }
 
-    if (!saved) {
-        throw (lastError || new Error('Could not establish connection to registration database.'));
-    }
-}
+        // ── FETCH COLLEGES CONFIG (LOCAL + SUPABASE) ───────────────────
+        async function fetchCollegesConfig() {
+            var colleges = [];
+            try {
+                var local = localStorage.getItem('wwi_cc26_colleges');
+                if (local) {
+                    var parsed = JSON.parse(local);
+                    if (Array.isArray(parsed) && parsed.length > 0) colleges = parsed;
+                }
+            } catch(e) {}
 
-function renderTicket(r) {
-    document.getElementById('t-name').textContent = r.name || '—';
-    document.getElementById('t-id').textContent = r.id || '—';
-    document.getElementById('t-stub-id').textContent = r.id || '—';
-    document.getElementById('t-visit-date').textContent = r.visitDate || 'Both Days';
-    document.getElementById('t-college').textContent = r.college || 'KES Shroff College of Arts & Commerce';
-    document.getElementById('t-dept-year').textContent = (r.department || '') + ' • ' + (r.year ? r.year.split('__VD__')[0] : '');
+            // Always sync fresh from Supabase
+            try {
+                var url = SUPABASE_URL + '/rest/v1/registrations?id=eq.CONFIG_COLLEGES&select=*';
+                var resp = await fetch(url, {
+                    headers: {
+                        'apikey': SUPABASE_ANON,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON
+                    }
+                });
+                if (resp.ok) {
+                    var data = await resp.json();
+                    if (data && data[0] && data[0].payment_screenshot) {
+                        var cloudList = JSON.parse(data[0].payment_screenshot);
+                        if (Array.isArray(cloudList) && cloudList.length > 0) {
+                            DEFAULT_COLLEGES.forEach(function(def) {
+                                if (!cloudList.some(function(c) { return c.slug === def.slug; })) {
+                                    cloudList.push(def);
+                                }
+                            });
+                            colleges = cloudList;
+                            try { localStorage.setItem('wwi_cc26_colleges', JSON.stringify(cloudList)); } catch(e) {}
+                        }
+                    }
+                }
+            } catch(e) {
+                console.warn('Could not sync colleges from Supabase:', e);
+            }
 
-    var qrContainer = document.getElementById('t-qr-container');
-    qrContainer.innerHTML = '';
-    if (window.QRCode && typeof window.QRCode === 'function') {
-        try {
-            new window.QRCode(qrContainer, {
-                text: r.id,
-                width: 160,
-                height: 160,
-                colorDark: '#000000',
-                colorLight: '#ffffff',
-                correctLevel: window.QRCode.CorrectLevel ? window.QRCode.CorrectLevel.M : 0
+            DEFAULT_COLLEGES.forEach(function(def) {
+                if (!colleges.some(function(c) { return c.slug === def.slug; })) {
+                    colleges.push(def);
+                }
             });
-        } catch(e) {
-            qrContainer.innerHTML = '<div style="color:#000;font-family:monospace;font-weight:700;padding:20px 10px;">' + r.id + '</div>';
+
+            if (colleges.length === 0) colleges = DEFAULT_COLLEGES;
+            return colleges;
         }
-    } else {
-        qrContainer.innerHTML = '<div style="color:#000;font-family:monospace;font-weight:700;padding:20px 10px;">' + r.id + '</div>';
-    }
-}
 
-function switchStep(stepId) {
-    document.querySelectorAll('.step-view').forEach(function(el) {
-        el.classList.remove('active');
-    });
-    var target = document.getElementById(stepId);
-    if (target) target.classList.add('active');
-}
+        // ── INIT PAGE WITH MATCHING COLLEGE ──────────────────────────
+        async function initCollegePage() {
+            var colleges = await fetchCollegesConfig();
+            var slug = getSlugFromUrl(colleges);
+            var col = colleges.find(function(c) { return c.slug === slug; });
 
-function resetFormForNew() {
-    currentRegistration = null;
-    removeUploadedFile();
-    document.getElementById('kes-form').reset();
-    document.getElementById('reg-college').value = 'KES Shroff College of Arts & Commerce';
-    switchStep('step-form');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+            if (!col) {
+                // Show a friendly "portal not found" page instead of silently using the wrong college
+                showPortalNotFound(slug, colleges);
+                return;
+            }
 
-function downloadPass() {
-    var card = document.getElementById('ticket-card');
-    if (!card) return;
-    if (window.html2canvas) {
-        showToast('Generating high-resolution pass...', 'info');
-        window.html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#12121e' }).then(function(canvas) {
-            var link = document.createElement('a');
-            link.download = 'Celebrate-Cinema-2026-Pass-' + (currentRegistration ? currentRegistration.id : 'KES') + '.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-            showToast('Pass downloaded successfully ✓', 'info');
-        }).catch(function(e) {
-            window.print();
-        });
-    } else {
-        window.print();
-    }
-}
-</script>
+            _currentCollege = col;
+            renderCollegePortal(col);
+        }
 
+        // ── PORTAL NOT FOUND STATE ────────────────────────────────────
+        function showPortalNotFound(slug, colleges) {
+            document.title = 'Portal Not Found | Celebrate Cinema 2026';
+            // Hide main content and show error message
+            var main = document.querySelector('main');
+            if (main) {
+                main.innerHTML = [
+                    '<div style="min-height:80vh; display:flex; align-items:center; justify-content:center; padding:40px 20px;">',
+                    '  <div style="text-align:center; max-width:520px; background:rgba(26,22,40,0.88); border:1px solid rgba(141,106,174,0.3); border-radius:20px; padding:48px 36px;">',
+                    '    <div style="font-size:4rem; margin-bottom:20px;">🔍</div>',
+                    '    <h1 style="font-family:\'Playfair Display\',Georgia,serif; font-size:1.8rem; color:#ffffff; margin:0 0 12px 0;">College Portal Not Found</h1>',
+                    '    <p style="color:var(--gold); font-size:0.9rem; margin-bottom:8px; font-family:monospace; background:rgba(0,0,0,0.3); padding:6px 14px; border-radius:8px; display:inline-block;">/c/' + slug + '</p>',
+                    '    <p style="color:var(--lavender); font-size:0.9rem; line-height:1.6; margin:16px 0 24px 0;">',
+                    '      This college portal link doesn\'t exist yet or hasn\'t been activated. If you\'re a student, please contact your college coordinator for the correct link.',
+                    '    </p>',
+                    '    <div style="margin-bottom:20px;">',
+                    '      <p style="color:var(--gold); font-size:0.82rem; font-weight:700; margin-bottom:10px;">Available College Portals:</p>',
+                    (colleges.length > 0 ? colleges.filter(function(c) { return c && c.slug && !c.openCollege && c.type !== 'vendor' && c.type !== 'rotaract' && !/vendor|rotaract|youth/.test(c.slug); }).map(function(c) {
+                        return '      <a href="/c/' + c.slug + '" style="display:inline-block; margin:4px; background:rgba(141,106,174,0.15); border:1px solid rgba(141,106,174,0.4); color:var(--primary-light); padding:6px 14px; border-radius:8px; text-decoration:none; font-size:0.82rem;">' + (c.shortName || c.name) + '</a>';
+                    }).join('') : '      <span style="color:var(--lavender); font-size:0.82rem;">No portals active yet</span>'),
+                    '    </div>',
+                    '    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">',
+                    '      <a href="/" style="display:inline-flex; align-items:center; gap:8px; padding:12px 24px; background:linear-gradient(135deg,#8d6aae,#6f4f8e); color:#fff; border-radius:10px; text-decoration:none; font-weight:600; font-size:0.9rem;">',
+                    '        ← Main Registration',
+                    '      </a>',
+                    '      <a href="/kes-shroff" style="display:inline-flex; align-items:center; gap:8px; padding:12px 24px; background:rgba(212,168,67,0.15); border:1px solid rgba(212,168,67,0.5); color:var(--gold); border-radius:10px; text-decoration:none; font-weight:600; font-size:0.9rem;">',
+                    '        KES Shroff Portal →',
+                    '      </a>',
+                    '    </div>',
+                    '    <p style="font-size:0.75rem; color:var(--lavender); margin-top:20px; opacity:0.7;">',
+                    '      Admin: If you just created this portal, please sync cloud data from the admin dashboard and share the link again.',
+                    '    </p>',
+                    '  </div>',
+                    '</div>'
+                ].join('\n');
+            }
+        }
+
+        function renderCollegePortal(col) {
+            var isOpenCollege = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug === 'rotaract' || col.slug === 'rotaract-mumbai' || col.slug === 'rotaract-mum' || col.slug === 'vendor-partner' || col.slug === 'youth-network');
+            var isRotaract = Boolean(col.type === 'rotaract' || col.slug.includes('rotaract'));
+
+            // Update Page Meta
+            document.title = (col.shortName || col.name) + ' | Student Registration — Celebrate Cinema 2026';
+            var desc = document.getElementById('page-desc');
+            if (desc) desc.setAttribute('content', 'Official Registration for ' + col.name + ' students at Celebrate Cinema 2026 Academic Trek — Whistling Woods International.');
+
+            // Hero section
+            var hHeading = document.getElementById('hero-college-name');
+            if (hHeading) hHeading.textContent = col.shortName || col.name;
+
+            if (isRotaract) {
+                var heroBadge = document.getElementById('hero-badge-text');
+                if (heroBadge) heroBadge.textContent = 'ROTARACT YOUTH DELEGATION • ALL COLLEGES';
+                var heroSub = document.getElementById('hero-subtitle');
+                if (heroSub) heroSub.textContent = 'Official Complimentary Delegation Pass for Rotaract Club members and students across all Mumbai colleges & institutes at Celebrate Cinema 2026 Academic Trek — Whistling Woods International.';
+            }
+
+            // Form inputs
+            var collegeInput = document.getElementById('reg-college');
+            var collegeBadge = document.getElementById('badge-college-field');
+            var collegeLabel = document.getElementById('lbl-college-field');
+            var collegeSub = document.getElementById('sub-college-open');
+
+            if (collegeInput) {
+                if (isOpenCollege) {
+                    collegeInput.removeAttribute('readonly');
+                    collegeInput.style.cursor = 'text';
+                    collegeInput.style.background = 'rgba(255,255,255,0.06)';
+                    collegeInput.value = '';
+                    collegeInput.placeholder = 'Type your College / University Name *';
+                    collegeInput.required = true;
+                    if (collegeLabel) collegeLabel.textContent = 'Your College / Institution Name *';
+                    if (collegeBadge) {
+                        collegeBadge.innerHTML = '<span>Any College Eligible</span> <span>✨</span>';
+                        collegeBadge.style.color = '#4ade80';
+                        collegeBadge.style.borderColor = 'rgba(74,222,128,0.4)';
+                        collegeBadge.style.background = 'rgba(74,222,128,0.12)';
+                    }
+                    if (collegeSub) collegeSub.style.display = 'block';
+                } else {
+                    collegeInput.setAttribute('readonly', 'true');
+                    collegeInput.style.cursor = 'not-allowed';
+                    collegeInput.style.background = 'rgba(255,255,255,0.03)';
+                    collegeInput.value = col.name;
+                    if (collegeLabel) collegeLabel.textContent = 'College / Institution';
+                    if (collegeBadge) {
+                        collegeBadge.innerHTML = '<span>Verified Partner</span> <span>🔒</span>';
+                        collegeBadge.style.color = 'var(--gold)';
+                        collegeBadge.style.borderColor = 'rgba(247,231,197,0.3)';
+                        collegeBadge.style.background = 'rgba(212,168,67,0.15)';
+                    }
+                    if (collegeSub) collegeSub.style.display = 'none';
+                }
+            }
+
+            var feeLabel = document.getElementById('fee-partner-label');
+            if (feeLabel) feeLabel.textContent = (col.shortName || col.name) + ' Collaboration Pass';
+
+            var agreeLabel = document.getElementById('reg-agree-label');
+            if (agreeLabel) {
+                agreeLabel.textContent = isOpenCollege 
+                    ? 'I confirm that I will present my Student College ID, Fee Receipt, or Rotaract Membership ID upon arrival at Whistling Woods International, Film City.'
+                    : 'I confirm that I am a bonafide student / delegate of ' + (col.shortName || col.name) + ' and will present my college identification upon arrival at Whistling Woods International, Film City.';
+            }
+
+            var uploadTitle = document.getElementById('upload-title');
+            if (uploadTitle && isOpenCollege) {
+                uploadTitle.textContent = 'Click or Drag & Drop your College ID Card, Fee Receipt, or Rotaract ID';
+            }
+
+            // Streams dropdown
+            var streamSelect = document.getElementById('reg-stream');
+            if (streamSelect && Array.isArray(col.streams) && col.streams.length > 0) {
+                streamSelect.innerHTML = col.streams.map(function(s, idx) {
+                    return '<option value="' + s + '" ' + (idx === 0 ? 'selected' : '') + '>' + s + '</option>';
+                }).join('');
+            }
+
+            // Render POCs (Community & Partnership Leads)
+            var poc1 = (col.pocs && col.pocs[0]) || { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' };
+            var poc2 = (col.pocs && col.pocs[1]) || { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' };
+
+            // Lead 1
+            var l1Avatar = document.getElementById('lead-1-avatar');
+            if (l1Avatar) l1Avatar.textContent = (poc1.name || 'P').charAt(0).toUpperCase();
+            var l1Name = document.getElementById('lead-1-name');
+            if (l1Name) l1Name.textContent = poc1.name;
+            var l1Role = document.getElementById('lead-1-role');
+            if (l1Role) l1Role.textContent = poc1.role || 'Community & Partnership Lead';
+            var l1Call = document.getElementById('lead-1-call');
+            if (l1Call) {
+                l1Call.href = 'tel:' + poc1.phone;
+                l1Call.textContent = '📞 Call ' + poc1.phone;
+            }
+            var l1Wa = document.getElementById('lead-1-wa');
+            if (l1Wa) {
+                var cleanPhone1 = (poc1.phone || '').replace(/\D/g, '');
+                if (cleanPhone1.length === 10) cleanPhone1 = '91' + cleanPhone1;
+                l1Wa.href = 'https://wa.me/' + cleanPhone1 + '?text=' + encodeURIComponent('Hi ' + poc1.name + ', I have a question regarding Celebrate Cinema 2026 College Delegation from ' + (col.shortName || col.name) + '.');
+            }
+
+            // Lead 2
+            var l2Avatar = document.getElementById('lead-2-avatar');
+            if (l2Avatar) l2Avatar.textContent = (poc2.name || 'P').charAt(0).toUpperCase();
+            var l2Name = document.getElementById('lead-2-name');
+            if (l2Name) l2Name.textContent = poc2.name;
+            var l2Role = document.getElementById('lead-2-role');
+            if (l2Role) l2Role.textContent = poc2.role || 'Community & Partnership Lead';
+            var l2Call = document.getElementById('lead-2-call');
+            if (l2Call) {
+                l2Call.href = 'tel:' + poc2.phone;
+                l2Call.textContent = '📞 Call ' + poc2.phone;
+            }
+            var l2Wa = document.getElementById('lead-2-wa');
+            if (l2Wa) {
+                var cleanPhone2 = (poc2.phone || '').replace(/\D/g, '');
+                if (cleanPhone2.length === 10) cleanPhone2 = '91' + cleanPhone2;
+                l2Wa.href = 'https://wa.me/' + cleanPhone2 + '?text=' + encodeURIComponent('Hi ' + poc2.name + ', I have a question regarding Celebrate Cinema 2026 College Delegation from ' + (col.shortName || col.name) + '.');
+            }
+        }
+
+        // ── FILE UPLOAD HANDLING ─────────────────────────────────────
+        function handleFileSelect(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('Selected file is too large. Please upload an image or PDF under 10MB.');
+                return;
+            }
+
+            _uploadedFileName = file.name;
+            var reader = new FileReader();
+
+            if (file.type.startsWith('image/')) {
+                reader.onload = function(e) {
+                    var img = new Image();
+                    img.onload = function() {
+                        var canvas = document.createElement('canvas');
+                        var maxDim = 1200;
+                        var width = img.width;
+                        var height = img.height;
+
+                        if (width > maxDim || height > maxDim) {
+                            if (width > height) {
+                                height = Math.round((height * maxDim) / width);
+                                width = maxDim;
+                            } else {
+                                width = Math.round((width * maxDim) / height);
+                                height = maxDim;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        var ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        _uploadedBase64 = canvas.toDataURL('image/jpeg', 0.85);
+                        showPreview(_uploadedBase64, file.name);
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // PDF or other doc
+                reader.onload = function(e) {
+                    _uploadedBase64 = e.target.result;
+                    showPreview('/assets/cc26-logo.png', file.name);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showPreview(src, filename) {
+            var box = document.getElementById('preview-box');
+            var img = document.getElementById('preview-img');
+            var nameEl = document.getElementById('preview-filename');
+            var uploadZone = document.getElementById('upload-zone');
+
+            if (box && img && nameEl) {
+                img.src = src;
+                nameEl.textContent = filename || 'ID Card Document';
+                box.style.display = 'block';
+                if (uploadZone) uploadZone.classList.add('has-file');
+                var title = document.getElementById('upload-title');
+                if (title) title.textContent = '✓ ' + (filename || 'File Attached');
+            }
+        }
+
+        function removeSelectedFile() {
+            _uploadedBase64 = null;
+            _uploadedFileName = null;
+            var input = document.getElementById('id-card-input');
+            if (input) input.value = '';
+            var box = document.getElementById('preview-box');
+            if (box) box.style.display = 'none';
+            var uploadZone = document.getElementById('upload-zone');
+            if (uploadZone) uploadZone.classList.remove('has-file');
+            var title = document.getElementById('upload-title');
+            if (title) title.textContent = 'Click or Drag & Drop your College ID Card';
+        }
+
+        // ── ROTARACT EQUAL LEAD SPLIT (NILESH & TARASHA) ──────────────
+        async function getNextRotaractAssignee() {
+            try {
+                var url = SUPABASE_URL + '/rest/v1/registrations?select=referred_by&or=(coupon_used.ilike.*rotaract*,transaction_id.ilike.*rotaract*,id.like.ROT*)';
+                var controller = new AbortController();
+                var timer = setTimeout(function() { controller.abort(); }, 3500);
+                var resp = await fetch(url, {
+                    signal: controller.signal,
+                    headers: {
+                        'apikey': SUPABASE_ANON,
+                        'Authorization': 'Bearer ' + SUPABASE_ANON
+                    }
+                });
+                clearTimeout(timer);
+                if (resp.ok) {
+                    var data = await resp.json();
+                    if (Array.isArray(data)) {
+                        var nileshCount = data.filter(function(r) { return (r.referred_by || '').trim().toUpperCase() === 'NILESH'; }).length;
+                        var tarashaCount = data.filter(function(r) { return (r.referred_by || '').trim().toUpperCase() === 'TARASHA'; }).length;
+                        var chosen = nileshCount <= tarashaCount ? 'NILESH' : 'TARASHA';
+                        try { localStorage.setItem('wwi_rotaract_last_assigned', chosen); } catch(e) {}
+                        return chosen;
+                    }
+                }
+            } catch(e) {
+                console.warn('Realtime assignee check fallback:', e);
+            }
+
+            // Fallback to local registrations cache
+            try {
+                var local = JSON.parse(localStorage.getItem('wwi_cc26_registrations') || '[]');
+                var nLocal = local.filter(function(r) {
+                    var isRot = (r.id && r.id.startsWith('ROT-')) || (r.couponUsed && r.couponUsed.includes('ROTARACT')) || (r.transactionId && r.transactionId.includes('ROTARACT'));
+                    return isRot && (r.referredBy || '').trim().toUpperCase() === 'NILESH';
+                }).length;
+                var tLocal = local.filter(function(r) {
+                    var isRot = (r.id && r.id.startsWith('ROT-')) || (r.couponUsed && r.couponUsed.includes('ROTARACT')) || (r.transactionId && r.transactionId.includes('ROTARACT'));
+                    return isRot && (r.referredBy || '').trim().toUpperCase() === 'TARASHA';
+                }).length;
+                var localChosen = nLocal <= tLocal ? 'NILESH' : 'TARASHA';
+                try { localStorage.setItem('wwi_rotaract_last_assigned', localChosen); } catch(e) {}
+                return localChosen;
+            } catch(e) {}
+
+            var last = localStorage.getItem('wwi_rotaract_last_assigned');
+            var next = last === 'NILESH' ? 'TARASHA' : 'NILESH';
+            try { localStorage.setItem('wwi_rotaract_last_assigned', next); } catch(e) {}
+            return next;
+        }
+
+        // ── FORM SUBMISSION ──────────────────────────────────────────
+        async function handleCollegeSubmit(e) {
+            e.preventDefault();
+
+            if (!_uploadedBase64) {
+                alert('Please upload your Student ID Card or semester fee receipt to verify free delegation access.');
+                document.getElementById('upload-zone').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            var btn = document.getElementById('btn-submit');
+            btn.disabled = true;
+            btn.innerHTML = '<span>Verifying &amp; Generating Pass…</span> <span class="spinner" style="display:inline-block; animation:spin 1s linear infinite;">⏳</span>';
+
+            var name = document.getElementById('reg-name').value.trim();
+            var email = document.getElementById('reg-email').value.trim();
+            var phone = document.getElementById('reg-phone').value.trim().replace(/\D/g, '');
+            var stream = document.getElementById('reg-stream').value;
+            var year = document.getElementById('reg-year').value;
+            var visitDate = document.getElementById('reg-visit-date').value;
+
+            var col = _currentCollege || DEFAULT_COLLEGES[0];
+            var isOpenCollege = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug === 'rotaract' || col.slug === 'rotaract-mumbai' || col.slug === 'rotaract-mum' || col.slug === 'vendor-partner' || col.slug === 'youth-network');
+            var isRotaract = Boolean(col.type === 'rotaract' || col.slug.includes('rotaract'));
+
+            var collegeName = col.name;
+            if (isOpenCollege) {
+                var enteredCol = document.getElementById('reg-college') ? document.getElementById('reg-college').value.trim() : '';
+                if (!enteredCol) {
+                    alert('Please enter your College or Institution name.');
+                    if (document.getElementById('reg-college')) document.getElementById('reg-college').focus();
+                    btn.disabled = false;
+                    btn.innerHTML = '<span id="btn-text">Confirm Registration &amp; Generate Boarding Pass →</span>';
+                    return;
+                }
+                collegeName = enteredCol;
+            }
+
+            // Generate Ticket ID prefix
+            var prefix = 'COL';
+            if (col.slug === 'kes-shroff') prefix = 'KS';
+            else if (col.slug === 'kj-somaiya') prefix = 'KJS';
+            else if (col.slug === 'sydenham') prefix = 'SYD';
+            else if (isRotaract) prefix = 'ROT';
+            else if (col.slug.includes('vendor') || col.type === 'vendor') prefix = 'VEN';
+            else {
+                var slugClean = col.slug.replace(/[^a-z0-9]/g, '').toUpperCase();
+                prefix = slugClean.length >= 2 ? slugClean.substring(0, 3) : 'COL';
+            }
+            var randomNum = Math.floor(100000 + Math.random() * 900000);
+            var ticketId = prefix + '-' + randomNum;
+
+            // Divide Rotaract signups equally between Nilesh & Tarasha
+            var assignedReferral = 'college:' + col.slug;
+            if (isRotaract) {
+                try {
+                    assignedReferral = await getNextRotaractAssignee();
+                } catch(e) {
+                    assignedReferral = 'NILESH';
+                }
+            }
+
+            var regData = {
+                id: ticketId,
+                name: name,
+                email: email,
+                phone: phone,
+                college: collegeName,
+                year: year + ' (' + stream + ')',
+                paymentScreenshot: _uploadedBase64,
+                transactionId: 'FREE-' + col.slug.toUpperCase(),
+                couponUsed: 'FREE-' + col.slug.toUpperCase(),
+                referredBy: assignedReferral,
+                basePrice: 0,
+                finalPrice: 0,
+                verified: false,
+                attended: false,
+                visitDate: visitDate,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                await saveToSupabaseAndLocal(regData);
+                _currentReg = regData;
+                showPassModal(regData);
+            } catch(err) {
+                console.error('Registration error:', err);
+                alert('Notice: Registration saved locally! If offline, your pass will sync when connection restores.');
+                _currentReg = regData;
+                showPassModal(regData);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span id="btn-text">Confirm Registration &amp; Generate Boarding Pass →</span>';
+            }
+        }
+
+        // ── SAVE TO SUPABASE VIA DIRECT REST + LOCALSTORAGE ──────────
+        async function saveToSupabaseAndLocal(r) {
+            // 1. Save to local storage
+            try {
+                var stored = JSON.parse(localStorage.getItem('wwi_cc26_registrations') || '[]');
+                stored.unshift(r);
+                localStorage.setItem('wwi_cc26_registrations', JSON.stringify(stored));
+            } catch(e) {}
+
+            // 2. Direct fetch to Supabase REST API
+            var combinedYear = r.visitDate ? (r.year + '__VD__' + r.visitDate) : r.year;
+            var payload = {
+                id: r.id,
+                name: r.name,
+                email: r.email,
+                phone: r.phone,
+                college: r.college,
+                year: combinedYear,
+                referral_code: '',
+                payment_screenshot: r.paymentScreenshot || '',
+                transaction_id: r.transactionId || '',
+                coupon_used: r.couponUsed || '',
+                referred_by: r.referredBy || '',
+                base_price: 0,
+                final_price: 0,
+                verified: false,
+                attended: false,
+                timestamp: r.timestamp
+            };
+
+            var restRes = await fetch(SUPABASE_URL + '/rest/v1/registrations', {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_ANON,
+                    'Authorization': 'Bearer ' + SUPABASE_ANON,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'resolution=merge-duplicates'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!restRes.ok) {
+                var errText = await restRes.text();
+                throw new Error('Supabase REST error: ' + errText);
+            }
+        }
+
+        // ── SHOW ENTRY PASS MODAL ────────────────────────────────────
+        function showPassModal(r) {
+            var modal = document.getElementById('modal-pass');
+            if (!modal) return;
+
+            document.getElementById('pass-college-name').textContent = r.college;
+            document.getElementById('pass-ticket-id').textContent = r.id;
+            document.getElementById('pass-student-name').textContent = r.name;
+            document.getElementById('pass-stream').textContent = r.year;
+            document.getElementById('pass-visit-date').textContent = r.visitDate;
+
+            // Generate QR Code
+            var qrContainer = document.getElementById('qrcode-container');
+            if (qrContainer) {
+                qrContainer.innerHTML = '';
+                new QRCode(qrContainer, {
+                    text: 'WWI-CC26:' + r.id + ':' + r.phone + ':' + r.name,
+                    width: 150,
+                    height: 150,
+                    colorDark: '#12121e',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        // ── DOWNLOAD ENTRY PASS AS IMAGE ─────────────────────────────
+        function downloadPass() {
+            var passEl = document.getElementById('entry-pass-card');
+            if (!passEl || typeof html2canvas !== 'function') {
+                window.print();
+                return;
+            }
+
+            html2canvas(passEl, {
+                scale: 2,
+                backgroundColor: '#151124',
+                useCORS: true
+            }).then(function(canvas) {
+                var a = document.createElement('a');
+                a.download = (_currentReg ? _currentReg.id : 'WWI-Pass') + '.png';
+                a.href = canvas.toDataURL('image/png');
+                a.click();
+            }).catch(function() {
+                window.print();
+            });
+        }
+
+        // ── SHARE VIA WHATSAPP ───────────────────────────────────────
+        function sharePassWhatsApp() {
+            if (!_currentReg) return;
+            var text = '🎉 I have registered for Celebrate Cinema 2026 Academic Trek at Whistling Woods International!\n\n' +
+                '🎟️ Ticket ID: ' + _currentReg.id + '\n' +
+                '🏛️ College: ' + _currentReg.college + '\n' +
+                '📅 Date: 08th & 09th October 2026\n\n' +
+                'Register your delegation pass here: ' + window.location.href;
+            window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+        }
+
+        // ── PARTICLES BACKGROUND ANIMATION ───────────────────────────
+        (function initParticles() {
+            var canvas = document.getElementById('particles-canvas');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+            var width = canvas.width = window.innerWidth;
+            var height = canvas.height = window.innerHeight;
+
+            var particles = [];
+            for (var i = 0; i < 35; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    size: Math.random() * 2 + 1,
+                    alpha: Math.random() * 0.5 + 0.2
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = 'rgba(247, 231, 197, 0.6)';
+
+                for (var j = 0; j < particles.length; j++) {
+                    var p = particles[j];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                requestAnimationFrame(draw);
+            }
+            draw();
+
+            window.addEventListener('resize', function() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+        })();
+
+        // ── BOOTSTRAP ────────────────────────────────────────────────
+        window.addEventListener('DOMContentLoaded', initCollegePage);
+    </script>
 </body>
 </html>
