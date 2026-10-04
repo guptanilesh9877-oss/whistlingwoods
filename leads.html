@@ -918,13 +918,13 @@
                 openCollege: true,
                 type: 'vendor',
                 pocs: [
-                    { name: 'Vendor Coordinator', phone: '8699260386', role: 'Vendor Partner Lead' }
+                    { name: 'Vendor Coordinator', phone: '8699260386', role: 'Coordinator' }
                 ],
                 referralCodes: ['HM-031026'],
                 paid: true,
-                privilegeTitle: 'Vendor Partner Paid Registration (HM-031026)',
-                privilegeDesc: 'Paid registration via vendor partner HM-031026. Registrants pay the standard ticket price on the main registration page; the referral code HM-031026 is auto-applied.',
-                badge: 'VENDOR HM-031026 PAID',
+                privilegeTitle: 'Vendor Partner Student Pass (HM-031026)',
+                privilegeDesc: 'Student pass registration via vendor partner HM-031026. Registrants pay the standard ticket price on the main registration page; the referral code HM-031026 is auto-applied.',
+                badge: 'VENDOR HM-031026 STUDENT PASS',
                 feeWaiver: 0,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
             },
@@ -1274,9 +1274,18 @@
             const descEl = document.getElementById('hero-desc');
             const isOpen = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug.includes('rotaract') || col.slug.includes('vendor'));
 
-            if (titleEl) titleEl.textContent = `${col.shortName || col.name} Delegation Leads`;
+            const isHM = col.slug === 'hm-031026' || col.slug.includes('hm-031026');
+            if (titleEl) titleEl.textContent = isHM ? `${col.shortName || col.name} Student Registrations` : `${col.shortName || col.name} Delegation Leads`;
             const passTypeEl = document.getElementById('hero-pass-type');
-            if (passTypeEl) passTypeEl.textContent = col.paid ? 'Paid Registration (Referral: ' + ((col.referralCodes && col.referralCodes[0]) || col.slug.toUpperCase()) + ')' : '100% Free Delegation Pass';
+            if (passTypeEl) {
+                if (isHM) {
+                    passTypeEl.textContent = 'Student Pass';
+                } else if (col.paid) {
+                    passTypeEl.textContent = 'Student Pass (Referral: ' + ((col.referralCodes && col.referralCodes[0]) || col.slug.toUpperCase()) + ')';
+                } else {
+                    passTypeEl.textContent = '100% Free Delegation Pass';
+                }
+            }
             if (badgeEl) {
                 if (col.type === 'rotaract' || col.slug.includes('rotaract')) {
                     badgeEl.innerHTML = '<span>🤝</span> <span>ROTARACT CLUB PARTNER • ALL COLLEGES DELEGATION</span>';
@@ -1285,7 +1294,7 @@
                     badgeEl.innerHTML = '<span>🎮</span> <span>GAMING &amp; ESPORTS COMMUNITY • OPEN ALL COLLEGES</span>';
                     badgeEl.style.color = '#c084fc';
                 } else if (col.slug.includes('hm-031026')) {
-                    badgeEl.innerHTML = '<span>🛍️</span> <span>CAMPUS VENDOR PARTNER HM-031026 • OUTREACH PASS</span>';
+                    badgeEl.innerHTML = '<span>🛍️</span> <span>CAMPUS VENDOR PARTNER HM-031026 • STUDENT PASS</span>';
                     badgeEl.style.color = '#38bdf8';
                 } else if (col.type === 'vendor' || col.slug.includes('vendor')) {
                     badgeEl.innerHTML = '<span>🤝</span> <span>CAMPUS VENDOR &amp; YOUTH OUTREACH DELEGATION</span>';
@@ -1299,16 +1308,27 @@
                 }
             }
             if (descEl) {
-                descEl.textContent = isOpen 
-                    ? `Live delegate registrations for students, youth creators, and attendees registering through the ${col.shortName || col.name} delegation pass.`
-                    : `Live delegate registrations and verification status for students from ${col.name} attending Celebrate Cinema 2026.`;
+                descEl.textContent = isHM
+                    ? `Live student registrations and attendance status for attendees registering via vendor partner HM-031026.`
+                    : (isOpen 
+                        ? `Live delegate registrations for students, youth creators, and attendees registering through the ${col.shortName || col.name} delegation pass.`
+                        : `Live delegate registrations and verification status for students from ${col.name} attending Celebrate Cinema 2026.`);
             }
 
-            const poc1 = (col.pocs && col.pocs[0]) || { name: 'Nilesh Kumar Gupta', phone: '8699260386' };
-            const poc2 = (col.pocs && col.pocs[1]) || { name: 'Tarasha Pahuja', phone: '9569884046' };
             const leadsPill = document.getElementById('hero-leads-pill');
             if (leadsPill) {
-                leadsPill.innerHTML = `👥 Partnership Leads: <strong>${poc1.name} (<a href="tel:${poc1.phone}" style="color:inherit; text-decoration:none;">${poc1.phone}</a>) &amp; ${poc2.name}</strong>`;
+                if (isHM) {
+                    const poc = (col.pocs && col.pocs[0]) || { name: 'Vendor Coordinator', phone: '8699260386' };
+                    leadsPill.innerHTML = `👤 Coordinator: <strong>${poc.name} (<a href="tel:${poc.phone}" style="color:inherit; text-decoration:none;">${poc.phone}</a>)</strong>`;
+                } else if (col.pocs && col.pocs.length === 1) {
+                    const poc = col.pocs[0];
+                    const roleLabel = poc.role || 'Coordinator';
+                    leadsPill.innerHTML = `👤 ${roleLabel}: <strong>${poc.name} (<a href="tel:${poc.phone}" style="color:inherit; text-decoration:none;">${poc.phone}</a>)</strong>`;
+                } else {
+                    const poc1 = (col.pocs && col.pocs[0]) || { name: 'Nilesh Kumar Gupta', phone: '8699260386' };
+                    const poc2 = (col.pocs && col.pocs[1]) || { name: 'Tarasha Pahuja', phone: '9569884046' };
+                    leadsPill.innerHTML = `👥 Partnership Leads: <strong>${poc1.name} (<a href="tel:${poc1.phone}" style="color:inherit; text-decoration:none;">${poc1.phone}</a>) &amp; ${poc2.name}</strong>`;
+                }
             }
         }
 

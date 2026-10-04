@@ -396,7 +396,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             <td class="col-amount">${
                 isRotaractReg ? `<span style="color:#4ade80; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#4ade80; font-weight:700; margin-top:2px;">🤝 ROTARACT</div>` :
                 isGamingReg ? `<span style="color:#c084fc; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#c084fc; font-weight:700; margin-top:2px;">🎮 GAMING COMMUNITY</div>` :
-                isHMVendorReg ? `<span style="font-weight:700;">₹${r.finalPrice}</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ PAID • HM-031026</div>` :
+                isHMVendorReg ? `<span style="font-weight:700;">₹${r.finalPrice}</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ STUDENT PASS • HM-031026</div>` :
                 isVendorReg ? `<span style="color:#38bdf8; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ VENDOR</div>` :
                 isFreeKES ? `<span style="color:#eab308; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:var(--gold); font-weight:600; margin-top:2px;">🏛️ ${escapeHTML(collegeBadgeLabel)}</div>` :
                 `₹${r.finalPrice}`
@@ -419,7 +419,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                     <span class="badge" style="background:rgba(56,189,248,0.16); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('HM-031026')" title="Vendor Partner HM-031026">
                         HM-031026
                     </span>
-                    <div style="font-size:0.7rem; color:#7dd3fc; margin-top:2px;">🛍️ Vendor Partner</div>
+                    <div style="font-size:0.7rem; color:#7dd3fc; margin-top:2px;">🛍️ Coordinator</div>
                 ` : isMDReg ? `
                     <span class="badge badge-purple" style="font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('${escapeHTML(getMDCollegeAssignee(r, (typeof allStoreRegs !== 'undefined' ? allStoreRegs : regs)))}')" title="MD College — assigned to ${escapeHTML(getMDCollegeAssignee(r, (typeof allStoreRegs !== 'undefined' ? allStoreRegs : regs)))}">
                         ${escapeHTML(getMDCollegeAssignee(r, (typeof allStoreRegs !== 'undefined' ? allStoreRegs : regs)))}

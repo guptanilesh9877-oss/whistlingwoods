@@ -1387,13 +1387,13 @@ class DataStore {
                 openCollege: true,
                 type: 'vendor',
                 pocs: [
-                    { name: 'Vendor Coordinator', phone: '8699260386', role: 'Vendor Partner Lead' }
+                    { name: 'Vendor Coordinator', phone: '8699260386', role: 'Coordinator' }
                 ],
                 referralCodes: ['HM-031026'],
                 paid: true,
-                privilegeTitle: 'Vendor Partner Paid Registration (HM-031026)',
-                privilegeDesc: 'Paid registration via vendor partner HM-031026. Registrants pay the standard ticket price on the main registration page; the referral code HM-031026 is auto-applied.',
-                badge: 'VENDOR HM-031026 PAID',
+                privilegeTitle: 'Vendor Partner Student Pass (HM-031026)',
+                privilegeDesc: 'Student pass registration via vendor partner HM-031026. Registrants pay the standard ticket price on the main registration page; the referral code HM-031026 is auto-applied.',
+                badge: 'VENDOR HM-031026 STUDENT PASS',
                 feeWaiver: 0,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
             },

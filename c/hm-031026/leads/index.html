@@ -492,6 +492,7 @@
             .search-group { max-width: 100%; }
         }
     </style>
+<script>window.DEFAULT_PORTAL_SLUG = 'hm-031026';</script>
 </head>
 <body>
 
@@ -531,9 +532,9 @@
         <!-- Hero Header -->
         <section class="portal-hero" id="portal-hero">
             <div class="portal-meta-badge" id="hero-badge">
-                <span>🏛️</span> <span>OFFICIAL INSTITUTIONAL DELEGATION TRACKER</span>
+                <span>🏛️</span> <span>CAMPUS VENDOR PARTNER HM-031026 • STUDENT PASS</span>
             </div>
-            <h2 class="portal-title" id="hero-title">Partner College Delegation Leads</h2>
+            <h2 class="portal-title" id="hero-title">Vendor HM-031026 Student Registrations</h2>
             <p class="portal-desc" id="hero-desc">
                 Live delegate registration and attendance portal for Whistling Woods International Celebrate Cinema 2026 Academic Trek.
             </p>
@@ -541,8 +542,8 @@
             <div class="portal-info-strip">
                 <span class="info-pill">📍 Venue: <strong>Film City, Goregaon (East), Mumbai</strong></span>
                 <span class="info-pill">📅 Event Dates: <strong>08th &amp; 09th October 2026</strong></span>
-                <span class="info-pill">🎟️ Pass Type: <strong id="hero-pass-type">100% Free Delegation Pass</strong></span>
-                <span class="info-pill" id="hero-leads-pill">👥 Leads: <strong>Nilesh Gupta &amp; Tarasha Pahuja</strong></span>
+                <span class="info-pill">🎟️ Pass Type: <strong id="hero-pass-type">Student Pass</strong></span>
+                <span class="info-pill" id="hero-leads-pill">👤 Coordinator: <strong>Vendor Coordinator (<a href="tel:8699260386" style="color:inherit; text-decoration:none;">8699260386</a>)</strong></span>
                 <span class="info-pill" id="hero-split-pill" style="display:none; background:rgba(141,106,174,0.22); border-color:rgba(247,231,197,0.4); color:var(--gold);">⚖️ Equal Split: <strong id="split-text" style="color:#ffffff;">Nilesh: 0 | Tarasha: 0</strong></span>
             </div>
         </section>
@@ -654,7 +655,6 @@
     </div>
 
     <!-- Script Layer -->
-    <script>window.DEFAULT_PORTAL_SLUG = 'hm-031026';</script>
     <script>
         const SUPABASE_URL = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
         const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
@@ -919,13 +919,13 @@
                 openCollege: true,
                 type: 'vendor',
                 pocs: [
-                    { name: 'Vendor Coordinator', phone: '8699260386', role: 'Vendor Partner Lead' }
+                    { name: 'Vendor Coordinator', phone: '8699260386', role: 'Coordinator' }
                 ],
                 referralCodes: ['HM-031026'],
                 paid: true,
-                privilegeTitle: 'Vendor Partner Paid Registration (HM-031026)',
-                privilegeDesc: 'Paid registration via vendor partner HM-031026. Registrants pay the standard ticket price on the main registration page; the referral code HM-031026 is auto-applied.',
-                badge: 'VENDOR HM-031026 PAID',
+                privilegeTitle: 'Vendor Partner Student Pass (HM-031026)',
+                privilegeDesc: 'Student pass registration via vendor partner HM-031026. Registrants pay the standard ticket price on the main registration page; the referral code HM-031026 is auto-applied.',
+                badge: 'VENDOR HM-031026 STUDENT PASS',
                 feeWaiver: 0,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
             },
@@ -1139,6 +1139,23 @@
                 badge: 'COMPLIMENTARY',
                 feeWaiver: 150,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.A', 'Other']
+            },
+            {
+                slug: 'md-college',
+                name: 'Maharshi Dayanand College of Arts, Science and Commerce',
+                shortName: 'MD College',
+                type: 'college',
+                openCollege: false,
+                pocs: [
+                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
+                    { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' }
+                ],
+                referralCodes: ['SAHIL', 'TARASHA', 'NILESH', 'SATVIK'],
+                privilegeTitle: 'Official Institutional Delegation Privilege',
+                privilegeDesc: 'Under our special academic collaboration with Maharshi Dayanand College of Arts, Science and Commerce (MD College), admission is granted on a complimentary basis for all enrolled students. Kindly attach your Student ID Card or recent College Fee Receipt to receive your verified academic delegate pass.',
+                badge: 'COMPLIMENTARY',
+                feeWaiver: 150,
+                streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'M.Com', 'M.Sc', 'Other']
             }
         ];;
 
@@ -1166,6 +1183,7 @@
             // Aliases
             if (pathParts.includes('gaming') || pathParts.includes('esports')) return 'gaming-community';
             if (pathParts.includes('vendor-hm-031026') || pathParts.includes('hm031026') || pathParts.includes('hm-031026')) return 'hm-031026';
+            if (pathParts.includes('md-college') || pathParts.includes('mdcollege') || pathParts.includes('dayanand')) return 'md-college';
 
             // If any segment matches a known college slug, return it
             if (Array.isArray(_allColleges) && _allColleges.length > 0) {
@@ -1257,9 +1275,18 @@
             const descEl = document.getElementById('hero-desc');
             const isOpen = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug.includes('rotaract') || col.slug.includes('vendor'));
 
-            if (titleEl) titleEl.textContent = `${col.shortName || col.name} Delegation Leads`;
+            const isHM = col.slug === 'hm-031026' || col.slug.includes('hm-031026');
+            if (titleEl) titleEl.textContent = isHM ? `${col.shortName || col.name} Student Registrations` : `${col.shortName || col.name} Delegation Leads`;
             const passTypeEl = document.getElementById('hero-pass-type');
-            if (passTypeEl) passTypeEl.textContent = col.paid ? 'Paid Registration (Referral: ' + ((col.referralCodes && col.referralCodes[0]) || col.slug.toUpperCase()) + ')' : '100% Free Delegation Pass';
+            if (passTypeEl) {
+                if (isHM) {
+                    passTypeEl.textContent = 'Student Pass';
+                } else if (col.paid) {
+                    passTypeEl.textContent = 'Student Pass (Referral: ' + ((col.referralCodes && col.referralCodes[0]) || col.slug.toUpperCase()) + ')';
+                } else {
+                    passTypeEl.textContent = '100% Free Delegation Pass';
+                }
+            }
             if (badgeEl) {
                 if (col.type === 'rotaract' || col.slug.includes('rotaract')) {
                     badgeEl.innerHTML = '<span>🤝</span> <span>ROTARACT CLUB PARTNER • ALL COLLEGES DELEGATION</span>';
@@ -1268,7 +1295,7 @@
                     badgeEl.innerHTML = '<span>🎮</span> <span>GAMING &amp; ESPORTS COMMUNITY • OPEN ALL COLLEGES</span>';
                     badgeEl.style.color = '#c084fc';
                 } else if (col.slug.includes('hm-031026')) {
-                    badgeEl.innerHTML = '<span>🛍️</span> <span>CAMPUS VENDOR PARTNER HM-031026 • OUTREACH PASS</span>';
+                    badgeEl.innerHTML = '<span>🛍️</span> <span>CAMPUS VENDOR PARTNER HM-031026 • STUDENT PASS</span>';
                     badgeEl.style.color = '#38bdf8';
                 } else if (col.type === 'vendor' || col.slug.includes('vendor')) {
                     badgeEl.innerHTML = '<span>🤝</span> <span>CAMPUS VENDOR &amp; YOUTH OUTREACH DELEGATION</span>';
@@ -1282,16 +1309,27 @@
                 }
             }
             if (descEl) {
-                descEl.textContent = isOpen 
-                    ? `Live delegate registrations for students, youth creators, and attendees registering through the ${col.shortName || col.name} delegation pass.`
-                    : `Live delegate registrations and verification status for students from ${col.name} attending Celebrate Cinema 2026.`;
+                descEl.textContent = isHM
+                    ? `Live student registrations and attendance status for attendees registering via vendor partner HM-031026.`
+                    : (isOpen 
+                        ? `Live delegate registrations for students, youth creators, and attendees registering through the ${col.shortName || col.name} delegation pass.`
+                        : `Live delegate registrations and verification status for students from ${col.name} attending Celebrate Cinema 2026.`);
             }
 
-            const poc1 = (col.pocs && col.pocs[0]) || { name: 'Nilesh Kumar Gupta', phone: '8699260386' };
-            const poc2 = (col.pocs && col.pocs[1]) || { name: 'Tarasha Pahuja', phone: '9569884046' };
             const leadsPill = document.getElementById('hero-leads-pill');
             if (leadsPill) {
-                leadsPill.innerHTML = `👥 Partnership Leads: <strong>${poc1.name} (<a href="tel:${poc1.phone}" style="color:inherit; text-decoration:none;">${poc1.phone}</a>) &amp; ${poc2.name}</strong>`;
+                if (isHM) {
+                    const poc = (col.pocs && col.pocs[0]) || { name: 'Vendor Coordinator', phone: '8699260386' };
+                    leadsPill.innerHTML = `👤 Coordinator: <strong>${poc.name} (<a href="tel:${poc.phone}" style="color:inherit; text-decoration:none;">${poc.phone}</a>)</strong>`;
+                } else if (col.pocs && col.pocs.length === 1) {
+                    const poc = col.pocs[0];
+                    const roleLabel = poc.role || 'Coordinator';
+                    leadsPill.innerHTML = `👤 ${roleLabel}: <strong>${poc.name} (<a href="tel:${poc.phone}" style="color:inherit; text-decoration:none;">${poc.phone}</a>)</strong>`;
+                } else {
+                    const poc1 = (col.pocs && col.pocs[0]) || { name: 'Nilesh Kumar Gupta', phone: '8699260386' };
+                    const poc2 = (col.pocs && col.pocs[1]) || { name: 'Tarasha Pahuja', phone: '9569884046' };
+                    leadsPill.innerHTML = `👥 Partnership Leads: <strong>${poc1.name} (<a href="tel:${poc1.phone}" style="color:inherit; text-decoration:none;">${poc1.phone}</a>) &amp; ${poc2.name}</strong>`;
+                }
             }
         }
 
@@ -1379,6 +1417,17 @@
 
                 if (slug === 'hm-031026' || slug.includes('hm-031026')) {
                     return ref.includes('hm-031026') || coup.includes('hm-031026') || txn.includes('hm-031026') || rId.startsWith('HM-');
+                }
+
+                if (slug === 'md-college' || slug === 'mdcollege') {
+                    return (
+                        rId.startsWith('MDC-') ||
+                        coup.includes('md-college') ||
+                        txn.includes('md-college') ||
+                        ref.includes('md-college') ||
+                        colName.includes('dayanand') ||
+                        colName.includes('md college')
+                    );
                 }
 
                 if (isYouthNetwork) {
