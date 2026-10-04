@@ -492,6 +492,7 @@
             .search-group { max-width: 100%; }
         }
     </style>
+<script>window.DEFAULT_PORTAL_SLUG = 'ves';</script>
 </head>
 <body>
 
@@ -654,7 +655,6 @@
     </div>
 
     <!-- Script Layer -->
-    <script>window.DEFAULT_PORTAL_SLUG = 'ves';</script>
     <script>
         const SUPABASE_URL = 'https://rnylpxfjhxpmjwolsqcd.supabase.co';
         const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8';
@@ -1253,7 +1253,7 @@
             const btn = document.getElementById('btn-refresh');
             if (btn) btn.innerHTML = '<span>⏳ Syncing…</span>';
 
-            const SYNC_COLUMNS = 'id,name,email,phone,college,year,referral_code,referred_by,coupon_used,final_price,transaction_id,verified,rejected,attended,timestamp';
+            const SYNC_COLUMNS = 'id,name,email,phone,college,year,referral_code,referred_by,coupon_used,final_price,transaction_id,verified,attended,timestamp';
             const PAGE_SIZE = 1000;
             let offset = 0;
             const allRows = [];
@@ -1283,7 +1283,13 @@
                     }
                 }
 
-                _allRegistrations = allRows;
+                _allRegistrations = allRows.map(function(r) {
+                    var isRej = Boolean(r.rejected || (typeof r.transaction_id === 'string' && r.transaction_id.toUpperCase().startsWith('REJECTED')));
+                    return Object.assign({}, r, {
+                        rejected: isRej,
+                        verified: Boolean(r.verified) && !isRej
+                    });
+                });
                 filterRegistrationsForCurrentCollege();
             } catch (err) {
                 console.error('Fetch error:', err);
