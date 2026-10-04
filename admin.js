@@ -308,18 +308,19 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             ((r.referralCode || '').toUpperCase() === 'HM-031026')
         );
 
-        const isVendorReg = isHMVendorReg || Boolean(
+        // HM-031026 is a PAID vendor referral channel — never treated as free
+        const isVendorReg = !isHMVendorReg && Boolean(
             idUpper.startsWith('VEN-') ||
             refUpper.includes('VENDOR') || refUpper.includes('YOUTH') ||
             coupUpper.includes('VENDOR') || coupUpper.includes('YOUTH') ||
             txnUpper.includes('VENDOR') || txnUpper.includes('YOUTH')
         );
 
-        const isFreeKES = isRotaractReg || isGamingReg || isVendorReg ||
+        const isFreeKES = !isHMVendorReg && (isRotaractReg || isGamingReg || isVendorReg ||
             (txnUpper === 'FREE-KES-SHROFF') || (coupUpper === 'FREE-KES-SHROFF') || idUpper.startsWith('KS') ||
             txnUpper.startsWith('FREE-') || coupUpper.startsWith('FREE-') ||
             refUpper.startsWith('COLLEGE:') ||
-            (r.finalPrice === 0 && r.basePrice === 0 && r.transactionId);
+            (r.finalPrice === 0 && r.basePrice === 0 && r.transactionId));
 
         let collegeBadgeLabel = 'Partner College';
         if (idUpper.startsWith('KS') || refUpper.includes('KES-SHROFF') || coupUpper.includes('KES-SHROFF')) collegeBadgeLabel = 'KES Shroff';
@@ -344,7 +345,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             <td class="col-amount">${
                 isRotaractReg ? `<span style="color:#4ade80; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#4ade80; font-weight:700; margin-top:2px;">🤝 ROTARACT</div>` :
                 isGamingReg ? `<span style="color:#c084fc; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#c084fc; font-weight:700; margin-top:2px;">🎮 GAMING COMMUNITY</div>` :
-                isHMVendorReg ? `<span style="color:#38bdf8; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ VENDOR HM-031026</div>` :
+                isHMVendorReg ? `<span style="font-weight:700;">₹${r.finalPrice}</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ PAID • HM-031026</div>` :
                 isVendorReg ? `<span style="color:#38bdf8; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ VENDOR</div>` :
                 isFreeKES ? `<span style="color:#eab308; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:var(--gold); font-weight:600; margin-top:2px;">🏛️ ${escapeHTML(collegeBadgeLabel)}</div>` :
                 `₹${r.finalPrice}`

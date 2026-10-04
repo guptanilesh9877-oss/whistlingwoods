@@ -922,10 +922,11 @@
                     { name: 'Vendor Coordinator', phone: '8699260386', role: 'Vendor Partner Lead' }
                 ],
                 referralCodes: ['HM-031026'],
-                privilegeTitle: 'Vendor Partner Outreach Privilege (HM-031026)',
-                privilegeDesc: 'Complimentary admission pass for vendor partner delegates, guests, and campus community members from any institution. Enter your college/institution and upload your ID for verification.',
-                badge: 'VENDOR HM-031026 FREE',
-                feeWaiver: 150,
+                paid: true,
+                privilegeTitle: 'Vendor Partner Paid Registration (HM-031026)',
+                privilegeDesc: 'Paid registration via vendor partner HM-031026. Registrants pay the standard ticket price on the main registration page; the referral code HM-031026 is auto-applied.',
+                badge: 'VENDOR HM-031026 PAID',
+                feeWaiver: 0,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
             },
             {
@@ -1257,6 +1258,8 @@
             const isOpen = Boolean(col.openCollege || col.type === 'rotaract' || col.type === 'vendor' || col.slug.includes('rotaract') || col.slug.includes('vendor'));
 
             if (titleEl) titleEl.textContent = `${col.shortName || col.name} Delegation Leads`;
+            const passTypeEl = document.getElementById('hero-pass-type');
+            if (passTypeEl) passTypeEl.textContent = col.paid ? 'Paid Registration (Referral: ' + ((col.referralCodes && col.referralCodes[0]) || col.slug.toUpperCase()) + ')' : '100% Free Delegation Pass';
             if (badgeEl) {
                 if (col.type === 'rotaract' || col.slug.includes('rotaract')) {
                     badgeEl.innerHTML = '<span>🤝</span> <span>ROTARACT CLUB PARTNER • ALL COLLEGES DELEGATION</span>';
@@ -1545,9 +1548,12 @@
 
                 const cleanYear = (r.year || '').split('__vd__')[0];
 
-                let statusBadge = '<span class="badge badge-pending">In Review ⏳</span>';
+                const paidAmt = Number(r.final_price || r.finalPrice || 0);
+                const isPaidReg = paidAmt > 0;
+                let statusBadge = isPaidReg ? '<span class="badge badge-pending">Payment Pending ⏳</span>' : '<span class="badge badge-pending">In Review ⏳</span>';
                 if (r.rejected) statusBadge = '<span class="badge badge-rejected">Rejected ✕</span>';
-                else if (r.verified) statusBadge = '<span class="badge badge-verified">Verified ✓</span>';
+                else if (r.verified) statusBadge = isPaidReg ? '<span class="badge badge-verified">Paid ✓</span>' : '<span class="badge badge-verified">Verified ✓</span>';
+                if (isPaidReg) statusBadge += '<div style="font-size:0.72rem; color:var(--gold); font-weight:700; margin-top:3px;">₹' + paidAmt + '</div>';
 
                 let leadBadgeHtml = '';
                 const refUpper = (r.referred_by || r.referredBy || '').trim().toUpperCase();

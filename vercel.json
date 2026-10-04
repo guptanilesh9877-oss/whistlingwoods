@@ -203,22 +203,6 @@
       "destination": "/college"
     },
     {
-      "source": "/hm-031026",
-      "destination": "/college"
-    },
-    {
-      "source": "/hm-031026/",
-      "destination": "/college"
-    },
-    {
-      "source": "/vendor-hm-031026",
-      "destination": "/college"
-    },
-    {
-      "source": "/vendor-hm-031026/",
-      "destination": "/college"
-    },
-    {
       "source": "/c/:slug*",
       "destination": "/college"
     },
@@ -245,6 +229,28 @@
     {
       "source": "/principal-invitation/(.*)",
       "destination": "/principal-invitation/index.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/hm-031026",
+      "destination": "/?ref=HM-031026#register",
+      "permanent": false
+    },
+    {
+      "source": "/vendor-hm-031026",
+      "destination": "/?ref=HM-031026#register",
+      "permanent": false
+    },
+    {
+      "source": "/c/hm-031026",
+      "destination": "/?ref=HM-031026#register",
+      "permanent": false
+    },
+    {
+      "source": "/c/vendor-hm-031026",
+      "destination": "/?ref=HM-031026#register",
+      "permanent": false
     }
   ]
 }
