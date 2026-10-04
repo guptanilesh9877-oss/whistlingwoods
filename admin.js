@@ -331,7 +331,8 @@ function filterRegistrationsByReferral(code) {
     const filterSelect = document.getElementById('filter-status');
     if (searchInput) {
         searchInput.value = code;
-        renderRegistrationsTable(filterSelect ? filterSelect.value : 'all', code);
+        if (filterSelect) filterSelect.value = 'all';
+        renderRegistrationsTable('all', code);
         showToast(`Filtered by referral code: "${code}"`, 'info');
     }
 }
@@ -834,7 +835,10 @@ async function viewScreenshot(id) {
 }
 
 function openScreenshotInNewTab(id) {
-    const data = dataStore.getScreenshot ? dataStore.getScreenshot(id) : '';
+    const reg = (typeof dataStore !== 'undefined' && dataStore.getRegistrationById) ? dataStore.getRegistrationById(id) : null;
+    let data = (reg && reg.paymentScreenshot && reg.paymentScreenshot.length > 20) 
+        ? reg.paymentScreenshot 
+        : (dataStore && dataStore.getScreenshot ? dataStore.getScreenshot(id) : '');
     if (!data) return;
     const w = window.open('');
     if (w) {
