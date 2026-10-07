@@ -4,3 +4,13 @@ node_modules/
 .env
 .env.local
 *.log
+*.pdf
+*.xlsx
+*.csv
+*.txt
+sent_*_log.json
+sent_emails_log.json
+nagesh_imported_registrations.json
+duplicate_analysis_report.json
+verified_backup_*.json
+scratch_*

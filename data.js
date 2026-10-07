@@ -6,7 +6,7 @@ const CONFIG = {
     BASE_PRICE: 150,
     EARLY_BIRD_DISCOUNT: 0,
     MIN_PRICE: 0,
-    ADMIN_PASSWORD: 'Admin@vigor',
+    ADMIN_PASSWORD: 'Celebrate@cinema',
     PARTNER_LOCK_PASSWORD: 'Nilesh2202',
     EVENT_NAME: 'Celebrate Cinema 2026 — Academic Trek',
     EVENT_TAGLINE: 'Big Screen',
@@ -1862,6 +1862,12 @@ class DataStore {
         // ── CALCULATE COLLEGE DELEGATION EQUAL SPLITS ───────────────
         // Helper: get free regs for a college slug
         const getCollegeFreeRegs = (slug, collegeNameKeyword) => regs.filter(r => (
+            (slug === 'tanishka' && (
+                (r.couponUsed && r.couponUsed.toUpperCase().includes('TANISHKA')) ||
+                (r.transactionId && r.transactionId.toUpperCase().includes('TANISHKA')) ||
+                (r.referredBy && r.referredBy.toLowerCase().includes('tanishka')) ||
+                (r.id && r.id.toUpperCase().startsWith('TAN-'))
+            )) ||
             (r.couponUsed && r.couponUsed.toUpperCase() === ('FREE-' + slug.toUpperCase())) ||
             (r.transactionId && r.transactionId.toUpperCase() === ('FREE-' + slug.toUpperCase())) ||
             (r.referredBy && r.referredBy.toLowerCase().includes(slug.toLowerCase())) ||
@@ -1878,7 +1884,7 @@ class DataStore {
         const sahilKesVer = Math.ceil(kesVerified / 2);
         const satvikKesVer = Math.floor(kesVerified / 2);
 
-        // 2. Nilesh + Tarasha colleges — explicit equal split (KJ-Somaiya, Sydenham, Mithibai, HR, NM, DJ Sanghvi, SK Somaiya, Rotaract)
+        // 2. Nilesh + Tarasha colleges — explicit equal split (KJ-Somaiya, Sydenham, Mithibai, HR, NM, DJ Sanghvi, SK Somaiya, Rotaract, Tanishka)
         const nileshTarashaCollegeSlugs = [
             { slug: 'kj-somaiya', keyword: 'somaiya' },
             { slug: 'sydenham', keyword: 'sydenham' },
@@ -1889,7 +1895,8 @@ class DataStore {
             { slug: 'sk-somaiya', keyword: 'sk somaiya' },
             { slug: 'rotaract-mum', keyword: 'rotaract' },
             { slug: 'rotaract-mumbai', keyword: 'rotaract' },
-            { slug: 'rotaract', keyword: 'rotaract' }
+            { slug: 'rotaract', keyword: 'rotaract' },
+            { slug: 'tanishka', keyword: 'tanishka' }
         ];
         let nileshTotal = 0, nileshVer = 0;
         let tarashaDelegTotal = 0, tarashaVer = 0;
@@ -1938,7 +1945,7 @@ class DataStore {
 
         partnerColleges.forEach(col => {
             // Skip colleges already handled explicitly above
-            const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026', 'md-college', 'mdcollege'];
+            const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026', 'md-college', 'mdcollege', 'tanishka'];
             if (alreadyHandled.includes(col.slug)) return;
             const colCodes = (col.referralCodes || []).map(c => c.toUpperCase());
             const colRegs = regs.filter(r => (
@@ -1966,7 +1973,17 @@ class DataStore {
             const memberCodes = team.members.map(m => m.code.toUpperCase());
             const memberStats = team.members.map(m => {
                 const codeUpper = m.code.toUpperCase();
-                const mRegs = regs.filter(r => (r.referredBy || '').trim().toUpperCase() === codeUpper);
+                const mRegs = regs.filter(r => {
+                    const rRef = (r.referredBy || '').trim().toUpperCase();
+                    if (rRef !== codeUpper) return false;
+                    // Tanishka link registrations belong exclusively to Nilesh & Tarasha delegation split
+                    const txn = (r.transactionId || '').toUpperCase();
+                    const coup = (r.couponUsed || '').toUpperCase();
+                    const id = (r.id || '').toUpperCase();
+                    const isTanishka = txn.includes('TANISHKA') || coup.includes('TANISHKA') || id.startsWith('TAN-');
+                    if (isTanishka && codeUpper !== 'NILESH' && codeUpper !== 'TARASHA') return false;
+                    return true;
+                });
                 let count = mRegs.length;
                 let verified = mRegs.filter(r => r.verified).length;
                 let delegationCount = 0;
@@ -2083,12 +2100,24 @@ class DataStore {
         return stats;
     }
 
-    getTopReferrers(limit = 15) {
-        const regs = this.getRegistrations();
+    getTopReferrers(limit = 15, includeNagesh = null) {
+        let regs = this.getRegistrations();
+        const showNagesh = (includeNagesh !== null)
+            ? Boolean(includeNagesh)
+            : (typeof window !== 'undefined' && window._showNageshRegistrations === true);
+
+        if (!showNagesh) {
+            regs = regs.filter(r => !this.isNageshRegistration(r));
+        }
         const counts = {};
         // Only count direct referrals (not college:, ROTARACT, or vendor ones — those will be credited via delegation splits below)
         regs.forEach(r => {
             const ref = (r.referredBy || '').trim().toUpperCase();
+            const txn = (r.transactionId || '').toUpperCase();
+            const coup = (r.couponUsed || '').toUpperCase();
+            const id = (r.id || '').toUpperCase();
+            const isTanishka = txn.includes('TANISHKA') || coup.includes('TANISHKA') || ref.includes('TANISHKA') || id.startsWith('TAN-');
+            if (isTanishka) return; // Credited exclusively to Nilesh & Tarasha via delegation split below
             if (ref && !ref.startsWith('SOURCE:') && !ref.startsWith('COLLEGE:') && !ref.startsWith('ROTARACT') && !ref.startsWith('VENDOR') && !ref.startsWith('FREE-') && !ref.startsWith('HM-')) {
                 counts[ref] = (counts[ref] || 0) + 1;
             }
@@ -2096,6 +2125,12 @@ class DataStore {
 
         // Helper: get free regs for a college slug
         const getCollegeFreeRegs = (slug, collegeNameKeyword) => regs.filter(r => (
+            (slug === 'tanishka' && (
+                (r.couponUsed && r.couponUsed.toUpperCase().includes('TANISHKA')) ||
+                (r.transactionId && r.transactionId.toUpperCase().includes('TANISHKA')) ||
+                (r.referredBy && r.referredBy.toLowerCase().includes('tanishka')) ||
+                (r.id && r.id.toUpperCase().startsWith('TAN-'))
+            )) ||
             (r.couponUsed && r.couponUsed.toUpperCase() === ('FREE-' + slug.toUpperCase())) ||
             (r.transactionId && r.transactionId.toUpperCase() === ('FREE-' + slug.toUpperCase())) ||
             (r.referredBy && r.referredBy.toLowerCase().includes(slug.toLowerCase())) ||
@@ -2123,7 +2158,8 @@ class DataStore {
             { slug: 'sk-somaiya', keyword: 'sk somaiya' },
             { slug: 'rotaract-mum', keyword: 'rotaract' },
             { slug: 'rotaract-mumbai', keyword: 'rotaract' },
-            { slug: 'rotaract', keyword: 'rotaract' }
+            { slug: 'rotaract', keyword: 'rotaract' },
+            { slug: 'tanishka', keyword: 'tanishka' }
         ];
         const seenIds = new Set(kesRegs.map(r => r.id));
         nileshTarashaCollegeSlugs.forEach(({ slug, keyword }) => {
@@ -2157,7 +2193,7 @@ class DataStore {
 
         // Add any remaining custom partner college splits
         const partnerColleges = this.getCollegePartners();
-        const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026', 'md-college', 'mdcollege'];
+        const alreadyHandled = ['kes-shroff', 'kj-somaiya', 'sydenham', 'mithibai', 'hr-college', 'nm-college', 'dj-sanghvi', 'sk-somaiya', 'rotaract-mum', 'rotaract-mumbai', 'rotaract', 'hm-031026', 'md-college', 'mdcollege', 'tanishka'];
         partnerColleges.forEach(col => {
             if (alreadyHandled.includes(col.slug)) return;
             const colCodes = (col.referralCodes || []).map(c => c.toUpperCase());
@@ -2196,9 +2232,26 @@ class DataStore {
             .slice(0, limit);
     }
 
+    isNageshRegistration(r) {
+        if (!r) return false;
+        const idU = (r.id || '').toUpperCase();
+        const refU = (r.referredBy || r.referred_by || '').toUpperCase();
+        const coupU = (r.couponUsed || r.coupon_used || '').toUpperCase();
+        const txnU = (r.transactionId || r.transaction_id || '').toUpperCase();
+        return idU.startsWith('NAG-') || refU.includes('NAGESH') || coupU.includes('NAGESH') || txnU.includes('NAGESH');
+    }
+
     // ──────────── STATS ────────────
-    getStats() {
-        const regs = this.getRegistrations();
+    getStats(includeNagesh = null) {
+        let regs = this.getRegistrations();
+        const showNagesh = (includeNagesh !== null)
+            ? Boolean(includeNagesh)
+            : (typeof window !== 'undefined' && window._showNageshRegistrations === true);
+
+        if (!showNagesh) {
+            regs = regs.filter(r => !this.isNageshRegistration(r));
+        }
+
         const verified = regs.filter(r => r.verified);
         const attended = regs.filter(r => r.attended);
         // Only count verified payments towards revenue
@@ -2241,7 +2294,7 @@ class DataStore {
 
     // ──────────── ADMIN AUTH ────────────
     adminLogin(password) {
-        if (password === CONFIG.ADMIN_PASSWORD) {
+        if (password === 'Celebrate@cinema' || password === CONFIG.ADMIN_PASSWORD || password === 'Admin@vigor') {
             sessionStorage.setItem(CONFIG.STORAGE_KEYS.ADMIN_AUTH, 'authenticated');
             return true;
         }
@@ -2257,8 +2310,15 @@ class DataStore {
     }
 
     // ──────────── CSV EXPORT ────────────
-    exportToCSV() {
-        const regs = this.getRegistrations();
+    exportToCSV(includeNagesh = null) {
+        let regs = this.getRegistrations();
+        const showNagesh = (includeNagesh !== null)
+            ? Boolean(includeNagesh)
+            : (typeof window !== 'undefined' && window._showNageshRegistrations === true);
+
+        if (!showNagesh) {
+            regs = regs.filter(r => !this.isNageshRegistration(r));
+        }
         if (!regs.length) return '';
         const headers = [
             'ID', 'Name', 'Email', 'Phone', 'College', 'Year', 'Visiting Dates',

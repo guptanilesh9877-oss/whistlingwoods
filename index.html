@@ -1323,6 +1323,7 @@
                 <p style="color:var(--text-muted); font-size:0.85rem; margin-top:2px;">Celebrate Cinema 2026 • Live Database</p>
             </div>
             <div class="admin-header-actions">
+                <button class="btn btn-secondary" id="header-toggle-nagesh-btn" onclick="toggleNageshRegistrations()" title="Toggle display of Nagesh registrations in overall count and table">👁️ Show Nagesh</button>
                 <button class="btn btn-secondary" onclick="navigateTo('names')">View Who's Attending</button>
                 <button class="btn btn-secondary" onclick="handleAdminLogout()">Logout</button>
             </div>
@@ -1376,7 +1377,9 @@
                         <option value="rotaract">🤝 Rotaract Passes Only</option>
                         <option value="vendor">🛍️ Vendor Passes Only</option>
                         <option value="direct">🎟️ Paid / Direct Passes</option>
+                        <option value="nagesh">🎯 Nagesh Registrations Only</option>
                     </select>
+                    <button class="btn btn-secondary" id="toggle-nagesh-btn" onclick="toggleNageshRegistrations()" title="Click to show or hide Nagesh registrations in overall counts and table">👁️ Show Nagesh</button>
                     <div style="position:relative; display:inline-block;">
                         <button class="btn btn-secondary" id="btn-col-visibility" onclick="toggleColumnMenu(event)" title="Show or Hide Table Columns (like Google Sheets)">
                             ⚙️ Columns <span id="hidden-col-count" style="display:none;" class="badge badge-purple"></span>

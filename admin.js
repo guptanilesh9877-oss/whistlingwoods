@@ -54,9 +54,79 @@ function stopAdminAutoRefresh() {
 }
 window.stopAdminAutoRefresh = stopAdminAutoRefresh;
 
+// ──────────── NAGESH REGISTRATION CONTROLS ────────────
+window._showNageshRegistrations = (function() {
+    try {
+        return localStorage.getItem('wwi_show_nagesh') === 'true';
+    } catch(e) {
+        return false;
+    }
+})();
+
+function isNageshRegistration(r) {
+    if (!r) return false;
+    const idU = (r.id || '').toUpperCase();
+    const refU = (r.referredBy || r.referred_by || '').toUpperCase();
+    const coupU = (r.couponUsed || r.coupon_used || '').toUpperCase();
+    const txnU = (r.transactionId || r.transaction_id || '').toUpperCase();
+    return idU.startsWith('NAG-') || refU.includes('NAGESH') || coupU.includes('NAGESH') || txnU.includes('NAGESH');
+}
+window.isNageshRegistration = isNageshRegistration;
+
+function updateNageshToggleButton() {
+    const btns = [
+        document.getElementById('toggle-nagesh-btn'),
+        document.getElementById('header-toggle-nagesh-btn')
+    ].filter(Boolean);
+
+    const allRegs = (typeof dataStore !== 'undefined' && dataStore.getRegistrations) ? dataStore.getRegistrations() : [];
+    const nageshCount = allRegs.filter(r => isNageshRegistration(r)).length;
+    const isShowing = window._showNageshRegistrations === true;
+
+    btns.forEach(btn => {
+        if (isShowing) {
+            btn.innerHTML = `👁️ Hide Nagesh (${nageshCount})`;
+            btn.classList.add('active');
+            btn.style.borderColor = 'var(--gold, #d4a843)';
+            btn.style.color = '#f7e7c5';
+            btn.style.background = 'rgba(212, 168, 67, 0.2)';
+        } else {
+            btn.innerHTML = `👁️ Show Nagesh (${nageshCount})`;
+            btn.classList.remove('active');
+            btn.style.borderColor = '';
+            btn.style.color = '';
+            btn.style.background = '';
+        }
+    });
+}
+window.updateNageshToggleButton = updateNageshToggleButton;
+
+function toggleNageshRegistrations() {
+    window._showNageshRegistrations = !window._showNageshRegistrations;
+    try {
+        localStorage.setItem('wwi_show_nagesh', window._showNageshRegistrations ? 'true' : 'false');
+    } catch(e) {}
+    updateNageshToggleButton();
+    renderStats();
+    const filterSelect = document.getElementById('filter-status');
+    const searchInput = document.getElementById('search-registrations');
+    renderRegistrationsTable(filterSelect ? filterSelect.value : 'all', searchInput ? searchInput.value : '');
+    try { renderReferralLeaderboard(); } catch(e) {}
+    if (typeof showToast === 'function') {
+        showToast(
+            window._showNageshRegistrations 
+                ? "Nagesh's registrations are now included in overall counts & table."
+                : "Nagesh's registrations are now hidden from overall counts & table.",
+            'info'
+        );
+    }
+}
+window.toggleNageshRegistrations = toggleNageshRegistrations;
+
 // ──────────── STATS ────────────
 function renderStats() {
-    const stats = dataStore.getStats();
+    const showNagesh = window._showNageshRegistrations === true;
+    const stats = dataStore.getStats(showNagesh);
 
     animateCounter(document.getElementById('stat-total'), stats.total, 800);
     animateCounter(document.getElementById('stat-verified'), stats.verified, 800);
@@ -67,6 +137,7 @@ function renderStats() {
     if (attendedEl) {
         animateCounter(attendedEl, stats.attended, 800);
     }
+    updateNageshToggleButton();
 }
 
 // ──────────── ROTARACT EQUAL LEAD ASSIGNEE HELPER ────────────
@@ -127,6 +198,32 @@ function getMDCollegeAssignee(r, allRegs) {
 }
 window.getMDCollegeAssignee = getMDCollegeAssignee;
 
+// ──────────── TANISHKA FREE PASS 50/50 ASSIGNEE HELPER (NILESH & TARASHA) ────────────
+function isTanishkaRegistration(r) {
+    if (!r) return false;
+    const idU = (r.id || '').toUpperCase();
+    const refU = (r.referredBy || '').toUpperCase();
+    const coupU = (r.couponUsed || '').toUpperCase();
+    const txnU = (r.transactionId || '').toUpperCase();
+    const codeU = (r.referralCode || '').toUpperCase();
+    const colU = (r.college || '').toUpperCase();
+    return txnU.includes('TANISHKA') || coupU.includes('TANISHKA') || refU.includes('TANISHKA') || codeU.includes('TANISHKA') || colU.includes('TANISHKA') || idU.startsWith('TAN-');
+}
+window.isTanishkaRegistration = isTanishkaRegistration;
+
+function getTanishkaAssignee(r, allRegs) {
+    if (!r) return 'NILESH';
+    const ref = (r.referredBy || '').toUpperCase();
+    if (ref.includes('TARASHA')) return 'TARASHA';
+    if (ref.includes('NILESH')) return 'NILESH';
+    // If untagged / college:tanishka, sort all Tanishka registrations chronologically and alternate 50/50 between Nilesh and Tarasha
+    const list = (allRegs || []).filter(item => isTanishkaRegistration(item))
+        .sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0) || (a.id || '').localeCompare(b.id || ''));
+    const idx = list.findIndex(item => item.id === r.id);
+    return (idx % 2 === 1) ? 'TARASHA' : 'NILESH';
+}
+window.getTanishkaAssignee = getTanishkaAssignee;
+
 // ──────────── REGISTRATIONS TABLE ────────────
 function renderRegistrationsTable(filter = 'all', search = '') {
     const tbody = document.getElementById('registrations-tbody');
@@ -134,11 +231,21 @@ function renderRegistrationsTable(filter = 'all', search = '') {
     const tableWrapper = document.querySelector('#tab-registrations .table-wrapper');
     let regs = dataStore.getRegistrations();
 
+    // Hide Nagesh registrations unless explicitly enabled or filtered
+    const showNagesh = window._showNageshRegistrations === true;
+    if (!showNagesh && filter !== 'nagesh') {
+        regs = regs.filter(r => !isNageshRegistration(r));
+    }
+    if (filter === 'nagesh') {
+        regs = dataStore.getRegistrations().filter(r => isNageshRegistration(r));
+    }
+
     // Apply filter
     if (filter === 'verified') regs = regs.filter(r => r.verified);
     if (filter === 'pending') regs = regs.filter(r => !r.verified);
     if (filter === 'attended') regs = regs.filter(r => r.attended);
     if (filter === 'colleges') regs = regs.filter(r => {
+        if (isNageshRegistration(r)) return false;
         const ref = (r.referredBy || '').toLowerCase();
         const coup = (r.couponUsed || '').toLowerCase();
         const txn = (r.transactionId || '').toLowerCase();
@@ -207,7 +314,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                id.startsWith('SIW-') || id.startsWith('BHA-') || id.startsWith('SIE-') || id.startsWith('RGI-') || id.startsWith('KIR-') ||
                id.startsWith('BKB-') || id.startsWith('VES-') || id.startsWith('VJT-') || id.startsWith('BED-') || id.startsWith('VAL-') ||
                id.startsWith('JAI-') || id.startsWith('RAP-') || id.startsWith('COL-');
-        return !isRot && !isVen && !isCol;
+        return !isRot && !isVen && !isCol && !isNageshRegistration(r);
     });
 
     // Apply search
@@ -235,8 +342,17 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                 const codeU = (r.referralCode || '').toUpperCase();
                 return idU.startsWith('HM-') || refU.includes('HM-031026') || coupU.includes('HM-031026') || txnU.includes('HM-031026') || codeU === 'HM-031026';
             });
+        } else if (sTrim === 'TANISHKA' || sTrim === 'FREE-TANISHKA') {
+            regs = regs.filter(r => isTanishkaRegistration(r));
+        } else if (sTrim === 'MUWAAZ') {
+            regs = regs.filter(r => {
+                if (isTanishkaRegistration(r)) return false;
+                const refU = (r.referredBy || '').toUpperCase();
+                return refU === 'MUWAAZ' || refU.includes('MUWAAZ');
+            });
         } else if (sTrim === 'RAHUL') {
             regs = regs.filter(r => {
+                if (isTanishkaRegistration(r)) return false;
                 const refU = (r.referredBy || '').toUpperCase();
                 const coupU = (r.couponUsed || '').toUpperCase();
                 const txnU = (r.transactionId || '').toUpperCase();
@@ -245,6 +361,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             });
         } else if (sTrim === 'NILESH') {
             regs = regs.filter(r => {
+                if (isTanishkaRegistration(r)) return getTanishkaAssignee(r, allStoreRegs) === 'NILESH';
                 if (isRotaractRegistration(r)) return getRotaractAssignee(r, allStoreRegs) === 'NILESH';
                 if (isMDCollegeRegistration(r)) return getMDCollegeAssignee(r, allStoreRegs) === 'NILESH';
                 const refU = (r.referredBy || '').toUpperCase();
@@ -252,6 +369,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             });
         } else if (sTrim === 'TARASHA') {
             regs = regs.filter(r => {
+                if (isTanishkaRegistration(r)) return getTanishkaAssignee(r, allStoreRegs) === 'TARASHA';
                 if (isRotaractRegistration(r)) return getRotaractAssignee(r, allStoreRegs) === 'TARASHA';
                 if (isMDCollegeRegistration(r)) return getMDCollegeAssignee(r, allStoreRegs) === 'TARASHA';
                 const refU = (r.referredBy || '').toUpperCase();
@@ -337,6 +455,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         const coupUpper = (r.couponUsed || '').toUpperCase();
         const txnUpper = (r.transactionId || '').toUpperCase();
 
+        const isTanishkaReg = isTanishkaRegistration(r);
         const isRotaractReg = isRotaractRegistration(r);
 
         const isGamingReg = Boolean(
@@ -357,7 +476,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
         );
 
         // HM-031026 is a PAID vendor referral channel — never treated as free
-        const isVendorReg = !isHMVendorReg && Boolean(
+        const isVendorReg = !isHMVendorReg && !isTanishkaReg && Boolean(
             idUpper.startsWith('VEN-') ||
             refUpper.includes('VENDOR') || refUpper.includes('YOUTH') ||
             coupUpper.includes('VENDOR') || coupUpper.includes('YOUTH') ||
@@ -366,14 +485,15 @@ function renderRegistrationsTable(filter = 'all', search = '') {
 
         const isMDReg = isMDCollegeRegistration(r);
 
-        const isFreeKES = !isHMVendorReg && (isRotaractReg || isGamingReg || isVendorReg || isMDReg ||
+        const isFreeKES = !isHMVendorReg && (isTanishkaReg || isRotaractReg || isGamingReg || isVendorReg || isMDReg ||
             (txnUpper === 'FREE-KES-SHROFF') || (coupUpper === 'FREE-KES-SHROFF') || idUpper.startsWith('KS') ||
             txnUpper.startsWith('FREE-') || coupUpper.startsWith('FREE-') ||
             refUpper.startsWith('COLLEGE:') ||
             (r.finalPrice === 0 && r.basePrice === 0 && r.transactionId));
 
         let collegeBadgeLabel = 'Partner College';
-        if (idUpper.startsWith('KS') || refUpper.includes('KES-SHROFF') || coupUpper.includes('KES-SHROFF')) collegeBadgeLabel = 'KES Shroff';
+        if (isTanishkaReg) collegeBadgeLabel = 'Tanishka Pass';
+        else if (idUpper.startsWith('KS') || refUpper.includes('KES-SHROFF') || coupUpper.includes('KES-SHROFF')) collegeBadgeLabel = 'KES Shroff';
         else if (isMDReg) collegeBadgeLabel = 'MD College';
         else if (idUpper.startsWith('GUR') || refUpper.includes('GURU-NANAK') || coupUpper.includes('GURU-NANAK')) collegeBadgeLabel = 'Guru Nanak Khalsa';
         else if (idUpper.startsWith('KJS') || refUpper.includes('KJ-SOMAIYA') || coupUpper.includes('KJ-SOMAIYA')) collegeBadgeLabel = 'KJ Somaiya';
@@ -394,6 +514,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             <td class="col-college" title="${escapeHTML(r.college)}">${escapeHTML(r.college)}</td>
             <td class="col-date" title="${escapeHTML(r.visitDate || 'Both Days')}"><span class="badge badge-gold-sm">${escapeHTML(r.visitDate ? (r.visitDate.includes('Both') ? 'Both Days' : (r.visitDate.includes('08th') ? 'Day 1 (8th)' : 'Day 2 (9th)')) : 'Both Days')}</span></td>
             <td class="col-amount">${
+                isTanishkaReg ? `<span style="color:#d4a843; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:var(--gold); font-weight:600; margin-top:2px;">🎁 TANISHKA PASS</div>` :
                 isRotaractReg ? `<span style="color:#4ade80; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#4ade80; font-weight:700; margin-top:2px;">🤝 ROTARACT</div>` :
                 isGamingReg ? `<span style="color:#c084fc; font-weight:700; font-size:0.8rem;">FREE</span><div style="font-size:0.68rem; color:#c084fc; font-weight:700; margin-top:2px;">🎮 GAMING COMMUNITY</div>` :
                 isHMVendorReg ? `<span style="font-weight:700;">₹${r.finalPrice}</span><div style="font-size:0.68rem; color:#38bdf8; font-weight:700; margin-top:2px;">🛍️ STUDENT PASS • HM-031026</div>` :
@@ -403,7 +524,14 @@ function renderRegistrationsTable(filter = 'all', search = '') {
             }</td>
             <td class="col-coupon">${r.couponUsed || '—'}</td>
             <td class="col-referral">
-                ${isRotaractReg ? `
+                ${isTanishkaReg ? `
+                    <span class="badge" style="background:rgba(212,168,67,0.16); border:1px solid rgba(212,168,67,0.4); color:#d4a843; font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('TANISHKA')" title="Tanishka Free Delegation Pass (Click to filter)">
+                        TANISHKA
+                    </span>
+                    <div style="font-size:0.7rem; color:var(--lavender); margin-top:2px;" title="Assigned 50/50 split between Nilesh & Tarasha">
+                        👤 ${getTanishkaAssignee(r, (typeof allStoreRegs !== 'undefined' ? allStoreRegs : regs)) === 'TARASHA' ? 'Tarasha Pahuja' : 'Nilesh Gupta'} (50%)
+                    </div>
+                ` : isRotaractReg ? `
                     <span class="badge" style="background:rgba(74,222,128,0.16); border:1px solid rgba(74,222,128,0.4); color:#4ade80; font-family:monospace; font-size:0.75rem; letter-spacing:0.5px; cursor:pointer;" onclick="filterRegistrationsByReferral('ROTARACT')" title="Rotaract Club Youth Delegation (Click to filter)">
                         ROTARACT
                     </span>
@@ -431,7 +559,7 @@ function renderRegistrationsTable(filter = 'all', search = '') {
                     </span>
                     ${referrerName ? `<div style="font-size:0.72rem; color:var(--lavender); margin-top:2px; font-weight:500;" title="Referred by: ${escapeHTML(referrerName)}">👤 ${escapeHTML(referrerName)}</div>` : ''}
                 ` : `<span style="color:var(--text-muted); font-size:0.75rem; opacity:0.6;">Direct / —</span>`}
-                ${r.referralCode && !isRotaractReg && !isGamingReg && !isHMVendorReg ? `<div style="font-size:0.68rem; color:var(--text-muted); opacity:0.6; margin-top:2px;" title="Registrant's own referral code">Own: ${escapeHTML(r.referralCode)}</div>` : ''}
+                ${r.referralCode && !isRotaractReg && !isGamingReg && !isHMVendorReg && !isTanishkaReg ? `<div style="font-size:0.68rem; color:var(--text-muted); opacity:0.6; margin-top:2px;" title="Registrant's own referral code">Own: ${escapeHTML(r.referralCode)}</div>` : ''}
             </td>
             <td class="col-txnId" title="${r.transactionId || '—'}">${r.transactionId ? r.transactionId.substring(0, 16) : '—'}</td>
             <td class="col-payment">
@@ -834,6 +962,19 @@ async function handleToggleVerify(id) {
             reg.verified ? 'success' : 'info'
         );
         refreshAdminView();
+
+        // If newly verified, trigger official confirmation email with PDF pass
+        if (reg.verified) {
+            fetch('/api/send-ticket', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: reg.id })
+            }).then(async r => {
+                if (r.ok) {
+                    showToast(`Boarding Pass PDF sent to ${reg.email || reg.name} ✉️`, 'success');
+                }
+            }).catch(e => console.warn('Email send notice:', e));
+        }
     }
 }
 

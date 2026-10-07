@@ -1219,18 +1219,18 @@
             },
             {
                 slug: 'vendor-partner',
-                name: 'Campus Vendor & Youth Outreach Partner Network',
-                shortName: 'Vendor Partner',
+                name: 'Campus Vendor Partner Network',
+                shortName: 'Campus Vendor Partner',
                 openCollege: true,
                 type: 'vendor',
                 pocs: [
-                    { name: 'Nilesh Kumar Gupta', phone: '8699260386', role: 'Community & Partnership Lead' },
-                    { name: 'Tarasha Pahuja', phone: '9569884046', role: 'Community & Partnership Lead' }
+                    { name: 'Karan Singh', phone: '9324880694', role: 'Project Manager' },
+                    { name: 'Rajveer', phone: '8454970036', role: 'Project Manager' }
                 ],
-                referralCodes: ['NILESH', 'TARASHA'],
-                privilegeTitle: 'Vendor Partner Outreach Privilege',
+                referralCodes: ['KARAN', 'RAJVEER'],
+                privilegeTitle: 'Campus Vendor Partner Privilege',
                 privilegeDesc: 'Complimentary admission for youth, student delegates, and campus community members from any college. Enter your institution and upload ID for verification.',
-                badge: 'VENDOR PARTNER FREE',
+                badge: 'CAMPUS VENDOR PARTNER',
                 feeWaiver: 150,
                 streams: ['BMS', 'B.Com', 'BAF', 'BBI', 'BFM', 'BAMMC', 'B.Sc IT', 'B.Sc CS', 'B.Sc Data Science', 'B.A', 'Engineering', 'Media', 'Other']
             },
@@ -1529,11 +1529,11 @@
                 return p.toLowerCase().replace(/\.html$/, '').trim();
             }).filter(Boolean);
 
-            // 1. Check if any URL segment matches a configured college slug
             // 1. Check aliases
             if (pathParts.includes('gaming') || pathParts.includes('esports')) return 'gaming-community';
             if (pathParts.includes('vendor-hm-031026') || pathParts.includes('hm031026') || pathParts.includes('hm-031026')) return 'hm-031026';
             if (pathParts.includes('md-college') || pathParts.includes('mdcollege') || pathParts.includes('dayanand')) return 'md-college';
+            if (pathParts.includes('vendor-karan') || pathParts.includes('vendor-rajveer') || pathParts.includes('karan') || pathParts.includes('rajveer')) return 'vendor-partner';
 
             // 2. Check if any URL segment matches a configured college slug
             if (Array.isArray(colleges) && colleges.length > 0) {
@@ -1761,9 +1761,31 @@
                 }).join('');
             }
 
-            // Render POCs (Community & Partnership Leads)
+        function getVendorPartnerPM() {
+            var params = new URLSearchParams(window.location.search);
+            var ref = (params.get('ref') || params.get('pm') || params.get('m') || params.get('lead') || '').toLowerCase().trim();
+            if (ref.includes('karan')) return 'KARAN';
+            if (ref.includes('rajveer')) return 'RAJVEER';
+            var path = window.location.pathname.toLowerCase();
+            if (path.includes('karan')) return 'KARAN';
+            if (path.includes('rajveer')) return 'RAJVEER';
+            return null;
+        }
+
+            // Render POCs (Community & Partnership Leads / Project Managers)
             var poc1 = (col.pocs && col.pocs[0]) || { name: 'Satvik Satam', phone: '9136045359', role: 'Community & Partnership Lead' };
             var poc2 = (col.pocs && col.pocs[1]) || { name: 'Sahil Mishra', phone: '6206686464', role: 'Community & Partnership Lead' };
+
+            if (col.slug === 'vendor-partner' || col.slug.includes('vendor')) {
+                poc1 = { name: 'Karan Singh', phone: '9324880694', role: 'Project Manager' };
+                poc2 = { name: 'Rajveer', phone: '8454970036', role: 'Project Manager' };
+                var vpPM = getVendorPartnerPM();
+                if (vpPM === 'RAJVEER') {
+                    // On Rajveer's link, show Rajveer first, Karan second
+                    poc1 = { name: 'Rajveer', phone: '8454970036', role: 'Project Manager' };
+                    poc2 = { name: 'Karan Singh', phone: '9324880694', role: 'Project Manager' };
+                }
+            }
 
             // Lead 1
             var l1Avatar = document.getElementById('lead-1-avatar');
@@ -2084,9 +2106,26 @@
                 } catch(e) {
                     assignedLead = 'SAHIL';
                 }
-                assignedReferral = assignedLead;
-                assignedReferralCode = assignedLead;
+            } else if (col.slug === 'vendor-partner' || col.slug.includes('vendor')) {
+                var vpPM = getVendorPartnerPM();
+                if (vpPM === 'KARAN') {
+                    assignedReferral = 'vendor-partner:karan';
+                    assignedReferralCode = 'KARAN';
+                } else if (vpPM === 'RAJVEER') {
+                    assignedReferral = 'vendor-partner:rajveer';
+                    assignedReferralCode = 'RAJVEER';
+                } else {
+                    var lastVP = localStorage.getItem('wwi_vendor_partner_last_assigned');
+                    var chosenVP = lastVP === 'KARAN' ? 'RAJVEER' : 'KARAN';
+                    try { localStorage.setItem('wwi_vendor_partner_last_assigned', chosenVP); } catch(e) {}
+                    assignedReferral = 'vendor-partner:' + chosenVP.toLowerCase();
+                    assignedReferralCode = chosenVP;
+                }
             }
+
+            var vendorTxn = (col.slug === 'vendor-partner' || col.slug.includes('vendor'))
+                ? (getVendorPartnerPM() ? ('FREE-VENDOR-' + getVendorPartnerPM()) : 'FREE-VENDOR-PARTNER')
+                : ('FREE-' + col.slug.toUpperCase());
 
             var regData = {
                 id: ticketId,
@@ -2096,8 +2135,8 @@
                 college: collegeName,
                 year: year + ' (' + stream + ')',
                 paymentScreenshot: _uploadedBase64,
-                transactionId: 'FREE-' + col.slug.toUpperCase(),
-                couponUsed: 'FREE-' + col.slug.toUpperCase(),
+                transactionId: vendorTxn,
+                couponUsed: vendorTxn,
                 referredBy: assignedReferral,
                 referralCode: assignedReferralCode,
                 basePrice: 0,
