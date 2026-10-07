@@ -73,6 +73,74 @@ function isNageshRegistration(r) {
 }
 window.isNageshRegistration = isNageshRegistration;
 
+window._showHsncRegistrations = (function() {
+    try {
+        return localStorage.getItem('wwi_show_hsnc') === 'true';
+    } catch(e) {
+        return false;
+    }
+})();
+
+function isHsncRegistration(r) {
+    if (!r) return false;
+    const idU = (r.id || '').toUpperCase();
+    const refU = (r.referredBy || r.referred_by || '').toUpperCase();
+    const coupU = (r.couponUsed || r.coupon_used || '').toUpperCase();
+    const txnU = (r.transactionId || r.transaction_id || '').toUpperCase();
+    return idU.startsWith('HSN-') || refU.includes('HSNC') || coupU.includes('HSNC') || txnU.includes('HSNC');
+}
+window.isHsncRegistration = isHsncRegistration;
+
+function updateHsncToggleButton() {
+    const btns = [
+        document.getElementById('toggle-hsnc-btn'),
+        document.getElementById('header-toggle-hsnc-btn')
+    ].filter(Boolean);
+
+    const allRegs = (typeof dataStore !== 'undefined' && dataStore.getRegistrations) ? dataStore.getRegistrations() : [];
+    const hsncCount = allRegs.filter(r => isHsncRegistration(r)).length;
+    const isShowing = window._showHsncRegistrations === true;
+
+    btns.forEach(btn => {
+        if (isShowing) {
+            btn.innerHTML = `👁️ Hide HSNC (${hsncCount})`;
+            btn.classList.add('active');
+            btn.style.borderColor = 'var(--gold, #d4a843)';
+            btn.style.color = '#f7e7c5';
+            btn.style.background = 'rgba(212, 168, 67, 0.2)';
+        } else {
+            btn.innerHTML = `👁️ Show HSNC (${hsncCount})`;
+            btn.classList.remove('active');
+            btn.style.borderColor = '';
+            btn.style.color = '';
+            btn.style.background = '';
+        }
+    });
+}
+window.updateHsncToggleButton = updateHsncToggleButton;
+
+function toggleHsncRegistrations() {
+    window._showHsncRegistrations = !window._showHsncRegistrations;
+    try {
+        localStorage.setItem('wwi_show_hsnc', window._showHsncRegistrations ? 'true' : 'false');
+    } catch(e) {}
+    updateHsncToggleButton();
+    renderStats();
+    const filterSelect = document.getElementById('filter-status');
+    const searchInput = document.getElementById('search-registrations');
+    renderRegistrationsTable(filterSelect ? filterSelect.value : 'all', searchInput ? searchInput.value : '');
+    try { renderReferralLeaderboard(); } catch(e) {}
+    if (typeof showToast === 'function') {
+        showToast(
+            window._showHsncRegistrations 
+                ? "HSNC-COLLAB registrations are now included in overall counts & table."
+                : "HSNC-COLLAB registrations are now hidden from overall counts & table.",
+            'info'
+        );
+    }
+}
+window.toggleHsncRegistrations = toggleHsncRegistrations;
+
 function updateNageshToggleButton() {
     const btns = [
         document.getElementById('toggle-nagesh-btn'),
@@ -126,7 +194,8 @@ window.toggleNageshRegistrations = toggleNageshRegistrations;
 // ──────────── STATS ────────────
 function renderStats() {
     const showNagesh = window._showNageshRegistrations === true;
-    const stats = dataStore.getStats(showNagesh);
+    const showHsnc = window._showHsncRegistrations === true;
+    const stats = dataStore.getStats(showNagesh, showHsnc);
 
     animateCounter(document.getElementById('stat-total'), stats.total, 800);
     animateCounter(document.getElementById('stat-verified'), stats.verified, 800);
@@ -138,6 +207,7 @@ function renderStats() {
         animateCounter(attendedEl, stats.attended, 800);
     }
     updateNageshToggleButton();
+    updateHsncToggleButton();
 }
 
 // ──────────── ROTARACT EQUAL LEAD ASSIGNEE HELPER ────────────
@@ -231,13 +301,20 @@ function renderRegistrationsTable(filter = 'all', search = '') {
     const tableWrapper = document.querySelector('#tab-registrations .table-wrapper');
     let regs = dataStore.getRegistrations();
 
-    // Hide Nagesh registrations unless explicitly enabled or filtered
+    // Hide Nagesh & HSNC registrations unless explicitly enabled or filtered
     const showNagesh = window._showNageshRegistrations === true;
+    const showHsnc = window._showHsncRegistrations === true;
     if (!showNagesh && filter !== 'nagesh') {
         regs = regs.filter(r => !isNageshRegistration(r));
     }
+    if (!showHsnc && filter !== 'hsnc') {
+        regs = regs.filter(r => !isHsncRegistration(r));
+    }
     if (filter === 'nagesh') {
         regs = dataStore.getRegistrations().filter(r => isNageshRegistration(r));
+    }
+    if (filter === 'hsnc') {
+        regs = dataStore.getRegistrations().filter(r => isHsncRegistration(r));
     }
 
     // Apply filter

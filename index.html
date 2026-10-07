@@ -1324,6 +1324,7 @@
             </div>
             <div class="admin-header-actions">
                 <button class="btn btn-secondary" id="header-toggle-nagesh-btn" onclick="toggleNageshRegistrations()" title="Toggle display of Nagesh registrations in overall count and table">👁️ Show Nagesh</button>
+                <button class="btn btn-secondary" id="header-toggle-hsnc-btn" onclick="toggleHsncRegistrations()" title="Toggle display of HSNC-COLLAB registrations in overall count and table">👁️ Show HSNC</button>
                 <button class="btn btn-secondary" onclick="navigateTo('names')">View Who's Attending</button>
                 <button class="btn btn-secondary" onclick="handleAdminLogout()">Logout</button>
             </div>
@@ -1378,8 +1379,10 @@
                         <option value="vendor">🛍️ Vendor Passes Only</option>
                         <option value="direct">🎟️ Paid / Direct Passes</option>
                         <option value="nagesh">🎯 Nagesh Registrations Only</option>
+                        <option value="hsnc">🎓 HSNC-COLLAB Only</option>
                     </select>
                     <button class="btn btn-secondary" id="toggle-nagesh-btn" onclick="toggleNageshRegistrations()" title="Click to show or hide Nagesh registrations in overall counts and table">👁️ Show Nagesh</button>
+                    <button class="btn btn-secondary" id="toggle-hsnc-btn" onclick="toggleHsncRegistrations()" title="Click to show or hide HSNC-COLLAB registrations in overall counts and table">👁️ Show HSNC</button>
                     <div style="position:relative; display:inline-block;">
                         <button class="btn btn-secondary" id="btn-col-visibility" onclick="toggleColumnMenu(event)" title="Show or Hide Table Columns (like Google Sheets)">
                             ⚙️ Columns <span id="hidden-col-count" style="display:none;" class="badge badge-purple"></span>

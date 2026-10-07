@@ -1857,8 +1857,8 @@ class DataStore {
             }
         ];
 
-        // Nagesh registrations are kept strictly under Nagesh and excluded from other team delegation splits
-        const regs = this.getRegistrations().filter(r => !this.isNageshRegistration(r));
+        // Nagesh & HSNC registrations are kept strictly under their respective delegations and excluded from team delegation splits
+        const regs = this.getRegistrations().filter(r => !this.isNageshRegistration(r) && !this.isHsncRegistration(r));
 
         // ── CALCULATE COLLEGE DELEGATION EQUAL SPLITS ───────────────
         // Helper: get free regs for a college slug
@@ -2101,14 +2101,20 @@ class DataStore {
         return stats;
     }
 
-    getTopReferrers(limit = 15, includeNagesh = null) {
+    getTopReferrers(limit = 15, includeNagesh = null, includeHsnc = null) {
         let regs = this.getRegistrations();
         const showNagesh = (includeNagesh !== null)
             ? Boolean(includeNagesh)
             : (typeof window !== 'undefined' && window._showNageshRegistrations === true);
+        const showHsnc = (includeHsnc !== null)
+            ? Boolean(includeHsnc)
+            : (typeof window !== 'undefined' && window._showHsncRegistrations === true);
 
         if (!showNagesh) {
             regs = regs.filter(r => !this.isNageshRegistration(r));
+        }
+        if (!showHsnc) {
+            regs = regs.filter(r => !this.isHsncRegistration(r));
         }
         const counts = {};
         // Only count direct referrals (not college:, ROTARACT, or vendor ones — those will be credited via delegation splits below)
@@ -2242,15 +2248,30 @@ class DataStore {
         return idU.startsWith('NAG-') || refU.includes('NAGESH') || coupU.includes('NAGESH') || txnU.includes('NAGESH');
     }
 
+    isHsncRegistration(r) {
+        if (!r) return false;
+        const idU = (r.id || '').toUpperCase();
+        const refU = (r.referredBy || r.referred_by || '').toUpperCase();
+        const coupU = (r.couponUsed || r.coupon_used || '').toUpperCase();
+        const txnU = (r.transactionId || r.transaction_id || '').toUpperCase();
+        return idU.startsWith('HSN-') || refU.includes('HSNC') || coupU.includes('HSNC') || txnU.includes('HSNC');
+    }
+
     // ──────────── STATS ────────────
-    getStats(includeNagesh = null) {
+    getStats(includeNagesh = null, includeHsnc = null) {
         let regs = this.getRegistrations();
         const showNagesh = (includeNagesh !== null)
             ? Boolean(includeNagesh)
             : (typeof window !== 'undefined' && window._showNageshRegistrations === true);
+        const showHsnc = (includeHsnc !== null)
+            ? Boolean(includeHsnc)
+            : (typeof window !== 'undefined' && window._showHsncRegistrations === true);
 
         if (!showNagesh) {
             regs = regs.filter(r => !this.isNageshRegistration(r));
+        }
+        if (!showHsnc) {
+            regs = regs.filter(r => !this.isHsncRegistration(r));
         }
 
         const verified = regs.filter(r => r.verified);
