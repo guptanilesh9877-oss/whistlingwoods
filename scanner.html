@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0b0817">
+    <meta name="theme-color" content="#12121e">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Gate Ticket Scanner — Celebrate Cinema 2026 | Whistling Woods International</title>
+    <title>Gate Scanner — Celebrate Cinema 2026 | Whistling Woods International</title>
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts Matching WWI Brand Kit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
 
     <!-- QR Code Scanner Library (html5-qrcode with multi-CDN fallback) -->
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -22,29 +22,53 @@
     </script>
 
     <style>
+        /* ═══════════════════════════════════════════════
+           WWI OFFICIAL BRAND KIT THEME & DESIGN TOKENS
+           ═══════════════════════════════════════════════ */
         :root {
-            --bg-deep: #0b0817;
-            --bg-card: rgba(22, 16, 38, 0.85);
-            --bg-card-solid: #161026;
-            --bg-elevated: #1f1736;
-            --border-subtle: rgba(212, 168, 67, 0.22);
-            --border-gold: #d4a843;
-            --gold: #d4a843;
-            --gold-bright: #f4c552;
-            --gold-soft: #f7e7c5;
-            --purple-accent: #8b5cf6;
-            --green: #10b981;
-            --green-glow: rgba(16, 185, 129, 0.35);
-            --amber: #f59e0b;
-            --amber-glow: rgba(245, 158, 11, 0.35);
-            --red: #ef4444;
-            --red-glow: rgba(239, 68, 68, 0.35);
-            --text-main: #f9f8fc;
-            --text-muted: #a69bb5;
-            --text-dim: #716682;
-            --font-display: 'Outfit', sans-serif;
+            --primary: #8d6aae;             /* WWI Signature Purple */
+            --primary-dark: #6f4f8e;
+            --primary-light: #a882c8;
+            --primary-glow: rgba(141, 106, 174, 0.45);
+            
+            --gold: #f7e7c5;                /* Warm Champagne Cream */
+            --gold-bright: #f4c552;         /* Vibrant Metallic Gold */
+            --gold-light: #fff6e5;
+            --gold-dark: #dfcfad;
+            --gold-glow: rgba(247, 231, 197, 0.35);
+
+            --lavender: #8d7ea4;            /* Slate Lavender */
+            --navy: #12121e;                /* Deep Midnight Background */
+            --bg-body: #12121e;
+            --bg-card: rgba(26, 22, 40, 0.88);
+            --bg-card-solid: #181329;
+            --bg-elevated: rgba(35, 29, 54, 0.95);
+            --bg-input: rgba(255, 255, 255, 0.06);
+
+            --border-subtle: rgba(141, 106, 174, 0.26);
+            --border-glass: rgba(247, 231, 197, 0.22);
+            --border-gold: rgba(212, 168, 67, 0.6);
+
+            --text-primary: #f7e7c5;
+            --text-secondary: rgba(247, 231, 197, 0.85);
+            --text-muted: #8d7ea4;
+            --text-light: #ffffff;
+
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.4);
+            --warning: #f59e0b;
+            --warning-glow: rgba(245, 158, 11, 0.4);
+            --error: #ef4444;
+            --error-glow: rgba(239, 68, 68, 0.4);
+
+            --font-display: 'Plus Jakarta Sans', -apple-system, sans-serif;
             --font-body: 'Inter', -apple-system, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --radius-xl: 24px;
         }
 
         * {
@@ -54,96 +78,118 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            background-color: var(--bg-deep);
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.12) 0%, transparent 60%),
-                radial-gradient(circle at 100% 100%, rgba(212, 168, 67, 0.08) 0%, transparent 50%);
-            color: var(--text-main);
+        html, body {
+            height: 100%;
+            background-color: var(--navy);
+            color: var(--text-primary);
             font-family: var(--font-body);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        /* ── TOP HEADER ── */
-        .gate-header {
-            background: rgba(16, 11, 28, 0.88);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+        body {
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 10% 0%, rgba(141, 106, 174, 0.22) 0%, transparent 50%),
+                radial-gradient(circle at 90% 100%, rgba(247, 231, 197, 0.10) 0%, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100dvh;
+        }
+
+        /* ── TOP NAVBAR ── */
+        .gate-navbar {
+            background: rgba(18, 18, 30, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-subtle);
-            padding: 12px 16px;
+            padding: 10px 18px;
             position: sticky;
             top: 0;
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
         }
 
-        .header-brand {
+        .brand-lockup {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            text-decoration: none;
         }
 
-        .header-logo-badge {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #d4a843 0%, #7c3aed 100%);
+        .nav-cc26-logo {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+        }
+
+        .brand-divider-vertical {
+            width: 1px;
+            height: 22px;
+            background: rgba(247, 231, 197, 0.35);
+        }
+
+        .nav-wwi-logo {
+            height: 24px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .brand-text-block {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            box-shadow: 0 4px 12px rgba(212, 168, 67, 0.3);
+            flex-direction: column;
         }
 
-        .header-title-box h1 {
+        .brand-text-title {
             font-family: var(--font-display);
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 13.5px;
+            font-weight: 800;
             color: #ffffff;
+            letter-spacing: 0.5px;
             line-height: 1.2;
-            letter-spacing: 0.3px;
+            text-transform: uppercase;
         }
 
-        .header-title-box p {
-            font-size: 11px;
-            color: var(--gold-soft);
-            font-weight: 500;
-            letter-spacing: 0.2px;
+        .brand-text-sub {
+            font-size: 10.5px;
+            color: var(--gold);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .header-controls {
+        .navbar-actions {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .gate-badge {
+        .gate-station-pill {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(212, 168, 67, 0.15);
-            border: 1px solid var(--border-gold);
-            color: var(--gold-soft);
+            background: rgba(141, 106, 174, 0.2);
+            border: 1px solid var(--primary-light);
+            color: #ffffff;
             font-size: 11px;
             font-weight: 700;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
         .pulse-dot {
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 8px var(--green);
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
             animation: pulse 2s infinite;
         }
 
@@ -152,73 +198,156 @@
             50% { opacity: 0.4; transform: scale(0.8); }
         }
 
-        /* ── STATS TICKER BAR ── */
-        .stats-bar {
-            background: rgba(31, 23, 54, 0.65);
+        .btn-header-tool {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-glass);
+            color: #ffffff;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-header-tool:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* ── STATS DOCK STRIP ── */
+        .stats-dock {
+            background: rgba(22, 19, 36, 0.75);
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 8px 16px;
+            padding: 8px 18px;
             display: flex;
             align-items: center;
             justify-content: space-around;
-            font-size: 12px;
         }
 
-        .stat-item {
+        .dock-metric {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dock-metric-icon {
+            font-size: 16px;
+        }
+
+        .dock-metric-info {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 2px;
+            line-height: 1.15;
         }
 
-        .stat-val {
+        .dock-metric-val {
             font-family: var(--font-mono);
-            font-weight: 700;
             font-size: 15px;
+            font-weight: 800;
             color: #ffffff;
         }
 
-        .stat-val.accent {
+        .dock-metric-val.green {
+            color: var(--success);
+        }
+
+        .dock-metric-val.gold {
             color: var(--gold-bright);
         }
 
-        .stat-val.green {
-            color: var(--green);
-        }
-
-        .stat-lbl {
+        .dock-metric-lbl {
             font-size: 10px;
+            font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        /* ── MAIN CONTENT CONTAINER ── */
-        .scanner-main {
-            flex: 1;
-            max-width: 680px;
-            width: 100%;
+        /* ── MOBILE SEGMENTED MODE TABS (Shown on screens < 992px) ── */
+        .mobile-mode-bar {
+            display: none;
+            padding: 10px 16px 0;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 16px 14px 40px;
+            width: 100%;
+        }
+
+        .segmented-controls {
+            display: flex;
+            background: rgba(18, 14, 30, 0.85);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 4px;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .segment-btn {
+            flex: 1;
+            padding: 9px 8px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .segment-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(141, 106, 174, 0.4);
+        }
+
+        /* ── MAIN RESPONSIVE CONTAINER ── */
+        .main-container {
+            flex: 1;
+            width: 100%;
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 16px 18px 40px;
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* ── LEFT COLUMN: CAMERA SCANNER & CONTROLS ── */
+        .scanner-column {
             display: flex;
             flex-direction: column;
             gap: 16px;
+            width: 100%;
         }
 
-        /* ── VIEWPORT / CAMERA CONTAINER ── */
-        .camera-card {
+        .glass-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: 18px;
+            border-radius: var(--radius-lg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(141, 106, 174, 0.12);
             overflow: hidden;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
             position: relative;
         }
 
+        /* Camera Viewport */
         .camera-viewport {
             position: relative;
             width: 100%;
-            height: 330px;
-            background: #06040d;
+            height: 380px;
+            background: #090614;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -236,8 +365,8 @@
             object-fit: cover !important;
         }
 
-        /* Viewfinder HUD Overlay */
-        .hud-overlay {
+        /* Viewfinder Aiming Overlay */
+        .viewfinder-hud {
             position: absolute;
             inset: 0;
             pointer-events: none;
@@ -247,52 +376,52 @@
             z-index: 10;
         }
 
-        .target-box {
-            width: 230px;
-            height: 230px;
+        .hud-target {
+            width: 240px;
+            height: 240px;
             position: relative;
-            border-radius: 12px;
-            box-shadow: 0 0 0 4000px rgba(7, 5, 15, 0.62);
+            border-radius: 16px;
+            box-shadow: 0 0 0 4000px rgba(9, 6, 20, 0.62);
         }
 
-        .corner {
+        .hud-corner {
             position: absolute;
-            width: 26px;
-            height: 26px;
+            width: 28px;
+            height: 28px;
             border-color: var(--gold-bright);
             border-style: solid;
         }
-        .corner.tl { top: 0; left: 0; border-width: 3.5px 0 0 3.5px; border-top-left-radius: 10px; }
-        .corner.tr { top: 0; right: 0; border-width: 3.5px 3.5px 0 0; border-top-right-radius: 10px; }
-        .corner.bl { bottom: 0; left: 0; border-width: 0 0 3.5px 3.5px; border-bottom-left-radius: 10px; }
-        .corner.br { bottom: 0; right: 0; border-width: 0 3.5px 3.5px 0; border-bottom-right-radius: 10px; }
+        .hud-corner.tl { top: 0; left: 0; border-width: 4px 0 0 4px; border-top-left-radius: 12px; }
+        .hud-corner.tr { top: 0; right: 0; border-width: 4px 4px 0 0; border-top-right-radius: 12px; }
+        .hud-corner.bl { bottom: 0; left: 0; border-width: 0 0 4px 4px; border-bottom-left-radius: 12px; }
+        .hud-corner.br { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-bottom-right-radius: 12px; }
 
-        .laser-line {
+        .laser-beam {
             position: absolute;
-            left: 6px;
-            right: 6px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #eab308, #ffffff, #eab308, transparent);
-            box-shadow: 0 0 12px #eab308, 0 0 4px #ffffff;
+            left: 8px;
+            right: 8px;
+            height: 2.5px;
+            background: linear-gradient(90deg, transparent, var(--gold-bright), #ffffff, var(--gold-bright), transparent);
+            box-shadow: 0 0 14px var(--gold-bright), 0 0 4px #ffffff;
             animation: scanLaser 2s ease-in-out infinite alternate;
             opacity: 0;
             transition: opacity 0.3s;
         }
 
-        .scanner-active .laser-line {
+        .scanner-active .laser-beam {
             opacity: 1;
         }
 
         @keyframes scanLaser {
-            0% { top: 8px; }
-            100% { top: 220px; }
+            0% { top: 10px; }
+            100% { top: 228px; }
         }
 
-        /* Camera Placeholder Screen */
-        .camera-standby {
+        /* Standby Splash */
+        .standby-splash {
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, #18112b 0%, #0c0817 100%);
+            background: linear-gradient(180deg, rgba(26, 20, 42, 0.96) 0%, rgba(13, 10, 24, 0.98) 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -303,35 +432,36 @@
             z-index: 20;
         }
 
-        .standby-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: rgba(212, 168, 67, 0.15);
-            border: 2px solid var(--border-gold);
+        .splash-icon-ring {
+            width: 68px;
+            height: 68px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(141, 106, 174, 0.25) 0%, rgba(247, 231, 197, 0.15) 100%);
+            border: 1.5px solid var(--border-gold);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 0 20px rgba(212, 168, 67, 0.25);
+            font-size: 32px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 20px rgba(141, 106, 174, 0.2);
         }
 
-        .standby-text h3 {
+        .standby-splash h3 {
+            font-family: var(--font-display);
             font-size: 17px;
-            font-weight: 700;
+            font-weight: 800;
             color: #ffffff;
-            margin-bottom: 4px;
+            letter-spacing: 0.3px;
         }
 
-        .standby-text p {
-            font-size: 13px;
+        .standby-splash p {
+            font-size: 12.5px;
             color: var(--text-muted);
-            line-height: 1.4;
-            max-width: 280px;
+            line-height: 1.45;
+            max-width: 290px;
         }
 
-        /* Floating Camera Controls */
-        .camera-floating-bar {
+        /* Viewport Floating HUD Controls */
+        .hud-floating-bar {
             position: absolute;
             bottom: 12px;
             left: 12px;
@@ -343,378 +473,400 @@
             pointer-events: none;
         }
 
-        .floating-btn {
+        .hud-btn {
             pointer-events: auto;
-            background: rgba(16, 12, 28, 0.85);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(18, 14, 30, 0.88);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.16);
             color: #ffffff;
             font-size: 12px;
-            font-weight: 600;
-            padding: 7px 12px;
+            font-weight: 700;
+            padding: 8px 14px;
             border-radius: 20px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
             cursor: pointer;
             transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
-        .floating-btn:active {
-            transform: scale(0.95);
+        .hud-btn:hover {
+            background: rgba(35, 28, 56, 0.95);
+            border-color: var(--border-gold);
         }
 
-        .floating-btn.active {
-            background: var(--gold);
+        .hud-btn.active {
+            background: var(--gold-bright);
             color: #0b0817;
-            border-color: var(--gold-bright);
-            font-weight: 700;
+            border-color: #ffffff;
+            font-weight: 800;
         }
 
         /* Camera Toolbar Below Viewport */
         .camera-toolbar {
-            padding: 12px 16px;
-            background: rgba(19, 14, 33, 0.95);
+            padding: 14px 18px;
+            background: rgba(22, 17, 36, 0.96);
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-subtle);
         }
 
-        .action-btn {
+        .btn-cta {
             flex: 1;
-            padding: 13px 18px;
-            border-radius: 12px;
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
             font-family: var(--font-display);
             font-size: 15px;
-            font-weight: 700;
+            font-weight: 800;
             border: none;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             transition: all 0.2s;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
         }
 
-        .action-btn:active {
-            transform: translateY(1px);
+        .btn-start-scan {
+            background: linear-gradient(135deg, var(--gold) 0%, #d4a843 100%);
+            color: #0c0817;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        .btn-primary-gold {
-            background: linear-gradient(135deg, #d4a843 0%, #b88628 100%);
-            color: #0b0817;
+        .btn-start-scan:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
         }
 
-        .btn-primary-gold:hover {
-            filter: brightness(1.1);
-        }
-
-        .btn-danger-stop {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid var(--red);
+        .btn-stop-scan {
+            background: rgba(239, 68, 68, 0.18);
+            border: 1.5px solid var(--error);
             color: #fca5a5;
         }
 
-        .btn-icon-only {
-            padding: 12px 14px;
-            border-radius: 12px;
-            background: var(--bg-elevated);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
-            font-size: 14px;
-            cursor: pointer;
+        .btn-stop-scan:hover {
+            background: rgba(239, 68, 68, 0.28);
         }
 
-        /* ── RESULT CARD ── */
-        .result-container {
+        /* ── RIGHT COLUMN: ATTENDEE CARD & DESK TOOLS ── */
+        .desk-column {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            width: 100%;
+        }
+
+        /* Scanned Result Card (Hero card) */
+        .result-wrapper {
+            width: 100%;
             display: none;
-            animation: slideInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeInCard 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes slideInUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInCard {
+            from { opacity: 0; transform: translateY(12px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .result-card {
-            border-radius: 16px;
-            overflow: hidden;
-            border: 1.5px solid transparent;
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+        .result-panel {
             background: var(--bg-card-solid);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 2px solid transparent;
+            box-shadow: 0 16px 44px rgba(0, 0, 0, 0.7);
         }
 
-        .result-card.success {
-            border-color: var(--green);
-            box-shadow: 0 0 25px var(--green-glow);
+        .result-panel.success {
+            border-color: var(--success);
+            box-shadow: 0 0 35px var(--success-glow);
         }
 
-        .result-card.duplicate {
-            border-color: var(--amber);
-            box-shadow: 0 0 25px var(--amber-glow);
+        .result-panel.duplicate {
+            border-color: var(--warning);
+            box-shadow: 0 0 35px var(--warning-glow);
         }
 
-        .result-card.rejected, .result-card.notfound {
-            border-color: var(--red);
-            box-shadow: 0 0 25px var(--red-glow);
+        .result-panel.rejected, .result-panel.notfound {
+            border-color: var(--error);
+            box-shadow: 0 0 35px var(--error-glow);
         }
 
-        .result-header {
-            padding: 16px 18px;
+        .result-header-bar {
+            padding: 18px 22px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
-        .result-header.success {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(6, 78, 59, 0.4) 100%);
-            border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+        .result-header-bar.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.28) 0%, rgba(6, 78, 59, 0.45) 100%);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.35);
         }
 
-        .result-header.duplicate {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(120, 53, 15, 0.4) 100%);
-            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+        .result-header-bar.duplicate {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.28) 0%, rgba(120, 53, 15, 0.45) 100%);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.35);
         }
 
-        .result-header.rejected, .result-header.notfound {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(127, 29, 29, 0.4) 100%);
-            border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+        .result-header-bar.rejected, .result-header-bar.notfound {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.28) 0%, rgba(127, 29, 29, 0.45) 100%);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.35);
         }
 
-        .result-icon {
-            font-size: 32px;
+        .result-header-icon {
+            font-size: 36px;
             line-height: 1;
         }
 
-        .result-headline h2 {
+        .result-header-text h2 {
             font-family: var(--font-display);
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: 0.5px;
             line-height: 1.2;
         }
 
-        .result-headline p {
-            font-size: 12px;
+        .result-header-text p {
+            font-size: 13px;
             margin-top: 3px;
             font-weight: 500;
         }
 
-        .result-body {
-            padding: 18px;
+        .result-content-body {
+            padding: 22px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 16px;
         }
 
         /* Highlighted Wristband Banner */
-        .band-banner {
-            padding: 12px 14px;
-            border-radius: 10px;
+        .wristband-banner {
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-weight: 700;
-            font-size: 13.5px;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 0.3px;
             line-height: 1.35;
         }
 
-        .band-banner.fphr {
+        .wristband-banner.fphr {
             background: rgba(212, 168, 67, 0.18);
-            border: 1.5px solid var(--gold);
-            color: #fff;
+            border: 2px solid var(--gold-bright);
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(212, 168, 67, 0.25);
         }
 
-        .band-banner.hsnc {
-            background: rgba(139, 92, 246, 0.2);
-            border: 1.5px solid var(--purple-accent);
-            color: #f3e8ff;
+        .wristband-banner.hsnc {
+            background: rgba(139, 92, 246, 0.22);
+            border: 2px solid var(--primary-light);
+            color: #f5f3ff;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
         }
 
-        .band-banner.standard {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-main);
+        .wristband-banner.standard {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: var(--text-primary);
         }
 
-        /* Delegate Details Grid */
-        .delegate-grid {
+        /* Delegate Data Grid */
+        .data-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            background: rgba(0, 0, 0, 0.25);
-            padding: 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 14px;
+            background: rgba(12, 9, 22, 0.7);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .grid-item {
+        .data-col {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 3px;
         }
 
-        .grid-item.full-width {
+        .data-col.span-2 {
             grid-column: 1 / -1;
         }
 
-        .grid-label {
-            font-size: 10.5px;
+        .data-label {
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             color: var(--text-muted);
-            font-weight: 600;
         }
 
-        .grid-val {
-            font-size: 14px;
+        .data-val {
+            font-size: 14.5px;
             font-weight: 600;
             color: #ffffff;
             word-break: break-word;
         }
 
-        .grid-val.ticket-id {
+        .data-val.name-hero {
+            font-family: var(--font-display);
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.2px;
+        }
+
+        .data-val.ticket-code {
             font-family: var(--font-mono);
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 17px;
+            font-weight: 800;
             color: var(--gold-bright);
+            letter-spacing: 1px;
+        }
+
+        .visiting-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-top: 3px;
+            text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .grid-val.name-bold {
-            font-size: 17px;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .day-badge {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 3px 8px;
-            border-radius: 6px;
-            margin-top: 2px;
-        }
-
-        .day-badge.valid {
+        .visiting-badge.valid {
             background: rgba(16, 185, 129, 0.2);
-            border: 1px solid var(--green);
+            border: 1px solid var(--success);
             color: #6ee7b7;
         }
 
-        .day-badge.warning {
+        .visiting-badge.warning {
             background: rgba(245, 158, 11, 0.2);
-            border: 1px solid var(--amber);
+            border: 1px solid var(--warning);
             color: #fde68a;
         }
 
-        /* Result Action Footer */
-        .result-actions {
+        /* Card Action Buttons */
+        .result-footer-bar {
             display: flex;
-            gap: 10px;
-            margin-top: 4px;
+            gap: 12px;
+            margin-top: 6px;
         }
 
-        .btn-dismiss {
+        .btn-card-action {
             flex: 1;
-            padding: 13px;
-            border-radius: 10px;
-            background: var(--bg-elevated);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            font-family: var(--font-display);
+            font-size: 14.5px;
+            font-weight: 800;
             cursor: pointer;
-        }
-
-        .btn-force-admit {
-            flex: 1;
-            padding: 13px;
-            border-radius: 10px;
-            background: var(--amber);
             border: none;
-            color: #0b0817;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* ── MANUAL SEARCH CARD ── */
-        .search-card {
+        .btn-done-next {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-dismiss-warning {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+        }
+
+        .btn-force-reentry {
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+            color: #0b0817;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+        }
+
+        /* ── MANUAL SEARCH TOOL ── */
+        .search-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
-        .card-header-row {
+        .search-panel-title {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .card-header-row h3 {
-            font-size: 14px;
-            font-weight: 700;
+        .search-panel-title h3 {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 800;
             color: #ffffff;
             display: flex;
             align-items: center;
             gap: 8px;
+            letter-spacing: 0.3px;
         }
 
-        .search-input-box {
+        .search-input-wrapper {
             position: relative;
         }
 
-        .search-input-box input {
+        .search-input-field {
             width: 100%;
-            background: rgba(9, 6, 18, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 12px;
-            padding: 13px 16px 13px 40px;
+            background: rgba(12, 9, 22, 0.85);
+            border: 1px solid rgba(141, 106, 174, 0.35);
+            border-radius: var(--radius-md);
+            padding: 14px 16px 14px 44px;
             color: #ffffff;
-            font-size: 14.5px;
+            font-size: 15px;
             outline: none;
             transition: all 0.2s;
         }
 
-        .search-input-box input:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 12px rgba(212, 168, 67, 0.25);
+        .search-input-field:focus {
+            border-color: var(--gold-bright);
+            box-shadow: 0 0 16px rgba(244, 197, 82, 0.25);
         }
 
-        .search-icon {
+        .search-glass-icon {
             position: absolute;
-            left: 14px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
-            font-size: 16px;
+            font-size: 17px;
             pointer-events: none;
         }
 
-        .search-clear-btn {
+        .search-clear-cross {
             position: absolute;
-            right: 12px;
+            right: 14px;
             top: 50%;
             transform: translateY(-50%);
             background: transparent;
             border: none;
             color: var(--text-muted);
-            font-size: 16px;
+            font-size: 17px;
             cursor: pointer;
             padding: 4px;
             display: none;
         }
 
-        /* Instant Search Results */
-        .search-results-list {
+        /* Live Instant Results */
+        .live-results-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -722,100 +874,121 @@
             overflow-y: auto;
         }
 
-        .search-item {
-            background: var(--bg-elevated);
+        .live-result-row {
+            background: rgba(18, 14, 30, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            gap: 14px;
             cursor: pointer;
             transition: all 0.15s;
         }
 
-        .search-item:hover {
+        .live-result-row:hover {
             border-color: var(--border-gold);
-            background: rgba(35, 25, 60, 0.9);
+            background: rgba(35, 27, 56, 0.95);
         }
 
-        .search-item-info {
+        .live-row-info {
             display: flex;
             flex-direction: column;
             gap: 2px;
         }
 
-        .search-item-name {
-            font-size: 14px;
+        .live-row-name {
+            font-size: 14.5px;
             font-weight: 700;
             color: #ffffff;
         }
 
-        .search-item-meta {
+        .live-row-meta {
             font-size: 12px;
             color: var(--text-muted);
+            font-family: var(--font-mono);
         }
 
-        .btn-quick-admit {
-            background: var(--gold);
+        .btn-live-admit {
+            background: linear-gradient(135deg, var(--gold) 0%, #d4a843 100%);
             border: none;
-            color: #0b0817;
-            font-weight: 700;
-            font-size: 12.5px;
-            padding: 8px 14px;
+            color: #0c0817;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 8px 16px;
             border-radius: 8px;
             cursor: pointer;
             white-space: nowrap;
         }
 
-        /* ── RECENT SCANS LOG DRAWER ── */
-        .recent-card {
+        /* ── RECENT ADMISSIONS STREAM ── */
+        .recent-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 16px;
+            border-radius: var(--radius-lg);
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .recent-list {
-            margin-top: 10px;
+        .recent-stream-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 260px;
+            max-height: 320px;
             overflow-y: auto;
         }
 
-        .recent-row {
+        .recent-stream-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 12px;
-            background: rgba(12, 9, 22, 0.6);
+            padding: 10px 14px;
+            background: rgba(14, 11, 24, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            font-size: 12.5px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
         }
 
-        .recent-row-left {
+        .recent-item-left {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .recent-row-time {
+        .recent-check-icon {
+            color: var(--success);
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .recent-item-name {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .recent-item-meta {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        .recent-item-time {
             font-family: var(--font-mono);
             color: var(--gold-bright);
-            font-size: 11.5px;
+            font-size: 12px;
+            font-weight: 700;
         }
 
-        /* ── GATE AUTH MODAL ── */
+        /* ── GATE AUTH MODAL OVERLAY ── */
         .auth-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(7, 4, 15, 0.94);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(8, 6, 16, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -824,130 +997,132 @@
         }
 
         .auth-card {
-            max-width: 400px;
+            max-width: 420px;
             width: 100%;
-            background: #140e26;
-            border: 1.5px solid var(--border-gold);
-            border-radius: 20px;
-            padding: 28px 24px;
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 168, 67, 0.15);
+            background: linear-gradient(135deg, #1b152e 0%, #100c1e 100%);
+            border: 2px solid var(--border-gold);
+            border-radius: var(--radius-xl);
+            padding: 32px 26px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(141, 106, 174, 0.25);
             text-align: center;
         }
 
-        .auth-logo {
-            width: 58px;
-            height: 58px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #d4a843 0%, #7c3aed 100%);
+        .auth-logo-badge {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--primary) 100%);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            margin-bottom: 16px;
-            box-shadow: 0 6px 18px rgba(212, 168, 67, 0.35);
+            font-size: 32px;
+            margin-bottom: 18px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
 
         .auth-card h2 {
             font-family: var(--font-display);
-            font-size: 21px;
+            font-size: 22px;
             font-weight: 800;
             color: #ffffff;
             margin-bottom: 6px;
         }
 
         .auth-card p {
-            font-size: 13px;
+            font-size: 13.5px;
             color: var(--text-muted);
-            margin-bottom: 22px;
-            line-height: 1.4;
+            margin-bottom: 24px;
+            line-height: 1.45;
         }
 
-        .auth-field {
-            margin-bottom: 14px;
+        .auth-input-group {
+            margin-bottom: 16px;
             text-align: left;
         }
 
-        .auth-field label {
+        .auth-input-group label {
             display: block;
             font-size: 11px;
             font-weight: 700;
-            color: var(--gold-soft);
+            color: var(--gold);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             margin-bottom: 6px;
         }
 
-        .auth-field input, .auth-field select {
+        .auth-input-group input, .auth-input-group select {
             width: 100%;
             background: #090614;
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            border-radius: 10px;
-            padding: 12px 14px;
+            border: 1px solid rgba(141, 106, 174, 0.4);
+            border-radius: var(--radius-md);
+            padding: 13px 16px;
             color: #ffffff;
             font-size: 15px;
             outline: none;
+            transition: all 0.2s;
         }
 
-        .auth-field input:focus, .auth-field select:focus {
-            border-color: var(--gold);
+        .auth-input-group input:focus, .auth-input-group select:focus {
+            border-color: var(--gold-bright);
         }
 
-        .auth-btn {
+        .btn-auth-submit {
             width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #d4a843 0%, #b88628 100%);
+            padding: 15px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--gold) 0%, #d4a843 100%);
             border: none;
-            color: #0b0817;
+            color: #0c0817;
             font-family: var(--font-display);
-            font-size: 15.5px;
+            font-size: 16px;
             font-weight: 800;
             cursor: pointer;
-            margin-top: 6px;
-            box-shadow: 0 4px 16px rgba(212, 168, 67, 0.35);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 6px 20px rgba(212, 168, 67, 0.35);
         }
 
         /* ── TOAST NOTIFICATIONS ── */
-        .toast-container {
+        .toast-box {
             position: fixed;
-            bottom: 20px;
+            bottom: 24px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 9999;
             pointer-events: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             width: 90%;
-            max-width: 400px;
+            max-width: 420px;
         }
 
-        .toast-item {
-            background: #1b1433;
+        .toast-bubble {
+            background: #1e1736;
             border: 1px solid var(--border-gold);
             color: #ffffff;
-            padding: 12px 18px;
-            border-radius: 12px;
-            font-size: 13.5px;
-            font-weight: 600;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            padding: 14px 20px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
-            gap: 10px;
-            animation: toastPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            gap: 12px;
+            animation: toastSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes toastPop {
-            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+        @keyframes toastSlide {
+            from { opacity: 0; transform: translateY(14px) scale(0.96); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* Loading Spinner */
-        .spinner {
-            width: 16px;
-            height: 16px;
+        .spinner-ring {
+            width: 15px;
+            height: 15px;
             border: 2px solid rgba(255, 255, 255, 0.2);
-            border-top-color: var(--gold);
+            border-top-color: var(--gold-bright);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             display: inline-block;
@@ -956,276 +1131,403 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* ═══════════════════════════════════════════════
+           RESPONSIVE BREAKPOINTS (MOBILE, TABLET, DESKTOP)
+           ═══════════════════════════════════════════════ */
+        @media (max-width: 991px) {
+            .mobile-mode-bar {
+                display: block;
+            }
+
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 12px 14px 40px;
+            }
+
+            .camera-viewport {
+                height: 330px;
+            }
+
+            .hud-target {
+                width: 220px;
+                height: 220px;
+            }
+
+            .brand-text-sub {
+                display: none;
+            }
+
+            /* Responsive view switching on mobile */
+            .main-container.mode-scanner .search-panel,
+            .main-container.mode-scanner .recent-panel {
+                display: none;
+            }
+
+            .main-container.mode-search .scanner-column,
+            .main-container.mode-search .recent-panel {
+                display: none;
+            }
+
+            .main-container.mode-recent .scanner-column,
+            .main-container.mode-recent .search-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gate-navbar {
+                padding: 8px 12px;
+            }
+
+            .brand-lockup {
+                gap: 8px;
+            }
+
+            .nav-cc26-logo {
+                height: 24px;
+            }
+
+            .nav-wwi-logo {
+                height: 20px;
+            }
+
+            .camera-viewport {
+                height: 290px;
+            }
+
+            .hud-target {
+                width: 195px;
+                height: 195px;
+            }
+
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dock-metric-lbl {
+                font-size: 9px;
+            }
+
+            .dock-metric-val {
+                font-size: 13.5px;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- TOP GATE HEADER -->
-    <header class="gate-header">
-        <div class="header-brand">
-            <div class="header-logo-badge">🎬</div>
-            <div class="header-title-box">
-                <h1>Celebrate Cinema 2026</h1>
-                <p>Whistling Woods Gate Scanner</p>
+    <!-- TOP NAVBAR WITH OFFICIAL WWI & CC26 LOGO LOCKUP -->
+    <header class="gate-navbar">
+        <div class="brand-lockup">
+            <img src="assets/cc26-logo.png" alt="Celebrate Cinema 2026" class="nav-cc26-logo" onerror="this.style.display='none'">
+            <div class="brand-divider-vertical"></div>
+            <img src="assets/wwi-logo.png" alt="Whistling Woods International" class="nav-wwi-logo" onerror="this.style.display='none'">
+            <div class="brand-text-block">
+                <span class="brand-text-title">Gate Scanner</span>
+                <span class="brand-text-sub">Whistling Woods</span>
             </div>
         </div>
-        <div class="header-controls">
-            <span class="gate-badge" id="gate-station-label">
+
+        <div class="navbar-actions">
+            <span class="gate-station-pill" id="gate-station-pill">
                 <span class="pulse-dot"></span>
-                <span id="gate-station-text">Gate 1</span>
+                <span id="gate-station-title">Gate 1</span>
             </span>
-            <button class="btn-icon-only" onclick="toggleSound()" id="sound-btn" title="Toggle Beep Audio">🔊</button>
-            <button class="btn-icon-only" onclick="refreshDatabase()" title="Sync Supabase Cloud" id="sync-btn">🔄</button>
+            <button class="btn-header-tool" onclick="toggleMute()" id="mute-btn" title="Toggle Beep Sound">🔊</button>
+            <button class="btn-header-tool" onclick="manualSync()" id="refresh-btn" title="Refresh Database">🔄</button>
         </div>
     </header>
 
-    <!-- STATS TICKER BAR -->
-    <div class="stats-bar">
-        <div class="stat-item">
-            <span class="stat-val green" id="stat-admitted">0</span>
-            <span class="stat-lbl">Checked In</span>
+    <!-- LIVE STATS DOCK -->
+    <div class="stats-dock">
+        <div class="dock-metric">
+            <span class="dock-metric-icon">🎟️</span>
+            <div class="dock-metric-info">
+                <span class="dock-metric-val green" id="stat-checked-in">0</span>
+                <span class="dock-metric-lbl">Admitted</span>
+            </div>
         </div>
-        <div class="stat-item">
-            <span class="stat-val accent" id="stat-total-reg">...</span>
-            <span class="stat-lbl">Registered</span>
+        <div class="dock-metric">
+            <span class="dock-metric-icon">👥</span>
+            <div class="dock-metric-info">
+                <span class="dock-metric-val gold" id="stat-total-attendees">...</span>
+                <span class="dock-metric-lbl">Registered</span>
+            </div>
         </div>
-        <div class="stat-item">
-            <span class="stat-val" id="stat-sync-status">🟢 Live</span>
-            <span class="stat-lbl">Supabase</span>
+        <div class="dock-metric">
+            <span class="dock-metric-icon">⚡</span>
+            <div class="dock-metric-info">
+                <span class="dock-metric-val" id="stat-cloud-status">🟢 Online</span>
+                <span class="dock-metric-lbl">Cloud Sync</span>
+            </div>
         </div>
     </div>
 
-    <!-- MAIN SCANNER INTERFACE -->
-    <main class="scanner-main">
+    <!-- MOBILE MODE SEGMENTED CONTROLS (< 992px) -->
+    <div class="mobile-mode-bar">
+        <div class="segmented-controls">
+            <button class="segment-btn active" id="tab-btn-scanner" onclick="switchMobileMode('scanner')">
+                <span>📷</span> Scanner
+            </button>
+            <button class="segment-btn" id="tab-btn-search" onclick="switchMobileMode('search')">
+                <span>🔍</span> Search Desk
+            </button>
+            <button class="segment-btn" id="tab-btn-recent" onclick="switchMobileMode('recent')">
+                <span>📋</span> Recent (<span id="mobile-recent-badge">0</span>)
+            </button>
+        </div>
+    </div>
 
-        <!-- 1. CAMERA SCANNER CARD -->
-        <div class="camera-card">
-            <div class="camera-viewport" id="viewport">
-                <!-- HTML5-QRCode Target Element -->
-                <div id="scanner-video-container"></div>
+    <!-- MAIN RESPONSIVE CONTAINER -->
+    <main class="main-container mode-scanner" id="main-container">
 
-                <!-- HUD Aiming Reticle -->
-                <div class="hud-overlay">
-                    <div class="target-box">
-                        <div class="corner tl"></div>
-                        <div class="corner tr"></div>
-                        <div class="corner bl"></div>
-                        <div class="corner br"></div>
-                        <div class="laser-line"></div>
+        <!-- ── LEFT COLUMN: CAMERA SCANNER & CONTROLS ── -->
+        <div class="scanner-column">
+            <div class="glass-panel">
+                <div class="camera-viewport" id="viewport-box">
+                    <!-- HTML5-QRCode Video Target Element -->
+                    <div id="scanner-video-container"></div>
+
+                    <!-- HUD Reticle Overlay -->
+                    <div class="viewfinder-hud">
+                        <div class="hud-target">
+                            <div class="hud-corner tl"></div>
+                            <div class="hud-corner tr"></div>
+                            <div class="hud-corner bl"></div>
+                            <div class="hud-corner br"></div>
+                            <div class="laser-beam"></div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Floating Controls (Torch & Camera Switch) -->
-                <div class="camera-floating-bar" id="camera-floating-bar" style="display: none;">
-                    <button class="floating-btn" id="torch-btn" onclick="toggleTorch()">⚡ Torch</button>
-                    <select id="camera-select" class="floating-btn" style="appearance: none; -webkit-appearance: none; padding-right: 20px;" onchange="switchCamera(this.value)">
-                        <option value="">Switch Camera</option>
-                    </select>
-                </div>
+                    <!-- Viewport Floating Controls (Torch & Camera Switch) -->
+                    <div class="hud-floating-bar" id="hud-floating-bar" style="display: none;">
+                        <button class="hud-btn" id="torch-button" onclick="toggleTorch()">⚡ Torch</button>
+                        <select id="camera-lens-select" class="hud-btn" style="appearance: none; -webkit-appearance: none; padding-right: 22px;" onchange="switchCameraLens(this.value)">
+                            <option value="">Switch Lens</option>
+                        </select>
+                    </div>
 
-                <!-- Standby / Start Screen -->
-                <div class="camera-standby" id="standby-screen">
-                    <div class="standby-icon">📷</div>
-                    <div class="standby-text">
+                    <!-- Standby Screen (Shown before camera start) -->
+                    <div class="standby-splash" id="standby-splash">
+                        <div class="splash-icon-ring">📷</div>
                         <h3>Gate Camera Ready</h3>
-                        <p>Point camera at the attendee's ticket QR code on mobile or printed pass.</p>
+                        <p>Aim at attendee's digital Boarding Pass QR or physical badge.</p>
                     </div>
+                </div>
+
+                <!-- Camera Action Toolbar -->
+                <div class="camera-toolbar">
+                    <button class="btn-cta btn-start-scan" id="cam-toggle-btn" onclick="toggleCameraScanner()">
+                        <span>📷 Start Camera Scanner</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Toolbar Action Buttons -->
-            <div class="camera-toolbar">
-                <button class="action-btn btn-primary-gold" id="start-btn" onclick="toggleCamera()">
-                    <span>📷 Start Camera Scanner</span>
-                </button>
+            <!-- Station Quick Switcher for Gate Staff -->
+            <div class="glass-panel" style="padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Gate Station:</span>
+                <select id="station-picker" onchange="changeGateStation(this.value)" style="background: rgba(14, 10, 24, 0.9); border: 1px solid var(--border-subtle); color: var(--gold); font-size: 12.5px; font-weight: 700; padding: 6px 12px; border-radius: 8px; outline: none;">
+                    <option value="Gate 1 (Main Entrance)">Gate 1 (Main Entrance)</option>
+                    <option value="Gate 2 (Faculty & VIP)">Gate 2 (Faculty & VIP)</option>
+                    <option value="Desk A (FPHR / Nagesh)">Desk A (FPHR / Nagesh)</option>
+                    <option value="Desk B (HSNC-COLLAB)">Desk B (HSNC-COLLAB)</option>
+                    <option value="Desk C (General Passes)">Desk C (General Passes)</option>
+                </select>
             </div>
         </div>
 
-        <!-- 2. SCANNED RESULT CARD (Instantly displays upon QR scan) -->
-        <div class="result-container" id="result-container">
-            <div class="result-card" id="result-card">
-                <div class="result-header" id="result-header">
-                    <div class="result-icon" id="result-icon">🎉</div>
-                    <div class="result-headline">
-                        <h2 id="result-title">VALID PASS — CHECKED IN!</h2>
-                        <p id="result-subtitle">Welcome to Celebrate Cinema 2026</p>
+        <!-- ── RIGHT COLUMN: ATTENDEE CARD & DESK TOOLS ── -->
+        <div class="desk-column">
+
+            <!-- 1. SCANNED RESULT CARD (Prominently displays upon scan) -->
+            <div class="result-wrapper" id="result-wrapper">
+                <div class="result-panel" id="result-panel">
+                    <div class="result-header-bar" id="result-header-bar">
+                        <div class="result-header-icon" id="res-header-icon">🎉</div>
+                        <div class="result-header-text">
+                            <h2 id="res-header-title">VALID PASS — CHECKED IN!</h2>
+                            <p id="res-header-sub">Attendee verified and admitted at gate.</p>
+                        </div>
+                    </div>
+
+                    <div class="result-content-body">
+                        <!-- Special Wristband Collection Notice -->
+                        <div class="wristband-banner" id="wristband-banner">
+                            <span id="wristband-icon">🎟️</span>
+                            <span id="wristband-text">STANDARD DELEGATE ENTRY WRISTBAND</span>
+                        </div>
+
+                        <!-- Delegate Details Grid -->
+                        <div class="data-grid">
+                            <div class="data-col span-2">
+                                <span class="data-label">Delegate Name</span>
+                                <span class="data-val name-hero" id="card-name">Delegate Name</span>
+                            </div>
+                            <div class="data-col">
+                                <span class="data-label">Ticket ID</span>
+                                <span class="data-val ticket-code" id="card-ticket-id">NAG-000000</span>
+                            </div>
+                            <div class="data-col">
+                                <span class="data-label">Visiting Day</span>
+                                <span class="data-val" id="card-visit-day">Both Days</span>
+                                <div id="card-day-badge"></div>
+                            </div>
+                            <div class="data-col span-2">
+                                <span class="data-label">College / Organization</span>
+                                <span class="data-val" id="card-college">College Name</span>
+                            </div>
+                            <div class="data-col">
+                                <span class="data-label">Pass Type</span>
+                                <span class="data-val" id="card-pass-type" style="color: var(--gold);">Complimentary Pass</span>
+                            </div>
+                            <div class="data-col">
+                                <span class="data-label">Admission Timestamp</span>
+                                <span class="data-val" id="card-timestamp">Just Now</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Action Buttons -->
+                        <div class="result-footer-bar" id="result-footer-bar">
+                            <button class="btn-card-action btn-done-next" onclick="closeResultCard()">✓ Next Attendee (Scan)</button>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="result-body">
-                    <!-- Band Collection / Gate Instructions -->
-                    <div class="band-banner" id="band-banner">
-                        <span id="band-icon">🎟️</span>
-                        <span id="band-text">STANDARD DELEGATE WRISTBAND</span>
-                    </div>
+            <!-- 2. LIGHTNING MANUAL SEARCH (For cracked screens / unreadable QRs) -->
+            <div class="search-panel">
+                <div class="search-panel-title">
+                    <h3>🔍 Manual Lookup Desk</h3>
+                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">Search Ticket ID, Phone, Name, Email</span>
+                </div>
 
-                    <!-- Delegate Details Grid -->
-                    <div class="delegate-grid">
-                        <div class="grid-item full-width">
-                            <span class="grid-label">Delegate Name</span>
-                            <span class="grid-val name-bold" id="res-name">Delegate Name</span>
-                        </div>
-                        <div class="grid-item">
-                            <span class="grid-label">Ticket ID</span>
-                            <span class="grid-val ticket-id" id="res-ticket-id">NAG-000000</span>
-                        </div>
-                        <div class="grid-item">
-                            <span class="grid-label">Visiting Day</span>
-                            <span class="grid-val" id="res-date">Both Days</span>
-                            <div id="res-day-badge"></div>
-                        </div>
-                        <div class="grid-item full-width">
-                            <span class="grid-label">College / Organization</span>
-                            <span class="grid-val" id="res-college">College Name</span>
-                        </div>
-                        <div class="grid-item">
-                            <span class="grid-label">Pass Type / Referral</span>
-                            <span class="grid-val" id="res-type" style="color: var(--gold-soft);">Complimentary Pass</span>
-                        </div>
-                        <div class="grid-item">
-                            <span class="grid-label">Gate Check-In Time</span>
-                            <span class="grid-val" id="res-time">Just Now</span>
-                        </div>
-                    </div>
+                <div class="search-input-wrapper">
+                    <span class="search-glass-icon">🔎</span>
+                    <input type="text" id="manual-query-input" class="search-input-field" placeholder="Enter Ticket ID (e.g. NAG-123456) or 10-digit Phone..." oninput="handleInstantSearch(this.value)" autocomplete="off">
+                    <button class="search-clear-cross" id="search-clear-cross" onclick="resetSearchInput()">✕</button>
+                </div>
 
-                    <!-- Action Buttons -->
-                    <div class="result-actions" id="result-actions">
-                        <button class="btn-dismiss" onclick="dismissResult()">Next Delegate (Scan)</button>
+                <!-- Search Results Stream -->
+                <div class="live-results-list" id="live-search-results" style="display: none;"></div>
+            </div>
+
+            <!-- 3. RECENT ADMISSIONS STREAM -->
+            <div class="recent-panel">
+                <div class="search-panel-title">
+                    <h3>📋 Live Gate Admissions</h3>
+                    <button class="btn-header-tool" style="width: auto; height: auto; padding: 5px 12px; font-size: 11.5px; font-weight: 700;" onclick="exportGateCsv()">Export CSV</button>
+                </div>
+                <div class="recent-stream-list" id="recent-stream-list">
+                    <div style="text-align: center; color: var(--text-muted); padding: 18px; font-size: 12.5px;">
+                        No check-ins logged at this station yet.
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 3. LIGHTNING MANUAL LOOKUP (For cracked screens / unreadable QRs) -->
-        <div class="search-card">
-            <div class="card-header-row">
-                <h3>🔍 Manual Search &amp; Check-In</h3>
-                <span style="font-size: 11px; color: var(--text-muted);">Search by ID, Name, Phone, Email</span>
-            </div>
-
-            <div class="search-input-box">
-                <span class="search-icon">🔎</span>
-                <input type="text" id="manual-search-input" placeholder="Enter Ticket ID (e.g. NAG-123456) or Phone..." oninput="handleManualSearch(this.value)" autocomplete="off">
-                <button class="search-clear-btn" id="search-clear-btn" onclick="clearSearch()">✕</button>
-            </div>
-
-            <!-- Instant Search Results dropdown -->
-            <div class="search-results-list" id="search-results" style="display: none;"></div>
-        </div>
-
-        <!-- 4. RECENT SCANS LOG DRAWER -->
-        <div class="recent-card">
-            <div class="card-header-row">
-                <h3>📋 Recent Gate Check-Ins</h3>
-                <button class="btn-icon-only" style="padding: 4px 10px; font-size: 11px;" onclick="exportGateLog()">Export CSV</button>
-            </div>
-            <div class="recent-list" id="recent-list">
-                <div style="text-align: center; color: var(--text-dim); padding: 16px; font-size: 12.5px;">
-                    No check-ins at this gate session yet.
-                </div>
-            </div>
         </div>
 
     </main>
 
     <!-- GATE AUTHENTICATION MODAL -->
-    <div class="auth-overlay" id="auth-modal" style="display: none;">
+    <div class="auth-overlay" id="gate-auth-overlay" style="display: none;">
         <div class="auth-card">
-            <div class="auth-logo">🎟️</div>
+            <div class="auth-logo-badge">🎟️</div>
             <h2>Gate Security Portal</h2>
-            <p>Celebrate Cinema 2026 @ Whistling Woods International. Please enter your gate access PIN to begin scanning.</p>
+            <p>Celebrate Cinema 2026 @ Whistling Woods International. Enter your gate authorization PIN to proceed.</p>
 
-            <form onsubmit="handleGateAuth(event)">
-                <div class="auth-field">
-                    <label>Station / Gate Location</label>
-                    <select id="auth-gate-select">
+            <form onsubmit="submitGatePin(event)">
+                <div class="auth-input-group">
+                    <label>Station Location</label>
+                    <select id="modal-station-select">
                         <option value="Gate 1 (Main Entrance)">Gate 1 (Main Entrance)</option>
                         <option value="Gate 2 (Faculty & VIP)">Gate 2 (Faculty &amp; VIP)</option>
-                        <option value="Desk A (FPHR / Nagesh Desk)">Desk A (FPHR / Nagesh Desk)</option>
-                        <option value="Desk B (HSNC-COLLAB Desk)">Desk B (HSNC-COLLAB Desk)</option>
-                        <option value="Desk C (General Delegation)">Desk C (General Delegation)</option>
+                        <option value="Desk A (FPHR / Nagesh)">Desk A (FPHR / Nagesh Desk)</option>
+                        <option value="Desk B (HSNC-COLLAB)">Desk B (HSNC-COLLAB Desk)</option>
+                        <option value="Desk C (General Passes)">Desk C (General Passes)</option>
                     </select>
                 </div>
 
-                <div class="auth-field">
+                <div class="auth-input-group">
                     <label>Gate Access PIN</label>
-                    <input type="password" id="auth-pin-input" placeholder="Enter Gate PIN..." autofocus required>
+                    <input type="password" id="modal-pin-input" placeholder="Enter PIN (e.g. gate2026)..." autofocus required>
                 </div>
 
-                <button type="submit" class="auth-btn">Authorize Scanner</button>
+                <button type="submit" class="btn-auth-submit">Unlock Scanner</button>
             </form>
         </div>
     </div>
 
-    <!-- TOAST CONTAINER -->
-    <div class="toast-container" id="toast-box"></div>
+    <!-- TOAST NOTIFICATIONS CONTAINER -->
+    <div class="toast-box" id="toast-shelf"></div>
 
-    <!-- SCANNER SCRIPT LOGIC -->
+    <!-- APPLICATION JAVASCRIPT -->
     <script>
-        // ── CONFIG & SUPABASE SETTINGS ──
-        const GATE_CONFIG = {
+        // ── CONFIG & SUPABASE CREDENTIALS ──
+        const SCANNER_CONFIG = {
             SUPABASE_URL: 'https://rnylpxfjhxpmjwolsqcd.supabase.co',
             SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8',
-            VALID_PINS: ['gate2026', 'wwi2026', 'cinema2026', 'celebrate@cinema', 'admin@vigor', '1234', 'vigor2026']
+            ACCEPTED_PINS: ['gate2026', 'wwi2026', 'cinema2026', 'celebrate@cinema', 'admin@vigor', '1234', 'vigor2026', 'nilesh2202']
         };
 
-        // ── STATE VARIABLES ──
-        let html5Qr = null;
-        let isCameraActive = false;
-        let isSoundEnabled = true;
-        let isTorchOn = false;
-        let currentCameraId = null;
-        let lastScannedText = '';
-        let lastScanTime = 0;
-        let gateStation = 'Gate 1';
+        // ── APPLICATION STATE ──
+        let qrScannerInstance = null;
+        let isScanning = false;
+        let audioMuted = false;
+        let torchActive = false;
+        let activeCameraId = null;
+        let previousScanCode = '';
+        let previousScanTimestamp = 0;
+        let assignedStation = 'Gate 1 (Main Entrance)';
 
-        // In-memory attendees lookup map (O(1) lookups in < 0.5ms!)
-        const attendeeMap = new Map(); // Key: uppercase ticketId
-        const phoneMap = new Map();    // Key: 10-digit phone
-        const emailMap = new Map();    // Key: lowercase email
-        const recentCheckins = [];     // Array of recent scan records
+        // Ultra-fast in-memory lookup indexes (< 0.5ms lookups)
+        const memoryTicketIndex = new Map(); // Key: uppercase ticket ID
+        const memoryPhoneIndex = new Map();  // Key: 10-digit clean phone
+        const memoryEmailIndex = new Map();  // Key: lowercase email
+        const stationAdmissionLog = [];      // Recent admissions log
 
-        // Web Audio Synthesizer
-        let audioCtx = null;
+        // Synthesizer Audio Context
+        let synthContext = null;
 
-        function playSound(type) {
-            if (!isSoundEnabled) return;
+        function emitSound(type) {
+            if (audioMuted) return;
             try {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (!synthContext) {
+                    synthContext = new (window.AudioContext || window.webkitAudioContext)();
                 }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
+                if (synthContext.state === 'suspended') {
+                    synthContext.resume();
                 }
-                const now = audioCtx.currentTime;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
+                const now = synthContext.currentTime;
+                const osc = synthContext.createOscillator();
+                const gain = synthContext.createGain();
                 osc.connect(gain);
-                gain.connect(audioCtx.destination);
+                gain.connect(synthContext.destination);
 
                 if (type === 'success') {
-                    // Ascending crisp double chime (A5 -> E6)
+                    // Ascending luxury chime (A5 -> E6)
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(880, now);
                     osc.frequency.setValueAtTime(1320, now + 0.08);
                     gain.gain.setValueAtTime(0.2, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
                     osc.start(now);
-                    osc.stop(now + 0.24);
+                    osc.stop(now + 0.25);
                 } else if (type === 'duplicate') {
                     // Warning double pulse
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(440, now);
-                    osc.frequency.setValueAtTime(320, now + 0.1);
+                    osc.frequency.setValueAtTime(330, now + 0.1);
                     gain.gain.setValueAtTime(0.25, now);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
                     osc.start(now);
                     osc.stop(now + 0.32);
                 } else {
-                    // Sawtooth error alarm
+                    // Sharp error buzzer
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(240, now);
-                    osc.frequency.setValueAtTime(160, now + 0.12);
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(150, now + 0.12);
                     gain.gain.setValueAtTime(0.3, now);
                     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
                     osc.start(now);
@@ -1234,307 +1536,338 @@
             } catch(e) {}
         }
 
-        function triggerHaptics(type) {
+        function triggerVibration(type) {
             if (!navigator.vibrate) return;
             if (type === 'success') navigator.vibrate([60, 30, 60]);
-            else if (type === 'duplicate') navigator.vibrate([150, 60, 150]);
-            else navigator.vibrate([300]);
+            else if (type === 'duplicate') navigator.vibrate([140, 50, 140]);
+            else navigator.vibrate([280]);
         }
 
-        function showToast(msg, icon = 'ℹ️') {
-            const box = document.getElementById('toast-box');
-            if (!box) return;
-            const item = document.createElement('div');
-            item.className = 'toast-item';
-            item.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
-            box.appendChild(item);
+        function popToast(msg, icon = 'ℹ️') {
+            const shelf = document.getElementById('toast-shelf');
+            if (!shelf) return;
+            const bubble = document.createElement('div');
+            bubble.className = 'toast-bubble';
+            bubble.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+            shelf.appendChild(bubble);
             setTimeout(() => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(10px)';
-                setTimeout(() => item.remove(), 250);
+                bubble.style.opacity = '0';
+                bubble.style.transform = 'translateY(12px)';
+                setTimeout(() => bubble.remove(), 250);
             }, 3000);
         }
 
-        // ── GATE AUTHENTICATION ──
-        function checkGateAuth() {
-            // Check URL param ?pin=
-            const urlParams = new URLSearchParams(window.location.search);
-            const queryPin = urlParams.get('pin') || urlParams.get('key');
-            if (queryPin && GATE_CONFIG.VALID_PINS.includes(queryPin.toLowerCase().trim())) {
-                localStorage.setItem('wwi_gate_auth', 'true');
-                if (urlParams.get('gate')) {
-                    localStorage.setItem('wwi_gate_station', urlParams.get('gate'));
+        // ── RESPONSIVE MODE SWITCHING ON MOBILE (< 992px) ──
+        function switchMobileMode(mode) {
+            const container = document.getElementById('main-container');
+            if (!container) return;
+            container.className = `main-container mode-${mode}`;
+
+            document.querySelectorAll('.segment-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`tab-btn-${mode}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // If switching to scanner, focus on camera
+            if (mode === 'scanner') {
+                document.getElementById('result-wrapper').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else if (mode === 'search') {
+                const searchInput = document.getElementById('manual-query-input');
+                if (searchInput) setTimeout(() => searchInput.focus(), 150);
+            }
+        }
+
+        // ── GATE AUTHENTICATION & PIN CHECK ──
+        function verifyGateAuthorization() {
+            // URL parameter auto-login check: ?pin=gate2026 or ?key=wwi2026
+            const params = new URLSearchParams(window.location.search);
+            const queryPin = params.get('pin') || params.get('key');
+            if (queryPin && SCANNER_CONFIG.ACCEPTED_PINS.includes(queryPin.toLowerCase().trim())) {
+                localStorage.setItem('wwi_gate_authorized', 'true');
+                if (params.get('gate')) {
+                    localStorage.setItem('wwi_gate_assigned_station', params.get('gate'));
                 }
             }
 
-            const isAuth = localStorage.getItem('wwi_gate_auth') === 'true';
-            if (!isAuth) {
-                document.getElementById('auth-modal').style.display = 'flex';
+            const isAuthorized = localStorage.getItem('wwi_gate_authorized') === 'true';
+            if (!isAuthorized) {
+                document.getElementById('gate-auth-overlay').style.display = 'flex';
             } else {
-                gateStation = localStorage.getItem('wwi_gate_station') || 'Gate 1';
-                document.getElementById('gate-station-text').textContent = gateStation;
-                initScannerApp();
+                assignedStation = localStorage.getItem('wwi_gate_assigned_station') || 'Gate 1 (Main Entrance)';
+                updateStationTitle(assignedStation);
+                bootGateSystem();
             }
         }
 
-        function handleGateAuth(e) {
+        function submitGatePin(e) {
             e.preventDefault();
-            const pin = (document.getElementById('auth-pin-input').value || '').trim().toLowerCase();
-            const selectedGate = document.getElementById('auth-gate-select').value;
+            const pinVal = (document.getElementById('modal-pin-input').value || '').trim().toLowerCase();
+            const selectedStation = document.getElementById('modal-station-select').value;
 
-            if (GATE_CONFIG.VALID_PINS.includes(pin)) {
-                localStorage.setItem('wwi_gate_auth', 'true');
-                localStorage.setItem('wwi_gate_station', selectedGate);
-                gateStation = selectedGate;
-                document.getElementById('gate-station-text').textContent = gateStation;
-                document.getElementById('auth-modal').style.display = 'none';
-                showToast(`Authorized for ${selectedGate}!`, '🎉');
-                initScannerApp();
+            if (SCANNER_CONFIG.ACCEPTED_PINS.includes(pinVal)) {
+                localStorage.setItem('wwi_gate_authorized', 'true');
+                localStorage.setItem('wwi_gate_assigned_station', selectedStation);
+                assignedStation = selectedStation;
+                updateStationTitle(selectedStation);
+                document.getElementById('gate-auth-overlay').style.display = 'none';
+                popToast(`Authorized at ${selectedStation}!`, '🎉');
+                bootGateSystem();
             } else {
-                showToast('Invalid PIN! Try gate2026 or wwi2026', '❌');
+                popToast('Invalid Gate PIN! Try gate2026 or wwi2026', '❌');
             }
         }
 
-        // ── INITIALIZATION ──
-        async function initScannerApp() {
-            preloadDatabase();
-            loadRecentCheckins();
+        function changeGateStation(val) {
+            assignedStation = val;
+            localStorage.setItem('wwi_gate_assigned_station', val);
+            updateStationTitle(val);
+            popToast(`Switched station to ${val}`, '📍');
         }
 
-        // Preload lightweight registry into fast RAM Maps (Zero lag!)
-        async function preloadDatabase() {
-            const syncStatusEl = document.getElementById('stat-sync-status');
-            const totalRegEl = document.getElementById('stat-total-reg');
-            const admittedEl = document.getElementById('stat-admitted');
-            if (syncStatusEl) syncStatusEl.innerHTML = '<span class="spinner"></span> Syncing';
+        function updateStationTitle(val) {
+            const shortName = val.split('(')[0].trim();
+            const titleEl = document.getElementById('gate-station-title');
+            if (titleEl) titleEl.textContent = shortName;
+            const picker = document.getElementById('station-picker');
+            if (picker) picker.value = val;
+        }
+
+        // ── BOOTSTRAP & IN-MEMORY REGISTRY PRELOAD ──
+        async function bootGateSystem() {
+            await fetchRegistryIndex();
+            restoreSavedAdmissions();
+        }
+
+        async function fetchRegistryIndex() {
+            const cloudStatusEl = document.getElementById('stat-cloud-status');
+            const totalAttendeesEl = document.getElementById('stat-total-attendees');
+            const checkedInEl = document.getElementById('stat-checked-in');
+            if (cloudStatusEl) cloudStatusEl.innerHTML = '<span class="spinner-ring"></span> Syncing';
 
             try {
-                let allRows = [];
-                const fields = 'id,name,email,phone,college,year,verified,attended,attended_at,referred_by,final_price,coupon_used,transaction_id';
+                let records = [];
+                const queryFields = 'id,name,email,phone,college,year,verified,attended,attended_at,referred_by,final_price,coupon_used,transaction_id';
 
-                // Fetch in blocks of 1000
-                for (let offset = 0; offset <= 8000; offset += 1000) {
-                    const url = `${GATE_CONFIG.SUPABASE_URL}/rest/v1/registrations?select=${fields}&order=timestamp.desc&limit=1000&offset=${offset}`;
-                    const res = await fetch(url, {
+                // Fetch database in chunks of 1000
+                for (let offset = 0; offset <= 9000; offset += 1000) {
+                    const endpoint = `${SCANNER_CONFIG.SUPABASE_URL}/rest/v1/registrations?select=${queryFields}&order=timestamp.desc&limit=1000&offset=${offset}`;
+                    const resp = await fetch(endpoint, {
                         headers: {
-                            apikey: GATE_CONFIG.SUPABASE_ANON_KEY,
-                            Authorization: `Bearer ${GATE_CONFIG.SUPABASE_ANON_KEY}`
+                            apikey: SCANNER_CONFIG.SUPABASE_ANON_KEY,
+                            Authorization: `Bearer ${SCANNER_CONFIG.SUPABASE_ANON_KEY}`
                         }
                     });
-                    if (!res.ok) break;
-                    const batch = await res.json();
-                    if (!batch || batch.length === 0) break;
-                    allRows.push(...batch);
-                    if (batch.length < 1000) break;
+                    if (!resp.ok) break;
+                    const chunk = await resp.json();
+                    if (!chunk || chunk.length === 0) break;
+                    records.push(...chunk);
+                    if (chunk.length < 1000) break;
                 }
 
-                // Index into RAM Maps
-                let attendedCount = 0;
-                allRows.forEach(row => {
-                    if (!row || !row.id || String(row.id).startsWith('CONFIG_')) return;
-                    const ticketId = row.id.toUpperCase().trim();
-                    attendeeMap.set(ticketId, row);
+                let admittedCount = 0;
+                records.forEach(attendee => {
+                    if (!attendee || !attendee.id || String(attendee.id).startsWith('CONFIG_')) return;
+                    const cleanTktId = attendee.id.toUpperCase().trim();
+                    memoryTicketIndex.set(cleanTktId, attendee);
 
-                    if (row.phone) {
-                        const cleanP = String(row.phone).replace(/\D/g, '').slice(-10);
-                        if (cleanP.length === 10) phoneMap.set(cleanP, row);
+                    if (attendee.phone) {
+                        const digits = String(attendee.phone).replace(/\D/g, '').slice(-10);
+                        if (digits.length === 10) memoryPhoneIndex.set(digits, attendee);
                     }
-                    if (row.email) {
-                        emailMap.set(String(row.email).toLowerCase().trim(), row);
+                    if (attendee.email) {
+                        memoryEmailIndex.set(String(attendee.email).toLowerCase().trim(), attendee);
                     }
-                    if (row.attended) attendedCount++;
+                    if (attendee.attended) admittedCount++;
                 });
 
-                if (totalRegEl) totalRegEl.textContent = attendeeMap.size.toLocaleString();
-                if (admittedEl) admittedEl.textContent = attendedCount.toLocaleString();
-                if (syncStatusEl) syncStatusEl.innerHTML = '🟢 Live';
-                console.log(`✓ Preloaded ${attendeeMap.size} attendees into memory map.`);
+                if (totalAttendeesEl) totalAttendeesEl.textContent = memoryTicketIndex.size.toLocaleString();
+                if (checkedInEl) checkedInEl.textContent = admittedCount.toLocaleString();
+                if (cloudStatusEl) cloudStatusEl.innerHTML = '🟢 Online';
+                console.log(`✓ Indexed ${memoryTicketIndex.size} attendees in fast RAM.`);
             } catch (err) {
-                console.warn('Preload warning:', err);
-                if (syncStatusEl) syncStatusEl.innerHTML = '🟡 Offline';
+                console.warn('Preload note:', err);
+                if (cloudStatusEl) cloudStatusEl.innerHTML = '🟡 Offline';
             }
         }
 
-        async function refreshDatabase() {
-            showToast('Refreshing attendee database...', '🔄');
-            await preloadDatabase();
-            showToast('Attendee index updated!', '✓');
+        async function manualSync() {
+            popToast('Synchronizing attendee registry...', '🔄');
+            await fetchRegistryIndex();
+            popToast('Registry updated!', '✓');
         }
 
-        // ── QR EXTRACTION & PARSING ──
-        function extractTicketId(raw) {
+        // ── QR EXTRACTION & PARSER ──
+        function parseQrPayload(raw) {
             if (!raw) return '';
-            let str = String(raw).trim();
+            let s = String(raw).trim();
 
-            // 1. JSON QR code
+            // 1. JSON
             try {
-                const j = JSON.parse(str);
+                const j = JSON.parse(s);
                 if (j.id) return j.id.trim().toUpperCase();
                 if (j.ticketId) return j.ticketId.trim().toUpperCase();
             } catch(e) {}
 
             // 2. URL parameter ?id=
-            if (str.includes('?')) {
+            if (s.includes('?')) {
                 try {
-                    const u = new URL(str.startsWith('http') ? str : 'https://dummy.com/' + str);
+                    const u = new URL(s.startsWith('http') ? s : 'https://dummy.com/' + s);
                     const id = u.searchParams.get('id') || u.searchParams.get('t') || u.searchParams.get('ticket');
                     if (id) return id.trim().toUpperCase();
                 } catch(e) {}
             }
 
-            // 3. WWI-CC26: ticket format (as generated on PDF passes)
-            if (str.toUpperCase().startsWith('WWI-CC26:')) {
-                return str.substring(9).trim().toUpperCase();
+            // 3. WWI-CC26: ticket ID format (printed on official PDF Boarding Passes)
+            if (s.toUpperCase().startsWith('WWI-CC26:')) {
+                return s.substring(9).trim().toUpperCase();
             }
 
-            // 4. Ticket ID pattern match (NAG, HSN, VEN, ROT, KS, MD, TAN, TKT)
-            const idMatch = str.match(/\b([A-Z]{2,4}-\d{4,8})\b/i);
-            if (idMatch) return idMatch[1].toUpperCase();
+            // 4. Ticket ID regex matching known prefixes (NAG, HSN, VEN, ROT, KS, MD, TAN, TKT)
+            const match = s.match(/\b([A-Z]{2,4}-\d{4,8})\b/i);
+            if (match) return match[1].toUpperCase();
 
-            return str.trim();
+            return s.trim();
         }
 
-        // ── ATTENDANCE CHECK-IN LOGIC ──
-        async function processTicketCheckIn(rawInput, forceAdmit = false) {
-            const rawId = extractTicketId(rawInput);
-            if (!rawId) return;
+        // ── ATTENDANCE EXECUTION ENGINE ──
+        async function executeCheckIn(rawScan, allowForce = false) {
+            const cleanId = parseQrPayload(rawScan);
+            if (!cleanId) return;
 
-            // Debounce identical scans within 3 seconds
+            // Anti-bounce debounce: ignore identical scans within 3 seconds
             const now = Date.now();
-            if (rawId === lastScannedText && (now - lastScanTime) < 3000 && !forceAdmit) {
+            if (cleanId === previousScanCode && (now - previousScanTimestamp) < 3000 && !allowForce) {
                 return;
             }
-            lastScannedText = rawId;
-            lastScanTime = now;
+            previousScanCode = cleanId;
+            previousScanTimestamp = now;
 
-            // 1. O(1) Instant in-memory check
-            let record = attendeeMap.get(rawId.toUpperCase());
+            // 1. O(1) Instant memory lookup
+            let match = memoryTicketIndex.get(cleanId.toUpperCase());
 
-            // 2. Fallback search by phone or email if not found by ticket ID
-            if (!record) {
-                const cleanPhoneDigits = rawId.replace(/\D/g, '').slice(-10);
-                if (cleanPhoneDigits.length === 10 && phoneMap.has(cleanPhoneDigits)) {
-                    record = phoneMap.get(cleanPhoneDigits);
-                } else if (emailMap.has(rawId.toLowerCase())) {
-                    record = emailMap.get(rawId.toLowerCase());
+            // 2. Fallback search by clean 10-digit phone or email
+            if (!match) {
+                const phoneDigits = cleanId.replace(/\D/g, '').slice(-10);
+                if (phoneDigits.length === 10 && memoryPhoneIndex.has(phoneDigits)) {
+                    match = memoryPhoneIndex.get(phoneDigits);
+                } else if (memoryEmailIndex.has(cleanId.toLowerCase())) {
+                    match = memoryEmailIndex.get(cleanId.toLowerCase());
                 }
             }
 
-            // 3. Fallback live fetch from Supabase if completely new registration
-            if (!record) {
+            // 3. Live Supabase fetch fallback (e.g. delegate registered 1 minute ago)
+            if (!match) {
                 try {
-                    const res = await fetch(`${GATE_CONFIG.SUPABASE_URL}/rest/v1/registrations?id=eq.${encodeURIComponent(rawId)}&select=id,name,email,phone,college,year,verified,attended,attended_at,referred_by,final_price,coupon_used,transaction_id`, {
-                        headers: { apikey: GATE_CONFIG.SUPABASE_ANON_KEY, Authorization: `Bearer ${GATE_CONFIG.SUPABASE_ANON_KEY}` }
+                    const res = await fetch(`${SCANNER_CONFIG.SUPABASE_URL}/rest/v1/registrations?id=eq.${encodeURIComponent(cleanId)}&select=id,name,email,phone,college,year,verified,attended,attended_at,referred_by,final_price,coupon_used,transaction_id`, {
+                        headers: { apikey: SCANNER_CONFIG.SUPABASE_ANON_KEY, Authorization: `Bearer ${SCANNER_CONFIG.SUPABASE_ANON_KEY}` }
                     });
                     if (res.ok) {
-                        const cloudArr = await res.json();
-                        if (cloudArr && cloudArr[0]) {
-                            record = cloudArr[0];
-                            attendeeMap.set(record.id.toUpperCase(), record);
+                        const arr = await res.json();
+                        if (arr && arr[0]) {
+                            match = arr[0];
+                            memoryTicketIndex.set(match.id.toUpperCase(), match);
                         }
                     }
                 } catch(e) {}
             }
 
-            // NOT FOUND
-            if (!record) {
-                playSound('error');
-                triggerHaptics('error');
-                displayNotFound(rawId);
+            // TICKET NOT FOUND
+            if (!match) {
+                emitSound('error');
+                triggerVibration('error');
+                renderNotFoundCard(cleanId);
                 return;
             }
 
             // PAYMENT REJECTED / VOID
-            const txn = String(record.transaction_id || '').toUpperCase();
-            if (record.rejected || txn.startsWith('REJECTED')) {
-                playSound('error');
-                triggerHaptics('error');
-                displayRejected(record);
+            const txnUpper = String(match.transaction_id || '').toUpperCase();
+            if (match.rejected || txnUpper.startsWith('REJECTED')) {
+                emitSound('error');
+                triggerVibration('error');
+                renderRejectedCard(match);
                 return;
             }
 
-            // ALREADY ATTENDED
-            if (record.attended && !forceAdmit) {
-                playSound('duplicate');
-                triggerHaptics('duplicate');
-                displayAlreadyAttended(record);
+            // ALREADY CHECKED IN (DUPLICATE PASS)
+            if (match.attended && !allowForce) {
+                emitSound('duplicate');
+                triggerVibration('duplicate');
+                renderDuplicateCard(match);
                 return;
             }
 
-            // SUCCESS VALID PASS — ADMIT!
-            playSound('success');
-            triggerHaptics('success');
+            // VALID PASS — ADMIT ATTENDEE!
+            emitSound('success');
+            triggerVibration('success');
 
-            const checkInTime = new Date().toISOString();
-            record.attended = true;
-            record.attended_at = checkInTime;
-            record.verified = true;
+            const nowIso = new Date().toISOString();
+            match.attended = true;
+            match.attended_at = nowIso;
+            match.verified = true;
 
-            // Update stats
-            const admittedEl = document.getElementById('stat-admitted');
-            if (admittedEl) {
-                const cur = parseInt(admittedEl.textContent.replace(/\D/g, ''), 10) || 0;
-                admittedEl.textContent = (cur + 1).toLocaleString();
+            // Increment admitted ticker
+            const checkedInEl = document.getElementById('stat-checked-in');
+            if (checkedInEl) {
+                const count = parseInt(checkedInEl.textContent.replace(/\D/g, ''), 10) || 0;
+                checkedInEl.textContent = (count + 1).toLocaleString();
             }
 
-            displaySuccess(record);
-            logRecentScan(record, checkInTime);
+            renderSuccessCard(match);
+            appendAdmissionLog(match, nowIso);
 
-            // Background async sync to Supabase (Zero-wait!)
-            syncAttendanceToCloud(record.id, checkInTime);
+            // Asynchronous non-blocking Supabase update
+            persistAttendanceToCloud(match.id, nowIso);
         }
 
-        async function syncAttendanceToCloud(id, timestamp) {
+        async function persistAttendanceToCloud(ticketId, isoTime) {
             try {
-                await fetch(`${GATE_CONFIG.SUPABASE_URL}/rest/v1/registrations?id=eq.${encodeURIComponent(id)}`, {
+                await fetch(`${SCANNER_CONFIG.SUPABASE_URL}/rest/v1/registrations?id=eq.${encodeURIComponent(ticketId)}`, {
                     method: 'PATCH',
                     headers: {
-                        apikey: GATE_CONFIG.SUPABASE_ANON_KEY,
-                        Authorization: `Bearer ${GATE_CONFIG.SUPABASE_ANON_KEY}`,
+                        apikey: SCANNER_CONFIG.SUPABASE_ANON_KEY,
+                        Authorization: `Bearer ${SCANNER_CONFIG.SUPABASE_ANON_KEY}`,
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         attended: true,
-                        attended_at: timestamp,
+                        attended_at: isoTime,
                         verified: true
                     })
                 });
             } catch (err) {
-                console.warn('Offline check-in queued:', err);
-                // Queue in localStorage for retry
+                console.warn('Offline admission stored in queue:', err);
                 try {
                     const q = JSON.parse(localStorage.getItem('gate_offline_queue') || '[]');
-                    q.push({ id, timestamp });
+                    q.push({ id: ticketId, timestamp: isoTime });
                     localStorage.setItem('gate_offline_queue', JSON.stringify(q));
                 } catch(e) {}
             }
         }
 
-        // ── DISPLAY RESULT CARDS ──
-        function getVisitingDateInfo(yearStr) {
-            let visitDate = 'Both Days (08th & 09th October 2026)';
-            if (yearStr && yearStr.includes('__VD__')) {
-                visitDate = yearStr.split('__VD__')[1].trim();
+        // ── CARD RENDERING & VISITING DAY CALCULATION ──
+        function computeVisitDay(yearString) {
+            let visitDay = 'Both Days (08th & 09th October 2026)';
+            if (yearString && yearString.includes('__VD__')) {
+                visitDay = yearString.split('__VD__')[1].trim();
             }
 
-            const vdLower = visitDate.toLowerCase();
-            const isBoth = vdLower.includes('both');
-            const isDay1 = vdLower.includes('first') || vdLower.includes('08');
-            const isDay2 = vdLower.includes('second') || vdLower.includes('09');
+            const lower = visitDay.toLowerCase();
+            const isBoth = lower.includes('both');
+            const isDay1 = lower.includes('first') || lower.includes('08');
+            const isDay2 = lower.includes('second') || lower.includes('09');
 
-            let badgeHtml = '';
+            let badge = '';
             if (isBoth) {
-                badgeHtml = '<span class="day-badge valid">✓ Valid for Both Days</span>';
+                badge = '<span class="visiting-badge valid">✓ Valid for Both Days</span>';
             } else if (isDay1) {
-                badgeHtml = '<span class="day-badge valid">✓ Day 1 Pass (08th Oct)</span>';
+                badge = '<span class="visiting-badge valid">✓ Day 1 Pass (08th Oct)</span>';
             } else if (isDay2) {
-                badgeHtml = '<span class="day-badge warning">★ Day 2 Pass (09th Oct)</span>';
+                badge = '<span class="visiting-badge warning">★ Day 2 Pass (09th Oct)</span>';
             }
 
-            return { text: visitDate, badgeHtml };
+            return { text: visitDay, badgeHtml: badge };
         }
 
-        function getBandDetails(reg) {
+        function computeWristband(reg) {
             const id = (reg.id || '').toUpperCase();
             const ref = (reg.referred_by || '').toUpperCase();
             const coup = (reg.coupon_used || '').toUpperCase();
@@ -1542,461 +1875,460 @@
             if (id.startsWith('NAG-') || ref.includes('NAGESH') || coup.includes('NAGESH')) {
                 return {
                     icon: '🎟️',
-                    text: 'FPHR WRISTBAND — Direct delegate to FPHR Desk',
-                    className: 'fphr'
+                    text: 'FPHR WRISTBAND — Direct delegate to FPHR Counter',
+                    type: 'fphr'
                 };
             }
             if (id.startsWith('HSN-') || ref.includes('HSNC') || coup.includes('HSNC')) {
                 return {
                     icon: '🎓',
                     text: 'HSNC-COLLAB WRISTBAND — Direct delegate to HSNC Counter',
-                    className: 'hsnc'
+                    type: 'hsnc'
                 };
             }
             if (ref.includes('KES-SHROFF') || coup.includes('KES-SHROFF')) {
                 return {
                     icon: '🏛️',
                     text: 'KES SHROFF DELEGATE WRISTBAND',
-                    className: 'fphr'
+                    type: 'fphr'
                 };
             }
             return {
                 icon: '🎫',
-                text: 'STANDARD DELEGATE ENTRY BAND',
-                className: 'standard'
+                text: 'STANDARD DELEGATE ENTRY WRISTBAND',
+                type: 'standard'
             };
         }
 
-        function displaySuccess(reg) {
-            const container = document.getElementById('result-container');
-            const card = document.getElementById('result-card');
-            const header = document.getElementById('result-header');
+        function populateCardDetails(reg) {
+            const band = computeWristband(reg);
+            const bannerEl = document.getElementById('wristband-banner');
+            bannerEl.style.display = 'flex';
+            bannerEl.className = `wristband-banner ${band.type}`;
+            document.getElementById('wristband-icon').textContent = band.icon;
+            document.getElementById('wristband-text').textContent = band.text;
 
-            card.className = 'result-card success';
-            header.className = 'result-header success';
+            document.getElementById('card-name').textContent = reg.name || 'Delegate';
+            document.getElementById('card-ticket-id').textContent = reg.id || 'N/A';
+            document.getElementById('card-college').textContent = reg.college || 'General Delegation';
 
-            document.getElementById('result-icon').textContent = '🎉';
-            document.getElementById('result-title').textContent = 'VALID PASS — CHECKED IN!';
-            document.getElementById('result-title').style.color = '#34d399';
-            document.getElementById('result-subtitle').textContent = 'Delegate verified and admitted at gate.';
-
-            fillCardDetails(reg);
-
-            document.getElementById('result-actions').innerHTML = `
-                <button class="btn-dismiss" style="background:#10b981; color:#0b0817; font-weight:800;" onclick="dismissResult()">✓ Done / Next Delegate</button>
-            `;
-            container.style.display = 'block';
-            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function displayAlreadyAttended(reg) {
-            const container = document.getElementById('result-container');
-            const card = document.getElementById('result-card');
-            const header = document.getElementById('result-header');
-
-            card.className = 'result-card duplicate';
-            header.className = 'result-header duplicate';
-
-            const timeStr = reg.attended_at 
-                ? new Date(reg.attended_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) 
-                : 'Earlier Today';
-
-            document.getElementById('result-icon').textContent = '⚠️';
-            document.getElementById('result-title').textContent = 'ALREADY CHECKED IN!';
-            document.getElementById('result-title').style.color = '#fbbf24';
-            document.getElementById('result-subtitle').textContent = `Pass was already scanned today at ${timeStr}.`;
-
-            fillCardDetails(reg);
-
-            document.getElementById('result-actions').innerHTML = `
-                <button class="btn-dismiss" onclick="dismissResult()">Dismiss Warning</button>
-                <button class="btn-force-admit" onclick="forceAdmitDelegate('${reg.id}')">Allow Re-Entry</button>
-            `;
-            container.style.display = 'block';
-            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function displayRejected(reg) {
-            const container = document.getElementById('result-container');
-            const card = document.getElementById('result-card');
-            const header = document.getElementById('result-header');
-
-            card.className = 'result-card rejected';
-            header.className = 'result-header rejected';
-
-            document.getElementById('result-icon').textContent = '⛔';
-            document.getElementById('result-title').textContent = 'ENTRY DENIED — PASS VOID!';
-            document.getElementById('result-title').style.color = '#f87171';
-            document.getElementById('result-subtitle').textContent = 'Payment rejected or registration invalid. Do NOT admit.';
-
-            fillCardDetails(reg);
-
-            document.getElementById('result-actions').innerHTML = `
-                <button class="btn-dismiss" style="background:#ef4444; color:#fff;" onclick="dismissResult()">Close (Deny Entry)</button>
-            `;
-            container.style.display = 'block';
-            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function displayNotFound(scannedId) {
-            const container = document.getElementById('result-container');
-            const card = document.getElementById('result-card');
-            const header = document.getElementById('result-header');
-
-            card.className = 'result-card notfound';
-            header.className = 'result-header notfound';
-
-            document.getElementById('result-icon').textContent = '❌';
-            document.getElementById('result-title').textContent = 'TICKET NOT FOUND';
-            document.getElementById('result-title').style.color = '#f87171';
-            document.getElementById('result-subtitle').textContent = `No registration found for ID: ${scannedId}`;
-
-            document.getElementById('band-banner').style.display = 'none';
-            document.getElementById('res-name').textContent = 'Unknown Delegate';
-            document.getElementById('res-ticket-id').textContent = scannedId;
-            document.getElementById('res-date').textContent = 'N/A';
-            document.getElementById('res-day-badge').innerHTML = '';
-            document.getElementById('res-college').textContent = 'Please check student phone number in manual search';
-            document.getElementById('res-type').textContent = 'Unregistered';
-            document.getElementById('res-time').textContent = 'N/A';
-
-            document.getElementById('result-actions').innerHTML = `
-                <button class="btn-dismiss" onclick="dismissResult()">Try Again / Search</button>
-            `;
-            container.style.display = 'block';
-            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        function fillCardDetails(reg) {
-            const band = getBandDetails(reg);
-            const bandBanner = document.getElementById('band-banner');
-            bandBanner.style.display = 'flex';
-            bandBanner.className = `band-banner ${band.className}`;
-            document.getElementById('band-icon').textContent = band.icon;
-            document.getElementById('band-text').textContent = band.text;
-
-            document.getElementById('res-name').textContent = reg.name || 'Delegate';
-            document.getElementById('res-ticket-id').textContent = reg.id || 'N/A';
-            document.getElementById('res-college').textContent = reg.college || 'General Registration';
-
-            const dateInfo = getVisitingDateInfo(reg.year);
-            document.getElementById('res-date').textContent = dateInfo.text;
-            document.getElementById('res-day-badge').innerHTML = dateInfo.badgeHtml;
+            const dayInfo = computeVisitDay(reg.year);
+            document.getElementById('card-visit-day').textContent = dayInfo.text;
+            document.getElementById('card-day-badge').innerHTML = dayInfo.badgeHtml;
 
             let passLabel = 'Complimentary Academic Pass';
             if (reg.final_price > 0) passLabel = `Paid Pass (₹${reg.final_price})`;
             else if (reg.referred_by) passLabel = `${reg.referred_by}`;
-            document.getElementById('res-type').textContent = passLabel;
+            document.getElementById('card-pass-type').textContent = passLabel;
 
-            document.getElementById('res-time').textContent = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+            document.getElementById('card-timestamp').textContent = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
         }
 
-        function dismissResult() {
-            document.getElementById('result-container').style.display = 'none';
+        function renderSuccessCard(reg) {
+            const wrapper = document.getElementById('result-wrapper');
+            const panel = document.getElementById('result-panel');
+            const header = document.getElementById('result-header-bar');
+
+            panel.className = 'result-panel success';
+            header.className = 'result-header-bar success';
+
+            document.getElementById('res-header-icon').textContent = '🎉';
+            document.getElementById('res-header-title').textContent = 'VALID PASS — CHECKED IN!';
+            document.getElementById('res-header-title').style.color = '#34d399';
+            document.getElementById('res-header-sub').textContent = 'Attendee verified and admitted at gate.';
+
+            populateCardDetails(reg);
+
+            document.getElementById('result-footer-bar').innerHTML = `
+                <button class="btn-card-action btn-done-next" onclick="closeResultCard()">✓ Next Attendee (Scan)</button>
+            `;
+            wrapper.style.display = 'block';
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        function forceAdmitDelegate(id) {
-            processTicketCheckIn(id, true);
+        function renderDuplicateCard(reg) {
+            const wrapper = document.getElementById('result-wrapper');
+            const panel = document.getElementById('result-panel');
+            const header = document.getElementById('result-header-bar');
+
+            panel.className = 'result-panel duplicate';
+            header.className = 'result-header-bar duplicate';
+
+            const admittedTime = reg.attended_at 
+                ? new Date(reg.attended_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) 
+                : 'Earlier Today';
+
+            document.getElementById('res-header-icon').textContent = '⚠️';
+            document.getElementById('res-header-title').textContent = 'ALREADY CHECKED IN!';
+            document.getElementById('res-header-title').style.color = '#fbbf24';
+            document.getElementById('res-header-sub').textContent = `Pass was already admitted today at ${admittedTime}.`;
+
+            populateCardDetails(reg);
+
+            document.getElementById('result-footer-bar').innerHTML = `
+                <button class="btn-card-action btn-dismiss-warning" onclick="closeResultCard()">Dismiss</button>
+                <button class="btn-card-action btn-force-reentry" onclick="permitReentry('${reg.id}')">Allow Re-Entry</button>
+            `;
+            wrapper.style.display = 'block';
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        // ── LOG RECENT SCANS ──
-        function logRecentScan(reg, time) {
-            const listEl = document.getElementById('recent-list');
+        function renderRejectedCard(reg) {
+            const wrapper = document.getElementById('result-wrapper');
+            const panel = document.getElementById('result-panel');
+            const header = document.getElementById('result-header-bar');
+
+            panel.className = 'result-panel rejected';
+            header.className = 'result-header-bar rejected';
+
+            document.getElementById('res-header-icon').textContent = '⛔';
+            document.getElementById('res-header-title').textContent = 'ENTRY DENIED — PASS VOID!';
+            document.getElementById('res-header-title').style.color = '#f87171';
+            document.getElementById('res-header-sub').textContent = 'Payment rejected or registration revoked. Do NOT admit.';
+
+            populateCardDetails(reg);
+
+            document.getElementById('result-footer-bar').innerHTML = `
+                <button class="btn-card-action btn-dismiss-warning" style="background:#ef4444; color:#fff;" onclick="closeResultCard()">Close (Deny Entry)</button>
+            `;
+            wrapper.style.display = 'block';
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function renderNotFoundCard(scannedCode) {
+            const wrapper = document.getElementById('result-wrapper');
+            const panel = document.getElementById('result-panel');
+            const header = document.getElementById('result-header-bar');
+
+            panel.className = 'result-panel notfound';
+            header.className = 'result-header-bar notfound';
+
+            document.getElementById('res-header-icon').textContent = '❌';
+            document.getElementById('res-header-title').textContent = 'TICKET NOT FOUND';
+            document.getElementById('res-header-title').style.color = '#f87171';
+            document.getElementById('res-header-sub').textContent = `No attendee found for ID: ${scannedCode}`;
+
+            document.getElementById('wristband-banner').style.display = 'none';
+            document.getElementById('card-name').textContent = 'Unknown Attendee';
+            document.getElementById('card-ticket-id').textContent = scannedCode;
+            document.getElementById('card-visit-day').textContent = 'N/A';
+            document.getElementById('card-day-badge').innerHTML = '';
+            document.getElementById('card-college').textContent = 'Try entering phone number in manual search';
+            document.getElementById('card-pass-type').textContent = 'Unregistered';
+            document.getElementById('card-timestamp').textContent = 'N/A';
+
+            document.getElementById('result-footer-bar').innerHTML = `
+                <button class="btn-card-action btn-dismiss-warning" onclick="closeResultCard()">Try Again / Search</button>
+            `;
+            wrapper.style.display = 'block';
+            wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function closeResultCard() {
+            document.getElementById('result-wrapper').style.display = 'none';
+        }
+
+        function permitReentry(id) {
+            executeCheckIn(id, true);
+        }
+
+        // ── ADMISSION LOG & CSV EXPORT ──
+        function appendAdmissionLog(reg, isoTime) {
+            const listEl = document.getElementById('recent-stream-list');
             if (!listEl) return;
 
-            const timeFormatted = new Date(time).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
-            recentCheckins.unshift({
+            const timeStr = new Date(isoTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            stationAdmissionLog.unshift({
                 ticketId: reg.id,
                 name: reg.name,
                 college: reg.college,
-                time: timeFormatted,
-                gate: gateStation
+                time: timeStr,
+                station: assignedStation
             });
 
-            if (recentCheckins.length > 25) recentCheckins.pop();
+            if (stationAdmissionLog.length > 30) stationAdmissionLog.pop();
 
-            listEl.innerHTML = recentCheckins.map(item => `
-                <div class="recent-row">
-                    <div class="recent-row-left">
-                        <span style="font-size:14px;">✓</span>
-                        <div>
-                            <div style="font-weight:700; color:#fff;">${escapeHtml(item.name)}</div>
-                            <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${item.ticketId} • ${escapeHtml(item.college || '')}</div>
-                        </div>
-                    </div>
-                    <span class="recent-row-time">${item.time}</span>
-                </div>
-            `).join('');
+            const badgeCountEl = document.getElementById('mobile-recent-badge');
+            if (badgeCountEl) badgeCountEl.textContent = stationAdmissionLog.length;
+
+            renderAdmissionLogList();
 
             try {
-                localStorage.setItem('gate_recent_scans', JSON.stringify(recentCheckins.slice(0, 15)));
+                localStorage.setItem('gate_stream_log', JSON.stringify(stationAdmissionLog.slice(0, 20)));
             } catch(e) {}
         }
 
-        function loadRecentCheckins() {
+        function renderAdmissionLogList() {
+            const listEl = document.getElementById('recent-stream-list');
+            if (!listEl) return;
+
+            if (stationAdmissionLog.length === 0) {
+                listEl.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 18px; font-size: 12.5px;">
+                        No check-ins logged at this station yet.
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = stationAdmissionLog.map(item => `
+                <div class="recent-stream-item">
+                    <div class="recent-item-left">
+                        <span class="recent-check-icon">✓</span>
+                        <div>
+                            <div class="recent-item-name">${escapeText(item.name)}</div>
+                            <div class="recent-item-meta">${item.ticketId} • ${escapeText(item.college || '')}</div>
+                        </div>
+                    </div>
+                    <span class="recent-item-time">${item.time}</span>
+                </div>
+            `).join('');
+        }
+
+        function restoreSavedAdmissions() {
             try {
-                const saved = JSON.parse(localStorage.getItem('gate_recent_scans') || '[]');
+                const saved = JSON.parse(localStorage.getItem('gate_stream_log') || '[]');
                 if (saved.length > 0) {
-                    saved.forEach(s => recentCheckins.push(s));
-                    const listEl = document.getElementById('recent-list');
-                    if (listEl) {
-                        listEl.innerHTML = recentCheckins.map(item => `
-                            <div class="recent-row">
-                                <div class="recent-row-left">
-                                    <span style="font-size:14px;">✓</span>
-                                    <div>
-                                        <div style="font-weight:700; color:#fff;">${escapeHtml(item.name)}</div>
-                                        <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${item.ticketId} • ${escapeHtml(item.college || '')}</div>
-                                    </div>
-                                </div>
-                                <span class="recent-row-time">${item.time}</span>
-                            </div>
-                        `).join('');
-                    }
+                    saved.forEach(s => stationAdmissionLog.push(s));
+                    const badgeCountEl = document.getElementById('mobile-recent-badge');
+                    if (badgeCountEl) badgeCountEl.textContent = stationAdmissionLog.length;
+                    renderAdmissionLogList();
                 }
             } catch(e) {}
         }
 
-        function exportGateLog() {
-            if (recentCheckins.length === 0) {
-                showToast('No check-ins logged yet to export.', 'ℹ️');
+        function exportGateCsv() {
+            if (stationAdmissionLog.length === 0) {
+                popToast('No check-ins logged yet to export.', 'ℹ️');
                 return;
             }
-            const csvRows = ['Ticket ID,Name,College,Time,Gate'];
-            recentCheckins.forEach(r => {
-                csvRows.push(`"${r.ticketId}","${r.name.replace(/"/g, '""')}","${(r.college || '').replace(/"/g, '""')}","${r.time}","${r.gate}"`);
+            const csvRows = ['Ticket ID,Name,College,Check-In Time,Station'];
+            stationAdmissionLog.forEach(row => {
+                csvRows.push(`"${row.ticketId}","${row.name.replace(/"/g, '""')}","${(row.college || '').replace(/"/g, '""')}","${row.time}","${row.station}"`);
             });
             const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `gate_attendance_${new Date().toISOString().slice(0,10)}.csv`;
+            a.download = `celebrate_cinema_gate_attendance_${new Date().toISOString().slice(0,10)}.csv`;
             a.click();
             URL.revokeObjectURL(url);
         }
 
-        // ── MANUAL SEARCH HANDLER ──
-        function handleManualSearch(query) {
-            const resultsBox = document.getElementById('search-results');
-            const clearBtn = document.getElementById('search-clear-btn');
-            const q = query.trim().toLowerCase();
+        // ── LIGHTNING INSTANT MANUAL SEARCH ──
+        function handleInstantSearch(term) {
+            const listEl = document.getElementById('live-search-results');
+            const clearBtn = document.getElementById('search-clear-cross');
+            const q = term.trim().toLowerCase();
 
             if (!q) {
-                resultsBox.style.display = 'none';
+                listEl.style.display = 'none';
                 clearBtn.style.display = 'none';
                 return;
             }
             clearBtn.style.display = 'block';
 
-            const cleanDigits = q.replace(/\D/g, '');
-            const matches = [];
+            const digitsOnly = q.replace(/\D/g, '');
+            const results = [];
 
-            // Search through attendeeMap
-            for (const [id, attendee] of attendeeMap.entries()) {
-                const name = (attendee.name || '').toLowerCase();
-                const email = (attendee.email || '').toLowerCase();
-                const phone = (attendee.phone || '').replace(/\D/g, '');
+            // Fast iteration over RAM index
+            for (const [id, reg] of memoryTicketIndex.entries()) {
+                const name = (reg.name || '').toLowerCase();
+                const email = (reg.email || '').toLowerCase();
+                const phone = (reg.phone || '').replace(/\D/g, '');
 
-                if (id.toLowerCase().includes(q) || name.includes(q) || email.includes(q) || (cleanDigits.length >= 4 && phone.includes(cleanDigits))) {
-                    matches.push(attendee);
-                    if (matches.length >= 8) break;
+                if (id.toLowerCase().includes(q) || name.includes(q) || email.includes(q) || (digitsOnly.length >= 4 && phone.includes(digitsOnly))) {
+                    results.push(reg);
+                    if (results.length >= 10) break;
                 }
             }
 
-            if (matches.length === 0) {
-                resultsBox.innerHTML = `
-                    <div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 13px;">
-                        No matches found. Try entering full phone number or Ticket ID.
+            if (results.length === 0) {
+                listEl.innerHTML = `
+                    <div style="padding: 14px; text-align: center; color: var(--text-muted); font-size: 13px;">
+                        No matches found. Check spelling or try 10-digit mobile number.
                     </div>
                 `;
             } else {
-                resultsBox.innerHTML = matches.map(m => `
-                    <div class="search-item" onclick="selectSearchAttendee('${m.id}')">
-                        <div class="search-item-info">
-                            <span class="search-item-name">${escapeHtml(m.name)}</span>
-                            <span class="search-item-meta">${m.id} • ${escapeHtml(m.college || '')}</span>
-                            <span style="font-size:11px; color:${m.attended ? '#f59e0b' : '#10b981'}; font-weight:700;">
-                                ${m.attended ? '⚠️ Already Checked In' : '✓ Unclaimed Pass'}
+                listEl.innerHTML = results.map(r => `
+                    <div class="live-result-row" onclick="chooseSearchResult('${r.id}')">
+                        <div class="live-row-info">
+                            <span class="live-row-name">${escapeText(r.name)}</span>
+                            <span class="live-row-meta">${r.id} • ${escapeText(r.college || '')}</span>
+                            <span style="font-size:11px; color:${r.attended ? '#f59e0b' : '#10b981'}; font-weight:800;">
+                                ${r.attended ? '⚠️ Already Admitted' : '✓ Unclaimed Pass'}
                             </span>
                         </div>
-                        <button class="btn-quick-admit" onclick="event.stopPropagation(); selectSearchAttendee('${m.id}')">
-                            ${m.attended ? 'View' : 'Check In'}
+                        <button class="btn-live-admit" onclick="event.stopPropagation(); chooseSearchResult('${r.id}')">
+                            ${r.attended ? 'View Card' : 'Admit Delegate'}
                         </button>
                     </div>
                 `).join('');
             }
-            resultsBox.style.display = 'flex';
+            listEl.style.display = 'flex';
         }
 
-        function selectSearchAttendee(id) {
-            clearSearch();
-            processTicketCheckIn(id);
+        function chooseSearchResult(ticketId) {
+            resetSearchInput();
+            executeCheckIn(ticketId);
         }
 
-        function clearSearch() {
-            const input = document.getElementById('manual-search-input');
-            if (input) input.value = '';
-            document.getElementById('search-results').style.display = 'none';
-            document.getElementById('search-clear-btn').style.display = 'none';
+        function resetSearchInput() {
+            const field = document.getElementById('manual-query-input');
+            if (field) field.value = '';
+            document.getElementById('live-search-results').style.display = 'none';
+            document.getElementById('search-clear-cross').style.display = 'none';
         }
 
-        // ── CAMERA SCANNER CONTROLS ──
-        async function toggleCamera() {
-            if (isCameraActive) {
-                stopCamera();
+        // ── CAMERA HARDWARE CONTROLS ──
+        async function toggleCameraScanner() {
+            if (isScanning) {
+                await haltCamera();
             } else {
-                startCamera();
+                await launchCamera();
             }
         }
 
-        async function startCamera() {
-            const standby = document.getElementById('standby-screen');
-            const viewport = document.getElementById('viewport');
-            const startBtn = document.getElementById('start-btn');
-            const floatBar = document.getElementById('camera-floating-bar');
+        async function launchCamera() {
+            const splash = document.getElementById('standby-splash');
+            const viewport = document.getElementById('viewport-box');
+            const toggleBtn = document.getElementById('cam-toggle-btn');
+            const hudBar = document.getElementById('hud-floating-bar');
 
             if (typeof Html5Qrcode === 'undefined') {
-                showToast('Camera library loading, please wait 2 seconds...', '⏳');
+                popToast('Camera library loading, please wait 2 seconds...', '⏳');
                 return;
             }
 
             try {
-                if (!html5Qr) {
-                    html5Qr = new Html5Qrcode('scanner-video-container');
+                if (!qrScannerInstance) {
+                    qrScannerInstance = new Html5Qrcode('scanner-video-container');
                 }
 
-                if (standby) standby.style.display = 'none';
+                if (splash) splash.style.display = 'none';
                 if (viewport) viewport.classList.add('scanner-active');
-                if (floatBar) floatBar.style.display = 'flex';
-                if (startBtn) {
-                    startBtn.innerHTML = '⏹ Stop Camera Scanner';
-                    startBtn.className = 'action-btn btn-danger-stop';
+                if (hudBar) hudBar.style.display = 'flex';
+                if (toggleBtn) {
+                    toggleBtn.innerHTML = '⏹ Stop Camera Scanner';
+                    toggleBtn.className = 'btn-cta btn-stop-scan';
                 }
 
-                // Detect cameras
-                let backCameraId = null;
+                // Query rear cameras
+                let preferredCameraId = null;
                 try {
                     const devices = await Html5Qrcode.getCameras();
                     if (devices && devices.length > 0) {
-                        const backCam = devices.find(d => /back|rear|environment|wide|trás|arrière/i.test(d.label));
-                        backCameraId = backCam ? backCam.id : devices[devices.length - 1].id;
+                        const rearLens = devices.find(d => /back|rear|environment|wide|trás|arrière/i.test(d.label));
+                        preferredCameraId = rearLens ? rearLens.id : devices[devices.length - 1].id;
 
-                        const selectEl = document.getElementById('camera-select');
-                        if (selectEl && devices.length > 1) {
-                            selectEl.innerHTML = devices.map(d => `
-                                <option value="${d.id}" ${d.id === backCameraId ? 'selected' : ''}>
-                                    ${d.label ? d.label.substring(0, 20) : 'Camera ' + d.id.substring(0, 4)}
+                        const lensSelect = document.getElementById('camera-lens-select');
+                        if (lensSelect && devices.length > 1) {
+                            lensSelect.innerHTML = devices.map(d => `
+                                <option value="${d.id}" ${d.id === preferredCameraId ? 'selected' : ''}>
+                                    ${d.label ? d.label.substring(0, 18) : 'Camera ' + d.id.substring(0, 4)}
                                 </option>
                             `).join('');
-                            selectEl.style.display = 'inline-block';
+                            lensSelect.style.display = 'inline-block';
                         }
                     }
-                } catch(camErr) {
-                    console.log('Camera list query note:', camErr);
-                }
+                } catch(e) {}
 
-                const qrConfig = {
-                    fps: 20,
-                    qrbox: { width: 230, height: 230 },
-                    aspectRatio: 1.0
-                };
-
-                const cameraConstraint = backCameraId 
-                    ? backCameraId 
+                const cameraRules = preferredCameraId 
+                    ? preferredCameraId 
                     : { facingMode: { ideal: 'environment' } };
 
-                await html5Qr.start(
-                    cameraConstraint,
-                    qrConfig,
-                    (decodedText) => {
-                        processTicketCheckIn(decodedText);
-                    },
-                    (error) => {
-                        // Frame-by-frame quiet scanning
-                    }
-                );
-
-                isCameraActive = true;
-                currentCameraId = backCameraId;
-                showToast('Camera active! Scan delegate ticket', '📷');
-            } catch (err) {
-                console.error('Camera startup error:', err);
-                if (standby) standby.style.display = 'flex';
-                if (viewport) viewport.classList.remove('scanner-active');
-                if (floatBar) floatBar.style.display = 'none';
-                if (startBtn) {
-                    startBtn.innerHTML = '📷 Start Camera Scanner';
-                    startBtn.className = 'action-btn btn-primary-gold';
-                }
-                isCameraActive = false;
-                showToast('Camera permission denied or camera unavailable. Check browser permissions.', '❌');
-            }
-        }
-
-        async function stopCamera() {
-            const standby = document.getElementById('standby-screen');
-            const viewport = document.getElementById('viewport');
-            const startBtn = document.getElementById('start-btn');
-            const floatBar = document.getElementById('camera-floating-bar');
-
-            if (html5Qr && isCameraActive) {
-                try {
-                    await html5Qr.stop();
-                } catch(e) {}
-            }
-            isCameraActive = false;
-            isTorchOn = false;
-
-            if (standby) standby.style.display = 'flex';
-            if (viewport) viewport.classList.remove('scanner-active');
-            if (floatBar) floatBar.style.display = 'none';
-            if (startBtn) {
-                startBtn.innerHTML = '📷 Start Camera Scanner';
-                startBtn.className = 'action-btn btn-primary-gold';
-            }
-        }
-
-        async function switchCamera(deviceId) {
-            if (!deviceId || !html5Qr || !isCameraActive) return;
-            try {
-                await html5Qr.stop();
-                const qrConfig = {
-                    fps: 20,
+                const scanSettings = {
+                    fps: 22,
                     qrbox: { width: 230, height: 230 },
                     aspectRatio: 1.0
                 };
-                await html5Qr.start(deviceId, qrConfig, processTicketCheckIn, () => {});
-                currentCameraId = deviceId;
+
+                await qrScannerInstance.start(
+                    cameraRules,
+                    scanSettings,
+                    (qrContent) => {
+                        executeCheckIn(qrContent);
+                    },
+                    (err) => {}
+                );
+
+                isScanning = true;
+                activeCameraId = preferredCameraId;
+                popToast('Scanner active! Point at ticket QR', '📷');
+            } catch (err) {
+                console.error('Camera activation error:', err);
+                if (splash) splash.style.display = 'flex';
+                if (viewport) viewport.classList.remove('scanner-active');
+                if (hudBar) hudBar.style.display = 'none';
+                if (toggleBtn) {
+                    toggleBtn.innerHTML = '📷 Start Camera Scanner';
+                    toggleBtn.className = 'btn-cta btn-start-scan';
+                }
+                isScanning = false;
+                popToast('Camera access blocked. Check browser permissions.', '❌');
+            }
+        }
+
+        async function haltCamera() {
+            const splash = document.getElementById('standby-splash');
+            const viewport = document.getElementById('viewport-box');
+            const toggleBtn = document.getElementById('cam-toggle-btn');
+            const hudBar = document.getElementById('hud-floating-bar');
+
+            if (qrScannerInstance && isScanning) {
+                try {
+                    await qrScannerInstance.stop();
+                } catch(e) {}
+            }
+            isScanning = false;
+            torchActive = false;
+
+            if (splash) splash.style.display = 'flex';
+            if (viewport) viewport.classList.remove('scanner-active');
+            if (hudBar) hudBar.style.display = 'none';
+            if (toggleBtn) {
+                toggleBtn.innerHTML = '📷 Start Camera Scanner';
+                toggleBtn.className = 'btn-cta btn-start-scan';
+            }
+        }
+
+        async function switchCameraLens(newDeviceId) {
+            if (!newDeviceId || !qrScannerInstance || !isScanning) return;
+            try {
+                await qrScannerInstance.stop();
+                const scanSettings = { fps: 22, qrbox: { width: 230, height: 230 }, aspectRatio: 1.0 };
+                await qrScannerInstance.start(newDeviceId, scanSettings, executeCheckIn, () => {});
+                activeCameraId = newDeviceId;
             } catch(e) {
-                showToast('Could not switch camera lens', '⚠️');
+                popToast('Lens switch unsupported', '⚠️');
             }
         }
 
         async function toggleTorch() {
-            if (!html5Qr || !isCameraActive) return;
-            const torchBtn = document.getElementById('torch-btn');
+            if (!qrScannerInstance || !isScanning) return;
+            const torchBtn = document.getElementById('torch-button');
             try {
-                isTorchOn = !isTorchOn;
-                await html5Qr.applyVideoConstraints({
-                    advanced: [{ torch: isTorchOn }]
+                torchActive = !torchActive;
+                await qrScannerInstance.applyVideoConstraints({
+                    advanced: [{ torch: torchActive }]
                 });
                 if (torchBtn) {
-                    torchBtn.classList.toggle('active', isTorchOn);
-                    torchBtn.innerHTML = isTorchOn ? '⚡ Torch ON' : '⚡ Torch';
+                    torchBtn.classList.toggle('active', torchActive);
+                    torchBtn.innerHTML = torchActive ? '⚡ Torch ON' : '⚡ Torch';
                 }
             } catch(e) {
-                showToast('Torch flashlight not supported by this device lens', 'ℹ️');
+                popToast('Flashlight torch not supported on this lens', 'ℹ️');
             }
         }
 
-        function toggleSound() {
-            isSoundEnabled = !isSoundEnabled;
-            const btn = document.getElementById('sound-btn');
-            if (btn) btn.textContent = isSoundEnabled ? '🔊' : '🔇';
-            showToast(isSoundEnabled ? 'Sound Enabled' : 'Sound Muted', isSoundEnabled ? '🔊' : '🔇');
+        function toggleMute() {
+            audioMuted = !audioMuted;
+            const btn = document.getElementById('mute-btn');
+            if (btn) btn.textContent = audioMuted ? '🔇' : '🔊';
+            popToast(audioMuted ? 'Sound Muted' : 'Sound Enabled', audioMuted ? '🔇' : '🔊');
         }
 
-        function escapeHtml(str) {
+        function escapeText(str) {
             return String(str || '')
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
@@ -2004,9 +2336,9 @@
                 .replace(/"/g, '&quot;');
         }
 
-        // Auto-check auth on page load
+        // Initialize on DOM load
         window.addEventListener('DOMContentLoaded', () => {
-            checkGateAuth();
+            verifyGateAuthorization();
         });
     </script>
 </body>
