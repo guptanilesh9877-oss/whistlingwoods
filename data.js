@@ -1857,7 +1857,8 @@ class DataStore {
             }
         ];
 
-        const regs = this.getRegistrations();
+        // Nagesh registrations are kept strictly under Nagesh and excluded from other team delegation splits
+        const regs = this.getRegistrations().filter(r => !this.isNageshRegistration(r));
 
         // ── CALCULATE COLLEGE DELEGATION EQUAL SPLITS ───────────────
         // Helper: get free regs for a college slug
