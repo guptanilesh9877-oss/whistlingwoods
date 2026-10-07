@@ -3,6 +3,14 @@
   "trailingSlash": false,
   "rewrites": [
     {
+      "source": "/scanner",
+      "destination": "/scanner.html"
+    },
+    {
+      "source": "/scanner/",
+      "destination": "/scanner.html"
+    },
+    {
       "source": "/c/:slug/leads",
       "destination": "/leads?c=:slug"
     },

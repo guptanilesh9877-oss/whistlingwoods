@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0817">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Gate Ticket Scanner — Celebrate Cinema 2026 | Whistling Woods International</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- QR Code Scanner Library (html5-qrcode with multi-CDN fallback) -->
+    <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script>
+        if (typeof Html5Qrcode === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"><\/script>');
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-deep: #0b0817;
+            --bg-card: rgba(22, 16, 38, 0.85);
+            --bg-card-solid: #161026;
+            --bg-elevated: #1f1736;
+            --border-subtle: rgba(212, 168, 67, 0.22);
+            --border-gold: #d4a843;
+            --gold: #d4a843;
+            --gold-bright: #f4c552;
+            --gold-soft: #f7e7c5;
+            --purple-accent: #8b5cf6;
+            --green: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.35);
+            --amber: #f59e0b;
+            --amber-glow: rgba(245, 158, 11, 0.35);
+            --red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.35);
+            --text-main: #f9f8fc;
+            --text-muted: #a69bb5;
+            --text-dim: #716682;
+            --font-display: 'Outfit', sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.12) 0%, transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(212, 168, 67, 0.08) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── TOP HEADER ── */
+        .gate-header {
+            background: rgba(16, 11, 28, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 12px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #d4a843 0%, #7c3aed 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(212, 168, 67, 0.3);
+        }
+
+        .header-title-box h1 {
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+            letter-spacing: 0.3px;
+        }
+
+        .header-title-box p {
+            font-size: 11px;
+            color: var(--gold-soft);
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .gate-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(212, 168, 67, 0.15);
+            border: 1px solid var(--border-gold);
+            color: var(--gold-soft);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        /* ── STATS TICKER BAR ── */
+        .stats-bar {
+            background: rgba(31, 23, 54, 0.65);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            font-size: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .stat-val {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 15px;
+            color: #ffffff;
+        }
+
+        .stat-val.accent {
+            color: var(--gold-bright);
+        }
+
+        .stat-val.green {
+            color: var(--green);
+        }
+
+        .stat-lbl {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── MAIN CONTENT CONTAINER ── */
+        .scanner-main {
+            flex: 1;
+            max-width: 680px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 16px 14px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* ── VIEWPORT / CAMERA CONTAINER ── */
+        .camera-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .camera-viewport {
+            position: relative;
+            width: 100%;
+            height: 330px;
+            background: #06040d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #scanner-video-container {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        #scanner-video-container video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+
+        /* Viewfinder HUD Overlay */
+        .hud-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .target-box {
+            width: 230px;
+            height: 230px;
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 0 0 0 4000px rgba(7, 5, 15, 0.62);
+        }
+
+        .corner {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-color: var(--gold-bright);
+            border-style: solid;
+        }
+        .corner.tl { top: 0; left: 0; border-width: 3.5px 0 0 3.5px; border-top-left-radius: 10px; }
+        .corner.tr { top: 0; right: 0; border-width: 3.5px 3.5px 0 0; border-top-right-radius: 10px; }
+        .corner.bl { bottom: 0; left: 0; border-width: 0 0 3.5px 3.5px; border-bottom-left-radius: 10px; }
+        .corner.br { bottom: 0; right: 0; border-width: 0 3.5px 3.5px 0; border-bottom-right-radius: 10px; }
+
+        .laser-line {
+            position: absolute;
+            left: 6px;
+            right: 6px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #eab308, #ffffff, #eab308, transparent);
+            box-shadow: 0 0 12px #eab308, 0 0 4px #ffffff;
+            animation: scanLaser 2s ease-in-out infinite alternate;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .scanner-active .laser-line {
+            opacity: 1;
+        }
+
+        @keyframes scanLaser {
+            0% { top: 8px; }
+            100% { top: 220px; }
+        }
+
+        /* Camera Placeholder Screen */
+        .camera-standby {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, #18112b 0%, #0c0817 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 24px;
+            text-align: center;
+            z-index: 20;
+        }
+
+        .standby-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(212, 168, 67, 0.15);
+            border: 2px solid var(--border-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 0 20px rgba(212, 168, 67, 0.25);
+        }
+
+        .standby-text h3 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .standby-text p {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            max-width: 280px;
+        }
+
+        /* Floating Camera Controls */
+        .camera-floating-bar {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 25;
+            pointer-events: none;
+        }
+
+        .floating-btn {
+            pointer-events: auto;
+            background: rgba(16, 12, 28, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 7px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .floating-btn:active {
+            transform: scale(0.95);
+        }
+
+        .floating-btn.active {
+            background: var(--gold);
+            color: #0b0817;
+            border-color: var(--gold-bright);
+            font-weight: 700;
+        }
+
+        /* Camera Toolbar Below Viewport */
+        .camera-toolbar {
+            padding: 12px 16px;
+            background: rgba(19, 14, 33, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 13px 18px;
+            border-radius: 12px;
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-primary-gold {
+            background: linear-gradient(135deg, #d4a843 0%, #b88628 100%);
+            color: #0b0817;
+        }
+
+        .btn-primary-gold:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-danger-stop {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--red);
+            color: #fca5a5;
+        }
+
+        .btn-icon-only {
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: var(--bg-elevated);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* ── RESULT CARD ── */
+        .result-container {
+            display: none;
+            animation: slideInUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1.5px solid transparent;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6);
+            background: var(--bg-card-solid);
+        }
+
+        .result-card.success {
+            border-color: var(--green);
+            box-shadow: 0 0 25px var(--green-glow);
+        }
+
+        .result-card.duplicate {
+            border-color: var(--amber);
+            box-shadow: 0 0 25px var(--amber-glow);
+        }
+
+        .result-card.rejected, .result-card.notfound {
+            border-color: var(--red);
+            box-shadow: 0 0 25px var(--red-glow);
+        }
+
+        .result-header {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .result-header.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(6, 78, 59, 0.4) 100%);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .result-header.duplicate {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(120, 53, 15, 0.4) 100%);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .result-header.rejected, .result-header.notfound {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(127, 29, 29, 0.4) 100%);
+            border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .result-icon {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .result-headline h2 {
+            font-family: var(--font-display);
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        .result-headline p {
+            font-size: 12px;
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        .result-body {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* Highlighted Wristband Banner */
+        .band-banner {
+            padding: 12px 14px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 13.5px;
+            line-height: 1.35;
+        }
+
+        .band-banner.fphr {
+            background: rgba(212, 168, 67, 0.18);
+            border: 1.5px solid var(--gold);
+            color: #fff;
+        }
+
+        .band-banner.hsnc {
+            background: rgba(139, 92, 246, 0.2);
+            border: 1.5px solid var(--purple-accent);
+            color: #f3e8ff;
+        }
+
+        .band-banner.standard {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-main);
+        }
+
+        /* Delegate Details Grid */
+        .delegate-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .grid-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .grid-label {
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .grid-val {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            word-break: break-word;
+        }
+
+        .grid-val.ticket-id {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold-bright);
+            letter-spacing: 0.5px;
+        }
+
+        .grid-val.name-bold {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .day-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-top: 2px;
+        }
+
+        .day-badge.valid {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid var(--green);
+            color: #6ee7b7;
+        }
+
+        .day-badge.warning {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid var(--amber);
+            color: #fde68a;
+        }
+
+        /* Result Action Footer */
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .btn-dismiss {
+            flex: 1;
+            padding: 13px;
+            border-radius: 10px;
+            background: var(--bg-elevated);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-force-admit {
+            flex: 1;
+            padding: 13px;
+            border-radius: 10px;
+            background: var(--amber);
+            border: none;
+            color: #0b0817;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ── MANUAL SEARCH CARD ── */
+        .search-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-header-row h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-input-box {
+            position: relative;
+        }
+
+        .search-input-box input {
+            width: 100%;
+            background: rgba(9, 6, 18, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 12px;
+            padding: 13px 16px 13px 40px;
+            color: #ffffff;
+            font-size: 14.5px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input-box input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 12px rgba(212, 168, 67, 0.25);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .search-clear-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            display: none;
+        }
+
+        /* Instant Search Results */
+        .search-results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .search-item {
+            background: var(--bg-elevated);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .search-item:hover {
+            border-color: var(--border-gold);
+            background: rgba(35, 25, 60, 0.9);
+        }
+
+        .search-item-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .search-item-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .search-item-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .btn-quick-admit {
+            background: var(--gold);
+            border: none;
+            color: #0b0817;
+            font-weight: 700;
+            font-size: 12.5px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        /* ── RECENT SCANS LOG DRAWER ── */
+        .recent-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .recent-list {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+
+        .recent-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background: rgba(12, 9, 22, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 12.5px;
+        }
+
+        .recent-row-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recent-row-time {
+            font-family: var(--font-mono);
+            color: var(--gold-bright);
+            font-size: 11.5px;
+        }
+
+        /* ── GATE AUTH MODAL ── */
+        .auth-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 4, 15, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .auth-card {
+            max-width: 400px;
+            width: 100%;
+            background: #140e26;
+            border: 1.5px solid var(--border-gold);
+            border-radius: 20px;
+            padding: 28px 24px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 168, 67, 0.15);
+            text-align: center;
+        }
+
+        .auth-logo {
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #d4a843 0%, #7c3aed 100%);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 6px 18px rgba(212, 168, 67, 0.35);
+        }
+
+        .auth-card h2 {
+            font-family: var(--font-display);
+            font-size: 21px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+
+        .auth-card p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 22px;
+            line-height: 1.4;
+        }
+
+        .auth-field {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .auth-field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .auth-field input, .auth-field select {
+            width: 100%;
+            background: #090614;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .auth-field input:focus, .auth-field select:focus {
+            border-color: var(--gold);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #d4a843 0%, #b88628 100%);
+            border: none;
+            color: #0b0817;
+            font-family: var(--font-display);
+            font-size: 15.5px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 6px;
+            box-shadow: 0 4px 16px rgba(212, 168, 67, 0.35);
+        }
+
+        /* ── TOAST NOTIFICATIONS ── */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .toast-item {
+            background: #1b1433;
+            border: 1px solid var(--border-gold);
+            color: #ffffff;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 13.5px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes toastPop {
+            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP GATE HEADER -->
+    <header class="gate-header">
+        <div class="header-brand">
+            <div class="header-logo-badge">🎬</div>
+            <div class="header-title-box">
+                <h1>Celebrate Cinema 2026</h1>
+                <p>Whistling Woods Gate Scanner</p>
+            </div>
+        </div>
+        <div class="header-controls">
+            <span class="gate-badge" id="gate-station-label">
+                <span class="pulse-dot"></span>
+                <span id="gate-station-text">Gate 1</span>
+            </span>
+            <button class="btn-icon-only" onclick="toggleSound()" id="sound-btn" title="Toggle Beep Audio">🔊</button>
+            <button class="btn-icon-only" onclick="refreshDatabase()" title="Sync Supabase Cloud" id="sync-btn">🔄</button>
+        </div>
+    </header>
+
+    <!-- STATS TICKER BAR -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-val green" id="stat-admitted">0</span>
+            <span class="stat-lbl">Checked In</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val accent" id="stat-total-reg">...</span>
+            <span class="stat-lbl">Registered</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-val" id="stat-sync-status">🟢 Live</span>
+            <span class="stat-lbl">Supabase</span>
+        </div>
+    </div>
+
+    <!-- MAIN SCANNER INTERFACE -->
+    <main class="scanner-main">
+
+        <!-- 1. CAMERA SCANNER CARD -->
+        <div class="camera-card">
+            <div class="camera-viewport" id="viewport">
+                <!-- HTML5-QRCode Target Element -->
+                <div id="scanner-video-container"></div>
+
+                <!-- HUD Aiming Reticle -->
+                <div class="hud-overlay">
+                    <div class="target-box">
+                        <div class="corner tl"></div>
+                        <div class="corner tr"></div>
+                        <div class="corner bl"></div>
+                        <div class="corner br"></div>
+                        <div class="laser-line"></div>
+                    </div>
+                </div>
+
+                <!-- Floating Controls (Torch & Camera Switch) -->
+                <div class="camera-floating-bar" id="camera-floating-bar" style="display: none;">
+                    <button class="floating-btn" id="torch-btn" onclick="toggleTorch()">⚡ Torch</button>
+                    <select id="camera-select" class="floating-btn" style="appearance: none; -webkit-appearance: none; padding-right: 20px;" onchange="switchCamera(this.value)">
+                        <option value="">Switch Camera</option>
+                    </select>
+                </div>
+
+                <!-- Standby / Start Screen -->
+                <div class="camera-standby" id="standby-screen">
+                    <div class="standby-icon">📷</div>
+                    <div class="standby-text">
+                        <h3>Gate Camera Ready</h3>
+                        <p>Point camera at the attendee's ticket QR code on mobile or printed pass.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toolbar Action Buttons -->
+            <div class="camera-toolbar">
+                <button class="action-btn btn-primary-gold" id="start-btn" onclick="toggleCamera()">
+                    <span>📷 Start Camera Scanner</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2. SCANNED RESULT CARD (Instantly displays upon QR scan) -->
+        <div class="result-container" id="result-container">
+            <div class="result-card" id="result-card">
+                <div class="result-header" id="result-header">
+                    <div class="result-icon" id="result-icon">🎉</div>
+                    <div class="result-headline">
+                        <h2 id="result-title">VALID PASS — CHECKED IN!</h2>
+                        <p id="result-subtitle">Welcome to Celebrate Cinema 2026</p>
+                    </div>
+                </div>
+
+                <div class="result-body">
+                    <!-- Band Collection / Gate Instructions -->
+                    <div class="band-banner" id="band-banner">
+                        <span id="band-icon">🎟️</span>
+                        <span id="band-text">STANDARD DELEGATE WRISTBAND</span>
+                    </div>
+
+                    <!-- Delegate Details Grid -->
+                    <div class="delegate-grid">
+                        <div class="grid-item full-width">
+                            <span class="grid-label">Delegate Name</span>
+                            <span class="grid-val name-bold" id="res-name">Delegate Name</span>
+                        </div>
+                        <div class="grid-item">
+                            <span class="grid-label">Ticket ID</span>
+                            <span class="grid-val ticket-id" id="res-ticket-id">NAG-000000</span>
+                        </div>
+                        <div class="grid-item">
+                            <span class="grid-label">Visiting Day</span>
+                            <span class="grid-val" id="res-date">Both Days</span>
+                            <div id="res-day-badge"></div>
+                        </div>
+                        <div class="grid-item full-width">
+                            <span class="grid-label">College / Organization</span>
+                            <span class="grid-val" id="res-college">College Name</span>
+                        </div>
+                        <div class="grid-item">
+                            <span class="grid-label">Pass Type / Referral</span>
+                            <span class="grid-val" id="res-type" style="color: var(--gold-soft);">Complimentary Pass</span>
+                        </div>
+                        <div class="grid-item">
+                            <span class="grid-label">Gate Check-In Time</span>
+                            <span class="grid-val" id="res-time">Just Now</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="result-actions" id="result-actions">
+                        <button class="btn-dismiss" onclick="dismissResult()">Next Delegate (Scan)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. LIGHTNING MANUAL LOOKUP (For cracked screens / unreadable QRs) -->
+        <div class="search-card">
+            <div class="card-header-row">
+                <h3>🔍 Manual Search &amp; Check-In</h3>
+                <span style="font-size: 11px; color: var(--text-muted);">Search by ID, Name, Phone, Email</span>
+            </div>
+
+            <div class="search-input-box">
+                <span class="search-icon">🔎</span>
+                <input type="text" id="manual-search-input" placeholder="Enter Ticket ID (e.g. NAG-123456) or Phone..." oninput="handleManualSearch(this.value)" autocomplete="off">
+                <button class="search-clear-btn" id="search-clear-btn" onclick="clearSearch()">✕</button>
+            </div>
+
+            <!-- Instant Search Results dropdown -->
+            <div class="search-results-list" id="search-results" style="display: none;"></div>
+        </div>
+
+        <!-- 4. RECENT SCANS LOG DRAWER -->
+        <div class="recent-card">
+            <div class="card-header-row">
+                <h3>📋 Recent Gate Check-Ins</h3>
+                <button class="btn-icon-only" style="padding: 4px 10px; font-size: 11px;" onclick="exportGateLog()">Export CSV</button>
+            </div>
+            <div class="recent-list" id="recent-list">
+                <div style="text-align: center; color: var(--text-dim); padding: 16px; font-size: 12.5px;">
+                    No check-ins at this gate session yet.
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- GATE AUTHENTICATION MODAL -->
+    <div class="auth-overlay" id="auth-modal" style="display: none;">
+        <div class="auth-card">
+            <div class="auth-logo">🎟️</div>
+            <h2>Gate Security Portal</h2>
+            <p>Celebrate Cinema 2026 @ Whistling Woods International. Please enter your gate access PIN to begin scanning.</p>
+
+            <form onsubmit="handleGateAuth(event)">
+                <div class="auth-field">
+                    <label>Station / Gate Location</label>
+                    <select id="auth-gate-select">
+                        <option value="Gate 1 (Main Entrance)">Gate 1 (Main Entrance)</option>
+                        <option value="Gate 2 (Faculty & VIP)">Gate 2 (Faculty &amp; VIP)</option>
+                        <option value="Desk A (FPHR / Nagesh Desk)">Desk A (FPHR / Nagesh Desk)</option>
+                        <option value="Desk B (HSNC-COLLAB Desk)">Desk B (HSNC-COLLAB Desk)</option>
+                        <option value="Desk C (General Delegation)">Desk C (General Delegation)</option>
+                    </select>
+                </div>
+
+                <div class="auth-field">
+                    <label>Gate Access PIN</label>
+                    <input type="password" id="auth-pin-input" placeholder="Enter Gate PIN..." autofocus required>
+                </div>
+
+                <button type="submit" class="auth-btn">Authorize Scanner</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-box"></div>
+
+    <!-- SCANNER SCRIPT LOGIC -->
+    <script>
+        // ── CONFIG & SUPABASE SETTINGS ──
+        const GATE_CONFIG = {
+            SUPABASE_URL: 'https://rnylpxfjhxpmjwolsqcd.supabase.co',
+            SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJueWxweGZqaHhwbWp3b2xzcWNkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwOTgwMDEsImV4cCI6MjEwMzY3NDAwMX0.ms0YzXZ2Lb-VFpqEjD9BrAYzDp81ZklQwCwNnkyP6U8',
+            VALID_PINS: ['gate2026', 'wwi2026', 'cinema2026', 'celebrate@cinema', 'admin@vigor', '1234', 'vigor2026']
+        };
+
+        // ── STATE VARIABLES ──
+        let html5Qr = null;
+        let isCameraActive = false;
+        let isSoundEnabled = true;
+        let isTorchOn = false;
+        let currentCameraId = null;
+        let lastScannedText = '';
+        let lastScanTime = 0;
+        let gateStation = 'Gate 1';
+
+        // In-memory attendees lookup map (O(1) lookups in < 0.5ms!)
+        const attendeeMap = new Map(); // Key: uppercase ticketId
+        const phoneMap = new Map();    // Key: 10-digit phone
+        const emailMap = new Map();    // Key: lowercase email
+        const recentCheckins = [];     // Array of recent scan records
+
+        // Web Audio Synthesizer
+        let audioCtx = null;
+
+        function playSound(type) {
+            if (!isSoundEnabled) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'success') {
+                    // Ascending crisp double chime (A5 -> E6)
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, now);
+                    osc.frequency.setValueAtTime(1320, now + 0.08);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+                    osc.start(now);
+                    osc.stop(now + 0.24);
+                } else if (type === 'duplicate') {
+                    // Warning double pulse
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.setValueAtTime(320, now + 0.1);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+                    osc.start(now);
+                    osc.stop(now + 0.32);
+                } else {
+                    // Sawtooth error alarm
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(240, now);
+                    osc.frequency.setValueAtTime(160, now + 0.12);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+                    osc.start(now);
+                    osc.stop(now + 0.38);
+                }
+            } catch(e) {}
+        }
+
+        function triggerHaptics(type) {
+            if (!navigator.vibrate) return;
+            if (type === 'success') navigator.vibrate([60, 30, 60]);
+            else if (type === 'duplicate') navigator.vibrate([150, 60, 150]);
+            else navigator.vibrate([300]);
+        }
+
+        function showToast(msg, icon = 'ℹ️') {
+            const box = document.getElementById('toast-box');
+            if (!box) return;
+            const item = document.createElement('div');
+            item.className = 'toast-item';
+            item.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+            box.appendChild(item);
+            setTimeout(() => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(10px)';
+                setTimeout(() => item.remove(), 250);
+            }, 3000);
+        }
+
+        // ── GATE AUTHENTICATION ──
+        function checkGateAuth() {
+            // Check URL param ?pin=
+            const urlParams = new URLSearchParams(window.location.search);
+            const queryPin = urlParams.get('pin') || urlParams.get('key');
+            if (queryPin && GATE_CONFIG.VALID_PINS.includes(queryPin.toLowerCase().trim())) {
+                localStorage.setItem('wwi_gate_auth', 'true');
+                if (urlParams.get('gate')) {
+                    localStorage.setItem('wwi_gate_station', urlParams.get('gate'));
+                }
+            }
+
+            const isAuth = localStorage.getItem('wwi_gate_auth') === 'true';
+            if (!isAuth) {
+                document.getElementById('auth-modal').style.display = 'flex';
+            } else {
+                gateStation = localStorage.getItem('wwi_gate_station') || 'Gate 1';
+                document.getElementById('gate-station-text').textContent = gateStation;
+                initScannerApp();
+            }
+        }
+
+        function handleGateAuth(e) {
+            e.preventDefault();
+            const pin = (document.getElementById('auth-pin-input').value || '').trim().toLowerCase();
+            const selectedGate = document.getElementById('auth-gate-select').value;
+
+            if (GATE_CONFIG.VALID_PINS.includes(pin)) {
+                localStorage.setItem('wwi_gate_auth', 'true');
+                localStorage.setItem('wwi_gate_station', selectedGate);
+                gateStation = selectedGate;
+                document.getElementById('gate-station-text').textContent = gateStation;
+                document.getElementById('auth-modal').style.display = 'none';
+                showToast(`Authorized for ${selectedGate}!`, '🎉');
+                initScannerApp();
+            } else {
+                showToast('Invalid PIN! Try gate2026 or wwi2026', '❌');
+            }
+        }
+
+        // ── INITIALIZATION ──
+        async function initScannerApp() {
+            preloadDatabase();
+            loadRecentCheckins();
+        }
+
+        // Preload lightweight registry into fast RAM Maps (Zero lag!)
+        async function preloadDatabase() {
+            const syncStatusEl = document.getElementById('stat-sync-status');
+            const totalRegEl = document.getElementById('stat-total-reg');
+            const admittedEl = document.getElementById('stat-admitted');
+            if (syncStatusEl) syncStatusEl.innerHTML = '<span class="spinner"></span> Syncing';
+
+            try {
+                let allRows = [];
+                const fields = 'id,name,email,phone,college,year,verified,attended,attended_at,referred_by,final_price,coupon_used,transaction_id';
+
+                // Fetch in blocks of 1000
+                for (let offset = 0; offset <= 8000; offset += 1000) {
+                    const url = `${GATE_CONFIG.SUPABASE_URL}/rest/v1/registrations?select=${fields}&order=timestamp.desc&limit=1000&offset=${offset}`;
+                    const res = await fetch(url, {
+                        headers: {
+                            apikey: GATE_CONFIG.SUPABASE_ANON_KEY,
+                            Authorization: `Bearer ${GATE_CONFIG.SUPABASE_ANON_KEY}`
+                        }
+                    });
+                    if (!res.ok) break;
+                    const batch = await res.json();
+                    if (!batch || batch.length === 0) break;
+                    allRows.push(...batch);
+                    if (batch.length < 1000) break;
+                }
+
+                // Index into RAM Maps
+                let attendedCount = 0;
+                allRows.forEach(row => {
+                    if (!row || !row.id || String(row.id).startsWith('CONFIG_')) return;
+                    const ticketId = row.id.toUpperCase().trim();
+                    attendeeMap.set(ticketId, row);
+
+                    if (row.phone) {
+                        const cleanP = String(row.phone).replace(/\D/g, '').slice(-10);
+                        if (cleanP.length === 10) phoneMap.set(cleanP, row);
+                    }
+                    if (row.email) {
+                        emailMap.set(String(row.email).toLowerCase().trim(), row);
+                    }
+                    if (row.attended) attendedCount++;
+                });
+
+                if (totalRegEl) totalRegEl.textContent = attendeeMap.size.toLocaleString();
+                if (admittedEl) admittedEl.textContent = attendedCount.toLocaleString();
+                if (syncStatusEl) syncStatusEl.innerHTML = '🟢 Live';
+                console.log(`✓ Preloaded ${attendeeMap.size} attendees into memory map.`);
+            } catch (err) {
+                console.warn('Preload warning:', err);
+                if (syncStatusEl) syncStatusEl.innerHTML = '🟡 Offline';
+            }
+        }
+
+        async function refreshDatabase() {
+            showToast('Refreshing attendee database...', '🔄');
+            await preloadDatabase();
+            showToast('Attendee index updated!', '✓');
+        }
+
+        // ── QR EXTRACTION & PARSING ──
+        function extractTicketId(raw) {
+            if (!raw) return '';
+            let str = String(raw).trim();
+
+            // 1. JSON QR code
+            try {
+                const j = JSON.parse(str);
+                if (j.id) return j.id.trim().toUpperCase();
+                if (j.ticketId) return j.ticketId.trim().toUpperCase();
+            } catch(e) {}
+
+            // 2. URL parameter ?id=
+            if (str.includes('?')) {
+                try {
+                    const u = new URL(str.startsWith('http') ? str : 'https://dummy.com/' + str);
+                    const id = u.searchParams.get('id') || u.searchParams.get('t') || u.searchParams.get('ticket');
+                    if (id) return id.trim().toUpperCase();
+                } catch(e) {}
+            }
+
+            // 3. WWI-CC26: ticket format (as generated on PDF passes)
+            if (str.toUpperCase().startsWith('WWI-CC26:')) {
+                return str.substring(9).trim().toUpperCase();
+            }
+
+            // 4. Ticket ID pattern match (NAG, HSN, VEN, ROT, KS, MD, TAN, TKT)
+            const idMatch = str.match(/\b([A-Z]{2,4}-\d{4,8})\b/i);
+            if (idMatch) return idMatch[1].toUpperCase();
+
+            return str.trim();
+        }
+
+        // ── ATTENDANCE CHECK-IN LOGIC ──
+        async function processTicketCheckIn(rawInput, forceAdmit = false) {
+            const rawId = extractTicketId(rawInput);
+            if (!rawId) return;
+
+            // Debounce identical scans within 3 seconds
+            const now = Date.now();
+            if (rawId === lastScannedText && (now - lastScanTime) < 3000 && !forceAdmit) {
+                return;
+            }
+            lastScannedText = rawId;
+            lastScanTime = now;
+
+            // 1. O(1) Instant in-memory check
+            let record = attendeeMap.get(rawId.toUpperCase());
+
+            // 2. Fallback search by phone or email if not found by ticket ID
+            if (!record) {
+                const cleanPhoneDigits = rawId.replace(/\D/g, '').slice(-10);
+                if (cleanPhoneDigits.length === 10 && phoneMap.has(cleanPhoneDigits)) {
+                    record = phoneMap.get(cleanPhoneDigits);
+                } else if (emailMap.has(rawId.toLowerCase())) {
+                    record = emailMap.get(rawId.toLowerCase());
+                }
+            }
+
+            // 3. Fallback live fetch from Supabase if completely new registration
+            if (!record) {
+                try {
+                    const res = await fetch(`${GATE_CONFIG.SUPABASE_URL}/rest/v1/registrations?id=eq.${encodeURIComponent(rawId)}&select=id,name,email,phone,college,year,verified,attended,attended_at,referred_by,final_price,coupon_used,transaction_id`, {
+                        headers: { apikey: GATE_CONFIG.SUPABASE_ANON_KEY, Authorization: `Bearer ${GATE_CONFIG.SUPABASE_ANON_KEY}` }
+                    });
+                    if (res.ok) {
+                        const cloudArr = await res.json();
+                        if (cloudArr && cloudArr[0]) {
+                            record = cloudArr[0];
+                            attendeeMap.set(record.id.toUpperCase(), record);
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // NOT FOUND
+            if (!record) {
+                playSound('error');
+                triggerHaptics('error');
+                displayNotFound(rawId);
+                return;
+            }
+
+            // PAYMENT REJECTED / VOID
+            const txn = String(record.transaction_id || '').toUpperCase();
+            if (record.rejected || txn.startsWith('REJECTED')) {
+                playSound('error');
+                triggerHaptics('error');
+                displayRejected(record);
+                return;
+            }
+
+            // ALREADY ATTENDED
+            if (record.attended && !forceAdmit) {
+                playSound('duplicate');
+                triggerHaptics('duplicate');
+                displayAlreadyAttended(record);
+                return;
+            }
+
+            // SUCCESS VALID PASS — ADMIT!
+            playSound('success');
+            triggerHaptics('success');
+
+            const checkInTime = new Date().toISOString();
+            record.attended = true;
+            record.attended_at = checkInTime;
+            record.verified = true;
+
+            // Update stats
+            const admittedEl = document.getElementById('stat-admitted');
+            if (admittedEl) {
+                const cur = parseInt(admittedEl.textContent.replace(/\D/g, ''), 10) || 0;
+                admittedEl.textContent = (cur + 1).toLocaleString();
+            }
+
+            displaySuccess(record);
+            logRecentScan(record, checkInTime);
+
+            // Background async sync to Supabase (Zero-wait!)
+            syncAttendanceToCloud(record.id, checkInTime);
+        }
+
+        async function syncAttendanceToCloud(id, timestamp) {
+            try {
+                await fetch(`${GATE_CONFIG.SUPABASE_URL}/rest/v1/registrations?id=eq.${encodeURIComponent(id)}`, {
+                    method: 'PATCH',
+                    headers: {
+                        apikey: GATE_CONFIG.SUPABASE_ANON_KEY,
+                        Authorization: `Bearer ${GATE_CONFIG.SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        attended: true,
+                        attended_at: timestamp,
+                        verified: true
+                    })
+                });
+            } catch (err) {
+                console.warn('Offline check-in queued:', err);
+                // Queue in localStorage for retry
+                try {
+                    const q = JSON.parse(localStorage.getItem('gate_offline_queue') || '[]');
+                    q.push({ id, timestamp });
+                    localStorage.setItem('gate_offline_queue', JSON.stringify(q));
+                } catch(e) {}
+            }
+        }
+
+        // ── DISPLAY RESULT CARDS ──
+        function getVisitingDateInfo(yearStr) {
+            let visitDate = 'Both Days (08th & 09th October 2026)';
+            if (yearStr && yearStr.includes('__VD__')) {
+                visitDate = yearStr.split('__VD__')[1].trim();
+            }
+
+            const vdLower = visitDate.toLowerCase();
+            const isBoth = vdLower.includes('both');
+            const isDay1 = vdLower.includes('first') || vdLower.includes('08');
+            const isDay2 = vdLower.includes('second') || vdLower.includes('09');
+
+            let badgeHtml = '';
+            if (isBoth) {
+                badgeHtml = '<span class="day-badge valid">✓ Valid for Both Days</span>';
+            } else if (isDay1) {
+                badgeHtml = '<span class="day-badge valid">✓ Day 1 Pass (08th Oct)</span>';
+            } else if (isDay2) {
+                badgeHtml = '<span class="day-badge warning">★ Day 2 Pass (09th Oct)</span>';
+            }
+
+            return { text: visitDate, badgeHtml };
+        }
+
+        function getBandDetails(reg) {
+            const id = (reg.id || '').toUpperCase();
+            const ref = (reg.referred_by || '').toUpperCase();
+            const coup = (reg.coupon_used || '').toUpperCase();
+
+            if (id.startsWith('NAG-') || ref.includes('NAGESH') || coup.includes('NAGESH')) {
+                return {
+                    icon: '🎟️',
+                    text: 'FPHR WRISTBAND — Direct delegate to FPHR Desk',
+                    className: 'fphr'
+                };
+            }
+            if (id.startsWith('HSN-') || ref.includes('HSNC') || coup.includes('HSNC')) {
+                return {
+                    icon: '🎓',
+                    text: 'HSNC-COLLAB WRISTBAND — Direct delegate to HSNC Counter',
+                    className: 'hsnc'
+                };
+            }
+            if (ref.includes('KES-SHROFF') || coup.includes('KES-SHROFF')) {
+                return {
+                    icon: '🏛️',
+                    text: 'KES SHROFF DELEGATE WRISTBAND',
+                    className: 'fphr'
+                };
+            }
+            return {
+                icon: '🎫',
+                text: 'STANDARD DELEGATE ENTRY BAND',
+                className: 'standard'
+            };
+        }
+
+        function displaySuccess(reg) {
+            const container = document.getElementById('result-container');
+            const card = document.getElementById('result-card');
+            const header = document.getElementById('result-header');
+
+            card.className = 'result-card success';
+            header.className = 'result-header success';
+
+            document.getElementById('result-icon').textContent = '🎉';
+            document.getElementById('result-title').textContent = 'VALID PASS — CHECKED IN!';
+            document.getElementById('result-title').style.color = '#34d399';
+            document.getElementById('result-subtitle').textContent = 'Delegate verified and admitted at gate.';
+
+            fillCardDetails(reg);
+
+            document.getElementById('result-actions').innerHTML = `
+                <button class="btn-dismiss" style="background:#10b981; color:#0b0817; font-weight:800;" onclick="dismissResult()">✓ Done / Next Delegate</button>
+            `;
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function displayAlreadyAttended(reg) {
+            const container = document.getElementById('result-container');
+            const card = document.getElementById('result-card');
+            const header = document.getElementById('result-header');
+
+            card.className = 'result-card duplicate';
+            header.className = 'result-header duplicate';
+
+            const timeStr = reg.attended_at 
+                ? new Date(reg.attended_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }) 
+                : 'Earlier Today';
+
+            document.getElementById('result-icon').textContent = '⚠️';
+            document.getElementById('result-title').textContent = 'ALREADY CHECKED IN!';
+            document.getElementById('result-title').style.color = '#fbbf24';
+            document.getElementById('result-subtitle').textContent = `Pass was already scanned today at ${timeStr}.`;
+
+            fillCardDetails(reg);
+
+            document.getElementById('result-actions').innerHTML = `
+                <button class="btn-dismiss" onclick="dismissResult()">Dismiss Warning</button>
+                <button class="btn-force-admit" onclick="forceAdmitDelegate('${reg.id}')">Allow Re-Entry</button>
+            `;
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function displayRejected(reg) {
+            const container = document.getElementById('result-container');
+            const card = document.getElementById('result-card');
+            const header = document.getElementById('result-header');
+
+            card.className = 'result-card rejected';
+            header.className = 'result-header rejected';
+
+            document.getElementById('result-icon').textContent = '⛔';
+            document.getElementById('result-title').textContent = 'ENTRY DENIED — PASS VOID!';
+            document.getElementById('result-title').style.color = '#f87171';
+            document.getElementById('result-subtitle').textContent = 'Payment rejected or registration invalid. Do NOT admit.';
+
+            fillCardDetails(reg);
+
+            document.getElementById('result-actions').innerHTML = `
+                <button class="btn-dismiss" style="background:#ef4444; color:#fff;" onclick="dismissResult()">Close (Deny Entry)</button>
+            `;
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function displayNotFound(scannedId) {
+            const container = document.getElementById('result-container');
+            const card = document.getElementById('result-card');
+            const header = document.getElementById('result-header');
+
+            card.className = 'result-card notfound';
+            header.className = 'result-header notfound';
+
+            document.getElementById('result-icon').textContent = '❌';
+            document.getElementById('result-title').textContent = 'TICKET NOT FOUND';
+            document.getElementById('result-title').style.color = '#f87171';
+            document.getElementById('result-subtitle').textContent = `No registration found for ID: ${scannedId}`;
+
+            document.getElementById('band-banner').style.display = 'none';
+            document.getElementById('res-name').textContent = 'Unknown Delegate';
+            document.getElementById('res-ticket-id').textContent = scannedId;
+            document.getElementById('res-date').textContent = 'N/A';
+            document.getElementById('res-day-badge').innerHTML = '';
+            document.getElementById('res-college').textContent = 'Please check student phone number in manual search';
+            document.getElementById('res-type').textContent = 'Unregistered';
+            document.getElementById('res-time').textContent = 'N/A';
+
+            document.getElementById('result-actions').innerHTML = `
+                <button class="btn-dismiss" onclick="dismissResult()">Try Again / Search</button>
+            `;
+            container.style.display = 'block';
+            container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function fillCardDetails(reg) {
+            const band = getBandDetails(reg);
+            const bandBanner = document.getElementById('band-banner');
+            bandBanner.style.display = 'flex';
+            bandBanner.className = `band-banner ${band.className}`;
+            document.getElementById('band-icon').textContent = band.icon;
+            document.getElementById('band-text').textContent = band.text;
+
+            document.getElementById('res-name').textContent = reg.name || 'Delegate';
+            document.getElementById('res-ticket-id').textContent = reg.id || 'N/A';
+            document.getElementById('res-college').textContent = reg.college || 'General Registration';
+
+            const dateInfo = getVisitingDateInfo(reg.year);
+            document.getElementById('res-date').textContent = dateInfo.text;
+            document.getElementById('res-day-badge').innerHTML = dateInfo.badgeHtml;
+
+            let passLabel = 'Complimentary Academic Pass';
+            if (reg.final_price > 0) passLabel = `Paid Pass (₹${reg.final_price})`;
+            else if (reg.referred_by) passLabel = `${reg.referred_by}`;
+            document.getElementById('res-type').textContent = passLabel;
+
+            document.getElementById('res-time').textContent = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+        }
+
+        function dismissResult() {
+            document.getElementById('result-container').style.display = 'none';
+        }
+
+        function forceAdmitDelegate(id) {
+            processTicketCheckIn(id, true);
+        }
+
+        // ── LOG RECENT SCANS ──
+        function logRecentScan(reg, time) {
+            const listEl = document.getElementById('recent-list');
+            if (!listEl) return;
+
+            const timeFormatted = new Date(time).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            recentCheckins.unshift({
+                ticketId: reg.id,
+                name: reg.name,
+                college: reg.college,
+                time: timeFormatted,
+                gate: gateStation
+            });
+
+            if (recentCheckins.length > 25) recentCheckins.pop();
+
+            listEl.innerHTML = recentCheckins.map(item => `
+                <div class="recent-row">
+                    <div class="recent-row-left">
+                        <span style="font-size:14px;">✓</span>
+                        <div>
+                            <div style="font-weight:700; color:#fff;">${escapeHtml(item.name)}</div>
+                            <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${item.ticketId} • ${escapeHtml(item.college || '')}</div>
+                        </div>
+                    </div>
+                    <span class="recent-row-time">${item.time}</span>
+                </div>
+            `).join('');
+
+            try {
+                localStorage.setItem('gate_recent_scans', JSON.stringify(recentCheckins.slice(0, 15)));
+            } catch(e) {}
+        }
+
+        function loadRecentCheckins() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('gate_recent_scans') || '[]');
+                if (saved.length > 0) {
+                    saved.forEach(s => recentCheckins.push(s));
+                    const listEl = document.getElementById('recent-list');
+                    if (listEl) {
+                        listEl.innerHTML = recentCheckins.map(item => `
+                            <div class="recent-row">
+                                <div class="recent-row-left">
+                                    <span style="font-size:14px;">✓</span>
+                                    <div>
+                                        <div style="font-weight:700; color:#fff;">${escapeHtml(item.name)}</div>
+                                        <div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">${item.ticketId} • ${escapeHtml(item.college || '')}</div>
+                                    </div>
+                                </div>
+                                <span class="recent-row-time">${item.time}</span>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch(e) {}
+        }
+
+        function exportGateLog() {
+            if (recentCheckins.length === 0) {
+                showToast('No check-ins logged yet to export.', 'ℹ️');
+                return;
+            }
+            const csvRows = ['Ticket ID,Name,College,Time,Gate'];
+            recentCheckins.forEach(r => {
+                csvRows.push(`"${r.ticketId}","${r.name.replace(/"/g, '""')}","${(r.college || '').replace(/"/g, '""')}","${r.time}","${r.gate}"`);
+            });
+            const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `gate_attendance_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ── MANUAL SEARCH HANDLER ──
+        function handleManualSearch(query) {
+            const resultsBox = document.getElementById('search-results');
+            const clearBtn = document.getElementById('search-clear-btn');
+            const q = query.trim().toLowerCase();
+
+            if (!q) {
+                resultsBox.style.display = 'none';
+                clearBtn.style.display = 'none';
+                return;
+            }
+            clearBtn.style.display = 'block';
+
+            const cleanDigits = q.replace(/\D/g, '');
+            const matches = [];
+
+            // Search through attendeeMap
+            for (const [id, attendee] of attendeeMap.entries()) {
+                const name = (attendee.name || '').toLowerCase();
+                const email = (attendee.email || '').toLowerCase();
+                const phone = (attendee.phone || '').replace(/\D/g, '');
+
+                if (id.toLowerCase().includes(q) || name.includes(q) || email.includes(q) || (cleanDigits.length >= 4 && phone.includes(cleanDigits))) {
+                    matches.push(attendee);
+                    if (matches.length >= 8) break;
+                }
+            }
+
+            if (matches.length === 0) {
+                resultsBox.innerHTML = `
+                    <div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 13px;">
+                        No matches found. Try entering full phone number or Ticket ID.
+                    </div>
+                `;
+            } else {
+                resultsBox.innerHTML = matches.map(m => `
+                    <div class="search-item" onclick="selectSearchAttendee('${m.id}')">
+                        <div class="search-item-info">
+                            <span class="search-item-name">${escapeHtml(m.name)}</span>
+                            <span class="search-item-meta">${m.id} • ${escapeHtml(m.college || '')}</span>
+                            <span style="font-size:11px; color:${m.attended ? '#f59e0b' : '#10b981'}; font-weight:700;">
+                                ${m.attended ? '⚠️ Already Checked In' : '✓ Unclaimed Pass'}
+                            </span>
+                        </div>
+                        <button class="btn-quick-admit" onclick="event.stopPropagation(); selectSearchAttendee('${m.id}')">
+                            ${m.attended ? 'View' : 'Check In'}
+                        </button>
+                    </div>
+                `).join('');
+            }
+            resultsBox.style.display = 'flex';
+        }
+
+        function selectSearchAttendee(id) {
+            clearSearch();
+            processTicketCheckIn(id);
+        }
+
+        function clearSearch() {
+            const input = document.getElementById('manual-search-input');
+            if (input) input.value = '';
+            document.getElementById('search-results').style.display = 'none';
+            document.getElementById('search-clear-btn').style.display = 'none';
+        }
+
+        // ── CAMERA SCANNER CONTROLS ──
+        async function toggleCamera() {
+            if (isCameraActive) {
+                stopCamera();
+            } else {
+                startCamera();
+            }
+        }
+
+        async function startCamera() {
+            const standby = document.getElementById('standby-screen');
+            const viewport = document.getElementById('viewport');
+            const startBtn = document.getElementById('start-btn');
+            const floatBar = document.getElementById('camera-floating-bar');
+
+            if (typeof Html5Qrcode === 'undefined') {
+                showToast('Camera library loading, please wait 2 seconds...', '⏳');
+                return;
+            }
+
+            try {
+                if (!html5Qr) {
+                    html5Qr = new Html5Qrcode('scanner-video-container');
+                }
+
+                if (standby) standby.style.display = 'none';
+                if (viewport) viewport.classList.add('scanner-active');
+                if (floatBar) floatBar.style.display = 'flex';
+                if (startBtn) {
+                    startBtn.innerHTML = '⏹ Stop Camera Scanner';
+                    startBtn.className = 'action-btn btn-danger-stop';
+                }
+
+                // Detect cameras
+                let backCameraId = null;
+                try {
+                    const devices = await Html5Qrcode.getCameras();
+                    if (devices && devices.length > 0) {
+                        const backCam = devices.find(d => /back|rear|environment|wide|trás|arrière/i.test(d.label));
+                        backCameraId = backCam ? backCam.id : devices[devices.length - 1].id;
+
+                        const selectEl = document.getElementById('camera-select');
+                        if (selectEl && devices.length > 1) {
+                            selectEl.innerHTML = devices.map(d => `
+                                <option value="${d.id}" ${d.id === backCameraId ? 'selected' : ''}>
+                                    ${d.label ? d.label.substring(0, 20) : 'Camera ' + d.id.substring(0, 4)}
+                                </option>
+                            `).join('');
+                            selectEl.style.display = 'inline-block';
+                        }
+                    }
+                } catch(camErr) {
+                    console.log('Camera list query note:', camErr);
+                }
+
+                const qrConfig = {
+                    fps: 20,
+                    qrbox: { width: 230, height: 230 },
+                    aspectRatio: 1.0
+                };
+
+                const cameraConstraint = backCameraId 
+                    ? backCameraId 
+                    : { facingMode: { ideal: 'environment' } };
+
+                await html5Qr.start(
+                    cameraConstraint,
+                    qrConfig,
+                    (decodedText) => {
+                        processTicketCheckIn(decodedText);
+                    },
+                    (error) => {
+                        // Frame-by-frame quiet scanning
+                    }
+                );
+
+                isCameraActive = true;
+                currentCameraId = backCameraId;
+                showToast('Camera active! Scan delegate ticket', '📷');
+            } catch (err) {
+                console.error('Camera startup error:', err);
+                if (standby) standby.style.display = 'flex';
+                if (viewport) viewport.classList.remove('scanner-active');
+                if (floatBar) floatBar.style.display = 'none';
+                if (startBtn) {
+                    startBtn.innerHTML = '📷 Start Camera Scanner';
+                    startBtn.className = 'action-btn btn-primary-gold';
+                }
+                isCameraActive = false;
+                showToast('Camera permission denied or camera unavailable. Check browser permissions.', '❌');
+            }
+        }
+
+        async function stopCamera() {
+            const standby = document.getElementById('standby-screen');
+            const viewport = document.getElementById('viewport');
+            const startBtn = document.getElementById('start-btn');
+            const floatBar = document.getElementById('camera-floating-bar');
+
+            if (html5Qr && isCameraActive) {
+                try {
+                    await html5Qr.stop();
+                } catch(e) {}
+            }
+            isCameraActive = false;
+            isTorchOn = false;
+
+            if (standby) standby.style.display = 'flex';
+            if (viewport) viewport.classList.remove('scanner-active');
+            if (floatBar) floatBar.style.display = 'none';
+            if (startBtn) {
+                startBtn.innerHTML = '📷 Start Camera Scanner';
+                startBtn.className = 'action-btn btn-primary-gold';
+            }
+        }
+
+        async function switchCamera(deviceId) {
+            if (!deviceId || !html5Qr || !isCameraActive) return;
+            try {
+                await html5Qr.stop();
+                const qrConfig = {
+                    fps: 20,
+                    qrbox: { width: 230, height: 230 },
+                    aspectRatio: 1.0
+                };
+                await html5Qr.start(deviceId, qrConfig, processTicketCheckIn, () => {});
+                currentCameraId = deviceId;
+            } catch(e) {
+                showToast('Could not switch camera lens', '⚠️');
+            }
+        }
+
+        async function toggleTorch() {
+            if (!html5Qr || !isCameraActive) return;
+            const torchBtn = document.getElementById('torch-btn');
+            try {
+                isTorchOn = !isTorchOn;
+                await html5Qr.applyVideoConstraints({
+                    advanced: [{ torch: isTorchOn }]
+                });
+                if (torchBtn) {
+                    torchBtn.classList.toggle('active', isTorchOn);
+                    torchBtn.innerHTML = isTorchOn ? '⚡ Torch ON' : '⚡ Torch';
+                }
+            } catch(e) {
+                showToast('Torch flashlight not supported by this device lens', 'ℹ️');
+            }
+        }
+
+        function toggleSound() {
+            isSoundEnabled = !isSoundEnabled;
+            const btn = document.getElementById('sound-btn');
+            if (btn) btn.textContent = isSoundEnabled ? '🔊' : '🔇';
+            showToast(isSoundEnabled ? 'Sound Enabled' : 'Sound Muted', isSoundEnabled ? '🔊' : '🔇');
+        }
+
+        function escapeHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        // Auto-check auth on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkGateAuth();
+        });
+    </script>
+</body>
+</html>
