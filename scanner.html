@@ -8,16 +8,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Gate Scanner — Celebrate Cinema 2026 | Whistling Woods International</title>
 
-    <!-- Automatic HTTPS Enforcer for iOS Safari MediaDevices & Camera Support -->
-    <script>
-        if (window.location.protocol === 'http:' && 
-            window.location.hostname !== 'localhost' && 
-            window.location.hostname !== '127.0.0.1' && 
-            !window.location.hostname.startsWith('192.168.')) {
-            window.location.href = window.location.href.replace('http:', 'https:');
-        }
-    </script>
-
     <!-- Google Fonts Matching WWI Brand Kit -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1350,10 +1340,9 @@
                     <!-- Viewport Floating Controls (Torch & Camera Switch) -->
                     <div class="hud-floating-bar" id="hud-floating-bar" style="display: none;">
                         <button class="hud-btn" id="torch-button" onclick="toggleTorch()">⚡ Torch</button>
-                        <select id="camera-lens-select" class="hud-btn" style="appearance: none; -webkit-appearance: none; padding-right: 22px; display: none;" onchange="switchCameraLens(this.value)">
+                        <select id="camera-lens-select" class="hud-btn" style="appearance: none; -webkit-appearance: none; padding-right: 22px;" onchange="switchCameraLens(this.value)">
                             <option value="">Switch Lens</option>
                         </select>
-                        <button class="hud-btn" onclick="triggerPhotoScan()" title="Snap photo from iPhone camera or photo library">📁 Snap Photo</button>
                     </div>
 
                     <!-- Standby Screen (Shown before camera start) -->
@@ -1361,21 +1350,14 @@
                         <div class="splash-icon-ring">📷</div>
                         <h3>Gate Camera Ready</h3>
                         <p>Aim at attendee's digital Boarding Pass QR or physical badge.</p>
-                        <div id="ios-camera-tip" style="margin-top: 10px; font-size: 11.5px; color: var(--gold); background: rgba(212, 168, 67, 0.15); border: 1px dashed var(--gold); border-radius: 8px; padding: 6px 12px; display: none;">
-                            📱 <strong>iPhone / iOS Tip:</strong> Tap <em>"Allow"</em> when Safari asks for camera access.
-                        </div>
                     </div>
                 </div>
 
-                <!-- Camera Action Toolbar with iOS Photo Backup -->
-                <div class="camera-toolbar" style="display: flex; gap: 8px;">
-                    <button class="btn-cta btn-start-scan" id="cam-toggle-btn" onclick="toggleCameraScanner()" style="flex: 2;">
+                <!-- Camera Action Toolbar -->
+                <div class="camera-toolbar">
+                    <button class="btn-cta btn-start-scan" id="cam-toggle-btn" onclick="toggleCameraScanner()">
                         <span>📷 Start Camera Scanner</span>
                     </button>
-                    <button class="btn-cta" id="cam-file-btn" onclick="triggerPhotoScan()" style="flex: 1; background: rgba(141, 106, 174, 0.25); border: 1px solid var(--border-subtle); color: var(--gold); font-size: 12.5px; font-weight: 700; white-space: nowrap; padding: 0 10px;" title="Scan QR directly from iPhone photo or camera roll">
-                        <span>📁 Snap / Photo</span>
-                    </button>
-                    <input type="file" id="qr-file-input" accept="image/*" capture="environment" style="display: none;" onchange="handleFileQrScan(event)">
                 </div>
             </div>
 
@@ -2392,24 +2374,7 @@
             document.getElementById('search-clear-cross').style.display = 'none';
         }
 
-        // ── CAMERA HARDWARE CONTROLS (OPTIMIZED FOR IOS SAFARI & ANDROID) ──
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
-                      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-
-        function enforceVideoInlineAttributes() {
-            const container = document.getElementById('scanner-video-container');
-            if (!container) return;
-            const vids = container.querySelectorAll('video');
-            vids.forEach(v => {
-                v.setAttribute('playsinline', 'true');
-                v.setAttribute('webkit-playsinline', 'true');
-                v.setAttribute('muted', 'true');
-                v.setAttribute('autoplay', 'true');
-                v.playsInline = true;
-                v.muted = true;
-            });
-        }
-
+        // ── CAMERA HARDWARE CONTROLS ──
         async function toggleCameraScanner() {
             if (isScanning) {
                 await haltCamera();
@@ -2424,11 +2389,6 @@
             const toggleBtn = document.getElementById('cam-toggle-btn');
             const hudBar = document.getElementById('hud-floating-bar');
 
-            if (isIOS) {
-                const tip = document.getElementById('ios-camera-tip');
-                if (tip) tip.style.display = 'block';
-            }
-
             if (typeof Html5Qrcode === 'undefined') {
                 popToast('Camera library loading, please wait 2 seconds...', '⏳');
                 return;
@@ -2436,13 +2396,7 @@
 
             try {
                 if (!qrScannerInstance) {
-                    // Set useBarCodeDetectorIfSupported: false to fix broken native iOS 17 BarcodeDetector
-                    qrScannerInstance = new Html5Qrcode('scanner-video-container', {
-                        experimentalFeatures: {
-                            useBarCodeDetectorIfSupported: false
-                        },
-                        verbose: false
-                    });
+                    qrScannerInstance = new Html5Qrcode('scanner-video-container');
                 }
 
                 if (splash) splash.style.display = 'none';
@@ -2453,69 +2407,48 @@
                     toggleBtn.className = 'btn-cta btn-stop-scan';
                 }
 
-                // Optimal scan settings WITHOUT forcing aspectRatio: 1.0 (which throws OverconstrainedError on iOS WebKit!)
-                const scanSettings = {
-                    fps: 15,
-                    qrbox: function(viewfinderWidth, viewfinderHeight) {
-                        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-                        const edge = Math.max(Math.floor(minEdge * 0.72), 180);
-                        return { width: edge, height: edge };
+                // Query rear cameras
+                let preferredCameraId = null;
+                try {
+                    const devices = await Html5Qrcode.getCameras();
+                    if (devices && devices.length > 0) {
+                        const rearLens = devices.find(d => /back|rear|environment|wide|trás|arrière/i.test(d.label));
+                        preferredCameraId = rearLens ? rearLens.id : devices[devices.length - 1].id;
+
+                        const lensSelect = document.getElementById('camera-lens-select');
+                        if (lensSelect && devices.length > 1) {
+                            lensSelect.innerHTML = devices.map(d => `
+                                <option value="${d.id}" ${d.id === preferredCameraId ? 'selected' : ''}>
+                                    ${d.label ? d.label.substring(0, 18) : 'Camera ' + d.id.substring(0, 4)}
+                                </option>
+                            `).join('');
+                            lensSelect.style.display = 'inline-block';
+                        }
                     }
+                } catch(e) {}
+
+                const cameraRules = preferredCameraId 
+                    ? preferredCameraId 
+                    : { facingMode: { ideal: 'environment' } };
+
+                const scanSettings = {
+                    fps: 22,
+                    qrbox: { width: 230, height: 230 },
+                    aspectRatio: 1.0
                 };
 
-                // Camera selection strategy:
-                // On iOS, direct { facingMode: "environment" } is the standard recommendation.
-                let cameraRules = activeCameraId ? activeCameraId : { facingMode: "environment" };
+                await qrScannerInstance.start(
+                    cameraRules,
+                    scanSettings,
+                    (qrContent) => {
+                        executeCheckIn(qrContent);
+                    },
+                    (err) => {}
+                );
 
-                try {
-                    await qrScannerInstance.start(
-                        cameraRules,
-                        scanSettings,
-                        (qrContent) => executeCheckIn(qrContent),
-                        () => {}
-                    );
-                } catch (primaryErr) {
-                    console.warn('Primary camera start failed, attempting fallback...', primaryErr);
-                    try {
-                        await qrScannerInstance.start(
-                            { facingMode: { ideal: "environment" } },
-                            scanSettings,
-                            (qrContent) => executeCheckIn(qrContent),
-                            () => {}
-                        );
-                    } catch(secondErr) {
-                        await qrScannerInstance.start(
-                            { facingMode: "user" },
-                            scanSettings,
-                            (qrContent) => executeCheckIn(qrContent),
-                            () => {}
-                        );
-                    }
-                }
-
-                enforceVideoInlineAttributes();
                 isScanning = true;
+                activeCameraId = preferredCameraId;
                 popToast('Scanner active! Point at ticket QR', '📷');
-
-                // After camera permission is active, safely discover other lenses
-                setTimeout(async () => {
-                    enforceVideoInlineAttributes();
-                    try {
-                        const devices = await Html5Qrcode.getCameras();
-                        if (devices && devices.length > 1) {
-                            const lensSelect = document.getElementById('camera-lens-select');
-                            if (lensSelect) {
-                                lensSelect.innerHTML = `<option value="">Switch Lens (${devices.length})</option>` + devices.map(d => `
-                                    <option value="${d.id}" ${d.id === activeCameraId ? 'selected' : ''}>
-                                        ${d.label ? d.label.substring(0, 18) : 'Camera ' + d.id.substring(0, 4)}
-                                    </option>
-                                `).join('');
-                                lensSelect.style.display = 'inline-block';
-                            }
-                        }
-                    } catch(e) {}
-                }, 600);
-
             } catch (err) {
                 console.error('Camera activation error:', err);
                 if (splash) splash.style.display = 'flex';
@@ -2526,14 +2459,7 @@
                     toggleBtn.className = 'btn-cta btn-start-scan';
                 }
                 isScanning = false;
-
-                if (err && (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError')) {
-                    popToast('Camera blocked. On iPhone: Tap "aA" in Safari URL bar > Website Settings > Camera > Allow', '❌');
-                } else if (err && err.name === 'OverconstrainedError') {
-                    popToast('Camera resolution constraint error. Tap "Snap / Photo" button to scan.', '⚠️');
-                } else {
-                    popToast('Camera blocked. Tap "Snap / Photo" button or use Manual Lookup.', '❌');
-                }
+                popToast('Camera access blocked. Check browser permissions.', '❌');
             }
         }
 
@@ -2564,51 +2490,11 @@
             if (!newDeviceId || !qrScannerInstance || !isScanning) return;
             try {
                 await qrScannerInstance.stop();
-                const scanSettings = { 
-                    fps: 15, 
-                    qrbox: function(viewfinderWidth, viewfinderHeight) {
-                        const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-                        const edge = Math.max(Math.floor(minEdge * 0.72), 180);
-                        return { width: edge, height: edge };
-                    }
-                };
+                const scanSettings = { fps: 22, qrbox: { width: 230, height: 230 }, aspectRatio: 1.0 };
                 await qrScannerInstance.start(newDeviceId, scanSettings, executeCheckIn, () => {});
-                enforceVideoInlineAttributes();
                 activeCameraId = newDeviceId;
             } catch(e) {
                 popToast('Lens switch unsupported', '⚠️');
-            }
-        }
-
-        // Photo / Image scan fallback for iOS & cracked cameras
-        function triggerPhotoScan() {
-            const fileInput = document.getElementById('qr-file-input');
-            if (fileInput) fileInput.click();
-        }
-
-        async function handleFileQrScan(e) {
-            const file = e.target.files && e.target.files[0];
-            if (!file) return;
-
-            try {
-                if (!qrScannerInstance) {
-                    qrScannerInstance = new Html5Qrcode('scanner-video-container', {
-                        experimentalFeatures: { useBarCodeDetectorIfSupported: false },
-                        verbose: false
-                    });
-                }
-                popToast('Analyzing photo for QR code...', '📷');
-                const decoded = await qrScannerInstance.scanFile(file, true);
-                if (decoded) {
-                    executeCheckIn(decoded);
-                } else {
-                    popToast('No QR code detected in image. Please try closer or manual search.', '⚠️');
-                }
-            } catch(err) {
-                console.error('Photo scan error:', err);
-                popToast('Could not decode QR. Try taking a closer photo or use Manual Lookup.', '❌');
-            } finally {
-                e.target.value = '';
             }
         }
 
