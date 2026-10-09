@@ -184,6 +184,31 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
 
+        .gate-day-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, rgba(212, 168, 67, 0.25) 0%, rgba(141, 106, 174, 0.25) 100%);
+            border: 1.5px solid var(--gold);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 13px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .gate-day-pill:hover {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--primary) 100%);
+            color: #0c0817;
+            transform: scale(1.03);
+        }
+
         .pulse-dot {
             width: 7px;
             height: 7px;
@@ -1231,6 +1256,10 @@
         </div>
 
         <div class="navbar-actions">
+            <button class="gate-day-pill" id="gate-day-pill" onclick="toggleActiveGateDay()" title="Click to toggle Active Event Day (Day 1 vs Day 2)">
+                <span>📅</span>
+                <span id="gate-day-label">Day 2 (09th Oct)</span>
+            </button>
             <span class="gate-station-pill" id="gate-station-pill">
                 <span class="pulse-dot"></span>
                 <span id="gate-station-title">Gate 1</span>
@@ -1240,20 +1269,27 @@
         </div>
     </header>
 
-    <!-- LIVE STATS DOCK -->
+    <!-- LIVE STATS DOCK WITH MULTI-DAY SUPPORT -->
     <div class="stats-dock">
-        <div class="dock-metric">
+        <div class="dock-metric" id="metric-box-d2" title="Walk-ins checked in today on Day 2">
             <span class="dock-metric-icon">🎟️</span>
             <div class="dock-metric-info">
-                <span class="dock-metric-val green" id="stat-checked-in">0</span>
-                <span class="dock-metric-lbl">Admitted</span>
+                <span class="dock-metric-val green" id="stat-checked-in-d2">0</span>
+                <span class="dock-metric-lbl">Day 2 (Today)</span>
+            </div>
+        </div>
+        <div class="dock-metric" id="metric-box-d1" title="Walk-ins checked in yesterday on Day 1">
+            <span class="dock-metric-icon">🏛️</span>
+            <div class="dock-metric-info">
+                <span class="dock-metric-val gold" id="stat-checked-in-d1">1,493</span>
+                <span class="dock-metric-lbl">Day 1 (8th Oct)</span>
             </div>
         </div>
         <div class="dock-metric">
             <span class="dock-metric-icon">👥</span>
             <div class="dock-metric-info">
-                <span class="dock-metric-val gold" id="stat-total-attendees">...</span>
-                <span class="dock-metric-lbl">Registered</span>
+                <span class="dock-metric-val" id="stat-total-attendees">...</span>
+                <span class="dock-metric-lbl">Total Registered</span>
             </div>
         </div>
         <div class="dock-metric">
@@ -1471,7 +1507,7 @@
             ACCEPTED_PINS: ['gate2026', 'wwi2026', 'cinema2026', 'celebrate@cinema', 'admin@vigor', '1234', 'vigor2026', 'nilesh2202']
         };
 
-        // ── APPLICATION STATE ──
+        // ── APPLICATION STATE & MULTI-DAY ATTENDANCE ENGINE ──
         let qrScannerInstance = null;
         let isScanning = false;
         let audioMuted = false;
@@ -1480,6 +1516,67 @@
         let previousScanCode = '';
         let previousScanTimestamp = 0;
         let assignedStation = 'Gate 1 (Main Entrance)';
+
+        // Multi-Day Gate Control (Day 1: 08th Oct 2026 | Day 2: 09th Oct 2026)
+        // Today is October 9th, so activeEventDay defaults to 2!
+        let activeEventDay = 2;
+        // 00:00:00 IST on 09th October 2026 = 2026-10-08T18:30:00.000Z
+        const OCT_9_START_UTC = new Date('2026-10-08T18:30:00.000Z').getTime();
+        let day1AdmittedCount = 1493; // Baseline Day 1 confirmed walk-ins
+        let day2AdmittedCount = 0;
+
+        function isDay2Attendance(attendee) {
+            if (!attendee) return false;
+            if (attendee.year && attendee.year.includes('__D2__')) return true;
+            if (attendee.attended && attendee.attended_at) {
+                const t = new Date(attendee.attended_at).getTime();
+                if (t >= OCT_9_START_UTC) return true;
+            }
+            return false;
+        }
+
+        function isDay1Attendance(attendee) {
+            if (!attendee) return false;
+            if (attendee.year && attendee.year.includes('__D1__')) return true;
+            if (attendee.attended && attendee.attended_at) {
+                const t = new Date(attendee.attended_at).getTime();
+                if (t < OCT_9_START_UTC) return true;
+            }
+            return false;
+        }
+
+        function toggleActiveGateDay() {
+            activeEventDay = (activeEventDay === 2) ? 1 : 2;
+            updateGateDayUI();
+            popToast(`Gate Scanner set to Day ${activeEventDay} (${activeEventDay === 2 ? '09th Oct' : '08th Oct'})`, '📅');
+        }
+
+        function updateGateDayUI() {
+            const labelEl = document.getElementById('gate-day-label');
+            const pillEl = document.getElementById('gate-day-pill');
+            if (labelEl) {
+                labelEl.textContent = `Day ${activeEventDay} (${activeEventDay === 2 ? '09th Oct' : '08th Oct'})`;
+            }
+            if (pillEl) {
+                if (activeEventDay === 2) {
+                    pillEl.style.borderColor = 'var(--gold)';
+                    pillEl.style.background = 'linear-gradient(135deg, rgba(212, 168, 67, 0.3) 0%, rgba(141, 106, 174, 0.25) 100%)';
+                } else {
+                    pillEl.style.borderColor = '#93c5fd';
+                    pillEl.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(141, 106, 174, 0.25) 100%)';
+                }
+            }
+            updateStatsDock();
+        }
+
+        function updateStatsDock() {
+            const d2El = document.getElementById('stat-checked-in-d2');
+            const d1El = document.getElementById('stat-checked-in-d1');
+            const totalAttendeesEl = document.getElementById('stat-total-attendees');
+            if (d2El) d2El.textContent = day2AdmittedCount.toLocaleString();
+            if (d1El) d1El.textContent = day1AdmittedCount.toLocaleString();
+            if (totalAttendeesEl) totalAttendeesEl.textContent = memoryTicketIndex.size.toLocaleString();
+        }
 
         // Ultra-fast in-memory lookup indexes (< 0.5ms lookups)
         const memoryTicketIndex = new Map(); // Key: uppercase ticket ID
@@ -1633,14 +1730,13 @@
 
         // ── BOOTSTRAP & IN-MEMORY REGISTRY PRELOAD ──
         async function bootGateSystem() {
+            updateGateDayUI();
             await fetchRegistryIndex();
             restoreSavedAdmissions();
         }
 
         async function fetchRegistryIndex() {
             const cloudStatusEl = document.getElementById('stat-cloud-status');
-            const totalAttendeesEl = document.getElementById('stat-total-attendees');
-            const checkedInEl = document.getElementById('stat-checked-in');
             if (cloudStatusEl) cloudStatusEl.innerHTML = '<span class="spinner-ring"></span> Syncing';
 
             try {
@@ -1663,7 +1759,8 @@
                     if (chunk.length < 1000) break;
                 }
 
-                let admittedCount = 0;
+                let d1Count = 0;
+                let d2Count = 0;
                 records.forEach(attendee => {
                     if (!attendee || !attendee.id || String(attendee.id).startsWith('CONFIG_')) return;
                     const cleanTktId = attendee.id.toUpperCase().trim();
@@ -1676,13 +1773,15 @@
                     if (attendee.email) {
                         memoryEmailIndex.set(String(attendee.email).toLowerCase().trim(), attendee);
                     }
-                    if (attendee.attended) admittedCount++;
+                    if (isDay1Attendance(attendee)) d1Count++;
+                    if (isDay2Attendance(attendee)) d2Count++;
                 });
 
-                if (totalAttendeesEl) totalAttendeesEl.textContent = memoryTicketIndex.size.toLocaleString();
-                if (checkedInEl) checkedInEl.textContent = admittedCount.toLocaleString();
+                day1AdmittedCount = Math.max(1493, d1Count);
+                day2AdmittedCount = d2Count;
+                updateStatsDock();
                 if (cloudStatusEl) cloudStatusEl.innerHTML = '🟢 Online';
-                console.log(`✓ Indexed ${memoryTicketIndex.size} attendees in fast RAM.`);
+                console.log(`✓ Indexed ${memoryTicketIndex.size} attendees in fast RAM. Day 1: ${day1AdmittedCount}, Day 2: ${day2AdmittedCount}`);
             } catch (err) {
                 console.warn('Preload note:', err);
                 if (cloudStatusEl) cloudStatusEl.innerHTML = '🟡 Offline';
@@ -1787,39 +1886,101 @@
                 return;
             }
 
-            // ALREADY CHECKED IN (DUPLICATE PASS)
-            if (match.attended && !allowForce) {
-                emitSound('duplicate');
-                triggerVibration('duplicate');
-                renderDuplicateCard(match);
+            // ── MULTI-DAY ATTENDANCE LOGIC (Day 1 vs Day 2) ──
+            const isDay2 = (activeEventDay === 2);
+            const hadD1 = isDay1Attendance(match);
+            const hasD2 = isDay2Attendance(match);
+
+            if (isDay2) {
+                // If already checked in for Day 2 today
+                if (hasD2 && !allowForce) {
+                    emitSound('duplicate');
+                    triggerVibration('duplicate');
+                    renderDuplicateCard(match, 2);
+                    return;
+                }
+
+                // VALID PASS — ADMIT ATTENDEE FOR DAY 2 (TODAY)!
+                emitSound('success');
+                triggerVibration('success');
+
+                const nowIso = new Date().toISOString();
+                const prevD1Time = (hadD1 && match.attended_at) ? match.attended_at : '';
+
+                match.attended = true;
+                match.attended_at = nowIso;
+                match.verified = true;
+
+                // Seamlessly preserve Day 1 timestamp & stamp Day 2
+                let baseYear = String(match.year || '');
+                if (hadD1 && !baseYear.includes('__D1__') && prevD1Time) {
+                    baseYear += '__D1__' + prevD1Time;
+                }
+                if (!baseYear.includes('__D2__')) {
+                    baseYear += '__D2__' + nowIso;
+                }
+                match.year = baseYear;
+
+                day2AdmittedCount++;
+                updateStatsDock();
+
+                renderSuccessCard(match, {
+                    isDay2: true,
+                    returningFromDay1: hadD1,
+                    prevD1Time: prevD1Time
+                });
+
+                appendAdmissionLog(match, nowIso, 2);
+                persistAttendanceToCloud(match.id, nowIso, match.year);
+                return;
+            } else {
+                // SCANNING IN DAY 1 MODE
+                if (hadD1 && !allowForce) {
+                    emitSound('duplicate');
+                    triggerVibration('duplicate');
+                    renderDuplicateCard(match, 1);
+                    return;
+                }
+
+                emitSound('success');
+                triggerVibration('success');
+
+                const nowIso = new Date().toISOString();
+                match.attended = true;
+                match.attended_at = nowIso;
+                match.verified = true;
+
+                let baseYear = String(match.year || '');
+                if (!baseYear.includes('__D1__')) {
+                    baseYear += '__D1__' + nowIso;
+                }
+                match.year = baseYear;
+
+                day1AdmittedCount++;
+                updateStatsDock();
+
+                renderSuccessCard(match, {
+                    isDay2: false,
+                    returningFromDay1: false
+                });
+
+                appendAdmissionLog(match, nowIso, 1);
+                persistAttendanceToCloud(match.id, nowIso, match.year);
                 return;
             }
-
-            // VALID PASS — ADMIT ATTENDEE!
-            emitSound('success');
-            triggerVibration('success');
-
-            const nowIso = new Date().toISOString();
-            match.attended = true;
-            match.attended_at = nowIso;
-            match.verified = true;
-
-            // Increment admitted ticker
-            const checkedInEl = document.getElementById('stat-checked-in');
-            if (checkedInEl) {
-                const count = parseInt(checkedInEl.textContent.replace(/\D/g, ''), 10) || 0;
-                checkedInEl.textContent = (count + 1).toLocaleString();
-            }
-
-            renderSuccessCard(match);
-            appendAdmissionLog(match, nowIso);
-
-            // Asynchronous non-blocking Supabase update
-            persistAttendanceToCloud(match.id, nowIso);
         }
 
-        async function persistAttendanceToCloud(ticketId, isoTime) {
+        async function persistAttendanceToCloud(ticketId, isoTime, updatedYear) {
             try {
+                const bodyPayload = {
+                    attended: true,
+                    attended_at: isoTime,
+                    verified: true
+                };
+                if (updatedYear) {
+                    bodyPayload.year = updatedYear;
+                }
+
                 await fetch(`${SCANNER_CONFIG.SUPABASE_URL}/rest/v1/registrations?id=eq.${encodeURIComponent(ticketId)}`, {
                     method: 'PATCH',
                     headers: {
@@ -1827,17 +1988,13 @@
                         Authorization: `Bearer ${SCANNER_CONFIG.SUPABASE_ANON_KEY}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        attended: true,
-                        attended_at: isoTime,
-                        verified: true
-                    })
+                    body: JSON.stringify(bodyPayload)
                 });
             } catch (err) {
                 console.warn('Offline admission stored in queue:', err);
                 try {
                     const q = JSON.parse(localStorage.getItem('gate_offline_queue') || '[]');
-                    q.push({ id: ticketId, timestamp: isoTime });
+                    q.push({ id: ticketId, timestamp: isoTime, year: updatedYear });
                     localStorage.setItem('gate_offline_queue', JSON.stringify(q));
                 } catch(e) {}
             }
@@ -1847,7 +2004,9 @@
         function computeVisitDay(yearString) {
             let visitDay = 'Both Days (08th & 09th October 2026)';
             if (yearString && yearString.includes('__VD__')) {
-                visitDay = yearString.split('__VD__')[1].trim();
+                // Strip __D1__ or __D2__ internal stamps if present
+                const rawVd = yearString.split('__VD__')[1].trim();
+                visitDay = rawVd.split('__D')[0].trim();
             }
 
             const lower = visitDay.toLowerCase();
@@ -1900,7 +2059,7 @@
             };
         }
 
-        function populateCardDetails(reg) {
+        function populateCardDetails(reg, meta = {}) {
             const band = computeWristband(reg);
             const bannerEl = document.getElementById('wristband-banner');
             bannerEl.style.display = 'flex';
@@ -1914,7 +2073,16 @@
 
             const dayInfo = computeVisitDay(reg.year);
             document.getElementById('card-visit-day').textContent = dayInfo.text;
-            document.getElementById('card-day-badge').innerHTML = dayInfo.badgeHtml;
+
+            // Multi-Day Attendance Status Badges
+            let badgesHtml = dayInfo.badgeHtml;
+            if (isDay1Attendance(reg)) {
+                badgesHtml += ' <span class="visiting-badge valid" style="background: rgba(212,168,67,0.2); border: 1px solid var(--gold); color: #fde68a;">★ Day 1 Attended</span>';
+            }
+            if (isDay2Attendance(reg)) {
+                badgesHtml += ' <span class="visiting-badge valid" style="background: rgba(16,185,129,0.22); border: 1px solid var(--success); color: #6ee7b7;">✓ Day 2 Admitted</span>';
+            }
+            document.getElementById('card-day-badge').innerHTML = badgesHtml;
 
             let passLabel = 'Complimentary Academic Pass';
             if (reg.final_price > 0) passLabel = `Paid Pass (₹${reg.final_price})`;
@@ -1924,7 +2092,7 @@
             document.getElementById('card-timestamp').textContent = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
         }
 
-        function renderSuccessCard(reg) {
+        function renderSuccessCard(reg, meta = {}) {
             const wrapper = document.getElementById('result-wrapper');
             const panel = document.getElementById('result-panel');
             const header = document.getElementById('result-header-bar');
@@ -1933,11 +2101,22 @@
             header.className = 'result-header-bar success';
 
             document.getElementById('res-header-icon').textContent = '🎉';
-            document.getElementById('res-header-title').textContent = 'VALID PASS — CHECKED IN!';
-            document.getElementById('res-header-title').style.color = '#34d399';
-            document.getElementById('res-header-sub').textContent = 'Attendee verified and admitted at gate.';
 
-            populateCardDetails(reg);
+            if (meta.isDay2) {
+                if (meta.returningFromDay1) {
+                    document.getElementById('res-header-title').textContent = 'DAY 2 CHECKED IN — WELCOME BACK!';
+                    document.getElementById('res-header-sub').textContent = '✓ Attended Day 1 (08th Oct) • Successfully Admitted for Day 2 (09th Oct)!';
+                } else {
+                    document.getElementById('res-header-title').textContent = 'DAY 2 CHECKED IN!';
+                    document.getElementById('res-header-sub').textContent = '✓ Attendee verified and admitted for Day 2 (09th Oct).';
+                }
+            } else {
+                document.getElementById('res-header-title').textContent = 'DAY 1 CHECKED IN!';
+                document.getElementById('res-header-sub').textContent = 'Attendee verified and admitted at gate.';
+            }
+            document.getElementById('res-header-title').style.color = '#34d399';
+
+            populateCardDetails(reg, meta);
 
             document.getElementById('result-footer-bar').innerHTML = `
                 <button class="btn-card-action btn-done-next" onclick="closeResultCard()">✓ Next Attendee (Scan)</button>
@@ -1946,7 +2125,7 @@
             wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        function renderDuplicateCard(reg) {
+        function renderDuplicateCard(reg, dayNum = 2) {
             const wrapper = document.getElementById('result-wrapper');
             const panel = document.getElementById('result-panel');
             const header = document.getElementById('result-header-bar');
@@ -1959,15 +2138,15 @@
                 : 'Earlier Today';
 
             document.getElementById('res-header-icon').textContent = '⚠️';
-            document.getElementById('res-header-title').textContent = 'ALREADY CHECKED IN!';
+            document.getElementById('res-header-title').textContent = `ALREADY CHECKED IN (DAY ${dayNum})!`;
             document.getElementById('res-header-title').style.color = '#fbbf24';
-            document.getElementById('res-header-sub').textContent = `Pass was already admitted today at ${admittedTime}.`;
+            document.getElementById('res-header-sub').textContent = `Pass was already admitted for Day ${dayNum} (${dayNum === 2 ? '09th Oct' : '08th Oct'}) at ${admittedTime}.`;
 
-            populateCardDetails(reg);
+            populateCardDetails(reg, { isDuplicate: true, duplicateDay: dayNum });
 
             document.getElementById('result-footer-bar').innerHTML = `
                 <button class="btn-card-action btn-dismiss-warning" onclick="closeResultCard()">Dismiss</button>
-                <button class="btn-card-action btn-force-reentry" onclick="permitReentry('${reg.id}')">Allow Re-Entry</button>
+                <button class="btn-card-action btn-force-reentry" onclick="permitReentry('${reg.id}')">Allow Re-Entry (Day ${dayNum})</button>
             `;
             wrapper.style.display = 'block';
             wrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -2150,20 +2329,35 @@
                     </div>
                 `;
             } else {
-                listEl.innerHTML = results.map(r => `
+                listEl.innerHTML = results.map(r => {
+                    const hadD1 = isDay1Attendance(r);
+                    const hasD2 = isDay2Attendance(r);
+                    const checkedInActiveDay = (activeEventDay === 2) ? hasD2 : hadD1;
+
+                    let statusBadge = '✓ Unclaimed Pass';
+                    let statusColor = '#10b981';
+                    if (checkedInActiveDay) {
+                        statusBadge = `⚠️ Admitted Day ${activeEventDay}`;
+                        statusColor = '#f59e0b';
+                    } else if (hadD1 && activeEventDay === 2) {
+                        statusBadge = '★ Attended Day 1 • Ready for Day 2';
+                        statusColor = '#38bdf8';
+                    }
+
+                    return `
                     <div class="live-result-row" onclick="chooseSearchResult('${r.id}')">
                         <div class="live-row-info">
                             <span class="live-row-name">${escapeText(r.name)}</span>
                             <span class="live-row-meta">${r.id} • ${escapeText(r.college || '')}</span>
-                            <span style="font-size:11px; color:${r.attended ? '#f59e0b' : '#10b981'}; font-weight:800;">
-                                ${r.attended ? '⚠️ Already Admitted' : '✓ Unclaimed Pass'}
+                            <span style="font-size:11px; color:${statusColor}; font-weight:800;">
+                                ${statusBadge}
                             </span>
                         </div>
                         <button class="btn-live-admit" onclick="event.stopPropagation(); chooseSearchResult('${r.id}')">
-                            ${r.attended ? 'View Card' : 'Admit Delegate'}
+                            ${checkedInActiveDay ? 'View Pass' : ('Admit Day ' + activeEventDay)}
                         </button>
-                    </div>
-                `).join('');
+                    </div>`;
+                }).join('');
             }
             listEl.style.display = 'flex';
         }
