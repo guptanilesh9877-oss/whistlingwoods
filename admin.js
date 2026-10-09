@@ -2821,9 +2821,16 @@ function renderCollegesStats(colleges, regs) {
     const statsEl = document.getElementById('colleges-stats-row');
     if (!statsEl) return;
 
-    const collegeList = colleges.filter(c => !c.openCollege && c.type !== 'rotaract' && c.type !== 'vendor' && !c.slug.includes('rotaract') && !c.slug.includes('vendor'));
-    const rotaractList = colleges.filter(c => c.type === 'rotaract' || c.slug.includes('rotaract'));
-    const vendorList = colleges.filter(c => c.type === 'vendor' || c.type === 'gaming' || c.slug.includes('vendor') || c.slug.includes('youth') || c.slug.includes('gaming') || c.slug.includes('hm-'));
+    // Filter out NMIMS and any confidential/hidden portals so general admin users cannot see them
+    const visibleColleges = (colleges || []).filter(c => {
+        const s = (c.slug || '').toLowerCase();
+        const n = (c.name || '').toLowerCase();
+        return s !== 'nmims' && !n.includes('nmims') && !c.hidden;
+    });
+
+    const collegeList = visibleColleges.filter(c => !c.openCollege && c.type !== 'rotaract' && c.type !== 'vendor' && !c.slug.includes('rotaract') && !c.slug.includes('vendor'));
+    const rotaractList = visibleColleges.filter(c => c.type === 'rotaract' || c.slug.includes('rotaract'));
+    const vendorList = visibleColleges.filter(c => c.type === 'vendor' || c.type === 'gaming' || c.slug.includes('vendor') || c.slug.includes('youth') || c.slug.includes('gaming') || c.slug.includes('hm-'));
 
     let totalDelegationRegs = 0;
     let totalDelegationVerified = 0;
@@ -2835,6 +2842,10 @@ function renderCollegesStats(colleges, regs) {
         const txnLower = (r.transactionId || '').toLowerCase();
         const idLower = (r.id || '').toLowerCase();
         const colLower = (r.college || '').toLowerCase();
+
+        // Omit NMIMS from general college portal counts
+        const isNmims = refLower.includes('nmims') || coupLower.includes('nmims') || colLower.includes('nmims') || idLower.startsWith('nmi-');
+        if (isNmims) return;
 
         const isRot = refLower.includes('rotaract') || coupLower.includes('rotaract') || txnLower.includes('rotaract') || idLower.startsWith('rot-');
         const isVen = refLower.includes('vendor') || refLower.includes('youth') || coupLower.includes('vendor') || coupLower.includes('youth') || txnLower.includes('vendor') || txnLower.includes('youth') || idLower.startsWith('ven-');
@@ -2900,7 +2911,7 @@ function renderCollegesStats(colleges, regs) {
         <!-- Category Filter Tabs: Keep Colleges, Rotaract, and Vendor separate -->
         <div style="width:100%; display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.06); padding-top:10px;">
             <button type="button" class="btn-small ${_currentPortalTab === 'all' ? 'btn-primary' : 'btn-secondary'}" onclick="setPortalCategoryFilter('all')" style="border-radius:20px; padding:6px 14px; font-weight:600; cursor:pointer;">
-                All Portals (${colleges.length})
+                All Portals (${visibleColleges.length})
             </button>
             <button type="button" class="btn-small ${_currentPortalTab === 'college' ? 'btn-primary' : 'btn-secondary'}" onclick="setPortalCategoryFilter('college')" style="border-radius:20px; padding:6px 14px; font-weight:600; cursor:pointer;">
                 🏛️ Institutional Colleges (${collegeList.length})
@@ -2920,19 +2931,26 @@ function renderCollegesGrid(colleges, regs) {
     const noColleges = document.getElementById('no-colleges');
     if (!grid) return;
 
-    if (!colleges || colleges.length === 0) {
+    // Filter out NMIMS and hidden colleges from the portal grid
+    const visibleColleges = (colleges || []).filter(c => {
+        const s = (c.slug || '').toLowerCase();
+        const n = (c.name || '').toLowerCase();
+        return s !== 'nmims' && !n.includes('nmims') && !c.hidden;
+    });
+
+    if (visibleColleges.length === 0) {
         grid.innerHTML = '';
         if (noColleges) noColleges.style.display = 'block';
         return;
     }
 
-    let displayList = colleges;
+    let displayList = visibleColleges;
     if (_currentPortalTab === 'college') {
-        displayList = colleges.filter(c => !c.openCollege && c.type !== 'rotaract' && c.type !== 'vendor' && !c.slug.includes('rotaract') && !c.slug.includes('vendor'));
+        displayList = visibleColleges.filter(c => !c.openCollege && c.type !== 'rotaract' && c.type !== 'vendor' && !c.slug.includes('rotaract') && !c.slug.includes('vendor'));
     } else if (_currentPortalTab === 'rotaract') {
-        displayList = colleges.filter(c => c.type === 'rotaract' || c.slug.includes('rotaract'));
+        displayList = visibleColleges.filter(c => c.type === 'rotaract' || c.slug.includes('rotaract'));
     } else if (_currentPortalTab === 'vendor') {
-        displayList = colleges.filter(c => c.type === 'vendor' || c.slug.includes('vendor') || c.slug.includes('youth'));
+        displayList = visibleColleges.filter(c => c.type === 'vendor' || c.slug.includes('vendor') || c.slug.includes('youth'));
     }
 
     if (displayList.length === 0) {

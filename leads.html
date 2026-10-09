@@ -1240,13 +1240,17 @@
                             DEFAULT_COLLEGES.forEach(def => {
                                 if (!parsed.some(c => c.slug === def.slug)) parsed.push(def);
                             });
-                            _allColleges = parsed;
+                            _allColleges = parsed.filter(c => {
+                                const s = (c.slug || '').toLowerCase();
+                                const n = (c.name || '').toLowerCase();
+                                return s !== 'nmims' && !n.includes('nmims') && !c.hidden;
+                            });
                             return;
                         }
                     }
                 }
             } catch(e) {}
-            _allColleges = DEFAULT_COLLEGES;
+            _allColleges = DEFAULT_COLLEGES.filter(c => (c.slug || '').toLowerCase() !== 'nmims');
         }
 
         function populateSelectorDropdown() {
